@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import courses, lessons
+from app.api.endpoints import auth, courses, lessons
 from app.config import get_settings
 from app.content.seed import seed_from_dir
 from app.database import SessionLocal, init_db
@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
     async def health() -> dict[str, str]:
         return {"status": "ok"}
 
+    app.include_router(auth.router, prefix="/api", tags=["auth"])
     app.include_router(courses.router, prefix="/api", tags=["courses"])
     app.include_router(lessons.router, prefix="/api", tags=["lessons"])
 
