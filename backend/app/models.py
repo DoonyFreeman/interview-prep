@@ -1,0 +1,178 @@
+"""SQLAlchemy ORM models.
+
+Content tables (Course/Lesson/Concept/Question) mirror the markdown + JSON seed
+and are upserted at startup — markdown stays the source of truth. User tables
+(User/Attempt/ConceptMastery/LessonProgress) hold per-user state.
+"""
+from __future__ import annotations
+
+from datetime import datetime, timezone
+
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+# --------------------------------------------------------------------------- #
+# Content (mirrors the seed; source of truth is markdown/JSON)
+# --------------------------------------------------------------------------- #
+class Course(Base):
+    __tablename__ = "courses"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(Text, default="")
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    lessons: Mapped[list["Lesson"]] = relationship(
+        back_populates="course",
+        cascade="all, delete-orphan",
+        order_by="Lesson.order_index",
+    )
+
+
+class Lesson(Base):
+    __tablename__ = "lessons"
+    __table_args__ = (UniqueConstraint("course_id", "slug", name="uq_lesson_slug"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    course_id: Mapped[int] = mapped_column(
+        ForeignKey("courses.id", ondelete="CASCADE"), index=True
+    )
+    slug: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    content_path: Mapped[str] = mapped_column(String(300))
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+    duration_minutes: Mapped[int] = mapped_column(Integer, default=0)
+
+    course: Mapped["Course"] = relationship(back_populates="lessons")
+    concepts: Mapped[list["Concept"]] = relationship(
+        back_populates="lesson",
+        cascade="all, delete-orphan",
+        order_by="Concept.order_index",
+    )
+
+
+class Concept(Base):
+    __tablename__ = "concepts"
+    __table_args__ = (UniqueConstraint("lesson_id", "slug", name="uq_concept_slug"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    lesson_id: Mapped[int] = mapped_column(
+        ForeignKey("lessons.id", ondelete="CASCADE"), index=True
+    )
+    slug: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    # Markdown heading anchor used by the "Back to theory" deep-link.
+    anchor: Mapped[str] = mapped_column(String(200), default="")
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+
+    lesson: Mapped["Lesson"] = relationship(back_populates="concepts")
+    questions: Mapped[list["Question"]] = relationship(
+        back_populates="concept",
+        cascade="all, delete-orphan",
+        order_by="Question.order_index",
+    )
+
+
+class Question(Base):
+    __tablename__ = "questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    concept_id: Mapped[int] = mapped_column(
+        ForeignKey("concepts.id", ondelete="CASCADE"), index=True
+    )
+    text: Mapped[str] = mapped_column(Text)
+    # Authored reference answer — grounds the AI evaluation.
+    reference_answer: Mapped[str] = mapped_column(Text)
+    difficulty: Mapped[int] = mapped_column(Integer, default=3)
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+
+    concept: Mapped["Concept"] = relationship(back_populates="questions")
+
+
+# --------------------------------------------------------------------------- #
+# Users & per-user state
+# --------------------------------------------------------------------------- #
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    display_name: Mapped[str] = mapped_column(String(120), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class Attempt(Base):
+    __tablename__ = "attempts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    question_id: Mapped[int] = mapped_column(
+        ForeignKey("questions.id", ondelete="CASCADE"), index=True
+    )
+    answer_text: Mapped[str] = mapped_column(Text)
+    score: Mapped[int] = mapped_column(Integer, default=0)  # 0..100
+    # Full evaluation payload (strengths/gaps/suggestion/reasoning) as JSON text.
+    review_json: Mapped[str] = mapped_column(Text, default="{}")
+    hint_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, index=True)
+
+
+class ConceptMastery(Base):
+    """SM-2 spaced-repetition state per (user, concept)."""
+
+    __tablename__ = "concept_mastery"
+    __table_args__ = (
+        UniqueConstraint("user_id", "concept_id", name="uq_mastery_user_concept"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    concept_id: Mapped[int] = mapped_column(
+        ForeignKey("concepts.id", ondelete="CASCADE"), index=True
+    )
+    ease: Mapped[float] = mapped_column(Float, default=2.5)
+    interval_days: Mapped[float] = mapped_column(Float, default=0.0)
+    reps: Mapped[int] = mapped_column(Integer, default=0)
+    last_score: Mapped[int] = mapped_column(Integer, default=0)
+    due_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class LessonProgress(Base):
+    __tablename__ = "lesson_progress"
+    __table_args__ = (
+        UniqueConstraint("user_id", "lesson_id", name="uq_progress_user_lesson"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    lesson_id: Mapped[int] = mapped_column(
+        ForeignKey("lessons.id", ondelete="CASCADE"), index=True
+    )
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_viewed_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
