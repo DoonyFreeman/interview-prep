@@ -25,11 +25,13 @@ router = APIRouter()
 async def next_question(
     course_slug: str,
     lesson_slug: str,
-    _user: User = Depends(get_current_user),
+    user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     """Serve a question from the lesson (pure DB read, no reference answer)."""
-    return await quiz.serve_question(session, course_slug, lesson_slug)
+    return await quiz.serve_question(
+        session, course_slug, lesson_slug, user_id=user.id
+    )
 
 
 @router.post(

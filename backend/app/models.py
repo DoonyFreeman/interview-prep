@@ -24,7 +24,11 @@ from app.database import Base
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    # Naive UTC: the DateTime columns are timezone-naive, and SQLite returns
+    # naive values on read, so we keep everything naive-UTC to stay comparable
+    # (mixing aware/naive datetimes raises, and offset suffixes break the
+    # lexical ordering SQLite relies on for due_at filters).
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 # --------------------------------------------------------------------------- #

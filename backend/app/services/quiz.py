@@ -10,12 +10,13 @@ random question from the lesson.
 from __future__ import annotations
 
 import json
+import random
 from dataclasses import dataclass
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.content import registry
 from app.llm.client import LLMClient, LLMError
@@ -25,8 +26,9 @@ from app.llm.prompts import (
     build_eval_prompt,
     build_hint_prompt,
 )
-from app.models import Attempt, Concept, Course, Lesson, Question
+from app.models import Attempt, Concept, ConceptMastery, Course, Lesson, Question, _utcnow
 from app.schemas import EvaluationOut, QuestionOut
+from app.services import progress
 
 _VALID_VERDICTS = {"верно", "частично", "неверно"}
 
@@ -85,29 +87,76 @@ async def _get_context(session: AsyncSession, question_id: int) -> _QContext:
 
 
 # --------------------------------------------------------------------------- #
-# Serve (pure DB read)
+# Serve (pure DB read, spaced-repetition-aware selection)
 # --------------------------------------------------------------------------- #
 async def serve_question(
-    session: AsyncSession, course_slug: str, lesson_slug: str
+    session: AsyncSession, course_slug: str, lesson_slug: str, *, user_id: int
 ) -> QuestionOut:
-    """Return a random question from the given lesson (no reference answer)."""
-    question = (
+    """Serve a question from the lesson, preferring concepts that need work.
+
+    Selection order: a concept the user has never attempted, else the most
+    overdue due concept, else a random concept (reviewing ahead). A random
+    question from the chosen concept is returned (no reference answer).
+    """
+    lesson = (
         await session.execute(
-            select(Question)
-            .join(Concept, Question.concept_id == Concept.id)
-            .join(Lesson, Concept.lesson_id == Lesson.id)
+            select(Lesson)
             .join(Course, Lesson.course_id == Course.id)
             .where(Course.slug == course_slug, Lesson.slug == lesson_slug)
-            .options(_load_options())
-            .order_by(func.random())
-            .limit(1)
+            .options(
+                joinedload(Lesson.course),
+                selectinload(Lesson.concepts).selectinload(Concept.questions),
+            )
         )
-    ).scalar_one_or_none()
-    if question is None:
-        raise HTTPException(
-            status_code=404, detail="No questions for this lesson"
+    ).unique().scalar_one_or_none()
+    if lesson is None:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    concepts = [c for c in lesson.concepts if c.questions]
+    if not concepts:
+        raise HTTPException(status_code=404, detail="No questions for this lesson")
+
+    mastery_by_concept = {
+        m.concept_id: m
+        for m in (
+            await session.execute(
+                select(ConceptMastery).where(
+                    ConceptMastery.user_id == user_id,
+                    ConceptMastery.concept_id.in_([c.id for c in concepts]),
+                )
+            )
         )
-    return _to_out(_to_context(question))
+        .scalars()
+        .all()
+    }
+    now = _utcnow()
+
+    concept = _pick_concept(concepts, mastery_by_concept, now)
+    question = random.choice(concept.questions)
+
+    ctx = _QContext(
+        question=question, concept=concept, lesson=lesson, course=lesson.course
+    )
+    return _to_out(ctx)
+
+
+def _pick_concept(
+    concepts: list[Concept],
+    mastery_by_concept: dict[int, ConceptMastery],
+    now,
+) -> Concept:
+    new = [c for c in concepts if c.id not in mastery_by_concept]
+    if new:
+        return random.choice(new)
+
+    due = [
+        c for c in concepts if mastery_by_concept[c.id].due_at <= now
+    ]
+    if due:
+        # Most overdue first.
+        return min(due, key=lambda c: mastery_by_concept[c.id].due_at)
+
+    return random.choice(concepts)
 
 
 # --------------------------------------------------------------------------- #
@@ -141,6 +190,7 @@ async def evaluate_answer(
 
     review = _normalize_evaluation(raw)
 
+    now = _utcnow()
     attempt = Attempt(
         user_id=user_id,
         question_id=question_id,
@@ -150,10 +200,27 @@ async def evaluate_answer(
         hint_used=hint_used,
     )
     session.add(attempt)
+
+    # Each scored attempt advances the SM-2 mastery of the question's concept,
+    # in the same transaction as the attempt.
+    mastery = await progress.update_mastery(
+        session,
+        user_id=user_id,
+        concept_id=ctx.concept.id,
+        score=review["score"],
+        now=now,
+    )
+
     await session.commit()
     await session.refresh(attempt)
+    await session.refresh(mastery)
 
-    return EvaluationOut(attempt_id=attempt.id, **review)
+    return EvaluationOut(
+        attempt_id=attempt.id,
+        concept_slug=ctx.concept.slug,
+        mastery=progress.mastery_to_out(mastery, now),
+        **review,
+    )
 
 
 def _normalize_evaluation(raw: dict) -> dict:
