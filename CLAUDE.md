@@ -18,10 +18,10 @@ evaluation and hints — everything else is plain DB/memory reads. It's meant to
 **self-hosted on one small server, deployed via Docker** (see Roadmap 7–8), so
 keep new code container-friendly: config from env, state on a volume.
 
-Status: Phases 0–3 done — content layer + read endpoints + auth + the Gemini
-client and quiz serve/evaluate/hint are all built and tested (one reference
-lesson: Python Core → GIL). **Next: Phase 4** (progress + SM-2 + review queue).
-Not built yet: progress/SM-2 services, frontend.
+Status: Phases 0–4 done — content layer + read endpoints + auth + the Gemini
+client + quiz serve/evaluate/hint + progress/SM-2/review queue are all built and
+tested (one reference lesson: Python Core → GIL). **Next: Phase 5** (frontend).
+Not built yet: frontend, Docker/deploy.
 
 ## Commands
 
@@ -90,9 +90,16 @@ Layered, dependency-light. Big picture you can't get from one file:
   the seam tests override (`get_llm` dependency) to run without network/key.
 
 - **Spaced repetition lives in `concept_mastery`** (SM-2 fields: `ease`,
-  `interval_days`, `reps`, `due_at`). Each scored attempt updates the mastery of
-  the question's concept; the "review queue" surfaces concepts whose `due_at`
-  has passed. Quiz question selection prefers due/weak concepts.
+  `interval_days`, `reps`, `due_at`). The algorithm is pure in `services/sm2.py`
+  (`score_to_quality` maps the 0..100 grade onto SM-2's 0..5 quality;
+  `sm2_update` returns the next state); the DB-facing side is in
+  `services/progress.py`. `quiz.evaluate_answer` calls `progress.update_mastery`
+  in the **same transaction** as the `Attempt`, so a graded answer and the SM-2
+  step commit together, and the evaluation response carries the new mastery
+  (reps / interval / due_at). The review queue (`get_review_queue`) surfaces
+  concepts whose `due_at` has passed; `serve_question` prefers a never-attempted
+  concept, then the most-overdue due one, then a random concept (review ahead).
+  A concept is "mastered" at `reps >= 2 && last_score >= 80`.
 
 - **"Back to theory" deep-links** use `concepts.anchor` (a markdown heading
   anchor), so a quiz can jump the reader to the exact section a concept came from.
@@ -111,6 +118,11 @@ Layered, dependency-light. Big picture you can't get from one file:
 - **Sessions**: `async_sessionmaker(expire_on_commit=False)`; use
   `async with SessionLocal() as session`. FastAPI deps use `get_session()`.
 - **`content_dir` is resolved relative to the backend CWD** (default `../content`).
+- **Datetimes are naive UTC** (`models._utcnow` = `datetime.now(utc)` with
+  `tzinfo` stripped). The `DateTime` columns are timezone-naive and SQLite returns
+  naive values, so everything stays naive-UTC: mixing aware/naive raises, and an
+  offset suffix would break the lexical ordering SQLite uses for `due_at` filters.
+  Use `_utcnow()` for any new timestamp/`now` rather than `datetime.now(...)`.
 - **`reference_answer` must never reach the client.** It grounds server-side
   grading only; the read schemas in `app/schemas.py` deliberately omit it, and a
   test (`test_reference_answers_never_leak`) guards this. Keep it server-side when
@@ -139,16 +151,18 @@ backend/app/
   content/     loader.py, seed.py, registry.py            — DONE
   auth/        security.py, tokens.py, dependencies.py, schemas.py  — DONE
   llm/         client.py (GeminiClient + LLMClient protocol), prompts.py  — DONE
-  services/    quiz.py (serve / evaluate / hint)          — DONE
-  api/endpoints/  courses.py, lessons.py, auth.py, quizzes.py (done); progress — TODO
-backend/tests/  conftest.py + test_content.py + test_auth.py + test_quiz.py + test_llm.py
+  services/    quiz.py (serve/evaluate/hint), progress.py, sm2.py  — DONE
+  api/endpoints/  courses.py, lessons.py, auth.py, quizzes.py, progress.py  — DONE
+backend/tests/  conftest.py + test_content/auth/quiz/llm/progress.py
 content/courses/python-core/  metadata.json, 01-gil.md, questions.json
 ```
 
 Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `/api/courses/{course}/lessons/{lesson}`; `POST /api/auth/{register,login}`,
 `GET /api/auth/me`; `GET /api/quiz/courses/{course}/lessons/{lesson}/next`,
-`POST /api/quiz/questions/{id}/{evaluate,hint}` (all quiz routes require auth).
+`POST /api/quiz/questions/{id}/{evaluate,hint}`; `GET /api/progress`,
+`GET /api/progress/review`, `POST /api/progress/courses/{course}/lessons/{lesson}`
+(all quiz + progress routes require auth).
 
 ## Roadmap (phases)
 
@@ -159,9 +173,10 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 3. ✅ Gemini client (fallback chain) + quiz service (serve / evaluate / hint).
    Live evaluation needs `GEMINI_API_KEY` in `backend/.env`; logic is testable
    with a mocked LLM (`test_quiz.py`, `test_llm.py`).
-4. **← NEXT.** Progress + SM-2 + review queue.
-5. Frontend (React + TS + Vite + React Router + TanStack Query + Tailwind;
-   markdown render with code syntax highlighting).
+4. ✅ Progress + SM-2 + review queue (mastery updated per scored attempt;
+   due-aware question selection; `/api/progress` + `/api/progress/review`).
+5. **← NEXT.** Frontend (React + TS + Vite + React Router + TanStack Query +
+   Tailwind; markdown render with code syntax highlighting).
 6. Author remaining topics.
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or
    a single image serving the built SPA via FastAPI static files), a

@@ -5,6 +5,8 @@ LLM evaluation server-side and must never be sent to the client.
 """
 from __future__ import annotations
 
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -68,6 +70,17 @@ class EvaluateIn(BaseModel):
     hint_used: bool = False
 
 
+class MasteryOut(BaseModel):
+    """SM-2 state for a concept after a scored attempt."""
+
+    reps: int
+    ease: float
+    interval_days: float
+    last_score: int
+    due_at: datetime
+    due: bool  # due_at has already passed (ready for review now)
+
+
 class EvaluationOut(BaseModel):
     attempt_id: int
     score: int  # 0..100
@@ -76,6 +89,8 @@ class EvaluationOut(BaseModel):
     strengths: list[str]
     gaps: list[str]
     suggestion: str
+    concept_slug: str
+    mastery: MasteryOut
 
 
 class HintIn(BaseModel):
@@ -84,3 +99,68 @@ class HintIn(BaseModel):
 
 class HintOut(BaseModel):
     hint: str
+
+
+# --------------------------------------------------------------------------- #
+# Progress + spaced-repetition review queue
+# --------------------------------------------------------------------------- #
+class ReviewItem(BaseModel):
+    concept_slug: str
+    concept_title: str
+    course_slug: str
+    lesson_slug: str
+    anchor: str
+    last_score: int
+    reps: int
+    due_at: datetime
+    question_id: int | None  # a question to practice this concept, if any
+
+
+class ReviewQueueOut(BaseModel):
+    count: int
+    items: list[ReviewItem]
+
+
+class ConceptProgressOut(BaseModel):
+    slug: str
+    title: str
+    anchor: str
+    attempted: bool
+    mastered: bool
+    reps: int
+    last_score: int
+    due_at: datetime | None
+    due: bool
+
+
+class LessonProgressOut(BaseModel):
+    slug: str
+    title: str
+    completed: bool
+    total_concepts: int
+    attempted_concepts: int
+    mastered_concepts: int
+    due_concepts: int
+    concepts: list[ConceptProgressOut]
+
+
+class CourseProgressOut(BaseModel):
+    slug: str
+    title: str
+    total_concepts: int
+    attempted_concepts: int
+    mastered_concepts: int
+    due_concepts: int
+    lessons: list[LessonProgressOut]
+
+
+class ProgressOverviewOut(BaseModel):
+    total_concepts: int
+    attempted_concepts: int
+    mastered_concepts: int
+    due_concepts: int
+    courses: list[CourseProgressOut]
+
+
+class LessonProgressIn(BaseModel):
+    completed: bool = False
