@@ -1,0 +1,47 @@
+{
+  "slug": "python-core",
+  "title": "Python Core",
+  "description": "Глубокие основы Python под уровень собеседования: модель выполнения, объекты, управление памятью и конкурентность.",
+  "order": 1,
+  "lessons": [
+    {
+      "slug": "gil",
+      "title": "GIL — Global Interpreter Lock",
+      "file": "01-gil.md",
+      "order": 1,
+      "duration_minutes": 25,
+      "concepts": [
+        {
+          "slug": "what-is-gil",
+          "title": "Что такое GIL и зачем он нужен",
+          "anchor": "что-такое-gil",
+          "order": 1
+        },
+        {
+          "slug": "gil-and-threads",
+          "title": "GIL и потоки: CPU-bound vs IO-bound",
+          "anchor": "gil-и-потоки-cpu-bound-vs-io-bound",
+          "order": 2
+        },
+        {
+          "slug": "gil-release",
+          "title": "Когда GIL освобождается",
+          "anchor": "когда-gil-освобождается",
+          "order": 3
+        },
+        {
+          "slug": "bypass-gil",
+          "title": "Как обойти ограничения GIL",
+          "anchor": "как-обойти-ограничения-gil",
+          "order": 4
+        },
+        {
+          "slug": "gil-future",
+          "title": "Почему GIL существует и его будущее",
+          "anchor": "почему-gil-существует-и-его-будущее",
+          "order": 5
+        }
+      ]
+    }
+  ]
+}
