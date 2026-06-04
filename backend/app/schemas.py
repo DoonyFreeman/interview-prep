@@ -47,3 +47,40 @@ class LessonDetail(BaseModel):
     duration_minutes: int
     markdown: str
     concepts: list[ConceptOut]
+
+
+# --------------------------------------------------------------------------- #
+# Quiz (serve / evaluate / hint). reference_answer is never present here.
+# --------------------------------------------------------------------------- #
+class QuestionOut(BaseModel):
+    id: int
+    text: str
+    difficulty: int
+    concept_slug: str
+    concept_title: str
+    anchor: str  # markdown heading anchor for the "Back to theory" deep-link
+    course_slug: str
+    lesson_slug: str
+
+
+class EvaluateIn(BaseModel):
+    answer_text: str
+    hint_used: bool = False
+
+
+class EvaluationOut(BaseModel):
+    attempt_id: int
+    score: int  # 0..100
+    verdict: str  # "верно" | "частично" | "неверно"
+    summary: str
+    strengths: list[str]
+    gaps: list[str]
+    suggestion: str
+
+
+class HintIn(BaseModel):
+    answer_text: str = ""
+
+
+class HintOut(BaseModel):
+    hint: str
