@@ -8,6 +8,7 @@ import { LessonPage } from "./pages/LessonPage";
 import { QuizPage } from "./pages/QuizPage";
 import { QuestionsPage } from "./pages/QuestionsPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { ReviewPage } from "./pages/ReviewPage";
 
 export function App() {
   return (
@@ -21,6 +22,7 @@ export function App() {
         }
       >
         <Route path="/" element={<CatalogPage />} />
+        <Route path="/review" element={<ReviewPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/courses/:courseSlug" element={<CoursePage />} />
         <Route

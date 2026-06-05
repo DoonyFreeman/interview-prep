@@ -81,6 +81,23 @@ export interface LessonQuestions {
   questions: QuestionStatus[];
 }
 
+export interface ReviewItem {
+  concept_slug: string;
+  concept_title: string;
+  course_slug: string;
+  lesson_slug: string;
+  anchor: string;
+  last_score: number;
+  reps: number;
+  due_at: string;
+  question_id: number | null;
+}
+
+export interface ReviewQueue {
+  count: number;
+  items: ReviewItem[];
+}
+
 export interface MasteryOut {
   reps: number;
   ease: number;

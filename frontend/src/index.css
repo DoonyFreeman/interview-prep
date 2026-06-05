@@ -37,6 +37,32 @@
   --radius-card: 16px;
 }
 
+/* Dark theme — warm dark neutrals + lifted primary/accent for contrast. */
+.dark {
+  --color-bg: #14130f;
+  --color-surface: #1d1b16;
+  --color-surface-2: #25221b;
+  --color-ink: #f2eee6;
+  --color-muted: #a8a092;
+  --color-faint: #786f62;
+  --color-border: #322e26;
+
+  --color-primary: #8b85f8;
+  --color-primary-strong: #a29cfb;
+  --color-primary-soft: #24224a;
+  --color-primary-fg: #14130f;
+
+  --color-accent: #f0aa3c;
+  --color-accent-soft: #2c2414;
+
+  --color-success: #4ade80;
+  --color-success-soft: #18271d;
+  --color-warn: #fbbf24;
+  --color-warn-soft: #2a2210;
+  --color-danger: #f08a5d;
+  --color-danger-soft: #2c1a12;
+}
+
 html {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -47,6 +73,24 @@ body {
   margin: 0;
   background: var(--color-bg);
   color: var(--color-ink);
+}
+
+/* Smooth the light/dark flip for surfaces, borders and text. */
+body,
+.bg-surface,
+.bg-surface-2,
+.bg-bg {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Keyboard focus ring (mouse clicks stay clean). */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 * {
@@ -126,7 +170,7 @@ body {
   font-family: var(--font-mono);
   font-size: 0.88em;
   background: var(--color-accent-soft);
-  color: #8a5a00;
+  color: var(--color-accent);
   padding: 0.12em 0.4em;
   border-radius: 6px;
   white-space: nowrap;
@@ -148,7 +192,8 @@ body {
   font-weight: 600;
 }
 
-/* Shiki code blocks */
+/* Shiki code blocks — let Shiki's theme own the background (light-plus /
+   dark-plus), we only frame it. */
 .prose pre.shiki,
 .codeblock pre.shiki {
   font-family: var(--font-mono);
@@ -159,7 +204,6 @@ body {
   border: 1px solid var(--color-border);
   overflow-x: auto;
   margin: 1.3rem 0;
-  background: #fbfaf7 !important;
 }
 .codeblock-fallback {
   font-family: var(--font-mono);
@@ -170,6 +214,6 @@ body {
   border: 1px solid var(--color-border);
   overflow-x: auto;
   margin: 1.3rem 0;
-  background: #fbfaf7;
+  background: var(--color-surface-2);
   white-space: pre;
 }

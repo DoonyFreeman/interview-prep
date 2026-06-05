@@ -13,6 +13,7 @@ import type {
   LessonQuestions,
   ProgressOverviewOut,
   QuestionOut,
+  ReviewQueue,
   TokenOut,
   UserOut,
 } from "./types";
@@ -51,6 +52,14 @@ export function useProgress() {
     queryKey: ["progress"],
     queryFn: async () =>
       (await api.get<ProgressOverviewOut>("/progress")).data,
+  });
+}
+
+export function useReview() {
+  return useQuery({
+    queryKey: ["review"],
+    queryFn: async () =>
+      (await api.get<ReviewQueue>("/progress/review")).data,
   });
 }
 
@@ -130,6 +139,7 @@ export function useEvaluate() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["progress"] });
       qc.invalidateQueries({ queryKey: ["lesson-questions"] });
+      qc.invalidateQueries({ queryKey: ["review"] });
     },
   });
 }
