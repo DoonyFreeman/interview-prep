@@ -48,7 +48,26 @@ pytest tests/test_auth.py::test_login_and_me   # a single test
 
 ## Architecture
 
-Layered, dependency-light. Big picture you can't get from one file:
+Layered, dependency-light. The layering is strict: **endpoint → service →
+repository → model**, with Pydantic schemas at the API boundary. Big picture you
+can't get from one file:
+
+- **Repositories are the only place that talks SQLAlchemy** (`app/repositories/`).
+  Each wraps an `AsyncSession` (`BaseRepository`) and exposes intent-revealing
+  methods (`CourseRepository.get_by_slug`, `QuestionRepository.get_with_context`,
+  `ConceptMasteryRepository.due_for_user`, …) — no endpoint or service builds a
+  `select(...)` by hand. **Repositories never commit**: they `add`/`flush` and the
+  calling service owns the transaction, so one service method can persist across
+  several repositories atomically (e.g. `evaluate_answer` writes the `Attempt` +
+  the SM-2 mastery step together). The grep invariant: `session.execute(` /
+  `select(` appear only under `app/repositories/` (and `content/seed.py`, which is
+  startup infra, not request-path access).
+
+- **Services hold business logic + transaction boundaries** (`app/services/`):
+  `content.py` (course/lesson reads), `auth.py` (register/login/current-user),
+  `quiz.py` (serve/evaluate/hint), `progress.py` (mastery/review/overview),
+  `sm2.py` (pure algorithm). Endpoints are thin: parse input, call a service,
+  return a schema. ORM→schema mapping lives in the service.
 
 - **Content vs. user state is a hard split** (`app/models.py`). Content tables
   (`courses → lessons → concepts → questions`) are a queryable **mirror of the
@@ -151,9 +170,10 @@ backend/app/
   content/     loader.py, seed.py, registry.py            — DONE
   auth/        security.py, tokens.py, dependencies.py, schemas.py  — DONE
   llm/         client.py (GeminiClient + LLMClient protocol), prompts.py  — DONE
-  services/    quiz.py (serve/evaluate/hint), progress.py, sm2.py  — DONE
+  repositories/  base.py + content/users/attempts/mastery/lesson_progress.py  — DONE
+  services/    content.py, auth.py, quiz.py, progress.py, sm2.py  — DONE
   api/endpoints/  courses.py, lessons.py, auth.py, quizzes.py, progress.py  — DONE
-backend/tests/  conftest.py + test_content/auth/quiz/llm/progress.py
+backend/tests/  conftest.py + test_content/auth/quiz/llm/progress/repositories.py
 content/courses/python-core/  metadata.json, 01-gil.md, questions.json
 ```
 

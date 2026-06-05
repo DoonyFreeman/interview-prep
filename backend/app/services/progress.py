@@ -6,26 +6,25 @@ passed (:func:`get_review_queue`); the overview rolls mastery up per course /
 lesson (:func:`get_overview`). Lesson view/completion is tracked separately
 (:func:`touch_lesson_progress`).
 
-All timestamps are timezone-aware UTC (matching ``models._utcnow``) so the ISO
-strings SQLite stores stay lexically comparable in ``due_at`` filters.
+All DB access goes through repositories; this module holds the business rules
+(SM-2 step, mastered threshold) and the ORM→schema mapping. All timestamps are
+timezone-aware-free UTC (``models._utcnow``) so SQLite's lexical ``due_at``
+filters stay correct.
 """
 from __future__ import annotations
 
 from datetime import datetime, timedelta
 
 from fastapi import HTTPException
-from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
-from app.models import (
-    Concept,
-    ConceptMastery,
-    Course,
-    Lesson,
-    LessonProgress,
-    Question,
-    _utcnow,
+from app.models import ConceptMastery, LessonProgress, _utcnow
+from app.repositories import (
+    ConceptMasteryRepository,
+    CourseRepository,
+    LessonProgressRepository,
+    LessonRepository,
+    QuestionRepository,
 )
 from app.schemas import (
     ConceptProgressOut,
@@ -64,23 +63,16 @@ async def update_mastery(
     Flushes but does not commit — the caller owns the transaction.
     """
     now = now or _utcnow()
-    mastery = (
-        await session.execute(
-            select(ConceptMastery).where(
-                ConceptMastery.user_id == user_id,
-                ConceptMastery.concept_id == concept_id,
-            )
-        )
-    ).scalar_one_or_none()
+    repo = ConceptMasteryRepository(session)
+    mastery = await repo.get(user_id, concept_id)
     if mastery is None:
-        mastery = ConceptMastery(
+        mastery = repo.create(
             user_id=user_id,
             concept_id=concept_id,
             ease=DEFAULT_EASE,
             interval_days=0.0,
             reps=0,
         )
-        session.add(mastery)
 
     new = sm2_update(
         SM2State(mastery.ease, mastery.interval_days, mastery.reps),
@@ -120,28 +112,13 @@ async def get_review_queue(
 ) -> ReviewQueueOut:
     """Concepts whose ``due_at`` has passed, soonest-due first, with a question."""
     now = now or _utcnow()
-    rows = (
-        await session.execute(
-            select(ConceptMastery, Concept, Lesson, Course)
-            .join(Concept, ConceptMastery.concept_id == Concept.id)
-            .join(Lesson, Concept.lesson_id == Lesson.id)
-            .join(Course, Lesson.course_id == Course.id)
-            .where(
-                ConceptMastery.user_id == user_id,
-                ConceptMastery.due_at <= now,
-            )
-            .order_by(ConceptMastery.due_at.asc())
-            .limit(limit)
-        )
-    ).all()
+    mastery_repo = ConceptMasteryRepository(session)
+    question_repo = QuestionRepository(session)
 
+    rows = await mastery_repo.due_for_user(user_id, now, limit)
     items: list[ReviewItem] = []
     for mastery, concept, lesson, course in rows:
-        question_id = (
-            await session.execute(
-                select(func.min(Question.id)).where(Question.concept_id == concept.id)
-            )
-        ).scalar()
+        question_id = await question_repo.min_id_for_concept(concept.id)
         items.append(
             ReviewItem(
                 concept_slug=concept.slug,
@@ -166,44 +143,14 @@ async def get_overview(
 ) -> ProgressOverviewOut:
     now = now or _utcnow()
 
-    courses = (
-        (
-            await session.execute(
-                select(Course)
-                .where(Course.is_published.is_(True))
-                .options(
-                    selectinload(Course.lessons).selectinload(Lesson.concepts)
-                )
-                .order_by(Course.order_index)
-            )
-        )
-        .scalars()
-        .all()
-    )
-
+    courses = await CourseRepository(session).list_published_with_lessons_concepts()
     mastery_by_concept = {
         m.concept_id: m
-        for m in (
-            await session.execute(
-                select(ConceptMastery).where(ConceptMastery.user_id == user_id)
-            )
-        )
-        .scalars()
-        .all()
+        for m in await ConceptMasteryRepository(session).list_for_user(user_id)
     }
-    completed_lessons = {
-        lp.lesson_id
-        for lp in (
-            await session.execute(
-                select(LessonProgress).where(
-                    LessonProgress.user_id == user_id,
-                    LessonProgress.completed.is_(True),
-                )
-            )
-        )
-        .scalars()
-        .all()
-    }
+    completed_lessons = await LessonProgressRepository(session).completed_lesson_ids(
+        user_id
+    )
 
     course_outs: list[CourseProgressOut] = []
     g_total = g_attempted = g_mastered = g_due = 0
@@ -300,27 +247,14 @@ async def touch_lesson_progress(
 ) -> LessonProgress:
     """Upsert the (user, lesson) progress row: bump last-viewed, set completed."""
     now = now or _utcnow()
-    lesson = (
-        await session.execute(
-            select(Lesson)
-            .join(Course, Lesson.course_id == Course.id)
-            .where(Course.slug == course_slug, Lesson.slug == lesson_slug)
-        )
-    ).scalar_one_or_none()
+    lesson = await LessonRepository(session).get_by_slugs(course_slug, lesson_slug)
     if lesson is None:
         raise HTTPException(status_code=404, detail="Lesson not found")
 
-    progress = (
-        await session.execute(
-            select(LessonProgress).where(
-                LessonProgress.user_id == user_id,
-                LessonProgress.lesson_id == lesson.id,
-            )
-        )
-    ).scalar_one_or_none()
+    repo = LessonProgressRepository(session)
+    progress = await repo.get(user_id, lesson.id)
     if progress is None:
-        progress = LessonProgress(user_id=user_id, lesson_id=lesson.id)
-        session.add(progress)
+        progress = repo.create(user_id=user_id, lesson_id=lesson.id)
     progress.last_viewed_at = now
     if completed:
         progress.completed = True
