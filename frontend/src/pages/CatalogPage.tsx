@@ -3,7 +3,45 @@ import { useTranslation } from "react-i18next";
 import { useCourses, useProgress } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { ProgressBar } from "../components/ProgressBar";
-import type { CourseProgressOut } from "../api/types";
+import { ScoreGauge } from "../components/ScoreGauge";
+import { Button } from "../components/Button";
+import { useAuth } from "../auth/AuthContext";
+import type { CourseProgressOut, ProgressOverviewOut } from "../api/types";
+
+function StatsHero({ ov }: { ov: ProgressOverviewOut }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const pct =
+    ov.total_concepts > 0
+      ? Math.round((ov.mastered_concepts / ov.total_concepts) * 100)
+      : 0;
+
+  return (
+    <div className="mb-8 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-sm sm:flex-row sm:gap-7">
+      <ScoreGauge score={pct} size={104} />
+      <div className="flex-1 text-center sm:text-left">
+        <h1 className="text-xl font-bold text-ink">
+          {t("dashboard.hello", { name: user?.display_name || "👋" })}
+        </h1>
+        <div className="mt-3 flex justify-center gap-6 sm:justify-start">
+          <Stat label={t("dashboard.mastered")} value={`${ov.mastered_concepts}/${ov.total_concepts}`} />
+          <Stat label={t("dashboard.attempted")} value={`${ov.attempted_concepts}`} />
+          <Stat label={t("dashboard.due")} value={`${ov.due_concepts}`} />
+        </div>
+      </div>
+      <Link to="/review" className="w-full sm:w-auto">
+        <Button
+          variant={ov.due_concepts > 0 ? "primary" : "secondary"}
+          className="w-full"
+        >
+          {ov.due_concepts > 0
+            ? t("dashboard.reviewCta", { count: ov.due_concepts })
+            : t("dashboard.reviewNone")}
+        </Button>
+      </Link>
+    </div>
+  );
+}
 
 export function CatalogPage() {
   const { t } = useTranslation();
@@ -17,24 +55,14 @@ export function CatalogPage() {
   const byCourse = new Map<string, CourseProgressOut>(
     (progress.data?.courses ?? []).map((c) => [c.slug, c]),
   );
-  const ov = progress.data;
 
   return (
     <div>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-ink">{t("catalog.title")}</h1>
-          <p className="mt-1 text-muted">{t("catalog.subtitle")}</p>
-        </div>
-        {ov && (
-          <div className="flex gap-6">
-            <Stat
-              label={t("catalog.summaryMastered")}
-              value={`${ov.mastered_concepts}/${ov.total_concepts}`}
-            />
-            <Stat label={t("catalog.summaryDue")} value={`${ov.due_concepts}`} />
-          </div>
-        )}
+      {progress.data && <StatsHero ov={progress.data} />}
+
+      <div className="mb-4">
+        <h2 className="text-lg font-bold text-ink">{t("catalog.title")}</h2>
+        <p className="text-sm text-muted">{t("catalog.subtitle")}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -88,7 +116,7 @@ export function CatalogPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="text-right">
+    <div>
       <div className="text-2xl font-bold text-ink">{value}</div>
       <div className="text-xs text-faint">{label}</div>
     </div>

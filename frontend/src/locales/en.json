@@ -48,6 +48,23 @@
     "toLogin": "Already have an account? Sign in",
     "passwordHint": "At least 6 characters"
   },
+  "dashboard": {
+    "hello": "Hi, {{name}}!",
+    "mastered": "Mastered",
+    "attempted": "Started",
+    "due": "To review",
+    "reviewCta": "Review: {{count}}",
+    "reviewNone": "All reviewed"
+  },
+  "review": {
+    "title": "To review",
+    "subtitle": "Concepts due for a refresh per spaced repetition.",
+    "due": "by {{date}}",
+    "practice": "Practice",
+    "emptyTitle": "Nothing to review right now",
+    "emptyHint": "Keep answering questions — weak concepts return here on schedule.",
+    "toCourses": "To courses"
+  },
   "catalog": {
     "title": "Courses",
     "subtitle": "Pick a topic, study the theory and test yourself.",

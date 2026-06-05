@@ -10,12 +10,14 @@ import {
  */
 let highlighterPromise: Promise<Highlighter> | null = null;
 
-export const CODE_THEME = "light-plus";
+// VS Code's own default themes (light-plus / dark-plus), picked by app theme.
+export const CODE_THEME_LIGHT = "light-plus";
+export const CODE_THEME_DARK = "dark-plus";
 
 export function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: [CODE_THEME],
+      themes: [CODE_THEME_LIGHT, CODE_THEME_DARK],
       langs: ["python", "bash", "json", "text", "c", "sql"],
     });
   }

@@ -3,16 +3,26 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
 import { LanguageToggle } from "./LanguageToggle";
+import { ThemeToggle } from "./ThemeToggle";
 
 function DueBadge() {
   const { t } = useTranslation();
   const { data } = useProgress();
   const due = data?.due_concepts ?? 0;
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold text-muted">
-      <span className="text-accent">●</span>
+    <NavLink
+      to="/review"
+      className={({ isActive }) =>
+        `inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+          isActive
+            ? "border-primary/40 bg-primary-soft text-primary"
+            : "border-border bg-surface text-muted hover:bg-surface-2"
+        }`
+      }
+    >
+      <span className={due > 0 ? "text-accent" : "text-faint"}>●</span>
       {t("nav.review")}: <span className="text-ink">{due}</span>
-    </span>
+    </NavLink>
   );
 }
 
@@ -51,6 +61,7 @@ export function Layout() {
             <div className="hidden sm:block">
               <DueBadge />
             </div>
+            <ThemeToggle />
             <LanguageToggle />
             <div className="flex items-center gap-1">
               <NavLink
