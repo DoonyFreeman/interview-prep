@@ -124,6 +124,9 @@ class GlossaryTerm(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     slug: Mapped[str] = mapped_column(String(80), unique=True, index=True)
     term: Mapped[str] = mapped_column(String(200))
+    # "reference" (the technical glossary) or "slang" (the plain-language slang
+    # dictionary). The two share this table but are served/grouped separately.
+    kind: Mapped[str] = mapped_column(String(20), default="reference", index=True)
     category: Mapped[str] = mapped_column(String(40), index=True)
     short_md: Mapped[str] = mapped_column(Text)
     aliases: Mapped[str] = mapped_column(Text, default="[]")  # JSON list[str]

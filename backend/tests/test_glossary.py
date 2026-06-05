@@ -83,3 +83,36 @@ async def test_get_term_with_links(client):
 async def test_get_unknown_term_404(client):
     r = await client.get("/api/glossary/does-not-exist")
     assert r.status_code == 404
+
+
+async def test_default_kind_is_reference_excludes_slang(client):
+    """The default glossary listing must not leak slang terms (so quizzes and the
+    reference page stay reference-only)."""
+    d = (await client.get("/api/glossary")).json()
+    assert all(t["category"] != "slang" for t in d["terms"])
+    slugs = {t["slug"] for t in d["terms"]}
+    assert "gil" in slugs
+    assert "backlog" not in slugs  # a slang term
+
+
+async def test_kind_slang_returns_slang_terms(client):
+    d = (await client.get("/api/glossary", params={"kind": "slang"})).json()
+    assert d["count"] >= 50
+    slugs = {t["slug"] for t in d["terms"]}
+    assert "backlog" in slugs and "git" in slugs
+    assert "gil" not in slugs  # a reference term
+    assert all(t["category"] == "slang" for t in d["terms"])
+
+
+async def test_kind_invalid_rejected(client):
+    r = await client.get("/api/glossary", params={"kind": "bogus"})
+    assert r.status_code == 422
+
+
+async def test_slang_search(client):
+    # Backend LIKE is ASCII-case-insensitive; the slang page filters Cyrillic
+    # client-side. An ASCII query still works server-side.
+    d = (
+        await client.get("/api/glossary", params={"kind": "slang", "q": "branch"})
+    ).json()
+    assert "branch" in {t["slug"] for t in d["terms"]}

@@ -27,7 +27,9 @@ Phase 5b done (dashboard, review-queue page, dark theme). Phase 5c done (glossar
 page with search + category filter). Phase 5d done (configurable glossary term
 quizzes: client-side generation with smart progress-weighted selection, a
 `glossary_term_stats` user-state table + auth-gated progress/result endpoints, a
-`/glossary/quiz` page). Frontend now has vitest. Not built yet: Docker/deploy.
+`/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
+terms in `content/slang.json`, served via a `kind` discriminator on the glossary
+table, a `/slang` page). Frontend now has vitest. Not built yet: Docker/deploy.
 
 ## Commands
 
@@ -238,6 +240,12 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    `glossary_term_stats` table, auth-gated `GET /api/glossary/progress` +
    `POST /api/glossary/quiz/result` (one upsert per answered term). A `/glossary/quiz`
    setup→run→result page; entry points + per-category mastery on `/glossary`.
+5e. ✅ **Slang dictionary** (see `content/SLANG_PLAN.md`). A separate plain-language
+   dev-jargon dictionary (`content/slang.json`, 83 terms RU). Reuses the
+   `glossary_terms` table via a `kind` discriminator (`reference` | `slang`); the
+   public `GET /api/glossary?kind=slang` serves it (default `kind=reference`, so the
+   glossary page and quizzes stay reference-only). A `/slang` page groups terms
+   alphabetically with client-side search; nav item "Сленг".
 6. Author remaining topics (deep lessons + reference answers; glossary P1/P2 fill
    in here too).
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or

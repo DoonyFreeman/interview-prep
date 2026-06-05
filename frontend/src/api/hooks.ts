@@ -67,11 +67,15 @@ export function useReview() {
 }
 
 // --- Glossary (public reads) -----------------------------------------------
-export function useGlossary(category: string | null, q: string) {
+export function useGlossary(
+  category: string | null,
+  q: string,
+  kind: "reference" | "slang" = "reference",
+) {
   return useQuery({
-    queryKey: ["glossary", category, q],
+    queryKey: ["glossary", kind, category, q],
     queryFn: async () => {
-      const params: Record<string, string> = {};
+      const params: Record<string, string> = { kind };
       if (category) params.category = category;
       if (q.trim()) params.q = q.trim();
       return (await api.get<GlossaryList>("/glossary", { params })).data;

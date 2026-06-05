@@ -63,6 +63,7 @@ class GlossaryTermData:
     term: str
     category: str
     short_md: str
+    kind: str = "reference"  # "reference" (glossary) or "slang"
     order_index: int = 0
     aliases: list[str] = field(default_factory=list)
     links: list[GlossaryLinkData] = field(default_factory=list)
@@ -100,6 +101,7 @@ def load_content(content_dir: str | Path) -> ContentBundle:
             bundle.courses.append(_parse_course(course_path, meta, questions_map))
 
     _load_glossary(root, bundle)
+    _load_slang(root, bundle)
     return bundle
 
 
@@ -116,6 +118,7 @@ def _load_glossary(root: Path, bundle: ContentBundle) -> None:
                 term=t["term"],
                 category=t["category"],
                 short_md=t["short_md"],
+                kind="reference",
                 order_index=t.get("order", i),
                 aliases=list(t.get("aliases", [])),
                 links=[
@@ -126,6 +129,26 @@ def _load_glossary(root: Path, bundle: ContentBundle) -> None:
                     )
                     for ln in t.get("links", [])
                 ],
+            )
+        )
+
+
+def _load_slang(root: Path, bundle: ContentBundle) -> None:
+    """Plain-language slang dictionary — same table, kind='slang', no category."""
+    slang_file = root / "slang.json"
+    if not slang_file.is_file():
+        return
+    data = json.loads(slang_file.read_text(encoding="utf-8"))
+    for i, t in enumerate(data.get("terms", [])):
+        bundle.glossary_terms.append(
+            GlossaryTermData(
+                slug=t["slug"],
+                term=t["term"],
+                category="slang",
+                short_md=t["definition"],
+                kind="slang",
+                order_index=t.get("order", i),
+                aliases=list(t.get("aliases", [])),
             )
         )
 

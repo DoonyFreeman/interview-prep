@@ -32,8 +32,11 @@ async def list_glossary(
     session: AsyncSession,
     category: str | None = None,
     q: str | None = None,
+    kind: str = "reference",
 ) -> GlossaryListOut:
-    terms = await GlossaryRepository(session).list_terms(category=category, q=q)
+    terms = await GlossaryRepository(session).list_terms(
+        category=category, q=q, kind=kind
+    )
 
     # Canonical category order = order of first appearance by authored order_index.
     first_seen: dict[str, int] = {}

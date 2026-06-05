@@ -67,6 +67,18 @@ export function Layout() {
             >
               {t("nav.glossary")}
             </NavLink>
+            <NavLink
+              to="/slang"
+              className={({ isActive }) =>
+                `hidden rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors sm:block ${
+                  isActive
+                    ? "bg-primary-soft text-primary"
+                    : "text-muted hover:text-ink"
+                }`
+              }
+            >
+              {t("nav.slang")}
+            </NavLink>
           </nav>
 
           <div className="ml-auto flex items-center gap-3">
