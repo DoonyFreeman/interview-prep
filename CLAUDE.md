@@ -24,7 +24,10 @@ highlighting, quiz serve/evaluate/hint, basic progress) plus question
 re-practice and account settings; RU/EN i18n. Backend has 71 passing tests.
 Phase 5b done (dashboard, review-queue page, dark theme). Phase 5c done (glossary:
 138 P0 terms in `content/glossary.json`, public `GET /api/glossary`, a `/glossary`
-page with search + category filter). Not built yet: Docker/deploy.
+page with search + category filter). Phase 5d done (configurable glossary term
+quizzes: client-side generation with smart progress-weighted selection, a
+`glossary_term_stats` user-state table + auth-gated progress/result endpoints, a
+`/glossary/quiz` page). Frontend now has vitest. Not built yet: Docker/deploy.
 
 ## Commands
 
@@ -225,8 +228,16 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    page with client-side search + category filter, deep-links back to theory via
    the existing `anchor`/`slugify`. Shipped feature slice + 138 P0 terms (RU);
    P1/P2 fill in during Phase 6.
-5d. **Glossary quizzes** (planned, see `content/GLOSSARY_QUIZ_PLAN.md`).
-   Term-knowledge quizzes by category/knowledge area on top of the glossary.
+5d. ✅ **Glossary quizzes** (see `content/GLOSSARY_QUIZ_PLAN.md`). Configurable
+   multiple-choice term quizzes by knowledge area, with progress + smart
+   selection. Quiz **generation is client-side** (`frontend/src/lib/glossaryQuiz.ts`,
+   pure + vitest-tested): from the loaded glossary it builds questions
+   (definition→term & term→def), weighted by the user's per-term stats (buckets
+   new/weak/learning/mastered + recency penalty); modes smart/weak/mistakes/random;
+   distractors prefer the same category. **Backend** is user-state only:
+   `glossary_term_stats` table, auth-gated `GET /api/glossary/progress` +
+   `POST /api/glossary/quiz/result` (one upsert per answered term). A `/glossary/quiz`
+   setup→run→result page; entry points + per-category mastery on `/glossary`.
 6. Author remaining topics (deep lessons + reference answers; glossary P1/P2 fill
    in here too).
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or

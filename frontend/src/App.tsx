@@ -10,6 +10,7 @@ import { QuestionsPage } from "./pages/QuestionsPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
+import { GlossaryQuizPage } from "./pages/GlossaryQuizPage";
 
 export function App() {
   return (
@@ -24,6 +25,7 @@ export function App() {
       >
         <Route path="/" element={<CatalogPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
+        <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/courses/:courseSlug" element={<CoursePage />} />

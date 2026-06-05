@@ -209,3 +209,38 @@ class GlossaryListOut(BaseModel):
     count: int
     categories: list[str]  # category slugs in canonical display order
     terms: list[GlossaryTermOut]
+
+
+# --- Glossary quiz progress (auth) ----------------------------------------- #
+class GlossaryQuizResultItemIn(BaseModel):
+    term_slug: str
+    correct: bool
+
+
+class GlossaryQuizResultIn(BaseModel):
+    items: list[GlossaryQuizResultItemIn]
+
+
+class GlossaryTermStatOut(BaseModel):
+    term_slug: str
+    seen: int
+    correct: int
+    last_correct: bool
+    mastered: bool  # correct >= 2 and last answer correct
+    last_seen_at: datetime
+
+
+class GlossaryCategoryProgressOut(BaseModel):
+    category: str
+    total: int  # terms in this category
+    seen: int  # terms attempted at least once
+    mastered: int
+
+
+class GlossaryProgressOut(BaseModel):
+    total: int  # total glossary terms
+    seen: int
+    mastered: int
+    recorded: int  # number of stat rows posted (returned by /result)
+    categories: list[GlossaryCategoryProgressOut]
+    terms: list[GlossaryTermStatOut]

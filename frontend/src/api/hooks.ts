@@ -9,11 +9,13 @@ import type {
   CourseSummary,
   EvaluationOut,
   GlossaryList,
+  GlossaryProgress,
   HintOut,
   LessonDetail,
   LessonQuestions,
   ProgressOverviewOut,
   QuestionOut,
+  QuizResultItem,
   ReviewQueue,
   TokenOut,
   UserOut,
@@ -73,6 +75,26 @@ export function useGlossary(category: string | null, q: string) {
       if (category) params.category = category;
       if (q.trim()) params.q = q.trim();
       return (await api.get<GlossaryList>("/glossary", { params })).data;
+    },
+  });
+}
+
+// --- Glossary quiz progress (auth) -----------------------------------------
+export function useGlossaryProgress() {
+  return useQuery({
+    queryKey: ["glossary-progress"],
+    queryFn: async () =>
+      (await api.get<GlossaryProgress>("/glossary/progress")).data,
+  });
+}
+
+export function useRecordQuizResult() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (items: QuizResultItem[]) =>
+      (await api.post<GlossaryProgress>("/glossary/quiz/result", { items })).data,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["glossary-progress"] });
     },
   });
 }
