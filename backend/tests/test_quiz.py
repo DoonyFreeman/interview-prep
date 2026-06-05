@@ -116,6 +116,64 @@ async def test_next_question_unknown_lesson_404(client):
 
 
 # --------------------------------------------------------------------------- #
+# Re-practice: question by id + lesson questions list with history
+# --------------------------------------------------------------------------- #
+async def test_get_question_by_id(client):
+    headers = await _auth_header(client)
+    qid = await _first_question_id(client, headers)
+
+    r = await client.get(f"/api/quiz/questions/{qid}", headers=headers)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["id"] == qid
+    assert body["text"]
+    assert "reference_answer" not in body
+
+
+async def test_get_question_unknown_404(client):
+    headers = await _auth_header(client)
+    r = await client.get("/api/quiz/questions/999999", headers=headers)
+    assert r.status_code == 404
+
+
+async def test_lesson_questions_list_and_history(client):
+    headers = await _auth_header(client)
+
+    r = await client.get(
+        "/api/quiz/courses/python-core/lessons/gil/questions", headers=headers
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["course_slug"] == "python-core"
+    assert len(body["questions"]) == 5  # GIL lesson has 5 concepts × 1 question
+    first = body["questions"][0]
+    assert first["attempts"] == 0
+    assert first["last_score"] is None
+    assert "reference_answer" not in first
+
+    # Answer one question, then it shows up in history.
+    qid = body["questions"][0]["id"]
+    await client.post(
+        f"/api/quiz/questions/{qid}/evaluate",
+        json={"answer_text": "ответ"},
+        headers=headers,
+    )
+    r2 = await client.get(
+        "/api/quiz/courses/python-core/lessons/gil/questions", headers=headers
+    )
+    answered = next(q for q in r2.json()["questions"] if q["id"] == qid)
+    assert answered["attempts"] == 1
+    assert answered["last_score"] == 75  # fake LLM default
+    assert answered["last_verdict"] == "частично"
+    assert answered["last_attempted_at"]
+
+
+async def test_lesson_questions_requires_auth(client):
+    r = await client.get("/api/quiz/courses/python-core/lessons/gil/questions")
+    assert r.status_code in (401, 403)
+
+
+# --------------------------------------------------------------------------- #
 # Evaluate
 # --------------------------------------------------------------------------- #
 async def test_evaluate_returns_review_and_stores_attempt(client, Session, fake_llm):

@@ -1,11 +1,34 @@
 """Attempt repository."""
 from __future__ import annotations
 
+from sqlalchemy import select
+
 from app.models import Attempt
 from app.repositories.base import BaseRepository
 
 
 class AttemptRepository(BaseRepository):
+    async def list_for_questions(
+        self, user_id: int, question_ids: list[int]
+    ) -> list[Attempt]:
+        """All of the user's attempts for the given questions, oldest first."""
+        if not question_ids:
+            return []
+        return list(
+            (
+                await self.session.execute(
+                    select(Attempt)
+                    .where(
+                        Attempt.user_id == user_id,
+                        Attempt.question_id.in_(question_ids),
+                    )
+                    .order_by(Attempt.created_at.asc())
+                )
+            )
+            .scalars()
+            .all()
+        )
+
     def create(
         self,
         *,

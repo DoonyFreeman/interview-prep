@@ -12,7 +12,14 @@ from app.auth.dependencies import get_current_user
 from app.database import get_session
 from app.llm.client import LLMClient, get_llm
 from app.models import User
-from app.schemas import EvaluateIn, EvaluationOut, HintIn, HintOut, QuestionOut
+from app.schemas import (
+    EvaluateIn,
+    EvaluationOut,
+    HintIn,
+    HintOut,
+    LessonQuestionsOut,
+    QuestionOut,
+)
 from app.services import quiz
 
 router = APIRouter()
@@ -32,6 +39,32 @@ async def next_question(
     return await quiz.serve_question(
         session, course_slug, lesson_slug, user_id=user.id
     )
+
+
+@router.get(
+    "/quiz/courses/{course_slug}/lessons/{lesson_slug}/questions",
+    response_model=LessonQuestionsOut,
+)
+async def lesson_questions(
+    course_slug: str,
+    lesson_slug: str,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """List all lesson questions + the user's attempt history (for re-practice)."""
+    return await quiz.list_lesson_questions(
+        session, course_slug, lesson_slug, user_id=user.id
+    )
+
+
+@router.get("/quiz/questions/{question_id}", response_model=QuestionOut)
+async def get_question(
+    question_id: int,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Serve one specific question by id (re-practice). No reference answer."""
+    return await quiz.get_question(session, question_id)
 
 
 @router.post(

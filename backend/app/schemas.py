@@ -65,6 +65,27 @@ class QuestionOut(BaseModel):
     lesson_slug: str
 
 
+class QuestionStatusOut(BaseModel):
+    """A lesson question plus the current user's attempt history with it."""
+
+    id: int
+    text: str
+    difficulty: int
+    concept_slug: str
+    concept_title: str
+    anchor: str
+    attempts: int
+    last_score: int | None
+    last_verdict: str | None
+    last_attempted_at: datetime | None
+
+
+class LessonQuestionsOut(BaseModel):
+    course_slug: str
+    lesson_slug: str
+    questions: list[QuestionStatusOut]
+
+
 class EvaluateIn(BaseModel):
     answer_text: str
     hint_used: bool = False

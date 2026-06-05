@@ -18,10 +18,11 @@ evaluation and hints — everything else is plain DB/memory reads. It's meant to
 **self-hosted on one small server, deployed via Docker** (see Roadmap 7–8), so
 keep new code container-friendly: config from env, state on a volume.
 
-Status: Phases 0–4 done — content layer + read endpoints + auth + the Gemini
-client + quiz serve/evaluate/hint + progress/SM-2/review queue are all built and
-tested (one reference lesson: Python Core → GIL). **Next: Phase 5** (frontend).
-Not built yet: frontend, Docker/deploy.
+Status: Phases 0–4 done; **Phase 5 (frontend) in progress** — a React/TS/Vite SPA
+(`frontend/`) covers the MVP loop (auth, course/lesson reading with Shiki code
+highlighting, quiz serve/evaluate/hint, basic progress) plus question
+re-practice and account settings; RU/EN i18n. Backend has 71 passing tests.
+Not built yet: dashboard/review-queue pages, dark theme (Phase 5b), Docker/deploy.
 
 ## Commands
 
@@ -101,9 +102,12 @@ can't get from one file:
   grades an answer (`evaluate_answer` → persists an `Attempt`); one more produces
   a hint (`generate_hint` — a leading nudge whose prompt deliberately omits the
   reference answer). `config.Settings.model_chain` is the primary model +
-  fallbacks, in order — `GeminiClient` walks this chain on per-day quota / 5xx
-  errors (pattern mirrors the author's telegram-bot `gemini.py`); a genuine 4xx is
-  surfaced immediately, not retried across the chain. The client forces compact
+  fallbacks, in order. `GeminiClient` is resilient (pattern mirrors the author's
+  telegram-bot `gemini.py`): **per-model retries with backoff**, then **fallback**
+  down the chain. Daily-quota 429 (`quotaId` has `PerDay`) → switch model now;
+  minute-rate 429 → retry the same model after the server's `RetryInfo` delay, but
+  a long cooldown switches instead of stalling an interactive request; 5xx/network
+  → retry then switch. The client forces compact
   JSON and disables 2.5-family "thinking" (`thinkingBudget: 0`) with a real
   `maxOutputTokens` so graded JSON isn't truncated. The `LLMClient` protocol is
   the seam tests override (`get_llm` dependency) to run without network/key.
@@ -179,10 +183,22 @@ content/courses/python-core/  metadata.json, 01-gil.md, questions.json
 
 Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `/api/courses/{course}/lessons/{lesson}`; `POST /api/auth/{register,login}`,
-`GET /api/auth/me`; `GET /api/quiz/courses/{course}/lessons/{lesson}/next`,
-`POST /api/quiz/questions/{id}/{evaluate,hint}`; `GET /api/progress`,
-`GET /api/progress/review`, `POST /api/progress/courses/{course}/lessons/{lesson}`
-(all quiz + progress routes require auth).
+`GET/PATCH /api/auth/me`, `POST /api/auth/password`;
+`GET /api/quiz/courses/{course}/lessons/{lesson}/{next,questions}`,
+`GET /api/quiz/questions/{id}`, `POST /api/quiz/questions/{id}/{evaluate,hint}`;
+`GET /api/progress`, `GET /api/progress/review`,
+`POST /api/progress/courses/{course}/lessons/{lesson}` (all quiz + progress +
+profile-mutation routes require auth). `…/questions` lists a lesson's questions
+with the user's attempt history; `GET /quiz/questions/{id}` serves one for
+re-practice.
+
+Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
+Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code
+highlighting). Layered: `lib/` (axios `api` with Bearer + 401 bounce, token
+store, slugify matching content anchors, Shiki singleton), `api/` (typed
+hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
+`pages/`. `VITE_API_BASE` points at the backend (default `:8000`). Run with
+`npm install && npm run dev` (port 5173, matches backend CORS default).
 
 ## Roadmap (phases)
 
@@ -195,8 +211,10 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
    with a mocked LLM (`test_quiz.py`, `test_llm.py`).
 4. ✅ Progress + SM-2 + review queue (mastery updated per scored attempt;
    due-aware question selection; `/api/progress` + `/api/progress/review`).
-5. **← NEXT.** Frontend (React + TS + Vite + React Router + TanStack Query +
-   Tailwind; markdown render with code syntax highlighting).
+5. **← IN PROGRESS.** Frontend (React + TS + Vite + React Router + TanStack Query
+   + Tailwind; markdown render with code syntax highlighting). MVP loop + question
+   re-practice + account settings + RU/EN i18n done; remaining 5b: dashboard /
+   review-queue pages, dark theme, micro-polish.
 6. Author remaining topics.
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or
    a single image serving the built SPA via FastAPI static files), a

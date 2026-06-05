@@ -1,0 +1,115 @@
+{
+  "app": {
+    "name": "Interview Prep",
+    "tagline": "Подготовка к собеседованию Python-разработчика"
+  },
+  "nav": {
+    "courses": "Курсы",
+    "review": "На повторение",
+    "settings": "Настройки",
+    "logout": "Выйти"
+  },
+  "settings": {
+    "title": "Настройки аккаунта",
+    "profile": "Профиль",
+    "email": "Email",
+    "emailReadonly": "Email изменить нельзя",
+    "displayName": "Имя",
+    "memberSince": "С нами с {{date}}",
+    "save": "Сохранить",
+    "saved": "Сохранено",
+    "password": "Смена пароля",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "changePassword": "Изменить пароль",
+    "passwordChanged": "Пароль изменён",
+    "language": "Язык интерфейса",
+    "account": "Аккаунт",
+    "logout": "Выйти из аккаунта"
+  },
+  "common": {
+    "loading": "Загрузка…",
+    "error": "Что-то пошло не так",
+    "retry": "Повторить",
+    "minutes": "{{count}} мин",
+    "days": "{{count}} дн.",
+    "today": "сегодня"
+  },
+  "auth": {
+    "loginTitle": "Вход",
+    "registerTitle": "Регистрация",
+    "subtitle": "Читай теорию, отвечай на вопросы — ИИ оценит ответ по материалам урока.",
+    "email": "Email",
+    "password": "Пароль",
+    "displayName": "Имя",
+    "loginBtn": "Войти",
+    "registerBtn": "Создать аккаунт",
+    "toRegister": "Нет аккаунта? Зарегистрироваться",
+    "toLogin": "Уже есть аккаунт? Войти",
+    "passwordHint": "Минимум 6 символов"
+  },
+  "catalog": {
+    "title": "Курсы",
+    "subtitle": "Выбери тему, изучи теорию и проверь себя вопросами.",
+    "lessons": "{{count}} уроков",
+    "open": "Открыть",
+    "summaryMastered": "Освоено концептов",
+    "summaryDue": "На повторение"
+  },
+  "course": {
+    "back": "Все курсы",
+    "lessonsTitle": "Уроки",
+    "concepts": "{{count}} концептов",
+    "masteredOf": "{{mastered}} из {{total}} освоено",
+    "completed": "Пройден",
+    "open": "Открыть урок"
+  },
+  "lesson": {
+    "backToCourse": "К курсу",
+    "toc": "Содержание",
+    "startQuiz": "Пройти квиз",
+    "allQuestions": "Все вопросы урока",
+    "markDone": "Отметить пройденным",
+    "marked": "Урок пройден",
+    "actionsTitle": "Готов проверить себя?",
+    "actionsHint": "Ответь на вопросы — ИИ оценит по этому уроку."
+  },
+  "questions": {
+    "title": "Вопросы урока",
+    "subtitle": "Вернись к любому вопросу и потренируйся снова.",
+    "notAttempted": "Не отвечал",
+    "attemptsOne": "1 попытка",
+    "attemptsMany": "Попыток: {{count}}",
+    "practice": "Потренироваться",
+    "retry": "Ответить заново",
+    "backToLesson": "К уроку"
+  },
+  "quiz": {
+    "title": "Квиз",
+    "concept": "Концепт",
+    "difficulty": "Сложность",
+    "answerLabel": "Твой ответ",
+    "answerPlaceholder": "Сформулируй ответ своими словами…",
+    "check": "Проверить",
+    "checking": "Оцениваю…",
+    "hint": "Подсказка",
+    "hintLoading": "Думаю…",
+    "next": "Следующий вопрос",
+    "again": "Ещё раз",
+    "toQuestions": "К списку вопросов",
+    "backToTheory": "Назад к теории",
+    "strengths": "Что хорошо",
+    "gaps": "Чего не хватает",
+    "suggestion": "Совет",
+    "nextReviewIn": "Следующее повторение через {{count}} дн.",
+    "nextReviewToday": "Повторить снова сегодня",
+    "emptyAnswer": "Сначала напиши ответ",
+    "verdict": {
+      "correct": "Верно",
+      "partial": "Частично",
+      "wrong": "Неверно"
+    },
+    "loadError": "Не удалось загрузить вопрос",
+    "noQuestions": "Для этого урока пока нет вопросов"
+  }
+}
