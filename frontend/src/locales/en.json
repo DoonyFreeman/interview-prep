@@ -1,0 +1,115 @@
+{
+  "app": {
+    "name": "Interview Prep",
+    "tagline": "Python developer interview preparation"
+  },
+  "nav": {
+    "courses": "Courses",
+    "review": "To review",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "settings": {
+    "title": "Account settings",
+    "profile": "Profile",
+    "email": "Email",
+    "emailReadonly": "Email can't be changed",
+    "displayName": "Name",
+    "memberSince": "Member since {{date}}",
+    "save": "Save",
+    "saved": "Saved",
+    "password": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "changePassword": "Change password",
+    "passwordChanged": "Password changed",
+    "language": "Interface language",
+    "account": "Account",
+    "logout": "Log out"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "minutes": "{{count}} min",
+    "days": "{{count}} d",
+    "today": "today"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Sign up",
+    "subtitle": "Read the theory, answer questions — the AI grades you against the lesson.",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Name",
+    "loginBtn": "Sign in",
+    "registerBtn": "Create account",
+    "toRegister": "No account? Sign up",
+    "toLogin": "Already have an account? Sign in",
+    "passwordHint": "At least 6 characters"
+  },
+  "catalog": {
+    "title": "Courses",
+    "subtitle": "Pick a topic, study the theory and test yourself.",
+    "lessons": "{{count}} lessons",
+    "open": "Open",
+    "summaryMastered": "Concepts mastered",
+    "summaryDue": "To review"
+  },
+  "course": {
+    "back": "All courses",
+    "lessonsTitle": "Lessons",
+    "concepts": "{{count}} concepts",
+    "masteredOf": "{{mastered}} of {{total}} mastered",
+    "completed": "Completed",
+    "open": "Open lesson"
+  },
+  "lesson": {
+    "backToCourse": "Back to course",
+    "toc": "Contents",
+    "startQuiz": "Start quiz",
+    "allQuestions": "All lesson questions",
+    "markDone": "Mark as done",
+    "marked": "Lesson completed",
+    "actionsTitle": "Ready to test yourself?",
+    "actionsHint": "Answer questions — the AI grades against this lesson."
+  },
+  "questions": {
+    "title": "Lesson questions",
+    "subtitle": "Come back to any question and practice again.",
+    "notAttempted": "Not attempted",
+    "attemptsOne": "1 attempt",
+    "attemptsMany": "Attempts: {{count}}",
+    "practice": "Practice",
+    "retry": "Answer again",
+    "backToLesson": "Back to lesson"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "concept": "Concept",
+    "difficulty": "Difficulty",
+    "answerLabel": "Your answer",
+    "answerPlaceholder": "Put the answer in your own words…",
+    "check": "Check",
+    "checking": "Grading…",
+    "hint": "Hint",
+    "hintLoading": "Thinking…",
+    "next": "Next question",
+    "again": "Try again",
+    "toQuestions": "Back to questions",
+    "backToTheory": "Back to theory",
+    "strengths": "Strengths",
+    "gaps": "Gaps",
+    "suggestion": "Suggestion",
+    "nextReviewIn": "Next review in {{count}} d",
+    "nextReviewToday": "Review again today",
+    "emptyAnswer": "Write an answer first",
+    "verdict": {
+      "correct": "Correct",
+      "partial": "Partial",
+      "wrong": "Incorrect"
+    },
+    "loadError": "Failed to load the question",
+    "noQuestions": "No questions for this lesson yet"
+  }
+}

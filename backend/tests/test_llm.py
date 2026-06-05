@@ -48,49 +48,156 @@ async def test_generate_requires_api_key():
         await c.generate_text("hi")
 
 
-async def test_model_chain_falls_back_on_429(monkeypatch):
-    """First model returns 429, second succeeds — client should walk the chain."""
+def _ok(text: str = "ok") -> httpx.Response:
+    return httpx.Response(
+        200, json={"candidates": [{"content": {"parts": [{"text": text}]}}]}
+    )
+
+
+def _daily_quota_429() -> httpx.Response:
+    return httpx.Response(
+        429,
+        json={
+            "error": {
+                "code": 429,
+                "details": [
+                    {
+                        "violations": [
+                            {"quotaId": "GenerateRequestsPerDayPerProjectPerModel"}
+                        ]
+                    }
+                ],
+            }
+        },
+    )
+
+
+def _rpm_429(retry_seconds: str = "0s") -> httpx.Response:
+    return httpx.Response(
+        429,
+        json={
+            "error": {
+                "code": 429,
+                "details": [
+                    {
+                        "@type": "type.googleapis.com/google.rpc.RetryInfo",
+                        "retryDelay": retry_seconds,
+                    }
+                ],
+            }
+        },
+    )
+
+
+@pytest.fixture(autouse=True)
+def _no_sleep(monkeypatch):
+    """Make retry backoff instant in tests."""
+    async def _instant(_seconds):  # noqa: ANN001
+        return None
+
+    monkeypatch.setattr(llm.asyncio, "sleep", _instant)
+
+
+def _model_of(url: str) -> str:
+    return url.split("/models/")[1].split(":")[0]
+
+
+async def test_daily_quota_switches_model_immediately(monkeypatch):
+    """A per-day 429 should jump straight to the next model (no retries)."""
     settings = Settings(
-        gemini_api_key="test-key",
-        gemini_model="model-a",
-        gemini_fallback_models="model-b",
+        gemini_api_key="k", gemini_model="model-a", gemini_fallback_models="model-b"
     )
     c = llm.GeminiClient(settings)
     seen: list[str] = []
 
-    async def fake_post(self, url, *, params, json):  # noqa: A002 - mirrors httpx
-        model = url.split("/models/")[1].split(":")[0]
-        seen.append(model)
-        if model == "model-a":
-            return httpx.Response(429, text="quota exceeded")
-        return httpx.Response(
-            200,
-            json={"candidates": [{"content": {"parts": [{"text": "ok"}]}}]},
-        )
+    async def fake_post(self, url, *, params, json):
+        seen.append(_model_of(url))
+        return _daily_quota_429() if _model_of(url) == "model-a" else _ok()
 
     monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
     assert await c.generate_text("hi") == "ok"
-    assert seen == ["model-a", "model-b"]
+    assert seen == ["model-a", "model-b"]  # one shot each, switched on daily quota
 
 
-async def test_client_error_not_retried(monkeypatch):
-    """A 400 is a real error — surface it, don't walk the whole chain."""
-    settings = Settings(
-        gemini_api_key="test-key",
-        gemini_model="model-a",
-        gemini_fallback_models="model-b",
-    )
+async def test_rpm_limit_retries_same_model_then_succeeds(monkeypatch):
+    """A minute-rate 429 retries the SAME model after the server delay."""
+    settings = Settings(gemini_api_key="k", gemini_model="model-a")
     c = llm.GeminiClient(settings)
     calls: list[str] = []
 
     async def fake_post(self, url, *, params, json):
-        calls.append(url)
+        calls.append(_model_of(url))
+        return _rpm_429() if len(calls) == 1 else _ok("done")
+
+    monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
+    assert await c.generate_text("hi") == "done"
+    assert calls == ["model-a", "model-a"]  # retried same model, no fallback needed
+
+
+async def test_long_rpm_cooldown_switches_model(monkeypatch):
+    """A long RPM cooldown should switch models instead of stalling."""
+    settings = Settings(
+        gemini_api_key="k", gemini_model="model-a", gemini_fallback_models="model-b"
+    )
+    c = llm.GeminiClient(settings)
+    seen: list[str] = []
+
+    async def fake_post(self, url, *, params, json):
+        m = _model_of(url)
+        seen.append(m)
+        return _rpm_429("45s") if m == "model-a" else _ok()
+
+    monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
+    assert await c.generate_text("hi") == "ok"
+    assert seen == ["model-a", "model-b"]  # switched without waiting out 45s
+
+
+async def test_5xx_retries_then_falls_back(monkeypatch):
+    """Persistent 503 on model-a exhausts its attempts, then model-b serves."""
+    settings = Settings(
+        gemini_api_key="k", gemini_model="model-a", gemini_fallback_models="model-b"
+    )
+    c = llm.GeminiClient(settings)
+    seen: list[str] = []
+
+    async def fake_post(self, url, *, params, json):
+        m = _model_of(url)
+        seen.append(m)
+        return httpx.Response(503, text="overloaded") if m == "model-a" else _ok()
+
+    monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
+    assert await c.generate_text("hi") == "ok"
+    assert seen.count("model-a") == llm._MAX_ATTEMPTS  # retried to the cap
+    assert seen[-1] == "model-b"
+
+
+async def test_all_models_fail_raises(monkeypatch):
+    """When every model 4xx-fails, surface a single LLMError naming the chain."""
+    settings = Settings(
+        gemini_api_key="k", gemini_model="model-a", gemini_fallback_models="model-b"
+    )
+    c = llm.GeminiClient(settings)
+    seen: list[str] = []
+
+    async def fake_post(self, url, *, params, json):
+        seen.append(_model_of(url))
         return httpx.Response(400, text="bad request")
 
     monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
-    with pytest.raises(llm.LLMError, match="400"):
+    with pytest.raises(llm.LLMError, match="All models failed"):
         await c.generate_text("hi")
-    assert len(calls) == 1  # stopped at the first model
+    # 4xx is not retried within a model, but each model is tried once.
+    assert seen == ["model-a", "model-b"]
+
+
+def test_is_daily_quota_detects_per_day():
+    assert llm._is_daily_quota(_daily_quota_429().json()) is True
+    assert llm._is_daily_quota(_rpm_429().json()) is False
+
+
+def test_retry_delay_reads_retry_info():
+    assert llm._retry_delay_seconds(_rpm_429("38s").json()) == 39.0
+    assert llm._retry_delay_seconds({}) == 15.0
 
 
 def test_normalize_clamps_score_and_derives_verdict():

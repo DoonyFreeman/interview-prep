@@ -32,7 +32,12 @@ from app.repositories import (
     LessonRepository,
     QuestionRepository,
 )
-from app.schemas import EvaluationOut, QuestionOut
+from app.schemas import (
+    EvaluationOut,
+    LessonQuestionsOut,
+    QuestionOut,
+    QuestionStatusOut,
+)
 from app.services import progress
 
 _VALID_VERDICTS = {"верно", "частично", "неверно"}
@@ -131,6 +136,64 @@ def _pick_concept(
         return min(due, key=lambda c: mastery_by_concept[c.id].due_at)
 
     return random.choice(concepts)
+
+
+async def get_question(session: AsyncSession, question_id: int) -> QuestionOut:
+    """Serve one specific question by id (for re-practice). No reference answer."""
+    ctx = await _get_context(session, question_id)
+    return _to_out(ctx)
+
+
+async def list_lesson_questions(
+    session: AsyncSession, course_slug: str, lesson_slug: str, *, user_id: int
+) -> LessonQuestionsOut:
+    """All questions in a lesson + the user's attempt history with each one,
+    so they can revisit and re-practice answered questions."""
+    lesson = await LessonRepository(session).get_for_serve(course_slug, lesson_slug)
+    if lesson is None:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    pairs: list[tuple[Concept, Question]] = []
+    for concept in sorted(lesson.concepts, key=lambda c: c.order_index):
+        for question in sorted(concept.questions, key=lambda q: q.order_index):
+            pairs.append((concept, question))
+
+    attempts = await AttemptRepository(session).list_for_questions(
+        user_id, [q.id for _, q in pairs]
+    )
+    last_by_q: dict[int, "object"] = {}
+    count_by_q: dict[int, int] = {}
+    for attempt in attempts:  # oldest-first → last write wins as the latest
+        last_by_q[attempt.question_id] = attempt
+        count_by_q[attempt.question_id] = count_by_q.get(attempt.question_id, 0) + 1
+
+    items: list[QuestionStatusOut] = []
+    for concept, question in pairs:
+        attempt = last_by_q.get(question.id)
+        verdict: str | None = None
+        if attempt is not None:
+            try:
+                verdict = json.loads(attempt.review_json).get("verdict")
+            except (ValueError, AttributeError):
+                verdict = None
+        items.append(
+            QuestionStatusOut(
+                id=question.id,
+                text=question.text,
+                difficulty=question.difficulty,
+                concept_slug=concept.slug,
+                concept_title=concept.title,
+                anchor=concept.anchor,
+                attempts=count_by_q.get(question.id, 0),
+                last_score=attempt.score if attempt is not None else None,
+                last_verdict=verdict,
+                last_attempted_at=attempt.created_at if attempt is not None else None,
+            )
+        )
+
+    return LessonQuestionsOut(
+        course_slug=course_slug, lesson_slug=lesson_slug, questions=items
+    )
 
 
 # --------------------------------------------------------------------------- #

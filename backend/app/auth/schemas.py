@@ -5,6 +5,8 @@ in email-validator). Passwords have a small minimum length.
 """
 from __future__ import annotations
 
+from datetime import datetime
+
 from pydantic import BaseModel, field_validator
 
 
@@ -48,3 +50,25 @@ class UserOut(BaseModel):
     id: int
     email: str
     display_name: str
+    created_at: datetime
+
+
+class UpdateProfileIn(BaseModel):
+    display_name: str
+
+    @field_validator("display_name")
+    @classmethod
+    def _trim(cls, v: str) -> str:
+        return v.strip()
+
+
+class ChangePasswordIn(BaseModel):
+    current_password: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def _check_new(cls, v: str) -> str:
+        if len(v) < 6:
+            raise ValueError("password must be at least 6 characters")
+        return v

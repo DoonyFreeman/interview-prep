@@ -29,7 +29,12 @@ class Settings(BaseSettings):
     # --- LLM (Gemini) ---
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash-lite"
-    gemini_fallback_models: str = "gemini-flash-latest"
+    # Ordered fallbacks tried on per-day quota / transient errors. Kept to models
+    # that respond reliably on the free tier (gemini-flash-latest tends to time
+    # out, so it's deliberately not here).
+    gemini_fallback_models: str = (
+        "gemini-2.0-flash,gemini-2.5-flash,gemini-flash-lite-latest"
+    )
     gemini_base_url: str = "https://generativelanguage.googleapis.com"
 
     # --- App ---

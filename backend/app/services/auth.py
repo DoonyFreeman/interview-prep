@@ -9,7 +9,13 @@ from __future__ import annotations
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.schemas import LoginIn, RegisterIn, TokenOut
+from app.auth.schemas import (
+    ChangePasswordIn,
+    LoginIn,
+    RegisterIn,
+    TokenOut,
+    UpdateProfileIn,
+)
 from app.auth.security import hash_password, verify_password
 from app.auth.tokens import create_access_token
 from app.models import User
@@ -43,3 +49,26 @@ async def login(session: AsyncSession, data: LoginIn) -> TokenOut:
 
 async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
     return await UserRepository(session).get_by_id(user_id)
+
+
+async def update_profile(
+    session: AsyncSession, user: User, data: UpdateProfileIn
+) -> User:
+    """Update the current user's editable profile fields (display name)."""
+    user.display_name = data.display_name
+    await session.commit()
+    await session.refresh(user)
+    return user
+
+
+async def change_password(
+    session: AsyncSession, user: User, data: ChangePasswordIn
+) -> None:
+    """Change the password after verifying the current one."""
+    if not verify_password(data.current_password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+    user.password_hash = hash_password(data.new_password)
+    await session.commit()
