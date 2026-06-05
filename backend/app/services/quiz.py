@@ -4,8 +4,9 @@ Serving a question is a pure DB read — no LLM. Evaluation and hints each make 
 single Gemini call grounded in the lesson text + the question's reference answer.
 The reference answer is used only server-side and never returned to the client.
 
-Spaced-repetition-aware question selection is Phase 4; for now serving picks a
-random question from the lesson.
+All DB access goes through repositories; this module holds the orchestration
+(LLM call, normalization, transaction boundary) and the spaced-repetition-aware
+question selection.
 """
 from __future__ import annotations
 
@@ -14,9 +15,7 @@ import random
 from dataclasses import dataclass
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
 
 from app.content import registry
 from app.llm.client import LLMClient, LLMError
@@ -26,7 +25,13 @@ from app.llm.prompts import (
     build_eval_prompt,
     build_hint_prompt,
 )
-from app.models import Attempt, Concept, ConceptMastery, Course, Lesson, Question, _utcnow
+from app.models import Concept, ConceptMastery, Course, Lesson, Question, _utcnow
+from app.repositories import (
+    AttemptRepository,
+    ConceptMasteryRepository,
+    LessonRepository,
+    QuestionRepository,
+)
 from app.schemas import EvaluationOut, QuestionOut
 from app.services import progress
 
@@ -44,14 +49,8 @@ class _QContext:
 
 
 # --------------------------------------------------------------------------- #
-# Loading
+# Mapping helpers
 # --------------------------------------------------------------------------- #
-def _load_options():
-    return joinedload(Question.concept).joinedload(Concept.lesson).joinedload(
-        Lesson.course
-    )
-
-
 def _to_context(question: Question) -> _QContext:
     concept = question.concept
     lesson = concept.lesson
@@ -74,13 +73,7 @@ def _to_out(ctx: _QContext) -> QuestionOut:
 
 
 async def _get_context(session: AsyncSession, question_id: int) -> _QContext:
-    question = (
-        await session.execute(
-            select(Question)
-            .where(Question.id == question_id)
-            .options(_load_options())
-        )
-    ).scalar_one_or_none()
+    question = await QuestionRepository(session).get_with_context(question_id)
     if question is None:
         raise HTTPException(status_code=404, detail="Question not found")
     return _to_context(question)
@@ -98,17 +91,7 @@ async def serve_question(
     overdue due concept, else a random concept (reviewing ahead). A random
     question from the chosen concept is returned (no reference answer).
     """
-    lesson = (
-        await session.execute(
-            select(Lesson)
-            .join(Course, Lesson.course_id == Course.id)
-            .where(Course.slug == course_slug, Lesson.slug == lesson_slug)
-            .options(
-                joinedload(Lesson.course),
-                selectinload(Lesson.concepts).selectinload(Concept.questions),
-            )
-        )
-    ).unique().scalar_one_or_none()
+    lesson = await LessonRepository(session).get_for_serve(course_slug, lesson_slug)
     if lesson is None:
         raise HTTPException(status_code=404, detail="Lesson not found")
 
@@ -118,16 +101,9 @@ async def serve_question(
 
     mastery_by_concept = {
         m.concept_id: m
-        for m in (
-            await session.execute(
-                select(ConceptMastery).where(
-                    ConceptMastery.user_id == user_id,
-                    ConceptMastery.concept_id.in_([c.id for c in concepts]),
-                )
-            )
+        for m in await ConceptMasteryRepository(session).list_for_user_and_concepts(
+            user_id, [c.id for c in concepts]
         )
-        .scalars()
-        .all()
     }
     now = _utcnow()
 
@@ -149,9 +125,7 @@ def _pick_concept(
     if new:
         return random.choice(new)
 
-    due = [
-        c for c in concepts if mastery_by_concept[c.id].due_at <= now
-    ]
+    due = [c for c in concepts if mastery_by_concept[c.id].due_at <= now]
     if due:
         # Most overdue first.
         return min(due, key=lambda c: mastery_by_concept[c.id].due_at)
@@ -160,7 +134,7 @@ def _pick_concept(
 
 
 # --------------------------------------------------------------------------- #
-# Evaluate (one LLM call + persist an Attempt)
+# Evaluate (one LLM call + persist an Attempt + advance mastery)
 # --------------------------------------------------------------------------- #
 async def evaluate_answer(
     session: AsyncSession,
@@ -191,7 +165,7 @@ async def evaluate_answer(
     review = _normalize_evaluation(raw)
 
     now = _utcnow()
-    attempt = Attempt(
+    attempt = AttemptRepository(session).create(
         user_id=user_id,
         question_id=question_id,
         answer_text=answer_text,
@@ -199,7 +173,6 @@ async def evaluate_answer(
         review_json=json.dumps(review, ensure_ascii=False),
         hint_used=hint_used,
     )
-    session.add(attempt)
 
     # Each scored attempt advances the SM-2 mastery of the question's concept,
     # in the same transaction as the attempt.
