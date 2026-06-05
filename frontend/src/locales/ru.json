@@ -5,9 +5,32 @@
   },
   "nav": {
     "courses": "Курсы",
+    "glossary": "Словарь",
     "review": "На повторение",
     "settings": "Настройки",
     "logout": "Выйти"
+  },
+  "glossary": {
+    "title": "Словарь разработчика",
+    "subtitle": "{{count}} терминов, которые спрашивают на собеседованиях Python backend.",
+    "searchPlaceholder": "Поиск по термину…",
+    "allCategories": "Все",
+    "noResults": "Ничего не найдено",
+    "toTheory": "К теории",
+    "cat": {
+      "python": "Python и интерпретатор",
+      "oop": "ООП и дизайн",
+      "concurrency": "Конкурентность и async",
+      "web": "Web, HTTP, API",
+      "frameworks": "Фреймворки",
+      "databases": "Базы данных и SQL",
+      "caching": "Кэш, очереди, брокеры",
+      "architecture": "Архитектура и масштабирование",
+      "testing": "Тестирование",
+      "devops": "DevOps и observability",
+      "security": "Сеть и безопасность",
+      "cs": "Алгоритмы и структуры данных"
+    }
   },
   "settings": {
     "title": "Настройки аккаунта",

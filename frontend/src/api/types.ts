@@ -165,3 +165,24 @@ export interface ProgressOverviewOut {
   due_concepts: number;
   courses: CourseProgressOut[];
 }
+
+export interface GlossaryLink {
+  course_slug: string;
+  lesson_slug: string;
+  anchor: string;
+}
+
+export interface GlossaryTerm {
+  slug: string;
+  term: string;
+  category: string;
+  short_md: string;
+  aliases: string[];
+  links: GlossaryLink[];
+}
+
+export interface GlossaryList {
+  count: number;
+  categories: string[];
+  terms: GlossaryTerm[];
+}
