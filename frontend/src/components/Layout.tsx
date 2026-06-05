@@ -41,7 +41,7 @@ export function Layout() {
             <span className="hidden sm:inline">{t("app.name")}</span>
           </Link>
 
-          <nav className="ml-2">
+          <nav className="ml-2 flex items-center gap-1">
             <NavLink
               to="/"
               end
@@ -54,6 +54,18 @@ export function Layout() {
               }
             >
               {t("nav.courses")}
+            </NavLink>
+            <NavLink
+              to="/glossary"
+              className={({ isActive }) =>
+                `rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? "bg-primary-soft text-primary"
+                    : "text-muted hover:text-ink"
+                }`
+              }
+            >
+              {t("nav.glossary")}
             </NavLink>
           </nav>
 

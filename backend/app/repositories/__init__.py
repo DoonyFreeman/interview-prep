@@ -15,6 +15,7 @@ from app.repositories.content import (
     LessonRepository,
     QuestionRepository,
 )
+from app.repositories.glossary import GlossaryRepository
 from app.repositories.lesson_progress import LessonProgressRepository
 from app.repositories.mastery import ConceptMasteryRepository
 from app.repositories.users import UserRepository
@@ -24,6 +25,7 @@ __all__ = [
     "ConceptMasteryRepository",
     "ConceptRepository",
     "CourseRepository",
+    "GlossaryRepository",
     "LessonProgressRepository",
     "LessonRepository",
     "QuestionRepository",

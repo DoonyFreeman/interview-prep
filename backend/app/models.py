@@ -111,6 +111,27 @@ class Question(Base):
     concept: Mapped["Concept"] = relationship(back_populates="questions")
 
 
+class GlossaryTerm(Base):
+    """A standalone reference term (the glossary section).
+
+    Mirrors ``content/glossary.json`` and is independent of courses/lessons so it
+    can be complete even before lessons exist. ``aliases`` and ``links`` are stored
+    as JSON text (decoded in the service). No user-state references it.
+    """
+
+    __tablename__ = "glossary_terms"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True, index=True)
+    term: Mapped[str] = mapped_column(String(200))
+    category: Mapped[str] = mapped_column(String(40), index=True)
+    short_md: Mapped[str] = mapped_column(Text)
+    aliases: Mapped[str] = mapped_column(Text, default="[]")  # JSON list[str]
+    # JSON list[{course_slug, lesson_slug, anchor}] — deep-links "back to theory".
+    links: Mapped[str] = mapped_column(Text, default="[]")
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+
+
 # --------------------------------------------------------------------------- #
 # Users & per-user state
 # --------------------------------------------------------------------------- #

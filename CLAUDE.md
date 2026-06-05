@@ -22,8 +22,9 @@ Status: Phases 0–4 done; **Phase 5 (frontend) in progress** — a React/TS/Vit
 (`frontend/`) covers the MVP loop (auth, course/lesson reading with Shiki code
 highlighting, quiz serve/evaluate/hint, basic progress) plus question
 re-practice and account settings; RU/EN i18n. Backend has 71 passing tests.
-Phase 5b done (dashboard, review-queue page, dark theme). Not built yet: glossary
-section (Phase 5c, see `content/GLOSSARY_PLAN.md`), Docker/deploy.
+Phase 5b done (dashboard, review-queue page, dark theme). Phase 5c done (glossary:
+138 P0 terms in `content/glossary.json`, public `GET /api/glossary`, a `/glossary`
+page with search + category filter). Not built yet: Docker/deploy.
 
 ## Commands
 
@@ -216,13 +217,16 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    + Tailwind; markdown render with code syntax highlighting). MVP loop + question
    re-practice + account settings + RU/EN i18n done; **5b done**: dashboard stats
    hero, review-queue page, dark theme.
-5c. **Glossary** (new mini-phase, see `content/GLOSSARY_PLAN.md`). A public
-   reference section: ~250 terms a Python backend middle must know, grouped in 12
-   categories with P0/P1/P2 priorities. New content type alongside
-   courses/lessons (own `glossary_terms` table mirroring `content/glossary.json`,
-   public `GET /api/glossary`, a `/glossary` page with search + category filter,
-   deep-links back to theory via the existing `anchor`/`slugify`). Ships the thin
-   feature slice first (all P0 terms); P1/P2 fill in during Phase 6.
+5c. ✅ **Glossary** (see `content/GLOSSARY_PLAN.md`). A public reference section
+   of terms a Python backend middle must know, grouped in 12 categories. New
+   content type alongside courses/lessons: `glossary_terms` table mirroring
+   `content/glossary.json` (wholesale re-seed, no user state), public
+   `GET /api/glossary`(+`?category=&q=`) and `/api/glossary/{slug}`, a `/glossary`
+   page with client-side search + category filter, deep-links back to theory via
+   the existing `anchor`/`slugify`. Shipped feature slice + 138 P0 terms (RU);
+   P1/P2 fill in during Phase 6.
+5d. **Glossary quizzes** (planned, see `content/GLOSSARY_QUIZ_PLAN.md`).
+   Term-knowledge quizzes by category/knowledge area on top of the glossary.
 6. Author remaining topics (deep lessons + reference answers; glossary P1/P2 fill
    in here too).
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or

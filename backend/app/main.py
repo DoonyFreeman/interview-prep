@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import auth, courses, lessons, progress, quizzes
+from app.api.endpoints import auth, courses, glossary, lessons, progress, quizzes
 from app.config import get_settings
 from app.content.seed import seed_from_dir
 from app.database import SessionLocal, init_db
@@ -42,6 +42,7 @@ def create_app() -> FastAPI:
 
     app.include_router(auth.router, prefix="/api", tags=["auth"])
     app.include_router(courses.router, prefix="/api", tags=["courses"])
+    app.include_router(glossary.router, prefix="/api", tags=["glossary"])
     app.include_router(lessons.router, prefix="/api", tags=["lessons"])
     app.include_router(quizzes.router, prefix="/api", tags=["quiz"])
     app.include_router(progress.router, prefix="/api", tags=["progress"])

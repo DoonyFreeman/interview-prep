@@ -51,34 +51,83 @@ class CourseData:
 
 
 @dataclass
+class GlossaryLinkData:
+    course_slug: str
+    lesson_slug: str
+    anchor: str = ""
+
+
+@dataclass
+class GlossaryTermData:
+    slug: str
+    term: str
+    category: str
+    short_md: str
+    order_index: int = 0
+    aliases: list[str] = field(default_factory=list)
+    links: list[GlossaryLinkData] = field(default_factory=list)
+
+
+@dataclass
 class ContentBundle:
     courses: list[CourseData] = field(default_factory=list)
+    glossary_categories: list[str] = field(default_factory=list)
+    glossary_terms: list[GlossaryTermData] = field(default_factory=list)
 
 
 def load_content(content_dir: str | Path) -> ContentBundle:
-    """Parse every course folder under ``content_dir/courses`` into a bundle."""
+    """Parse every course folder under ``content_dir/courses`` into a bundle.
+
+    Also loads the optional flat ``content_dir/glossary.json`` reference section.
+    """
     root = Path(content_dir)
     courses_dir = root / "courses"
     bundle = ContentBundle()
-    if not courses_dir.is_dir():
-        return bundle
+    if courses_dir.is_dir():
+        for course_path in sorted(p for p in courses_dir.iterdir() if p.is_dir()):
+            meta_file = course_path / "metadata.json"
+            if not meta_file.is_file():
+                continue
+            meta = json.loads(meta_file.read_text(encoding="utf-8"))
 
-    for course_path in sorted(p for p in courses_dir.iterdir() if p.is_dir()):
-        meta_file = course_path / "metadata.json"
-        if not meta_file.is_file():
-            continue
-        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+            questions_file = course_path / "questions.json"
+            questions_map: dict = (
+                json.loads(questions_file.read_text(encoding="utf-8"))
+                if questions_file.is_file()
+                else {}
+            )
 
-        questions_file = course_path / "questions.json"
-        questions_map: dict = (
-            json.loads(questions_file.read_text(encoding="utf-8"))
-            if questions_file.is_file()
-            else {}
-        )
+            bundle.courses.append(_parse_course(course_path, meta, questions_map))
 
-        bundle.courses.append(_parse_course(course_path, meta, questions_map))
-
+    _load_glossary(root, bundle)
     return bundle
+
+
+def _load_glossary(root: Path, bundle: ContentBundle) -> None:
+    glossary_file = root / "glossary.json"
+    if not glossary_file.is_file():
+        return
+    data = json.loads(glossary_file.read_text(encoding="utf-8"))
+    bundle.glossary_categories = list(data.get("categories", []))
+    for i, t in enumerate(data.get("terms", [])):
+        bundle.glossary_terms.append(
+            GlossaryTermData(
+                slug=t["slug"],
+                term=t["term"],
+                category=t["category"],
+                short_md=t["short_md"],
+                order_index=t.get("order", i),
+                aliases=list(t.get("aliases", [])),
+                links=[
+                    GlossaryLinkData(
+                        course_slug=ln["course_slug"],
+                        lesson_slug=ln["lesson_slug"],
+                        anchor=ln.get("anchor", ""),
+                    )
+                    for ln in t.get("links", [])
+                ],
+            )
+        )
 
 
 def _parse_course(course_path: Path, meta: dict, questions_map: dict) -> CourseData:

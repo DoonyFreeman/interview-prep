@@ -185,3 +185,27 @@ class ProgressOverviewOut(BaseModel):
 
 class LessonProgressIn(BaseModel):
     completed: bool = False
+
+
+# --------------------------------------------------------------------------- #
+# Glossary (public reference section)
+# --------------------------------------------------------------------------- #
+class GlossaryLinkOut(BaseModel):
+    course_slug: str
+    lesson_slug: str
+    anchor: str  # markdown heading anchor for the "back to theory" deep-link
+
+
+class GlossaryTermOut(BaseModel):
+    slug: str
+    term: str
+    category: str
+    short_md: str
+    aliases: list[str]
+    links: list[GlossaryLinkOut]
+
+
+class GlossaryListOut(BaseModel):
+    count: int
+    categories: list[str]  # category slugs in canonical display order
+    terms: list[GlossaryTermOut]

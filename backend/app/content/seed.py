@@ -7,13 +7,15 @@ so it is safe to run on every startup.
 """
 from __future__ import annotations
 
+import json
+
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.content import registry
 from app.content.loader import ContentBundle, CourseData, LessonData, load_content
-from app.models import Concept, Course, Lesson, Question
+from app.models import Concept, Course, GlossaryTerm, Lesson, Question
 
 
 async def seed_from_dir(session: AsyncSession, content_dir: str | None = None) -> int:
@@ -30,7 +32,37 @@ async def seed_content(session: AsyncSession, bundle: ContentBundle) -> None:
         course = await _upsert_course(session, course_data)
         for lesson_data in course_data.lessons:
             await _upsert_lesson(session, course, course_data, lesson_data)
+    await _seed_glossary(session, bundle)
     await session.commit()
+
+
+async def _seed_glossary(session: AsyncSession, bundle: ContentBundle) -> None:
+    """Replace the glossary wholesale — content is authoritative, no user state
+    references these rows, so a clean re-insert keeps it simple and idempotent."""
+    await session.execute(delete(GlossaryTerm))
+    for term in bundle.glossary_terms:
+        session.add(
+            GlossaryTerm(
+                slug=term.slug,
+                term=term.term,
+                category=term.category,
+                short_md=term.short_md,
+                order_index=term.order_index,
+                aliases=json.dumps(term.aliases, ensure_ascii=False),
+                links=json.dumps(
+                    [
+                        {
+                            "course_slug": ln.course_slug,
+                            "lesson_slug": ln.lesson_slug,
+                            "anchor": ln.anchor,
+                        }
+                        for ln in term.links
+                    ],
+                    ensure_ascii=False,
+                ),
+            )
+        )
+    await session.flush()
 
 
 async def _upsert_course(session: AsyncSession, data: CourseData) -> Course:

@@ -5,9 +5,32 @@
   },
   "nav": {
     "courses": "Courses",
+    "glossary": "Glossary",
     "review": "To review",
     "settings": "Settings",
     "logout": "Log out"
+  },
+  "glossary": {
+    "title": "Developer glossary",
+    "subtitle": "{{count}} terms asked in Python backend interviews.",
+    "searchPlaceholder": "Search terms…",
+    "allCategories": "All",
+    "noResults": "Nothing found",
+    "toTheory": "To theory",
+    "cat": {
+      "python": "Python & runtime",
+      "oop": "OOP & design",
+      "concurrency": "Concurrency & async",
+      "web": "Web, HTTP, API",
+      "frameworks": "Frameworks",
+      "databases": "Databases & SQL",
+      "caching": "Caching, queues, brokers",
+      "architecture": "Architecture & scaling",
+      "testing": "Testing",
+      "devops": "DevOps & observability",
+      "security": "Networking & security",
+      "cs": "Algorithms & data structures"
+    }
   },
   "settings": {
     "title": "Account settings",

@@ -8,6 +8,7 @@ import type {
   CourseDetail,
   CourseSummary,
   EvaluationOut,
+  GlossaryList,
   HintOut,
   LessonDetail,
   LessonQuestions,
@@ -60,6 +61,19 @@ export function useReview() {
     queryKey: ["review"],
     queryFn: async () =>
       (await api.get<ReviewQueue>("/progress/review")).data,
+  });
+}
+
+// --- Glossary (public reads) -----------------------------------------------
+export function useGlossary(category: string | null, q: string) {
+  return useQuery({
+    queryKey: ["glossary", category, q],
+    queryFn: async () => {
+      const params: Record<string, string> = {};
+      if (category) params.category = category;
+      if (q.trim()) params.q = q.trim();
+      return (await api.get<GlossaryList>("/glossary", { params })).data;
+    },
   });
 }
 
