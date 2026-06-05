@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useGlossary } from "../api/hooks";
+import { useGlossary, useGlossaryProgress } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
-import type { GlossaryTerm } from "../api/types";
+import { Button } from "../components/Button";
+import type { GlossaryCategoryProgress, GlossaryTerm } from "../api/types";
 
 function categoryLabel(t: (k: string) => string, slug: string): string {
   const key = `glossary.cat.${slug}`;
@@ -48,8 +49,15 @@ function TermCard({ term }: { term: GlossaryTerm }) {
 export function GlossaryPage() {
   const { t } = useTranslation();
   const glossary = useGlossary(null, "");
+  const progress = useGlossaryProgress();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+
+  const masteryByCat = useMemo(() => {
+    const m = new Map<string, GlossaryCategoryProgress>();
+    for (const c of progress.data?.categories ?? []) m.set(c.category, c);
+    return m;
+  }, [progress.data]);
 
   const filtered = useMemo(() => {
     const terms = glossary.data?.terms ?? [];
@@ -88,10 +96,17 @@ export function GlossaryPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="text-2xl font-bold text-ink">{t("glossary.title")}</h1>
-      <p className="mt-1 text-muted">
-        {t("glossary.subtitle", { count: glossary.data.count })}
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-ink">{t("glossary.title")}</h1>
+          <p className="mt-1 text-muted">
+            {t("glossary.subtitle", { count: glossary.data.count })}
+          </p>
+        </div>
+        <Link to="/glossary/quiz">
+          <Button>🎯 {t("glossary.quizCta")}</Button>
+        </Link>
+      </div>
 
       {/* Search + category filter */}
       <div className="sticky top-15 z-10 -mx-4 mt-5 mb-6 bg-bg/80 px-4 py-3 backdrop-blur">
@@ -138,9 +153,25 @@ export function GlossaryPage() {
         <div className="space-y-10">
           {groups.map(({ category: c, terms }) => (
             <section key={c}>
-              <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-faint">
-                {categoryLabel(t, c)} · {terms.length}
-              </h2>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-xs font-bold uppercase tracking-wide text-faint">
+                  {categoryLabel(t, c)} · {terms.length}
+                  {masteryByCat.get(c)?.mastered ? (
+                    <span className="ml-2 text-success">
+                      {t("glossary.mastered", {
+                        mastered: masteryByCat.get(c)!.mastered,
+                        total: masteryByCat.get(c)!.total,
+                      })}
+                    </span>
+                  ) : null}
+                </h2>
+                <Link
+                  to={`/glossary/quiz?cat=${c}`}
+                  className="text-xs font-semibold text-primary hover:underline"
+                >
+                  🎯 {t("glossary.categoryQuiz")}
+                </Link>
+              </div>
               <div className="space-y-4">
                 {terms.map((term) => (
                   <TermCard key={term.slug} term={term} />

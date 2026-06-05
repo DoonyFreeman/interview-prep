@@ -186,3 +186,33 @@ export interface GlossaryList {
   categories: string[];
   terms: GlossaryTerm[];
 }
+
+export interface GlossaryTermStat {
+  term_slug: string;
+  seen: number;
+  correct: number;
+  last_correct: boolean;
+  mastered: boolean;
+  last_seen_at: string;
+}
+
+export interface GlossaryCategoryProgress {
+  category: string;
+  total: number;
+  seen: number;
+  mastered: number;
+}
+
+export interface GlossaryProgress {
+  total: number;
+  seen: number;
+  mastered: number;
+  recorded: number;
+  categories: GlossaryCategoryProgress[];
+  terms: GlossaryTermStat[];
+}
+
+export interface QuizResultItem {
+  term_slug: string;
+  correct: boolean;
+}

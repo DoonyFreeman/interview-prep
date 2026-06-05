@@ -201,3 +201,27 @@ class LessonProgress(Base):
     )
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
     last_viewed_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class GlossaryTermStat(Base):
+    """Per-(user, glossary term) quiz stats — drives the smart term selection.
+
+    References a term by its ``slug`` (not an FK) so the glossary can be
+    re-seeded wholesale without touching user data. A term is "mastered" when
+    ``correct >= 2`` and the last answer was correct.
+    """
+
+    __tablename__ = "glossary_term_stats"
+    __table_args__ = (
+        UniqueConstraint("user_id", "term_slug", name="uq_glossary_stat_user_term"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    term_slug: Mapped[str] = mapped_column(String(80), index=True)
+    seen: Mapped[int] = mapped_column(Integer, default=0)
+    correct: Mapped[int] = mapped_column(Integer, default=0)
+    last_correct: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)

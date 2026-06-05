@@ -1,9 +1,11 @@
-"""Repository for the glossary reference section."""
+"""Repositories for the glossary reference section + per-user quiz stats."""
 from __future__ import annotations
+
+from datetime import datetime
 
 from sqlalchemy import or_, select
 
-from app.models import GlossaryTerm
+from app.models import GlossaryTerm, GlossaryTermStat, _utcnow
 from app.repositories.base import BaseRepository
 
 
@@ -39,3 +41,56 @@ class GlossaryRepository(BaseRepository):
                 select(GlossaryTerm).where(GlossaryTerm.slug == slug)
             )
         ).scalar_one_or_none()
+
+    async def all_slugs(self) -> set[str]:
+        """Valid term slugs — used to ignore unknown slugs in posted results."""
+        return set(
+            (await self.session.execute(select(GlossaryTerm.slug))).scalars().all()
+        )
+
+
+class GlossaryStatsRepository(BaseRepository):
+    """Per-user quiz stats for glossary terms. Flushes but never commits."""
+
+    async def list_for_user(self, user_id: int) -> list[GlossaryTermStat]:
+        return list(
+            (
+                await self.session.execute(
+                    select(GlossaryTermStat).where(
+                        GlossaryTermStat.user_id == user_id
+                    )
+                )
+            )
+            .scalars()
+            .all()
+        )
+
+    async def record(
+        self,
+        *,
+        user_id: int,
+        term_slug: str,
+        correct: bool,
+        now: datetime | None = None,
+    ) -> GlossaryTermStat:
+        """Upsert one term result: bump seen/correct, set last_correct/last_seen."""
+        now = now or _utcnow()
+        stat = (
+            await self.session.execute(
+                select(GlossaryTermStat).where(
+                    GlossaryTermStat.user_id == user_id,
+                    GlossaryTermStat.term_slug == term_slug,
+                )
+            )
+        ).scalar_one_or_none()
+        if stat is None:
+            stat = GlossaryTermStat(
+                user_id=user_id, term_slug=term_slug, seen=0, correct=0
+            )
+            self.session.add(stat)
+        stat.seen += 1
+        stat.correct += 1 if correct else 0
+        stat.last_correct = correct
+        stat.last_seen_at = now
+        await self.session.flush()
+        return stat
