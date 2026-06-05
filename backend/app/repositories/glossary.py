@@ -11,15 +11,19 @@ from app.repositories.base import BaseRepository
 
 class GlossaryRepository(BaseRepository):
     async def list_terms(
-        self, category: str | None = None, q: str | None = None
+        self,
+        category: str | None = None,
+        q: str | None = None,
+        kind: str = "reference",
     ) -> list[GlossaryTerm]:
-        """All terms, optionally filtered by category and/or a search string.
+        """Terms of one kind ("reference" or "slang"), optionally filtered by
+        category and/or a search string.
 
         Search matches term/slug/aliases/body (aliases are stored as JSON text, so
         a LIKE over it works for the common case). Ordered by category then the
         authored order_index for stable grouping on the client.
         """
-        stmt = select(GlossaryTerm)
+        stmt = select(GlossaryTerm).where(GlossaryTerm.kind == kind)
         if category:
             stmt = stmt.where(GlossaryTerm.category == category)
         if q:

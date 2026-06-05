@@ -6,9 +6,16 @@
   "nav": {
     "courses": "Courses",
     "glossary": "Glossary",
+    "slang": "Slang",
     "review": "To review",
     "settings": "Settings",
     "logout": "Log out"
+  },
+  "slang": {
+    "title": "Developer slang",
+    "subtitle": "{{count}} pieces of dev jargon — in plain words.",
+    "searchPlaceholder": "Search a word…",
+    "noResults": "Nothing found"
   },
   "glossary": {
     "title": "Developer glossary",

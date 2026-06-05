@@ -11,6 +11,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
 import { GlossaryQuizPage } from "./pages/GlossaryQuizPage";
+import { SlangPage } from "./pages/SlangPage";
 
 export function App() {
   return (
@@ -26,6 +27,7 @@ export function App() {
         <Route path="/" element={<CatalogPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
+        <Route path="/slang" element={<SlangPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/courses/:courseSlug" element={<CoursePage />} />

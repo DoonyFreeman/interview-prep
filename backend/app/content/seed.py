@@ -47,6 +47,7 @@ async def _seed_glossary(session: AsyncSession, bundle: ContentBundle) -> None:
                 term=term.term,
                 category=term.category,
                 short_md=term.short_md,
+                kind=term.kind,
                 order_index=term.order_index,
                 aliases=json.dumps(term.aliases, ensure_ascii=False),
                 links=json.dumps(

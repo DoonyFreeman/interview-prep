@@ -26,9 +26,10 @@ router = APIRouter()
 async def list_glossary(
     category: str | None = Query(default=None),
     q: str | None = Query(default=None),
+    kind: str = Query(default="reference", pattern="^(reference|slang)$"),
     session: AsyncSession = Depends(get_session),
 ):
-    return await glossary.list_glossary(session, category=category, q=q)
+    return await glossary.list_glossary(session, category=category, q=q, kind=kind)
 
 
 @router.get("/glossary/progress", response_model=GlossaryProgressOut)
