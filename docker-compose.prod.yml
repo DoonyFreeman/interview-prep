@@ -1,0 +1,39 @@
+# Production overlay — adds a Caddy reverse proxy with automatic TLS in front of
+# the app. Use together with the base file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# The app's own port is bound to 127.0.0.1 in the base file, so only Caddy is
+# reachable from the public network; Caddy talks to the app over the internal
+# compose network by service name (app:8000).
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: interview-prep-caddy
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # certificates — MUST persist across restarts
+      - caddy_config:/config
+    healthcheck:
+      # Caddy's local admin API (always plain HTTP on :2019) — a TLS/redirect-free
+      # liveness probe. The public :80 just 308-redirects to HTTPS, so probing it
+      # would fail.
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  caddy_data:
+  caddy_config:

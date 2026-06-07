@@ -296,10 +296,17 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    and re-seeded on startup. Smoke-tested: image builds (~347 MB), container goes
    healthy, `/api/courses` returns 20 courses, SPA + deep links + assets serve,
    no `reference_answer` leak, DB persists across restart.
-8. **Deploy to a server.** Single-host deploy of the compose stack behind a
-   reverse proxy with TLS (Caddy or nginx + certbot); persistent volume for
-   `data/app.db`; a simple backup of that volume; restart policy + healthcheck on
-   `/health`.
+8. **Deploy to a server** — *prep done, live deploy pending a host+domain.*
+   Artifacts ready: `Caddyfile` (reverse_proxy `app:8000`, automatic Let's Encrypt
+   TLS, HSTS/security headers), `docker-compose.prod.yml` overlay (adds a `caddy`
+   service on 80/443 with persistent `caddy_data`/`caddy_config` volumes,
+   `depends_on app: service_healthy`), the base compose now binds the app to
+   `127.0.0.1:8000` so only Caddy is public, `scripts/backup.sh` (consistent online
+   SQLite snapshot from the running container → `./backups/`, pruned) +
+   `scripts/restore.sh`, and `DEPLOY.md` (full single-host runbook: DNS, launch,
+   updates, backup cron, restore, local `tls internal` test). Run with
+   `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`.
+   Still requires a real host + domain + open 80/443 to issue the public cert.
 
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a
