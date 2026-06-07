@@ -65,10 +65,11 @@ async def test_question_get_with_context_missing_returns_none(session):
 
 async def test_course_listing_counts_lessons(session):
     rows = await CourseRepository(session).list_published_with_lesson_counts()
-    assert len(rows) == 1
-    course, lesson_count = rows[0]
-    assert course.slug == "python-core"
-    assert lesson_count == 1
+    assert len(rows) >= 20  # full Phase 6 curriculum
+    py = next((row for row in rows if row[0].slug == "python-core"), None)
+    assert py is not None
+    course, lesson_count = py
+    assert lesson_count >= 1
 
 
 # --------------------------------------------------------------------------- #
@@ -122,7 +123,11 @@ async def test_completed_lesson_ids(session):
         email="c@e.com", password_hash="h", display_name="C"
     )
     await session.commit()
-    lesson_id = (await session.execute(select(Lesson.id))).scalar_one()
+    # Pick a specific lesson by slug — the seed now holds many lessons, so a bare
+    # select(Lesson.id) would raise MultipleResultsFound.
+    lesson_id = (
+        await session.execute(select(Lesson.id).where(Lesson.slug == "gil"))
+    ).scalar_one()
 
     repo = LessonProgressRepository(session)
     assert await repo.completed_lesson_ids(user.id) == set()

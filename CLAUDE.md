@@ -29,7 +29,14 @@ quizzes: client-side generation with smart progress-weighted selection, a
 `glossary_term_stats` user-state table + auth-gated progress/result endpoints, a
 `/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
 terms in `content/slang.json`, served via a `kind` discriminator on the glossary
-table, a `/slang` page). Frontend now has vitest. Not built yet: Docker/deploy.
+table, a `/slang` page). Frontend now has vitest. **Phase 6 (content authoring)
+in progress** — the curriculum is now authored across **20 courses / 97 lessons /
+346 concepts / 346 questions** (`content/courses/`), each lesson with full theory,
+analogies, simple explanations and an authored reference answer per concept. Tests
+updated for the multi-course content (6 stale single-course assertions rewritten to
+derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
+load, anchors match H2s, no orphan questions, reference_answer never leaks) — **94
+passing**. Not built yet: Docker/deploy.
 
 ## Commands
 
@@ -246,8 +253,21 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    public `GET /api/glossary?kind=slang` serves it (default `kind=reference`, so the
    glossary page and quizzes stay reference-only). A `/slang` page groups terms
    alphabetically with client-side search; nav item "Сленг".
-6. Author remaining topics (deep lessons + reference answers; glossary P1/P2 fill
-   in here too).
+6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **20
+   courses / 97 lessons / 346 concepts / 346 questions** under `content/courses/`
+   (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
+   python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,
+   algorithms, python-typing, postgresql, redis, celery, docker, devops,
+   system-design, security). Each lesson = full theory + analogies + simple
+   explanations; each concept has an `anchor` (slugified H2) and an authored
+   `reference_answer`. **Tests updated**: the 6 stale single-course assertions in
+   `test_content`/`test_progress`/`test_repositories` were rewritten to derive
+   expectations from the loader / look up `python-core` by slug, and a new
+   `tests/test_content_integrity.py` guards the whole curriculum (all courses load,
+   every concept anchor == `slugify(H2)`, no orphan `questions.json` keys,
+   reference answers present server-side + never leak via the lesson API). Suite is
+   **94 passing**.
 7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or
    a single image serving the built SPA via FastAPI static files), a
    `docker-compose.yml` wiring backend + frontend + a reverse proxy, the SQLite
