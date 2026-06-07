@@ -9,44 +9,26 @@ from app.models import Concept, ConceptMastery, Course, Lesson
 from app.repositories.base import BaseRepository
 
 
-class ConceptMasteryRepository(BaseRepository):
+class ConceptMasteryRepository(BaseRepository[ConceptMastery]):
+    model = ConceptMastery
+
     async def get(self, user_id: int, concept_id: int) -> ConceptMastery | None:
-        return (
-            await self.session.execute(
-                select(ConceptMastery).where(
-                    ConceptMastery.user_id == user_id,
-                    ConceptMastery.concept_id == concept_id,
-                )
-            )
-        ).scalar_one_or_none()
+        """One user's mastery row for a concept (composite key, not the PK)."""
+        return await self.find_one_by(user_id=user_id, concept_id=concept_id)
 
     async def list_for_user(self, user_id: int) -> list[ConceptMastery]:
-        return list(
-            (
-                await self.session.execute(
-                    select(ConceptMastery).where(ConceptMastery.user_id == user_id)
-                )
-            )
-            .scalars()
-            .all()
-        )
+        return await self.list_by(user_id=user_id)
 
     async def list_for_user_and_concepts(
         self, user_id: int, concept_ids: list[int]
     ) -> list[ConceptMastery]:
         if not concept_ids:
             return []
-        return list(
-            (
-                await self.session.execute(
-                    select(ConceptMastery).where(
-                        ConceptMastery.user_id == user_id,
-                        ConceptMastery.concept_id.in_(concept_ids),
-                    )
-                )
+        return await self._all(
+            select(ConceptMastery).where(
+                ConceptMastery.user_id == user_id,
+                ConceptMastery.concept_id.in_(concept_ids),
             )
-            .scalars()
-            .all()
         )
 
     async def due_for_user(
@@ -85,5 +67,5 @@ class ConceptMasteryRepository(BaseRepository):
             interval_days=interval_days,
             reps=reps,
         )
-        self.session.add(mastery)
+        self.add(mastery)
         return mastery
