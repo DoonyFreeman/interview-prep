@@ -1,0 +1,36 @@
+# Caddy reverse proxy for the single-image app. Automatic HTTPS (Let's Encrypt)
+# is handled by Caddy out of the box: it provisions and renews the certificate
+# for {$DOMAIN} and redirects HTTP→HTTPS. The app itself stays plain HTTP on the
+# internal compose network.
+#
+# Local testing without a real domain: set DOMAIN=localhost in .env and uncomment
+# `tls internal` below — Caddy then serves a self-signed cert for https://localhost.
+{
+	# ACME contact email for Let's Encrypt expiry/notice mails.
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	# App serves both the SPA and /api from one origin.
+	reverse_proxy app:8000
+
+	# Local-only self-signed TLS (uncomment for DOMAIN=localhost testing):
+	# tls internal
+
+	encode zstd gzip
+
+	header {
+		# HSTS (1 year). Safe once you're committed to HTTPS on this domain.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Caddy adds the Server header; drop version noise.
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

@@ -46,6 +46,17 @@ docker compose up -d --build  # http://localhost:8000  (SPA + /api + /health)
 Контент (`content/`) запекается в образ как источник правды и пересеивается при
 старте. Данные — в томе `app-data` (`/app/backend/data`).
 
+## Прод-деплой
+
+Одиночный хост за Caddy (reverse proxy + авто-TLS), бэкап тома SQLite. Запуск:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Полный runbook (DNS, TLS, бэкап/restore, обновления, локальный TLS-тест) — в
+[`DEPLOY.md`](DEPLOY.md).
+
 ## Структура
 
 ```

@@ -15,6 +15,9 @@ venv/
 *.db-wal
 data/
 
+# Local DB backups (scripts/backup.sh)
+backups/
+
 # Node / frontend
 node_modules/
 dist/

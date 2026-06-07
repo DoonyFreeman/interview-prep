@@ -12,7 +12,10 @@ services:
     env_file:
       - .env
     ports:
-      - "8000:8000"
+      # Bound to loopback: local dev reaches it at localhost:8000, but on a server
+      # it isn't public — the prod overlay's Caddy proxies it over the internal
+      # compose network (app:8000).
+      - "127.0.0.1:8000:8000"
     volumes:
       # Persist the SQLite database (app.db + app.db-wal + app.db-shm).
       - app-data:/app/backend/data
