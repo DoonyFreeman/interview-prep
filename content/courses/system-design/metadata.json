@@ -1,0 +1,59 @@
+{
+  "slug": "system-design",
+  "title": "System Design",
+  "description": "Проектирование систем: масштабирование и балансировка, данные при масштабе (репликация, шардирование, CAP), асинхронная архитектура и микросервисы, паттерны надёжности, оценки на салфетке и разбор типовых систем.",
+  "order": 19,
+  "lessons": [
+    {
+      "slug": "scaling-load-balancing",
+      "title": "Масштабирование и балансировка нагрузки",
+      "file": "01-scaling-load-balancing.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "vertical-horizontal", "title": "Вертикальное против горизонтального масштабирования", "anchor": "вертикальное-против-горизонтального-масштабирования", "order": 1 },
+        { "slug": "statelessness", "title": "Statelessness", "anchor": "statelessness", "order": 2 },
+        { "slug": "load-balancing", "title": "Балансировка нагрузки", "anchor": "балансировка-нагрузки", "order": 3 },
+        { "slug": "caching-scale", "title": "Кэширование как способ масштабирования", "anchor": "кэширование-как-способ-масштабирования", "order": 4 }
+      ]
+    },
+    {
+      "slug": "data-at-scale",
+      "title": "Базы данных при масштабе и CAP",
+      "file": "02-data-at-scale.md",
+      "order": 2,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "replication", "title": "Репликация и read-реплики", "anchor": "репликация-и-read-реплики", "order": 1 },
+        { "slug": "sharding", "title": "Шардирование и партиционирование", "anchor": "шардирование-и-партиционирование", "order": 2 },
+        { "slug": "cap-theorem", "title": "CAP-теорема", "anchor": "cap-теорема", "order": 3 }
+      ]
+    },
+    {
+      "slug": "async-microservices",
+      "title": "Асинхронная архитектура, микросервисы и надёжность",
+      "file": "03-async-microservices.md",
+      "order": 3,
+      "duration_minutes": 28,
+      "concepts": [
+        { "slug": "async-architecture", "title": "Асинхронная архитектура", "anchor": "асинхронная-архитектура", "order": 1 },
+        { "slug": "microservices-monolith", "title": "Микросервисы против монолита", "anchor": "микросервисы-против-монолита", "order": 2 },
+        { "slug": "reliability-patterns", "title": "Паттерны надёжности", "anchor": "паттерны-надёжности", "order": 3 },
+        { "slug": "saga-2pc", "title": "Распределённые транзакции: saga и 2PC", "anchor": "распределённые-транзакции-saga-и-2pc", "order": 4 }
+      ]
+    },
+    {
+      "slug": "estimation-systems",
+      "title": "Оценки на салфетке и разбор типовых систем",
+      "file": "04-estimation-systems.md",
+      "order": 4,
+      "duration_minutes": 28,
+      "concepts": [
+        { "slug": "back-of-envelope", "title": "Оценки на салфетке", "anchor": "оценки-на-салфетке", "order": 1 },
+        { "slug": "sla-slo-sli", "title": "SLA, SLO, SLI и девятки", "anchor": "sla-slo-sli-и-девятки", "order": 2 },
+        { "slug": "design-framework", "title": "Каркас разбора задачи", "anchor": "каркас-разбора-задачи", "order": 3 },
+        { "slug": "classic-systems", "title": "Типовые системы", "anchor": "типовые-системы", "order": 4 }
+      ]
+    }
+  ]
+}

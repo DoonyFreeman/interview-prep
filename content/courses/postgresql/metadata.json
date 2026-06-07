@@ -1,0 +1,57 @@
+{
+  "slug": "postgresql",
+  "title": "PostgreSQL",
+  "description": "Углублённый PostgreSQL: архитектура (MVCC, WAL, VACUUM), богатые типы и JSONB, специализированные индексы, конкурентность и блокировки (FOR UPDATE, SKIP LOCKED), продвинутый SQL, производительность и эксплуатация.",
+  "order": 14,
+  "lessons": [
+    {
+      "slug": "architecture-mvcc",
+      "title": "Архитектура PostgreSQL: MVCC, WAL, VACUUM",
+      "file": "01-architecture-mvcc.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "mvcc", "title": "MVCC: версии строк", "anchor": "mvcc-версии-строк", "order": 1 },
+        { "slug": "wal", "title": "WAL: журнал упреждающей записи", "anchor": "wal-журнал-упреждающей-записи", "order": 2 },
+        { "slug": "vacuum-bloat", "title": "VACUUM и bloat", "anchor": "vacuum-и-bloat", "order": 3 }
+      ]
+    },
+    {
+      "slug": "types-indexes",
+      "title": "Типы данных и индексы PostgreSQL",
+      "file": "02-types-indexes.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "data-types", "title": "Богатые типы данных", "anchor": "богатые-типы-данных", "order": 1 },
+        { "slug": "jsonb", "title": "JSONB", "anchor": "jsonb", "order": 2 },
+        { "slug": "pg-index-types", "title": "Типы индексов в PostgreSQL", "anchor": "типы-индексов-в-postgresql", "order": 3 }
+      ]
+    },
+    {
+      "slug": "concurrency-locks",
+      "title": "Конкурентность, блокировки и продвинутый SQL",
+      "file": "03-concurrency-locks.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "row-locks", "title": "Явные блокировки строк", "anchor": "явные-блокировки-строк", "order": 1 },
+        { "slug": "skip-locked", "title": "SKIP LOCKED и очереди", "anchor": "skip-locked-и-очереди", "order": 2 },
+        { "slug": "window-recursive-cte", "title": "Оконные функции и рекурсивные CTE", "anchor": "оконные-функции-и-рекурсивные-cte", "order": 3 },
+        { "slug": "matviews-partitioning", "title": "Материализованные представления и партиционирование", "anchor": "материализованные-представления-и-партиционирование", "order": 4 }
+      ]
+    },
+    {
+      "slug": "performance-ops",
+      "title": "Производительность и эксплуатация PostgreSQL",
+      "file": "04-performance-ops.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "explain-analyze", "title": "EXPLAIN ANALYZE", "anchor": "explain-analyze", "order": 1 },
+        { "slug": "pgbouncer", "title": "Пул соединений (PgBouncer)", "anchor": "пул-соединений-pgbouncer", "order": 2 },
+        { "slug": "replication-backups", "title": "Репликация и бэкапы", "anchor": "репликация-и-бэкапы", "order": 3 }
+      ]
+    }
+  ]
+}

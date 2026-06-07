@@ -1,0 +1,60 @@
+{
+  "slug": "web-http",
+  "title": "Web, HTTP и API",
+  "description": "Основы веб-взаимодействия: методы и статус-коды HTTP, идемпотентность, проектирование REST API, аутентификация (сессии/JWT/CSRF/CORS), кэширование, real-time и сравнение REST/GraphQL/gRPC.",
+  "order": 10,
+  "lessons": [
+    {
+      "slug": "http-basics",
+      "title": "HTTP: методы, статусы, идемпотентность",
+      "file": "01-http-basics.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "http-methods", "title": "Методы HTTP", "anchor": "методы-http", "order": 1 },
+        { "slug": "idempotency", "title": "Идемпотентность и безопасность", "anchor": "идемпотентность-и-безопасность", "order": 2 },
+        { "slug": "status-codes", "title": "Статус-коды", "anchor": "статус-коды", "order": 3 },
+        { "slug": "headers", "title": "Заголовки и структура запроса", "anchor": "заголовки-и-структура-запроса", "order": 4 }
+      ]
+    },
+    {
+      "slug": "rest-api-design",
+      "title": "REST и проектирование API",
+      "file": "02-rest-api-design.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "rest-principles", "title": "Принципы REST", "anchor": "принципы-rest", "order": 1 },
+        { "slug": "resource-naming", "title": "Именование и структура ресурсов", "anchor": "именование-и-структура-ресурсов", "order": 2 },
+        { "slug": "versioning", "title": "Версионирование", "anchor": "версионирование", "order": 3 },
+        { "slug": "pagination-errors", "title": "Пагинация, фильтрация, формат ошибок", "anchor": "пагинация-фильтрация-формат-ошибок", "order": 4 }
+      ]
+    },
+    {
+      "slug": "auth-security",
+      "title": "Аутентификация: сессии, JWT, CSRF, CORS",
+      "file": "03-auth-security.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "sessions-vs-tokens", "title": "Сессии против токенов", "anchor": "сессии-против-токенов", "order": 1 },
+        { "slug": "jwt", "title": "Устройство JWT", "anchor": "устройство-jwt", "order": 2 },
+        { "slug": "csrf", "title": "CSRF", "anchor": "csrf", "order": 3 },
+        { "slug": "cors", "title": "CORS", "anchor": "cors", "order": 4 },
+        { "slug": "https-tls", "title": "HTTPS и TLS", "anchor": "https-и-tls", "order": 5 }
+      ]
+    },
+    {
+      "slug": "caching-realtime",
+      "title": "Кэширование, real-time и форматы API",
+      "file": "04-caching-realtime.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "http-caching", "title": "HTTP-кэширование", "anchor": "http-кэширование", "order": 1 },
+        { "slug": "realtime", "title": "Real-time: WebSockets, SSE, long polling", "anchor": "real-time-websockets-sse-long-polling", "order": 2 },
+        { "slug": "rest-graphql-grpc", "title": "REST против GraphQL против gRPC", "anchor": "rest-против-graphql-против-grpc", "order": 3 }
+      ]
+    }
+  ]
+}

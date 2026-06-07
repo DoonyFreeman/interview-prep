@@ -1,0 +1,129 @@
+{
+  "slug": "python-oop",
+  "title": "ООП в Python",
+  "description": "Объектно-ориентированное программирование в Python от классов и инкапсуляции до MRO, дескрипторов, метаклассов, ABC/Protocol и принципов проектирования (SOLID, композиция, паттерны).",
+  "order": 3,
+  "lessons": [
+    {
+      "slug": "classes-instances",
+      "title": "Классы и экземпляры",
+      "file": "01-classes-instances.md",
+      "order": 1,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "class-vs-instance-attrs", "title": "Атрибуты класса против экземпляра", "anchor": "атрибуты-класса-против-атрибутов-экземпляра", "order": 1 },
+        { "slug": "self-bound-methods", "title": "self и связанные методы", "anchor": "self-и-связанные-методы", "order": 2 },
+        { "slug": "new-vs-init", "title": "__init__ против __new__", "anchor": "init-против-new", "order": 3 }
+      ]
+    },
+    {
+      "slug": "encapsulation",
+      "title": "Инкапсуляция: _x, __x и property",
+      "file": "02-encapsulation.md",
+      "order": 2,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "single-underscore", "title": "Соглашение об одном подчёркивании", "anchor": "соглашение-об-одном-подчёркивании", "order": 1 },
+        { "slug": "name-mangling", "title": "Name mangling: двойное подчёркивание", "anchor": "name-mangling-двойное-подчёркивание", "order": 2 },
+        { "slug": "property", "title": "property: управляемый доступ", "anchor": "property-управляемый-доступ", "order": 3 }
+      ]
+    },
+    {
+      "slug": "inheritance-mro",
+      "title": "Наследование и MRO",
+      "file": "03-inheritance-mro.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "single-multiple-inheritance", "title": "Одиночное и множественное наследование", "anchor": "одиночное-и-множественное-наследование", "order": 1 },
+        { "slug": "diamond-c3", "title": "Ромбовидная проблема и C3-линеаризация", "anchor": "ромбовидная-проблема-и-c3-линеаризация", "order": 2 },
+        { "slug": "super", "title": "super(): кооперативный вызов", "anchor": "super-кооперативный-вызов", "order": 3 }
+      ]
+    },
+    {
+      "slug": "dunder-methods",
+      "title": "Dunder-методы: протоколы Python",
+      "file": "04-dunder-methods.md",
+      "order": 4,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "repr-str", "title": "__repr__ и __str__", "anchor": "repr-и-str", "order": 1 },
+        { "slug": "eq-hash", "title": "Равенство и хэш: __eq__ и __hash__", "anchor": "равенство-и-хэш-eq-и-hash", "order": 2 },
+        { "slug": "operator-overloading", "title": "Перегрузка операторов и __call__", "anchor": "перегрузка-операторов-и-call", "order": 3 },
+        { "slug": "container-protocols", "title": "Протоколы контейнеров и контекста", "anchor": "протоколы-контейнеров-и-контекста", "order": 4 }
+      ]
+    },
+    {
+      "slug": "dataclasses",
+      "title": "Dataclasses и аналоги",
+      "file": "05-dataclasses.md",
+      "order": 5,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "why-dataclasses", "title": "Зачем нужны dataclasses", "anchor": "зачем-нужны-dataclasses", "order": 1 },
+        { "slug": "dataclass-params", "title": "Параметры: frozen, order, field", "anchor": "параметры-frozen-order-field", "order": 2 },
+        { "slug": "namedtuple-attrs-pydantic", "title": "NamedTuple, attrs, Pydantic", "anchor": "namedtuple-attrs-pydantic", "order": 3 }
+      ]
+    },
+    {
+      "slug": "descriptors",
+      "title": "Дескрипторы",
+      "file": "06-descriptors.md",
+      "order": 6,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "what-is-descriptor", "title": "Что такое дескриптор", "anchor": "что-такое-дескриптор", "order": 1 },
+        { "slug": "data-vs-nondata", "title": "Data vs non-data дескрипторы", "anchor": "data-vs-non-data-дескрипторы", "order": 2 },
+        { "slug": "descriptors-in-python", "title": "Что построено на дескрипторах", "anchor": "что-построено-на-дескрипторах", "order": 3 }
+      ]
+    },
+    {
+      "slug": "metaclasses",
+      "title": "Метаклассы",
+      "file": "07-metaclasses.md",
+      "order": 7,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "type-metaclass", "title": "type: класс классов", "anchor": "type-класс-классов", "order": 1 },
+        { "slug": "custom-metaclass", "title": "Свой метакласс и зачем он", "anchor": "свой-метакласс-и-зачем-он", "order": 2 },
+        { "slug": "when-not-metaclass", "title": "Когда метакласс НЕ нужен", "anchor": "когда-метакласс-не-нужен", "order": 3 }
+      ]
+    },
+    {
+      "slug": "abc-protocols",
+      "title": "ABC и протоколы: duck typing и интерфейсы",
+      "file": "08-abc-protocols.md",
+      "order": 8,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "duck-typing", "title": "Duck typing", "anchor": "duck-typing", "order": 1 },
+        { "slug": "abc", "title": "Абстрактные базовые классы (ABC)", "anchor": "абстрактные-базовые-классы-abc", "order": 2 },
+        { "slug": "protocol", "title": "Protocol: структурная типизация", "anchor": "protocol-структурная-типизация", "order": 3 }
+      ]
+    },
+    {
+      "slug": "classmethod-staticmethod-slots",
+      "title": "classmethod, staticmethod и __slots__",
+      "file": "09-classmethod-staticmethod-slots.md",
+      "order": 9,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "method-types", "title": "Обычный метод, classmethod, staticmethod", "anchor": "обычный-метод-classmethod-staticmethod", "order": 1 },
+        { "slug": "slots", "title": "__slots__: экономия памяти", "anchor": "slots-экономия-памяти", "order": 2 },
+        { "slug": "when-to-use", "title": "Когда что применять", "anchor": "когда-что-применять", "order": 3 }
+      ]
+    },
+    {
+      "slug": "design",
+      "title": "Дизайн ООП: SOLID, композиция и паттерны",
+      "file": "10-design.md",
+      "order": 10,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "solid", "title": "Принципы SOLID", "anchor": "принципы-solid", "order": 1 },
+        { "slug": "composition-vs-inheritance", "title": "Композиция против наследования", "anchor": "композиция-против-наследования", "order": 2 },
+        { "slug": "design-patterns", "title": "Базовые паттерны проектирования", "anchor": "базовые-паттерны-проектирования", "order": 3 }
+      ]
+    }
+  ]
+}
