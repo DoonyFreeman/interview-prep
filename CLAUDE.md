@@ -29,7 +29,19 @@ quizzes: client-side generation with smart progress-weighted selection, a
 `glossary_term_stats` user-state table + auth-gated progress/result endpoints, a
 `/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
 terms in `content/slang.json`, served via a `kind` discriminator on the glossary
-table, a `/slang` page). Frontend now has vitest. Not built yet: Docker/deploy.
+table, a `/slang` page). Frontend now has vitest. **Phase 6 (content authoring)
+in progress** — the curriculum is now authored across **20 courses / 97 lessons /
+346 concepts / 346 questions** (`content/courses/`), each lesson with full theory,
+analogies, simple explanations and an authored reference answer per concept. Tests
+updated for the multi-course content (6 stale single-course assertions rewritten to
+derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
+load, anchors match H2s, no orphan questions, reference_answer never leaks) — **94
+passing**. **Phase 7 (Dockerize) done**: a multi-stage `Dockerfile` builds the SPA
+and serves it + `/api` from one `python:3.13-slim` image (FastAPI mounts the built
+`dist/` at `app/static` with an SPA fallback — guarded, so dev/tests are
+unaffected), `docker-compose.yml` runs the single `app` service with SQLite on a
+named volume + a `/health` healthcheck. Not built yet: reverse-proxy + TLS deploy
+(Phase 8).
 
 ## Commands
 
@@ -61,15 +73,24 @@ repository → model**, with Pydantic schemas at the API boundary. Big picture y
 can't get from one file:
 
 - **Repositories are the only place that talks SQLAlchemy** (`app/repositories/`).
-  Each wraps an `AsyncSession` (`BaseRepository`) and exposes intent-revealing
-  methods (`CourseRepository.get_by_slug`, `QuestionRepository.get_with_context`,
-  `ConceptMasteryRepository.due_for_user`, …) — no endpoint or service builds a
+  The layer is a thin **Data Mapper**: SQLAlchemy's ORM already maps the plain
+  `app/models.py` classes to rows, and `base.py` adds a generic, typed
+  `BaseRepository[ModelT]` over it (`model` class attr + reusable primitives `get`
+  (PK via identity map), `find_one_by`, `list_by`, `add`, and `_one`/`_all`
+  execute helpers). Each concrete repo binds its model (`UserRepository(
+  BaseRepository[User])`, `model = User`) and exposes intent-revealing methods
+  (`CourseRepository.get_by_slug`, `QuestionRepository.get_with_context`,
+  `ConceptMasteryRepository.due_for_user`, …): trivial lookups delegate to the
+  base primitives, only genuinely bespoke queries (joins, eager loads, search,
+  aggregates) hand-write a `select(...)`. No endpoint or service builds a
   `select(...)` by hand. **Repositories never commit**: they `add`/`flush` and the
   calling service owns the transaction, so one service method can persist across
   several repositories atomically (e.g. `evaluate_answer` writes the `Attempt` +
   the SM-2 mastery step together). The grep invariant: `session.execute(` /
   `select(` appear only under `app/repositories/` (and `content/seed.py`, which is
-  startup infra, not request-path access).
+  startup infra, not request-path access). (`*MasteryRepository.get` /
+  `LessonProgressRepository.get` deliberately override the base PK `get` to look up
+  by their composite `(user_id, …)` key — that's their public contract.)
 
 - **Services hold business logic + transaction boundaries** (`app/services/`):
   `content.py` (course/lesson reads), `auth.py` (register/login/current-user),
@@ -246,16 +267,35 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    public `GET /api/glossary?kind=slang` serves it (default `kind=reference`, so the
    glossary page and quizzes stay reference-only). A `/slang` page groups terms
    alphabetically with client-side search; nav item "Сленг".
-6. Author remaining topics (deep lessons + reference answers; glossary P1/P2 fill
-   in here too).
-7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or
-   a single image serving the built SPA via FastAPI static files), a
-   `docker-compose.yml` wiring backend + frontend + a reverse proxy, the SQLite
-   file on a **named volume** so WAL data survives container rebuilds, and config
-   (`GEMINI_API_KEY`, `JWT_SECRET`, `CORS_ORIGINS`, `CONTENT_DIR`) injected via
-   env / a mounted `.env`. Content markdown is baked into the image (source of
-   truth) and re-seeded on startup. Keep it as light as the stack: one small host,
-   no Redis/Postgres.
+6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **20
+   courses / 97 lessons / 346 concepts / 346 questions** under `content/courses/`
+   (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
+   python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,
+   algorithms, python-typing, postgresql, redis, celery, docker, devops,
+   system-design, security). Each lesson = full theory + analogies + simple
+   explanations; each concept has an `anchor` (slugified H2) and an authored
+   `reference_answer`. **Tests updated**: the 6 stale single-course assertions in
+   `test_content`/`test_progress`/`test_repositories` were rewritten to derive
+   expectations from the loader / look up `python-core` by slug, and a new
+   `tests/test_content_integrity.py` guards the whole curriculum (all courses load,
+   every concept anchor == `slugify(H2)`, no orphan `questions.json` keys,
+   reference answers present server-side + never leak via the lesson API). Suite is
+   **94 passing**.
+7. ✅ **Dockerize** (single-image topology). Multi-stage `Dockerfile`: a
+   `node:20-alpine` stage builds the SPA with `VITE_API_BASE=""` (same-origin), a
+   `python:3.13-slim` runtime installs `requirements.txt`, copies `backend/app`,
+   `content/`, and the built `dist/` into `app/static`, runs as non-root, and
+   serves everything via uvicorn. `app/main.py:_mount_spa` mounts `/assets` and
+   adds an SPA `index.html` fallback for client-side routes — **guarded by
+   `STATIC_DIR.is_dir()`** so local dev and the test suite (no `static/`) are a
+   no-op. `docker-compose.yml` runs one `app` service with the SQLite file on the
+   `app-data` **named volume** (`/app/backend/data`, survives rebuilds), config
+   from `.env` (`JWT_SECRET`, `GEMINI_API_KEY`, …; see `.env.docker.example`),
+   port 8000, and a stdlib `/health` healthcheck. Content is baked into the image
+   and re-seeded on startup. Smoke-tested: image builds (~347 MB), container goes
+   healthy, `/api/courses` returns 20 courses, SPA + deep links + assets serve,
+   no `reference_answer` leak, DB persists across restart.
 8. **Deploy to a server.** Single-host deploy of the compose stack behind a
    reverse proxy with TLS (Caddy or nginx + certbot); persistent volume for
    `data/app.db`; a simple backup of that volume; restart policy + healthcheck on
