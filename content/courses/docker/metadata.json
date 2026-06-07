@@ -1,0 +1,44 @@
+{
+  "slug": "docker",
+  "title": "Docker и контейнеры",
+  "description": "Контейнеризация: контейнеры против ВМ (namespaces, cgroups), образы и слои, кэш сборки, тома и сеть, переменные окружения, docker-compose, multi-stage сборка и практики безопасности.",
+  "order": 17,
+  "lessons": [
+    {
+      "slug": "containers-images",
+      "title": "Контейнеры и образы",
+      "file": "01-containers-images.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "containers-vs-vm", "title": "Контейнеры против виртуальных машин", "anchor": "контейнеры-против-виртуальных-машин", "order": 1 },
+        { "slug": "images-layers", "title": "Образы и слои", "anchor": "образы-и-слои", "order": 2 },
+        { "slug": "build-cache", "title": "Кэш сборки и порядок инструкций", "anchor": "кэш-сборки-и-порядок-инструкций", "order": 3 }
+      ]
+    },
+    {
+      "slug": "networking-volumes",
+      "title": "Сеть, тома и переменные окружения",
+      "file": "02-networking-volumes.md",
+      "order": 2,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "volumes", "title": "Тома: персистентность данных", "anchor": "тома-персистентность-данных", "order": 1 },
+        { "slug": "networking", "title": "Сеть контейнеров", "anchor": "сеть-контейнеров", "order": 2 },
+        { "slug": "env-config", "title": "Конфигурация: переменные окружения", "anchor": "конфигурация-переменные-окружения", "order": 3 }
+      ]
+    },
+    {
+      "slug": "compose-best-practices",
+      "title": "docker-compose, multi-stage и лучшие практики",
+      "file": "03-compose-best-practices.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "compose", "title": "docker-compose", "anchor": "docker-compose", "order": 1 },
+        { "slug": "multi-stage", "title": "Multi-stage сборка", "anchor": "multi-stage-сборка", "order": 2 },
+        { "slug": "best-practices", "title": "Лучшие практики и оркестрация", "anchor": "лучшие-практики-и-оркестрация", "order": 3 }
+      ]
+    }
+  ]
+}

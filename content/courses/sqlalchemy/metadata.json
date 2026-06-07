@@ -1,0 +1,58 @@
+{
+  "slug": "sqlalchemy",
+  "title": "SQLAlchemy",
+  "description": "ORM и Core в SQLAlchemy 2.0: архитектура и пул соединений, Session с identity map и unit of work, связи и стратегии загрузки против N+1, запросы 2.0, миграции Alembic и async.",
+  "order": 8,
+  "lessons": [
+    {
+      "slug": "core-vs-orm",
+      "title": "SQLAlchemy: Core против ORM",
+      "file": "01-core-vs-orm.md",
+      "order": 1,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "core-and-orm", "title": "Два уровня: Core и ORM", "anchor": "два-уровня-core-и-orm", "order": 1 },
+        { "slug": "engine-pool", "title": "Engine и пул соединений", "anchor": "engine-и-пул-соединений", "order": 2 },
+        { "slug": "when-core-orm", "title": "Когда Core, когда ORM", "anchor": "когда-core-когда-orm", "order": 3 }
+      ]
+    },
+    {
+      "slug": "session",
+      "title": "Session: identity map, unit of work, жизненный цикл",
+      "file": "02-session.md",
+      "order": 2,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "unit-of-work", "title": "Session как unit of work", "anchor": "session-как-unit-of-work", "order": 1 },
+        { "slug": "identity-map", "title": "Identity map", "anchor": "identity-map", "order": 2 },
+        { "slug": "flush-vs-commit", "title": "flush против commit", "anchor": "flush-против-commit", "order": 3 },
+        { "slug": "object-lifecycle", "title": "Жизненный цикл объекта", "anchor": "жизненный-цикл-объекта", "order": 4 }
+      ]
+    },
+    {
+      "slug": "relationships-loading",
+      "title": "Связи и стратегии загрузки",
+      "file": "03-relationships-loading.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "relationships", "title": "Описание связей", "anchor": "описание-связей", "order": 1 },
+        { "slug": "lazy-vs-eager", "title": "Lazy против eager загрузки", "anchor": "lazy-против-eager-загрузки", "order": 2 },
+        { "slug": "eager-strategies", "title": "Стратегии eager: selectin, joined, subquery", "anchor": "стратегии-eager-selectin-joined-subquery", "order": 3 },
+        { "slug": "fighting-n-plus-one", "title": "Борьба с N+1 на практике", "anchor": "борьба-с-n1-на-практике", "order": 4 }
+      ]
+    },
+    {
+      "slug": "queries-migrations-async",
+      "title": "Запросы 2.0, Alembic и async",
+      "file": "04-queries-migrations-async.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "select-20", "title": "Стиль запросов 2.0", "anchor": "стиль-запросов-20", "order": 1 },
+        { "slug": "alembic", "title": "Alembic: миграции схемы", "anchor": "alembic-миграции-схемы", "order": 2 },
+        { "slug": "async-sqlalchemy", "title": "Async SQLAlchemy 2.0", "anchor": "async-sqlalchemy-20", "order": 3 }
+      ]
+    }
+  ]
+}

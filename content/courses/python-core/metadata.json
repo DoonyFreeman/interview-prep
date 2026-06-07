@@ -1,7 +1,7 @@
 {
   "slug": "python-core",
   "title": "Python Core",
-  "description": "Глубокие основы Python под уровень собеседования: модель выполнения, объекты, управление памятью и конкурентность.",
+  "description": "Глубокие основы Python под уровень собеседования: модель выполнения, объектная модель, управление памятью, конкурентность, области видимости, исключения, импорты, итераторы и функции.",
   "order": 1,
   "lessons": [
     {
@@ -11,36 +11,129 @@
       "order": 1,
       "duration_minutes": 25,
       "concepts": [
-        {
-          "slug": "what-is-gil",
-          "title": "Что такое GIL и зачем он нужен",
-          "anchor": "что-такое-gil",
-          "order": 1
-        },
-        {
-          "slug": "gil-and-threads",
-          "title": "GIL и потоки: CPU-bound vs IO-bound",
-          "anchor": "gil-и-потоки-cpu-bound-vs-io-bound",
-          "order": 2
-        },
-        {
-          "slug": "gil-release",
-          "title": "Когда GIL освобождается",
-          "anchor": "когда-gil-освобождается",
-          "order": 3
-        },
-        {
-          "slug": "bypass-gil",
-          "title": "Как обойти ограничения GIL",
-          "anchor": "как-обойти-ограничения-gil",
-          "order": 4
-        },
-        {
-          "slug": "gil-future",
-          "title": "Почему GIL существует и его будущее",
-          "anchor": "почему-gil-существует-и-его-будущее",
-          "order": 5
-        }
+        { "slug": "what-is-gil", "title": "Что такое GIL и зачем он нужен", "anchor": "что-такое-gil", "order": 1 },
+        { "slug": "gil-and-threads", "title": "GIL и потоки: CPU-bound vs IO-bound", "anchor": "gil-и-потоки-cpu-bound-vs-io-bound", "order": 2 },
+        { "slug": "gil-release", "title": "Когда GIL освобождается", "anchor": "когда-gil-освобождается", "order": 3 },
+        { "slug": "bypass-gil", "title": "Как обойти ограничения GIL", "anchor": "как-обойти-ограничения-gil", "order": 4 },
+        { "slug": "gil-future", "title": "Почему GIL существует и его будущее", "anchor": "почему-gil-существует-и-его-будущее", "order": 5 }
+      ]
+    },
+    {
+      "slug": "execution-model",
+      "title": "Модель выполнения: как CPython исполняет код",
+      "file": "02-execution-model.md",
+      "order": 2,
+      "duration_minutes": 25,
+      "concepts": [
+        { "slug": "language-vs-implementation", "title": "Язык против реализации: Python и CPython", "anchor": "язык-против-реализации-python-и-cpython", "order": 1 },
+        { "slug": "bytecode-pvm", "title": "Компиляция в байткод и виртуальная машина", "anchor": "компиляция-в-байткод-и-виртуальная-машина", "order": 2 },
+        { "slug": "pyc-cache", "title": "Зачем нужны .pyc и __pycache__", "anchor": "зачем-нужны-pyc-и-папка-pycache", "order": 3 },
+        { "slug": "names-objects", "title": "Имена и объекты: переменная — ярлык", "anchor": "имена-и-объекты-переменная-это-ярлык", "order": 4 },
+        { "slug": "is-vs-eq", "title": "is против ==: идентичность и равенство", "anchor": "is-против-идентичность-и-равенство", "order": 5 }
+      ]
+    },
+    {
+      "slug": "object-model",
+      "title": "Объектная модель: всё — объект",
+      "file": "03-object-model.md",
+      "order": 3,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "everything-object", "title": "Всё — объект: данные, функции, классы, типы", "anchor": "всё-объект-данные-функции-классы-типы", "order": 1 },
+        { "slug": "mutability", "title": "Изменяемость: mutable и immutable", "anchor": "изменяемость-mutable-и-immutable", "order": 2 },
+        { "slug": "hashability", "title": "Хэшируемость: set и ключи dict", "anchor": "хэшируемость-что-можно-класть-в-set-и-ключи-dict", "order": 3 },
+        { "slug": "truthiness", "title": "Истинность: truthiness и __bool__", "anchor": "истинность-truthiness-и-bool", "order": 4 }
+      ]
+    },
+    {
+      "slug": "memory-management",
+      "title": "Управление памятью: подсчёт ссылок и сборка мусора",
+      "file": "04-memory-management.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "reference-counting", "title": "Подсчёт ссылок: основной механизм", "anchor": "подсчёт-ссылок-основной-механизм", "order": 1 },
+        { "slug": "reference-cycles", "title": "Проблема циклических ссылок", "anchor": "проблема-циклических-ссылок", "order": 2 },
+        { "slug": "generational-gc", "title": "Поколенческий сборщик мусора", "anchor": "поколенческий-сборщик-мусора", "order": 3 },
+        { "slug": "del-weakref-leaks", "title": "__del__, слабые ссылки и утечки", "anchor": "del-слабые-ссылки-и-утечки", "order": 4 }
+      ]
+    },
+    {
+      "slug": "mutability-copying",
+      "title": "Изменяемость и копирование",
+      "file": "05-mutability-copying.md",
+      "order": 5,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "assignment-no-copy", "title": "Присваивание не копирует", "anchor": "присваивание-не-копирует", "order": 1 },
+        { "slug": "shallow-vs-deep", "title": "Поверхностное против глубокого копирования", "anchor": "поверхностное-против-глубокого-копирования", "order": 2 },
+        { "slug": "mutable-default-arg", "title": "Ловушка изменяемого аргумента по умолчанию", "anchor": "ловушка-изменяемого-аргумента-по-умолчанию", "order": 3 },
+        { "slug": "mutate-during-iteration", "title": "Мутация во время итерации", "anchor": "мутация-во-время-итерации", "order": 4 }
+      ]
+    },
+    {
+      "slug": "scopes",
+      "title": "Области видимости: LEGB, замыкания, late binding",
+      "file": "06-scopes.md",
+      "order": 6,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "legb", "title": "Правило LEGB", "anchor": "правило-legb", "order": 1 },
+        { "slug": "global-nonlocal", "title": "global и nonlocal", "anchor": "global-и-nonlocal", "order": 2 },
+        { "slug": "closures", "title": "Замыкания", "anchor": "замыкания", "order": 3 },
+        { "slug": "late-binding", "title": "Late binding в циклах", "anchor": "late-binding-в-циклах", "order": 4 }
+      ]
+    },
+    {
+      "slug": "exceptions",
+      "title": "Исключения: обработка, иерархия, EAFP",
+      "file": "07-exceptions.md",
+      "order": 7,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "try-except-else-finally", "title": "try / except / else / finally", "anchor": "try-except-else-finally", "order": 1 },
+        { "slug": "exception-hierarchy", "title": "Иерархия исключений", "anchor": "иерархия-исключений", "order": 2 },
+        { "slug": "custom-exceptions-chaining", "title": "Свои исключения и цепочки (raise from)", "anchor": "свои-исключения-и-цепочки-raise-from", "order": 3 },
+        { "slug": "eafp-vs-lbyl", "title": "EAFP против LBYL", "anchor": "eafp-против-lbyl", "order": 4 }
+      ]
+    },
+    {
+      "slug": "imports",
+      "title": "Импорты и модули",
+      "file": "08-imports.md",
+      "order": 8,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "import-system", "title": "Как работает система импорта", "anchor": "как-работает-система-импорта", "order": 1 },
+        { "slug": "packages-init", "title": "Пакеты и __init__.py", "anchor": "пакеты-и-initpy", "order": 2 },
+        { "slug": "circular-imports", "title": "Циклические импорты", "anchor": "циклические-импорты", "order": 3 },
+        { "slug": "name-main", "title": "if __name__ == \"__main__\"", "anchor": "if-name-main", "order": 4 }
+      ]
+    },
+    {
+      "slug": "iterators-generators",
+      "title": "Итераторы и генераторы",
+      "file": "09-iterators-generators.md",
+      "order": 9,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "iterable-vs-iterator", "title": "Протокол итерации: iterable против iterator", "anchor": "протокол-итерации-iterable-против-iterator", "order": 1 },
+        { "slug": "generators-yield", "title": "Генераторы и yield", "anchor": "генераторы-и-yield", "order": 2 },
+        { "slug": "laziness-memory", "title": "Ленивость и экономия памяти", "anchor": "ленивость-и-экономия-памяти", "order": 3 },
+        { "slug": "yield-from", "title": "yield from и делегирование", "anchor": "yield-from-и-делегирование", "order": 4 }
+      ]
+    },
+    {
+      "slug": "functions",
+      "title": "Функции: аргументы, распаковка, first-class",
+      "file": "10-functions.md",
+      "order": 10,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "argument-kinds", "title": "Виды аргументов", "anchor": "виды-аргументов", "order": 1 },
+        { "slug": "args-kwargs", "title": "*args и **kwargs", "anchor": "args-и-kwargs", "order": 2 },
+        { "slug": "unpacking", "title": "Распаковка", "anchor": "распаковка", "order": 3 },
+        { "slug": "first-class-functions", "title": "Функции как объекты первого класса", "anchor": "функции-как-объекты-первого-класса", "order": 4 }
       ]
     }
   ]

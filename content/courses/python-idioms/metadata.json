@@ -1,0 +1,71 @@
+{
+  "slug": "python-idioms",
+  "title": "Идиоматический Python",
+  "description": "Декораторы, functools, генераторы-конвейеры и контекст-менеджеры — инструменты, которые делают код питоничным: замыкания, мемоизация, ленивая обработка данных и управление ресурсами.",
+  "order": 4,
+  "lessons": [
+    {
+      "slug": "decorators",
+      "title": "Декораторы",
+      "file": "01-decorators.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "what-is-decorator", "title": "Что такое декоратор", "anchor": "что-такое-декоратор", "order": 1 },
+        { "slug": "functools-wraps", "title": "functools.wraps", "anchor": "functoolswraps", "order": 2 },
+        { "slug": "decorator-with-args", "title": "Декоратор с аргументами", "anchor": "декоратор-с-аргументами", "order": 3 },
+        { "slug": "decorator-stack", "title": "Стек декораторов и классы-декораторы", "anchor": "стек-декораторов-и-классы-декораторы", "order": 4 }
+      ]
+    },
+    {
+      "slug": "functools",
+      "title": "functools: кэширование, partial, singledispatch",
+      "file": "02-functools.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "lru-cache", "title": "lru_cache и cache: мемоизация", "anchor": "lrucache-и-cache-мемоизация", "order": 1 },
+        { "slug": "partial", "title": "partial: фиксация аргументов", "anchor": "partial-фиксация-аргументов", "order": 2 },
+        { "slug": "cached-property-reduce", "title": "cached_property и reduce", "anchor": "cachedproperty-и-reduce", "order": 3 },
+        { "slug": "singledispatch", "title": "singledispatch: перегрузка по типу", "anchor": "singledispatch-перегрузка-по-типу", "order": 4 }
+      ]
+    },
+    {
+      "slug": "generators-pipelines",
+      "title": "Генераторы, send и конвейеры",
+      "file": "03-generators-pipelines.md",
+      "order": 3,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "generator-pipelines", "title": "Конвейеры на генераторах", "anchor": "конвейеры-на-генераторах", "order": 1 },
+        { "slug": "memory-efficiency", "title": "Экономия памяти на практике", "anchor": "экономия-памяти-на-практике", "order": 2 },
+        { "slug": "send-coroutines", "title": "Двусторонний yield: send и корутины", "anchor": "двусторонний-yield-send-и-корутины", "order": 3 }
+      ]
+    },
+    {
+      "slug": "context-managers",
+      "title": "Контекст-менеджеры и with",
+      "file": "04-context-managers.md",
+      "order": 4,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "why-with", "title": "Зачем нужен with", "anchor": "зачем-нужен-with", "order": 1 },
+        { "slug": "enter-exit", "title": "__enter__ и __exit__", "anchor": "enter-и-exit", "order": 2 },
+        { "slug": "contextmanager", "title": "contextlib.contextmanager", "anchor": "contextlibcontextmanager", "order": 3 },
+        { "slug": "contextlib-tools", "title": "Готовые инструменты contextlib", "anchor": "готовые-инструменты-contextlib", "order": 4 }
+      ]
+    },
+    {
+      "slug": "comprehensions",
+      "title": "Comprehensions: списки, словари, множества",
+      "file": "05-comprehensions.md",
+      "order": 5,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "comprehension-basics", "title": "Основы: list, dict, set comprehension", "anchor": "основы-list-dict-set-comprehension", "order": 1 },
+        { "slug": "conditions-nesting", "title": "Условия и вложенность", "anchor": "условия-и-вложенность", "order": 2 },
+        { "slug": "when-comprehension", "title": "Когда comprehension, а когда нет", "anchor": "когда-comprehension-а-когда-нет", "order": 3 }
+      ]
+    }
+  ]
+}
