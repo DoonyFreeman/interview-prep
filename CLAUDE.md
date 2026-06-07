@@ -73,15 +73,24 @@ repository → model**, with Pydantic schemas at the API boundary. Big picture y
 can't get from one file:
 
 - **Repositories are the only place that talks SQLAlchemy** (`app/repositories/`).
-  Each wraps an `AsyncSession` (`BaseRepository`) and exposes intent-revealing
-  methods (`CourseRepository.get_by_slug`, `QuestionRepository.get_with_context`,
-  `ConceptMasteryRepository.due_for_user`, …) — no endpoint or service builds a
+  The layer is a thin **Data Mapper**: SQLAlchemy's ORM already maps the plain
+  `app/models.py` classes to rows, and `base.py` adds a generic, typed
+  `BaseRepository[ModelT]` over it (`model` class attr + reusable primitives `get`
+  (PK via identity map), `find_one_by`, `list_by`, `add`, and `_one`/`_all`
+  execute helpers). Each concrete repo binds its model (`UserRepository(
+  BaseRepository[User])`, `model = User`) and exposes intent-revealing methods
+  (`CourseRepository.get_by_slug`, `QuestionRepository.get_with_context`,
+  `ConceptMasteryRepository.due_for_user`, …): trivial lookups delegate to the
+  base primitives, only genuinely bespoke queries (joins, eager loads, search,
+  aggregates) hand-write a `select(...)`. No endpoint or service builds a
   `select(...)` by hand. **Repositories never commit**: they `add`/`flush` and the
   calling service owns the transaction, so one service method can persist across
   several repositories atomically (e.g. `evaluate_answer` writes the `Attempt` +
   the SM-2 mastery step together). The grep invariant: `session.execute(` /
   `select(` appear only under `app/repositories/` (and `content/seed.py`, which is
-  startup infra, not request-path access).
+  startup infra, not request-path access). (`*MasteryRepository.get` /
+  `LessonProgressRepository.get` deliberately override the base PK `get` to look up
+  by their composite `(user_id, …)` key — that's their public contract.)
 
 - **Services hold business logic + transaction boundaries** (`app/services/`):
   `content.py` (course/lesson reads), `auth.py` (register/login/current-user),

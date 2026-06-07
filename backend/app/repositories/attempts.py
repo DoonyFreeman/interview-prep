@@ -7,26 +7,22 @@ from app.models import Attempt
 from app.repositories.base import BaseRepository
 
 
-class AttemptRepository(BaseRepository):
+class AttemptRepository(BaseRepository[Attempt]):
+    model = Attempt
+
     async def list_for_questions(
         self, user_id: int, question_ids: list[int]
     ) -> list[Attempt]:
         """All of the user's attempts for the given questions, oldest first."""
         if not question_ids:
             return []
-        return list(
-            (
-                await self.session.execute(
-                    select(Attempt)
-                    .where(
-                        Attempt.user_id == user_id,
-                        Attempt.question_id.in_(question_ids),
-                    )
-                    .order_by(Attempt.created_at.asc())
-                )
+        return await self._all(
+            select(Attempt)
+            .where(
+                Attempt.user_id == user_id,
+                Attempt.question_id.in_(question_ids),
             )
-            .scalars()
-            .all()
+            .order_by(Attempt.created_at.asc())
         )
 
     def create(
@@ -48,5 +44,5 @@ class AttemptRepository(BaseRepository):
             review_json=review_json,
             hint_used=hint_used,
         )
-        self.session.add(attempt)
+        self.add(attempt)
         return attempt

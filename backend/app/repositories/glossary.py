@@ -9,7 +9,9 @@ from app.models import GlossaryTerm, GlossaryTermStat, _utcnow
 from app.repositories.base import BaseRepository
 
 
-class GlossaryRepository(BaseRepository):
+class GlossaryRepository(BaseRepository[GlossaryTerm]):
+    model = GlossaryTerm
+
     async def list_terms(
         self,
         category: str | None = None,
@@ -37,14 +39,10 @@ class GlossaryRepository(BaseRepository):
                 )
             )
         stmt = stmt.order_by(GlossaryTerm.category, GlossaryTerm.order_index)
-        return list((await self.session.execute(stmt)).scalars().all())
+        return await self._all(stmt)
 
     async def get_by_slug(self, slug: str) -> GlossaryTerm | None:
-        return (
-            await self.session.execute(
-                select(GlossaryTerm).where(GlossaryTerm.slug == slug)
-            )
-        ).scalar_one_or_none()
+        return await self.find_one_by(slug=slug)
 
     async def all_slugs(self) -> set[str]:
         """Valid term slugs — used to ignore unknown slugs in posted results."""
@@ -53,21 +51,13 @@ class GlossaryRepository(BaseRepository):
         )
 
 
-class GlossaryStatsRepository(BaseRepository):
+class GlossaryStatsRepository(BaseRepository[GlossaryTermStat]):
     """Per-user quiz stats for glossary terms. Flushes but never commits."""
 
+    model = GlossaryTermStat
+
     async def list_for_user(self, user_id: int) -> list[GlossaryTermStat]:
-        return list(
-            (
-                await self.session.execute(
-                    select(GlossaryTermStat).where(
-                        GlossaryTermStat.user_id == user_id
-                    )
-                )
-            )
-            .scalars()
-            .all()
-        )
+        return await self.list_by(user_id=user_id)
 
     async def record(
         self,
@@ -79,19 +69,12 @@ class GlossaryStatsRepository(BaseRepository):
     ) -> GlossaryTermStat:
         """Upsert one term result: bump seen/correct, set last_correct/last_seen."""
         now = now or _utcnow()
-        stat = (
-            await self.session.execute(
-                select(GlossaryTermStat).where(
-                    GlossaryTermStat.user_id == user_id,
-                    GlossaryTermStat.term_slug == term_slug,
-                )
-            )
-        ).scalar_one_or_none()
+        stat = await self.find_one_by(user_id=user_id, term_slug=term_slug)
         if stat is None:
             stat = GlossaryTermStat(
                 user_id=user_id, term_slug=term_slug, seen=0, correct=0
             )
-            self.session.add(stat)
+            self.add(stat)
         stat.seen += 1
         stat.correct += 1 if correct else 0
         stat.last_correct = correct
