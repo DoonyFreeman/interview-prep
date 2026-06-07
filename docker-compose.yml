@@ -1,0 +1,27 @@
+# Single-image deployment: FastAPI serves the built SPA and the /api routes from
+# one container. SQLite (with its WAL sidecars) lives on a named volume so data
+# survives rebuilds. A reverse proxy + TLS is added in Phase 8.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: interview-prep:latest
+    container_name: interview-prep
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist the SQLite database (app.db + app.db-wal + app.db-shm).
+      - app-data:/app/backend/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+volumes:
+  app-data:
