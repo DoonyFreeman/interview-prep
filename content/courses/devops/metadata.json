@@ -1,0 +1,47 @@
+{
+  "slug": "devops",
+  "title": "Linux, Git и DevOps",
+  "description": "Эксплуатационный минимум бэкендера: Linux (процессы, сигналы, права, пайпы) и диагностика сети, Git (ветки, merge/rebase, reset/revert, конфликты), CI/CD, стратегии деплоя, наблюдаемость и 12-factor.",
+  "order": 18,
+  "lessons": [
+    {
+      "slug": "linux-network",
+      "title": "Linux и сеть для бэкендера",
+      "file": "01-linux-network.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "processes-signals", "title": "Процессы и сигналы", "anchor": "процессы-и-сигналы", "order": 1 },
+        { "slug": "permissions-fs", "title": "Права и файловая система", "anchor": "права-и-файловая-система", "order": 2 },
+        { "slug": "pipes-shell", "title": "Пайпы и работа в шелле", "anchor": "пайпы-и-работа-в-шелле", "order": 3 },
+        { "slug": "network-diagnostics", "title": "Диагностика сети", "anchor": "диагностика-сети", "order": 4 }
+      ]
+    },
+    {
+      "slug": "git",
+      "title": "Git: ветки, merge, rebase",
+      "file": "02-git.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "git-model", "title": "Модель Git и ветки", "anchor": "модель-git-и-ветки", "order": 1 },
+        { "slug": "merge-vs-rebase", "title": "Merge против rebase", "anchor": "merge-против-rebase", "order": 2 },
+        { "slug": "reset-revert", "title": "Отмена изменений: reset и revert", "anchor": "отмена-изменений-reset-и-revert", "order": 3 },
+        { "slug": "conflicts-workflows", "title": "Конфликты и рабочие процессы", "anchor": "конфликты-и-рабочие-процессы", "order": 4 }
+      ]
+    },
+    {
+      "slug": "cicd-observability",
+      "title": "CI/CD, деплой и наблюдаемость",
+      "file": "03-cicd-observability.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "cicd", "title": "CI/CD", "anchor": "cicd", "order": 1 },
+        { "slug": "deploy-strategies", "title": "Стратегии деплоя", "anchor": "стратегии-деплоя", "order": 2 },
+        { "slug": "observability", "title": "Наблюдаемость: логи, метрики, трейсинг", "anchor": "наблюдаемость-логи-метрики-трейсинг", "order": 3 },
+        { "slug": "twelve-factor", "title": "12-factor app", "anchor": "12-factor-app", "order": 4 }
+      ]
+    }
+  ]
+}

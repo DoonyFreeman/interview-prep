@@ -1,0 +1,71 @@
+{
+  "slug": "fastapi",
+  "title": "FastAPI",
+  "description": "Современный async-фреймворк: ASGI и роутинг, Pydantic-валидация и сериализация, dependency injection, sync/async-эндпоинты, middleware и CORS, аутентификация JWT, lifespan и тестирование.",
+  "order": 9,
+  "lessons": [
+    {
+      "slug": "asgi-routing",
+      "title": "ASGI, Starlette и роутинг",
+      "file": "01-asgi-routing.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "wsgi-vs-asgi", "title": "WSGI против ASGI", "anchor": "wsgi-против-asgi", "order": 1 },
+        { "slug": "starlette-uvicorn", "title": "Starlette и uvicorn", "anchor": "starlette-и-uvicorn", "order": 2 },
+        { "slug": "routing", "title": "Роутинг и параметры", "anchor": "роутинг-и-параметры", "order": 3 }
+      ]
+    },
+    {
+      "slug": "pydantic",
+      "title": "Pydantic: валидация и сериализация",
+      "file": "02-pydantic.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "request-validation", "title": "Валидация запроса моделью", "anchor": "валидация-запроса-моделью", "order": 1 },
+        { "slug": "response-model", "title": "response_model и сериализация", "anchor": "responsemodel-и-сериализация", "order": 2 },
+        { "slug": "validators-settings", "title": "Валидаторы и Settings", "anchor": "валидаторы-и-settings", "order": 3 },
+        { "slug": "pydantic-v2", "title": "Pydantic v2 и производительность", "anchor": "pydantic-v2-и-производительность", "order": 4 }
+      ]
+    },
+    {
+      "slug": "dependency-injection",
+      "title": "Dependency Injection: Depends",
+      "file": "03-dependency-injection.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "depends", "title": "Что такое Depends", "anchor": "что-такое-depends", "order": 1 },
+        { "slug": "sub-dependencies", "title": "Под-зависимости", "anchor": "под-зависимости", "order": 2 },
+        { "slug": "yield-dependencies", "title": "yield-зависимости для ресурсов", "anchor": "yield-зависимости-для-ресурсов", "order": 3 },
+        { "slug": "dependency-cache", "title": "Кэширование в пределах запроса", "anchor": "кэширование-в-пределах-запроса", "order": 4 }
+      ]
+    },
+    {
+      "slug": "async-middleware",
+      "title": "Async-эндпоинты, middleware и обработка ошибок",
+      "file": "04-async-middleware.md",
+      "order": 4,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "sync-vs-async", "title": "sync против async эндпоинтов", "anchor": "sync-против-async-эндпоинтов", "order": 1 },
+        { "slug": "background-tasks", "title": "BackgroundTasks", "anchor": "backgroundtasks", "order": 2 },
+        { "slug": "middleware-cors", "title": "Middleware и CORS", "anchor": "middleware-и-cors", "order": 3 },
+        { "slug": "exception-handling", "title": "Обработка исключений", "anchor": "обработка-исключений", "order": 4 }
+      ]
+    },
+    {
+      "slug": "auth-lifespan-testing",
+      "title": "Аутентификация, lifespan и тестирование",
+      "file": "05-auth-lifespan-testing.md",
+      "order": 5,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "oauth2-jwt", "title": "OAuth2 password flow и JWT", "anchor": "oauth2-password-flow-и-jwt", "order": 1 },
+        { "slug": "lifespan", "title": "Lifespan: startup и shutdown", "anchor": "lifespan-startup-и-shutdown", "order": 2 },
+        { "slug": "testing", "title": "Тестирование без сервера", "anchor": "тестирование-без-сервера", "order": 3 }
+      ]
+    }
+  ]
+}

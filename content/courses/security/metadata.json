@@ -1,0 +1,47 @@
+{
+  "slug": "security",
+  "title": "Безопасность",
+  "description": "Безопасность веб-бэкенда: OWASP Top 10 (инъекции, XSS, CSRF, SSRF, broken access), хэширование паролей и работа с JWT, управление секретами, и специфичные для Python риски (pickle, eval, supply chain).",
+  "order": 20,
+  "lessons": [
+    {
+      "slug": "owasp",
+      "title": "OWASP Top 10: основные уязвимости",
+      "file": "01-owasp.md",
+      "order": 1,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "injection", "title": "Инъекции (SQL injection)", "anchor": "инъекции-sql-injection", "order": 1 },
+        { "slug": "xss", "title": "XSS", "anchor": "xss", "order": 2 },
+        { "slug": "csrf-ssrf", "title": "CSRF и SSRF", "anchor": "csrf-и-ssrf", "order": 3 },
+        { "slug": "broken-auth-access", "title": "Broken authentication и контроль доступа", "anchor": "broken-authentication-и-контроль-доступа", "order": 4 }
+      ]
+    },
+    {
+      "slug": "auth-secrets",
+      "title": "Хэширование паролей, JWT и секреты",
+      "file": "02-auth-secrets.md",
+      "order": 2,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "password-hashing", "title": "Хэширование паролей", "anchor": "хэширование-паролей", "order": 1 },
+        { "slug": "salt-pepper", "title": "Соль и перец", "anchor": "соль-и-перец", "order": 2 },
+        { "slug": "jwt-security", "title": "Безопасность JWT", "anchor": "безопасность-jwt", "order": 3 },
+        { "slug": "secrets-management", "title": "Управление секретами", "anchor": "управление-секретами", "order": 4 }
+      ]
+    },
+    {
+      "slug": "python-specifics",
+      "title": "Безопасность в Python: pickle, eval, зависимости",
+      "file": "03-python-specifics.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "pickle-danger", "title": "Опасность pickle и десериализации", "anchor": "опасность-pickle-и-десериализации", "order": 1 },
+        { "slug": "eval-exec", "title": "eval, exec и динамическое выполнение", "anchor": "eval-exec-и-динамическое-выполнение", "order": 2 },
+        { "slug": "supply-chain", "title": "Supply chain и зависимости", "anchor": "supply-chain-и-зависимости", "order": 3 },
+        { "slug": "secure-dev-principles", "title": "Принципы безопасной разработки", "anchor": "принципы-безопасной-разработки", "order": 4 }
+      ]
+    }
+  ]
+}

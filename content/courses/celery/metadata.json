@@ -1,0 +1,46 @@
+{
+  "slug": "celery",
+  "title": "Celery и очереди задач",
+  "description": "Фоновая обработка с Celery: зачем нужны очереди задач, архитектура producer/broker/worker, определение и вызов задач, ретраи и идемпотентность, маршрутизация, расписание и гарантии доставки.",
+  "order": 16,
+  "lessons": [
+    {
+      "slug": "why-architecture",
+      "title": "Celery: зачем нужны фоновые задачи",
+      "file": "01-why-architecture.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "why-background", "title": "Зачем фоновые задачи", "anchor": "зачем-фоновые-задачи", "order": 1 },
+        { "slug": "vs-asyncio", "title": "Чем Celery отличается от asyncio", "anchor": "чем-celery-отличается-от-asyncio-и-backgroundtasks", "order": 2 },
+        { "slug": "architecture", "title": "Архитектура: producer, broker, worker, backend", "anchor": "архитектура-producer-broker-worker-backend", "order": 3 },
+        { "slug": "brokers", "title": "Брокеры: Redis против RabbitMQ", "anchor": "брокеры-redis-против-rabbitmq", "order": 4 }
+      ]
+    },
+    {
+      "slug": "tasks-retries",
+      "title": "Задачи, вызов, ретраи и идемпотентность",
+      "file": "02-tasks-retries.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "defining-calling", "title": "Определение и вызов задач", "anchor": "определение-и-вызов-задач", "order": 1 },
+        { "slug": "retries", "title": "Ретраи", "anchor": "ретраи", "order": 2 },
+        { "slug": "idempotency", "title": "Идемпотентность", "anchor": "идемпотентность", "order": 3 }
+      ]
+    },
+    {
+      "slug": "routing-reliability",
+      "title": "Маршрутизация, расписание и надёжность",
+      "file": "03-routing-reliability.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "queues-routing", "title": "Очереди, маршрутизация и приоритеты", "anchor": "очереди-маршрутизация-и-приоритеты", "order": 1 },
+        { "slug": "beat", "title": "Расписание: Celery Beat", "anchor": "расписание-celery-beat", "order": 2 },
+        { "slug": "acks-late", "title": "acks_late и visibility timeout", "anchor": "ackslate-и-visibility-timeout", "order": 3 },
+        { "slug": "exactly-once", "title": "Миф exactly-once и мониторинг", "anchor": "миф-exactly-once-и-мониторинг", "order": 4 }
+      ]
+    }
+  ]
+}

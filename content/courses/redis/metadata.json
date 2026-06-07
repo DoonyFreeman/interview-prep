@@ -1,0 +1,46 @@
+{
+  "slug": "redis",
+  "title": "Redis",
+  "description": "In-memory хранилище Redis: почему оно быстрое, структуры данных, кэширование (cache-aside, вытеснение, stampede), персистентность RDB/AOF, транзакции и Lua, Pub/Sub и Streams, масштабирование.",
+  "order": 15,
+  "lessons": [
+    {
+      "slug": "what-data-types",
+      "title": "Redis: что это и типы данных",
+      "file": "01-what-data-types.md",
+      "order": 1,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "why-fast", "title": "Что такое Redis и почему он быстрый", "anchor": "что-такое-redis-и-почему-он-быстрый", "order": 1 },
+        { "slug": "data-types", "title": "Основные типы данных", "anchor": "основные-типы-данных", "order": 2 },
+        { "slug": "advanced-ttl", "title": "Расширенные структуры и TTL", "anchor": "расширенные-структуры-и-ttl", "order": 3 }
+      ]
+    },
+    {
+      "slug": "caching",
+      "title": "Кэширование и сценарии Redis",
+      "file": "02-caching.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "use-cases", "title": "Сценарии применения", "anchor": "сценарии-применения", "order": 1 },
+        { "slug": "cache-aside", "title": "Cache-aside и стратегии записи", "anchor": "cache-aside-и-стратегии-записи", "order": 2 },
+        { "slug": "invalidation-eviction", "title": "Инвалидация и вытеснение", "anchor": "инвалидация-и-вытеснение", "order": 3 },
+        { "slug": "cache-stampede", "title": "Cache stampede", "anchor": "cache-stampede", "order": 4 }
+      ]
+    },
+    {
+      "slug": "persistence-scaling",
+      "title": "Персистентность, транзакции и масштабирование",
+      "file": "03-persistence-scaling.md",
+      "order": 3,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "rdb-aof", "title": "Персистентность: RDB и AOF", "anchor": "персистентность-rdb-и-aof", "order": 1 },
+        { "slug": "transactions-lua", "title": "Транзакции и Lua", "anchor": "транзакции-и-lua", "order": 2 },
+        { "slug": "pubsub-streams", "title": "Pub/Sub и Streams", "anchor": "pubsub-и-streams", "order": 3 },
+        { "slug": "scaling", "title": "Масштабирование: репликация, Sentinel, Cluster", "anchor": "масштабирование-репликация-sentinel-cluster", "order": 4 }
+      ]
+    }
+  ]
+}

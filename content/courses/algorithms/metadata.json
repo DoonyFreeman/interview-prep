@@ -1,0 +1,94 @@
+{
+  "slug": "algorithms",
+  "title": "Алгоритмы и структуры данных",
+  "description": "Алгоритмическая база к собеседованию: оценка сложности Big-O, приёмы для массивов и строк, линейные структуры, деревья и кучи, графы, сортировки и бинарный поиск, рекурсия и динамическое программирование.",
+  "order": 12,
+  "lessons": [
+    {
+      "slug": "complexity",
+      "title": "Сложность: Big-O",
+      "file": "01-complexity.md",
+      "order": 1,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "big-o", "title": "Что такое Big-O", "anchor": "что-такое-big-o", "order": 1 },
+        { "slug": "time-space", "title": "Время и память", "anchor": "время-и-память", "order": 2 },
+        { "slug": "amortized", "title": "Best, average, worst и амортизация", "anchor": "best-average-worst-и-амортизация", "order": 3 }
+      ]
+    },
+    {
+      "slug": "arrays-strings",
+      "title": "Массивы и строки: приёмы",
+      "file": "02-arrays-strings.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "two-pointers", "title": "Два указателя", "anchor": "два-указателя", "order": 1 },
+        { "slug": "sliding-window", "title": "Скользящее окно", "anchor": "скользящее-окно", "order": 2 },
+        { "slug": "hashing-prefix", "title": "Хэширование и префиксные суммы", "anchor": "хэширование-и-префиксные-суммы", "order": 3 }
+      ]
+    },
+    {
+      "slug": "linked-stack-queue",
+      "title": "Связные списки, стек и очередь",
+      "file": "03-linked-stack-queue.md",
+      "order": 3,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "linked-list", "title": "Связный список", "anchor": "связный-список", "order": 1 },
+        { "slug": "stack", "title": "Стек (LIFO)", "anchor": "стек-lifo", "order": 2 },
+        { "slug": "queue-deque", "title": "Очередь и дек (FIFO)", "anchor": "очередь-и-дек-fifo", "order": 3 }
+      ]
+    },
+    {
+      "slug": "trees-heaps",
+      "title": "Деревья, BST и кучи",
+      "file": "04-trees-heaps.md",
+      "order": 4,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "tree-traversals", "title": "Деревья и обходы", "anchor": "деревья-и-обходы", "order": 1 },
+        { "slug": "bst", "title": "Бинарное дерево поиска (BST)", "anchor": "бинарное-дерево-поиска-bst", "order": 2 },
+        { "slug": "heap-trie", "title": "Куча (heap) и trie", "anchor": "куча-heap-и-trie", "order": 3 }
+      ]
+    },
+    {
+      "slug": "graphs",
+      "title": "Графы: BFS, DFS, кратчайшие пути",
+      "file": "05-graphs.md",
+      "order": 5,
+      "duration_minutes": 28,
+      "concepts": [
+        { "slug": "graph-representations", "title": "Представления графа", "anchor": "представления-графа", "order": 1 },
+        { "slug": "bfs-dfs", "title": "BFS и DFS", "anchor": "bfs-и-dfs", "order": 2 },
+        { "slug": "topological-sort", "title": "Топологическая сортировка", "anchor": "топологическая-сортировка", "order": 3 },
+        { "slug": "dijkstra", "title": "Кратчайшие пути: Dijkstra", "anchor": "кратчайшие-пути-dijkstra", "order": 4 }
+      ]
+    },
+    {
+      "slug": "sorting-searching",
+      "title": "Сортировка и бинарный поиск",
+      "file": "06-sorting-searching.md",
+      "order": 6,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "comparison-sorts", "title": "Сравнительные сортировки", "anchor": "сравнительные-сортировки", "order": 1 },
+        { "slug": "timsort", "title": "Timsort в Python", "anchor": "timsort-в-python", "order": 2 },
+        { "slug": "binary-search", "title": "Бинарный поиск", "anchor": "бинарный-поиск", "order": 3 }
+      ]
+    },
+    {
+      "slug": "recursion-dp",
+      "title": "Рекурсия, динамическое программирование и паттерны",
+      "file": "07-recursion-dp.md",
+      "order": 7,
+      "duration_minutes": 28,
+      "concepts": [
+        { "slug": "recursion", "title": "Рекурсия", "anchor": "рекурсия", "order": 1 },
+        { "slug": "recursion-to-dp", "title": "От рекурсии к DP", "anchor": "от-рекурсии-к-dp", "order": 2 },
+        { "slug": "classic-dp", "title": "Классические задачи DP", "anchor": "классические-задачи-dp", "order": 3 },
+        { "slug": "solving-patterns", "title": "Обзор паттернов решения", "anchor": "обзор-паттернов-решения", "order": 4 }
+      ]
+    }
+  ]
+}

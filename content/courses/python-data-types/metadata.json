@@ -1,0 +1,107 @@
+{
+  "slug": "python-data-types",
+  "title": "Типы данных и структуры",
+  "description": "Внутреннее устройство и сложность встроенных типов Python: числа и точность, строки и Unicode, списки, кортежи, словари и множества, collections/itertools и шпаргалка Big-O.",
+  "order": 2,
+  "lessons": [
+    {
+      "slug": "numbers",
+      "title": "Числа: int, float, Decimal и точность",
+      "file": "01-numbers.md",
+      "order": 1,
+      "duration_minutes": 18,
+      "concepts": [
+        { "slug": "int-arbitrary-precision", "title": "int произвольной точности", "anchor": "int-произвольной-точности", "order": 1 },
+        { "slug": "float-precision", "title": "float и ошибки точности (IEEE-754)", "anchor": "float-и-ошибки-точности-ieee-754", "order": 2 },
+        { "slug": "decimal-fraction", "title": "Decimal, Fraction, complex", "anchor": "decimal-fraction-complex", "order": 3 }
+      ]
+    },
+    {
+      "slug": "strings",
+      "title": "Строки: неизменяемость, Unicode, bytes",
+      "file": "02-strings.md",
+      "order": 2,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "string-immutability", "title": "Неизменяемость строк", "anchor": "неизменяемость-строк", "order": 1 },
+        { "slug": "unicode-bytes", "title": "Unicode, bytes и кодировки", "anchor": "unicode-bytes-и-кодировки", "order": 2 },
+        { "slug": "string-formatting", "title": "Форматирование строк", "anchor": "форматирование-строк", "order": 3 },
+        { "slug": "string-interning", "title": "Методы и интернирование", "anchor": "частые-методы-и-интернирование", "order": 4 }
+      ]
+    },
+    {
+      "slug": "lists",
+      "title": "Списки: динамический массив и сортировка",
+      "file": "03-lists.md",
+      "order": 3,
+      "duration_minutes": 20,
+      "concepts": [
+        { "slug": "dynamic-array", "title": "Список — динамический массив", "anchor": "список-это-динамический-массив", "order": 1 },
+        { "slug": "slicing", "title": "Срезы (slicing)", "anchor": "срезы-slicing", "order": 2 },
+        { "slug": "sorting-timsort", "title": "Сортировка: sort vs sorted, Timsort", "anchor": "сортировка-sort-vs-sorted-timsort", "order": 3 }
+      ]
+    },
+    {
+      "slug": "tuples",
+      "title": "Кортежи: неизменяемость и namedtuple",
+      "file": "04-tuples.md",
+      "order": 4,
+      "duration_minutes": 16,
+      "concepts": [
+        { "slug": "tuple-meaning", "title": "Неизменяемость и смысл кортежа", "anchor": "неизменяемость-и-смысл-кортежа", "order": 1 },
+        { "slug": "tuple-as-key", "title": "Кортеж как ключ словаря", "anchor": "кортеж-как-ключ-словаря", "order": 2 },
+        { "slug": "namedtuple", "title": "namedtuple и именованные поля", "anchor": "namedtuple-и-именованные-поля", "order": 3 }
+      ]
+    },
+    {
+      "slug": "dicts",
+      "title": "Словари: хэш-таблица внутри",
+      "file": "05-dicts.md",
+      "order": 5,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "hash-table", "title": "Хэш-таблица и сложность O(1)", "anchor": "хэш-таблица-и-сложность-o1", "order": 1 },
+        { "slug": "collisions", "title": "Коллизии", "anchor": "коллизии", "order": 2 },
+        { "slug": "insertion-order", "title": "Порядок вставки (3.7+)", "anchor": "порядок-вставки-37", "order": 3 },
+        { "slug": "dict-methods", "title": "Полезные методы и подтипы", "anchor": "полезные-методы-и-подтипы", "order": 4 }
+      ]
+    },
+    {
+      "slug": "sets",
+      "title": "Множества: set и frozenset",
+      "file": "06-sets.md",
+      "order": 6,
+      "duration_minutes": 16,
+      "concepts": [
+        { "slug": "set-basics", "title": "Что такое set и почему он быстрый", "anchor": "что-такое-set-и-почему-он-быстрый", "order": 1 },
+        { "slug": "set-operations", "title": "Операции над множествами", "anchor": "операции-над-множествами", "order": 2 },
+        { "slug": "frozenset", "title": "frozenset", "anchor": "frozenset", "order": 3 }
+      ]
+    },
+    {
+      "slug": "collections-itertools",
+      "title": "collections и itertools",
+      "file": "07-collections-itertools.md",
+      "order": 7,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "deque", "title": "deque: очередь с двух концов", "anchor": "deque-очередь-с-двух-концов", "order": 1 },
+        { "slug": "counter-defaultdict", "title": "Counter, defaultdict, ChainMap", "anchor": "counter-defaultdict-chainmap", "order": 2 },
+        { "slug": "itertools", "title": "itertools: ленивые конвейеры", "anchor": "itertools-ленивые-конвейеры", "order": 3 }
+      ]
+    },
+    {
+      "slug": "complexity",
+      "title": "Сложность операций: шпаргалка Big-O",
+      "file": "08-complexity.md",
+      "order": 8,
+      "duration_minutes": 18,
+      "concepts": [
+        { "slug": "why-big-o", "title": "Зачем знать сложность встроенных типов", "anchor": "зачем-знать-сложность-встроенных-типов", "order": 1 },
+        { "slug": "list-complexity", "title": "Сложность списков и кортежей", "anchor": "списки-и-кортежи", "order": 2 },
+        { "slug": "dict-set-complexity", "title": "Сложность словарей и множеств", "anchor": "словари-и-множества", "order": 3 },
+        { "slug": "choosing-structure", "title": "Как выбирать структуру под задачу", "anchor": "как-выбирать-структуру-под-задачу", "order": 4 }
+      ]
+    }
+  ]
+}

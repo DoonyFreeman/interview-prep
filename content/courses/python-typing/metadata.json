@@ -1,0 +1,45 @@
+{
+  "slug": "python-typing",
+  "title": "Типизация и Pydantic",
+  "description": "Типы в Python: аннотации и их роль, Optional/Union, дженерики (TypeVar/Generic), Protocol и спецтипы, статическая проверка mypy и граница между типами и валидацией данных в рантайме.",
+  "order": 13,
+  "lessons": [
+    {
+      "slug": "typing-basics",
+      "title": "Основы типизации",
+      "file": "01-typing-basics.md",
+      "order": 1,
+      "duration_minutes": 18,
+      "concepts": [
+        { "slug": "annotations-runtime", "title": "Аннотации не влияют на рантайм", "anchor": "аннотации-не-влияют-на-рантайм", "order": 1 },
+        { "slug": "basic-annotations", "title": "Базовые аннотации", "anchor": "базовые-аннотации", "order": 2 },
+        { "slug": "optional-union", "title": "Optional, Union и None", "anchor": "optional-union-и-none", "order": 3 }
+      ]
+    },
+    {
+      "slug": "generics-protocols",
+      "title": "Дженерики, Protocol и спецтипы",
+      "file": "02-generics-protocols.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "typevar", "title": "TypeVar и обобщённые функции", "anchor": "typevar-и-обобщённые-функции", "order": 1 },
+        { "slug": "generic-classes", "title": "Generic-классы", "anchor": "generic-классы", "order": 2 },
+        { "slug": "protocol", "title": "Protocol: структурная типизация", "anchor": "protocol-структурная-типизация", "order": 3 },
+        { "slug": "literal-final-newtype", "title": "Literal, Final, NewType", "anchor": "literal-final-newtype", "order": 4 }
+      ]
+    },
+    {
+      "slug": "mypy-pydantic",
+      "title": "mypy и валидация в рантайме",
+      "file": "03-mypy-pydantic.md",
+      "order": 3,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "mypy", "title": "mypy: статическая проверка", "anchor": "mypy-статическая-проверка", "order": 1 },
+        { "slug": "runtime-types", "title": "Типы в рантайме", "anchor": "типы-в-рантайме", "order": 2 },
+        { "slug": "types-vs-validation", "title": "Типы против валидации (Pydantic)", "anchor": "типы-против-валидации-pydantic", "order": 3 }
+      ]
+    }
+  ]
+}

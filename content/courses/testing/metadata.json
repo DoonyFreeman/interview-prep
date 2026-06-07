@@ -1,0 +1,59 @@
+{
+  "slug": "testing",
+  "title": "Тестирование и качество",
+  "description": "Тестирование Python-кода: пирамида тестов, pytest с фикстурами и параметризацией, моки и патчинг, тестирование async-кода, покрытие, TDD и property-based подход.",
+  "order": 11,
+  "lessons": [
+    {
+      "slug": "test-pyramid",
+      "title": "Пирамида тестов",
+      "file": "01-test-pyramid.md",
+      "order": 1,
+      "duration_minutes": 18,
+      "concepts": [
+        { "slug": "test-levels", "title": "Уровни тестов", "anchor": "уровни-тестов", "order": 1 },
+        { "slug": "pyramid-shape", "title": "Форма пирамиды", "anchor": "форма-пирамиды", "order": 2 },
+        { "slug": "why-tests", "title": "Зачем вообще тесты", "anchor": "зачем-вообще-тесты", "order": 3 }
+      ]
+    },
+    {
+      "slug": "pytest",
+      "title": "pytest: фикстуры, parametrize, маркеры",
+      "file": "02-pytest.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "pytest-basics", "title": "Основы pytest", "anchor": "основы-pytest", "order": 1 },
+        { "slug": "fixtures-scope", "title": "Фикстуры и scope", "anchor": "фикстуры-и-scope", "order": 2 },
+        { "slug": "parametrize", "title": "parametrize", "anchor": "parametrize", "order": 3 },
+        { "slug": "conftest-markers", "title": "conftest и маркеры", "anchor": "conftest-и-маркеры", "order": 4 }
+      ]
+    },
+    {
+      "slug": "mocking",
+      "title": "Моки: mock, monkeypatch, патчинг",
+      "file": "03-mocking.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "test-doubles", "title": "Зачем нужны тестовые дублёры", "anchor": "зачем-нужны-тестовые-дублёры", "order": 1 },
+        { "slug": "unittest-mock", "title": "unittest.mock и MagicMock", "anchor": "unittestmock-и-magicmock", "order": 2 },
+        { "slug": "patching", "title": "Патчинг: где, а не что", "anchor": "патчинг-где-а-не-что", "order": 3 },
+        { "slug": "monkeypatch-di", "title": "monkeypatch и подмена зависимостей", "anchor": "monkeypatch-и-подмена-зависимостей", "order": 4 }
+      ]
+    },
+    {
+      "slug": "async-coverage-tdd",
+      "title": "Async-тесты, покрытие и TDD",
+      "file": "04-async-coverage-tdd.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "async-testing", "title": "Тестирование async-кода", "anchor": "тестирование-async-кода", "order": 1 },
+        { "slug": "coverage", "title": "Покрытие кода", "anchor": "покрытие-кода", "order": 2 },
+        { "slug": "tdd", "title": "TDD", "anchor": "tdd", "order": 3 },
+        { "slug": "property-based", "title": "Property-based тестирование", "anchor": "property-based-тестирование", "order": 4 }
+      ]
+    }
+  ]
+}
