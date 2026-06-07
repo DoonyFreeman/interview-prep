@@ -36,7 +36,12 @@ analogies, simple explanations and an authored reference answer per concept. Tes
 updated for the multi-course content (6 stale single-course assertions rewritten to
 derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
 load, anchors match H2s, no orphan questions, reference_answer never leaks) — **94
-passing**. Not built yet: Docker/deploy.
+passing**. **Phase 7 (Dockerize) done**: a multi-stage `Dockerfile` builds the SPA
+and serves it + `/api` from one `python:3.13-slim` image (FastAPI mounts the built
+`dist/` at `app/static` with an SPA fallback — guarded, so dev/tests are
+unaffected), `docker-compose.yml` runs the single `app` service with SQLite on a
+named volume + a `/health` healthcheck. Not built yet: reverse-proxy + TLS deploy
+(Phase 8).
 
 ## Commands
 
@@ -268,14 +273,20 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    every concept anchor == `slugify(H2)`, no orphan `questions.json` keys,
    reference answers present server-side + never leak via the lesson API). Suite is
    **94 passing**.
-7. **Dockerize.** Multi-stage `Dockerfile` for the backend (and the frontend, or
-   a single image serving the built SPA via FastAPI static files), a
-   `docker-compose.yml` wiring backend + frontend + a reverse proxy, the SQLite
-   file on a **named volume** so WAL data survives container rebuilds, and config
-   (`GEMINI_API_KEY`, `JWT_SECRET`, `CORS_ORIGINS`, `CONTENT_DIR`) injected via
-   env / a mounted `.env`. Content markdown is baked into the image (source of
-   truth) and re-seeded on startup. Keep it as light as the stack: one small host,
-   no Redis/Postgres.
+7. ✅ **Dockerize** (single-image topology). Multi-stage `Dockerfile`: a
+   `node:20-alpine` stage builds the SPA with `VITE_API_BASE=""` (same-origin), a
+   `python:3.13-slim` runtime installs `requirements.txt`, copies `backend/app`,
+   `content/`, and the built `dist/` into `app/static`, runs as non-root, and
+   serves everything via uvicorn. `app/main.py:_mount_spa` mounts `/assets` and
+   adds an SPA `index.html` fallback for client-side routes — **guarded by
+   `STATIC_DIR.is_dir()`** so local dev and the test suite (no `static/`) are a
+   no-op. `docker-compose.yml` runs one `app` service with the SQLite file on the
+   `app-data` **named volume** (`/app/backend/data`, survives rebuilds), config
+   from `.env` (`JWT_SECRET`, `GEMINI_API_KEY`, …; see `.env.docker.example`),
+   port 8000, and a stdlib `/health` healthcheck. Content is baked into the image
+   and re-seeded on startup. Smoke-tested: image builds (~347 MB), container goes
+   healthy, `/api/courses` returns 20 courses, SPA + deep links + assets serve,
+   no `reference_answer` leak, DB persists across restart.
 8. **Deploy to a server.** Single-host deploy of the compose stack behind a
    reverse proxy with TLS (Caddy or nginx + certbot); persistent volume for
    `data/app.db`; a simple backup of that volume; restart policy + healthcheck on

@@ -1,0 +1,33 @@
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/*.egg-info/
+**/.pytest_cache/
+backend/tests/
+
+# Local DB / state (the volume provides this at runtime)
+**/data/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# Node / build artifacts (rebuilt inside the image)
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Secrets / local env
+**/.env
+
+# Docs / meta not needed in the image
+.git/
+.github/
+*.md
+.claude/
+
+# Editor / OS
+**/.DS_Store
+**/.idea/
+**/.vscode/

@@ -32,6 +32,20 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
+## Docker (единый образ)
+
+Multi-stage сборка: Vite собирает SPA → `dist` копируется в python-образ, FastAPI
+раздаёт статику и `/api` с одного origin (CORS не нужен). SQLite живёт на named
+volume и переживает пересборки. Reverse proxy + TLS — Фаза 8.
+
+```bash
+cp .env.docker.example .env   # заполнить JWT_SECRET, GEMINI_API_KEY
+docker compose up -d --build  # http://localhost:8000  (SPA + /api + /health)
+```
+
+Контент (`content/`) запекается в образ как источник правды и пересеивается при
+старте. Данные — в томе `app-data` (`/app/backend/data`).
+
 ## Структура
 
 ```
@@ -45,4 +59,4 @@ backend/app/
 content/        — учебный контент (markdown + seed JSON), источник правды
 ```
 
-См. план реализации (фазы 0–7) и бэклог тем — в задачах проекта.
+См. план реализации (фазы 0–8) и бэклог тем — в задачах проекта.
