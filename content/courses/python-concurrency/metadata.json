@@ -1,0 +1,57 @@
+{
+  "slug": "python-concurrency",
+  "title": "Конкурентность и параллелизм",
+  "description": "Многозадачность в Python: конкурентность vs параллелизм, потоки и гонки данных, процессы для CPU-bound, concurrent.futures и обоснованный выбор инструмента под задачу.",
+  "order": 5,
+  "lessons": [
+    {
+      "slug": "concurrency-vs-parallelism",
+      "title": "Конкурентность против параллелизма",
+      "file": "01-concurrency-vs-parallelism.md",
+      "order": 1,
+      "duration_minutes": 18,
+      "concepts": [
+        { "slug": "two-concepts", "title": "Два разных понятия", "anchor": "два-разных-понятия", "order": 1 },
+        { "slug": "gil-connection", "title": "Связь с GIL", "anchor": "связь-с-gil", "order": 2 },
+        { "slug": "cpu-vs-io-bound", "title": "CPU-bound против IO-bound", "anchor": "cpu-bound-против-io-bound", "order": 3 }
+      ]
+    },
+    {
+      "slug": "threading",
+      "title": "threading: потоки, гонки и блокировки",
+      "file": "02-threading.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "when-threads", "title": "Когда потоки полезны", "anchor": "когда-потоки-полезны", "order": 1 },
+        { "slug": "race-conditions", "title": "Гонки данных (race conditions)", "anchor": "гонки-данных-race-conditions", "order": 2 },
+        { "slug": "locks", "title": "Блокировки и примитивы синхронизации", "anchor": "блокировки-и-примитивы-синхронизации", "order": 3 },
+        { "slug": "deadlocks", "title": "Дедлоки", "anchor": "дедлоки", "order": 4 }
+      ]
+    },
+    {
+      "slug": "multiprocessing",
+      "title": "multiprocessing: настоящий параллелизм",
+      "file": "03-multiprocessing.md",
+      "order": 3,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "processes-vs-threads", "title": "Процессы вместо потоков", "anchor": "процессы-вместо-потоков", "order": 1 },
+        { "slug": "serialization-cost", "title": "Цена: изоляция памяти и сериализация", "anchor": "цена-изоляция-памяти-и-сериализация", "order": 2 },
+        { "slug": "main-spawn", "title": "__main__ и способы запуска", "anchor": "main-и-способы-запуска", "order": 3 }
+      ]
+    },
+    {
+      "slug": "futures-choosing",
+      "title": "concurrent.futures и выбор инструмента",
+      "file": "04-futures-choosing.md",
+      "order": 4,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "executor-future", "title": "Executor и Future", "anchor": "executor-и-future", "order": 1 },
+        { "slug": "future-exceptions", "title": "Future, исключения и отмена", "anchor": "future-исключения-и-отмена", "order": 2 },
+        { "slug": "choosing-tool", "title": "Итоговое правило выбора", "anchor": "итоговое-правило-выбора", "order": 3 }
+      ]
+    }
+  ]
+}

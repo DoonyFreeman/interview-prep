@@ -1,0 +1,72 @@
+{
+  "slug": "databases-sql",
+  "title": "Базы данных и SQL",
+  "description": "Реляционные основы независимо от СУБД: модель данных и нормализация, JOIN-ы и оконные функции, индексы, транзакции и ACID с уровнями изоляции и MVCC, оптимизация запросов и проблема N+1.",
+  "order": 7,
+  "lessons": [
+    {
+      "slug": "relational-model",
+      "title": "Реляционная модель и нормализация",
+      "file": "01-relational-model.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "tables-keys", "title": "Таблицы, строки, ключи", "anchor": "таблицы-строки-ключи", "order": 1 },
+        { "slug": "relationships", "title": "Связи: 1:1, 1:N, N:M", "anchor": "связи-11-1n-nm", "order": 2 },
+        { "slug": "normalization", "title": "Нормализация (1NF–3NF)", "anchor": "нормализация-1nf3nf", "order": 3 },
+        { "slug": "denormalization", "title": "Денормализация: когда дублировать", "anchor": "денормализация-когда-дублировать-осознанно", "order": 4 }
+      ]
+    },
+    {
+      "slug": "sql-joins",
+      "title": "SQL: JOIN-ы, агрегация, CTE и оконные функции",
+      "file": "02-sql-joins.md",
+      "order": 2,
+      "duration_minutes": 28,
+      "concepts": [
+        { "slug": "join-types", "title": "Типы JOIN", "anchor": "типы-join", "order": 1 },
+        { "slug": "group-by-having", "title": "GROUP BY, HAVING, агрегаты", "anchor": "group-by-having-агрегаты", "order": 2 },
+        { "slug": "subqueries-cte", "title": "Подзапросы и CTE", "anchor": "подзапросы-и-cte", "order": 3 },
+        { "slug": "window-functions", "title": "Оконные функции", "anchor": "оконные-функции", "order": 4 }
+      ]
+    },
+    {
+      "slug": "indexes",
+      "title": "Индексы",
+      "file": "03-indexes.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "index-btree", "title": "Зачем нужен индекс и B-tree", "anchor": "зачем-нужен-индекс-и-b-tree", "order": 1 },
+        { "slug": "index-cost", "title": "Цена индексов: когда они вредят", "anchor": "цена-индексов-когда-они-вредят", "order": 2 },
+        { "slug": "composite-covering", "title": "Составные и покрывающие индексы", "anchor": "составные-и-покрывающие-индексы", "order": 3 },
+        { "slug": "index-types", "title": "Другие типы и практика", "anchor": "другие-типы-и-практика", "order": 4 }
+      ]
+    },
+    {
+      "slug": "transactions-acid",
+      "title": "Транзакции, ACID и уровни изоляции",
+      "file": "04-transactions-acid.md",
+      "order": 4,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "acid", "title": "ACID", "anchor": "acid", "order": 1 },
+        { "slug": "anomalies", "title": "Аномалии конкурентного доступа", "anchor": "аномалии-конкурентного-доступа", "order": 2 },
+        { "slug": "isolation-levels", "title": "Уровни изоляции", "anchor": "уровни-изоляции", "order": 3 },
+        { "slug": "mvcc-locks", "title": "MVCC и блокировки", "anchor": "mvcc-и-блокировки", "order": 4 }
+      ]
+    },
+    {
+      "slug": "query-optimization",
+      "title": "Оптимизация запросов и проблема N+1",
+      "file": "05-query-optimization.md",
+      "order": 5,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "explain", "title": "EXPLAIN и план запроса", "anchor": "explain-и-план-запроса", "order": 1 },
+        { "slug": "n-plus-one", "title": "Проблема N+1", "anchor": "проблема-n1", "order": 2 },
+        { "slug": "optimization-techniques", "title": "Типичные приёмы оптимизации", "anchor": "типичные-приёмы-оптимизации", "order": 3 }
+      ]
+    }
+  ]
+}

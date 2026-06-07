@@ -1,0 +1,70 @@
+{
+  "slug": "python-asyncio",
+  "title": "Async / Asyncio",
+  "description": "Асинхронность в Python: событийный цикл и кооперативная многозадачность, корутины и await, конкурентный запуск через задачи и gather, работа с блокирующим кодом и типичные подводные камни.",
+  "order": 6,
+  "lessons": [
+    {
+      "slug": "event-loop",
+      "title": "Событийный цикл и кооперативная многозадачность",
+      "file": "01-event-loop.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "event-loop", "title": "Что такое событийный цикл", "anchor": "что-такое-событийный-цикл", "order": 1 },
+        { "slug": "cooperative-vs-preemptive", "title": "Кооперативная против вытесняющей", "anchor": "кооперативная-против-вытесняющей-многозадачности", "order": 2 },
+        { "slug": "where-asyncio-wins", "title": "Где asyncio выигрывает и где нет", "anchor": "где-asyncio-выигрывает-и-где-нет", "order": 3 }
+      ]
+    },
+    {
+      "slug": "coroutines-await",
+      "title": "Корутины и await",
+      "file": "02-coroutines-await.md",
+      "order": 2,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "async-def", "title": "async def и корутины", "anchor": "async-def-и-корутины", "order": 1 },
+        { "slug": "await-awaitable", "title": "await и awaitable", "anchor": "await-и-awaitable", "order": 2 },
+        { "slug": "coroutine-vs-function", "title": "Корутина против обычной функции", "anchor": "корутина-против-обычной-функции", "order": 3 }
+      ]
+    },
+    {
+      "slug": "tasks-gather",
+      "title": "Задачи, gather и отмена",
+      "file": "03-tasks-gather.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "create-task", "title": "create_task: запуск в фоне", "anchor": "createtask-запуск-в-фоне", "order": 1 },
+        { "slug": "gather", "title": "gather, wait, as_completed", "anchor": "gather-wait-ascompleted", "order": 2 },
+        { "slug": "cancellation-timeouts", "title": "Отмена и таймауты", "anchor": "отмена-и-таймауты", "order": 3 }
+      ]
+    },
+    {
+      "slug": "blocking-pitfalls",
+      "title": "Блокирующий код и подводные камни",
+      "file": "04-blocking-pitfalls.md",
+      "order": 4,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "never-block-loop", "title": "Никогда не блокируй событийный цикл", "anchor": "никогда-не-блокируй-событийный-цикл", "order": 1 },
+        { "slug": "run-in-executor", "title": "run_in_executor для блокирующего кода", "anchor": "runinexecutor-для-блокирующего-кода", "order": 2 },
+        { "slug": "fire-and-forget", "title": "Fire-and-forget и потерянные исключения", "anchor": "fire-and-forget-и-потерянные-исключения", "order": 3 },
+        { "slug": "mixing-sync-async", "title": "Смешивание sync и async", "anchor": "смешивание-sync-и-async", "order": 4 }
+      ]
+    },
+    {
+      "slug": "async-iteration-sync",
+      "title": "Async-итерация, контекст-менеджеры и синхронизация",
+      "file": "05-async-iteration-sync.md",
+      "order": 5,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "async-with", "title": "Async context manager: async with", "anchor": "async-context-manager-async-with", "order": 1 },
+        { "slug": "async-generators", "title": "Async-генераторы и async for", "anchor": "async-генераторы-и-async-for", "order": 2 },
+        { "slug": "asyncio-queue", "title": "asyncio.Queue", "anchor": "asyncioqueue", "order": 3 },
+        { "slug": "async-sync-primitives", "title": "Синхронизация: Lock и Semaphore", "anchor": "синхронизация-lock-и-semaphore", "order": 4 }
+      ]
+    }
+  ]
+}
