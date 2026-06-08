@@ -213,12 +213,15 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `/api/courses/{course}/lessons/{lesson}`; `POST /api/auth/{register,login}`,
 `GET/PATCH /api/auth/me`, `POST /api/auth/password`;
 `GET /api/quiz/courses/{course}/lessons/{lesson}/{next,questions}`,
-`GET /api/quiz/questions/{id}`, `POST /api/quiz/questions/{id}/{evaluate,hint}`;
-`GET /api/progress`, `GET /api/progress/review`,
+`GET /api/quiz/questions/{id}`, `GET /api/quiz/questions/{id}/attempts`,
+`POST /api/quiz/questions/{id}/{evaluate,hint}`;
+`GET /api/progress`, `GET /api/progress/questions`, `GET /api/progress/review`,
 `POST /api/progress/courses/{course}/lessons/{lesson}` (all quiz + progress +
 profile-mutation routes require auth). `…/questions` lists a lesson's questions
 with the user's attempt history; `GET /quiz/questions/{id}` serves one for
-re-practice.
+re-practice; `…/{id}/attempts` returns the user's past answers + stored reviews
+for that question (newest first). `GET /api/progress/questions` rolls up
+questions-answered-vs-total per course/lesson (the "what's left" view).
 
 Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
 Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code
