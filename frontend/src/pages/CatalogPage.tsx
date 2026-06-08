@@ -1,14 +1,24 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useCourses, useProgress } from "../api/hooks";
+import { useCourses, useProgress, useQuestionsProgress } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { ProgressBar } from "../components/ProgressBar";
 import { ScoreGauge } from "../components/ScoreGauge";
 import { Button } from "../components/Button";
 import { useAuth } from "../auth/AuthContext";
-import type { CourseProgressOut, ProgressOverviewOut } from "../api/types";
+import type {
+  CourseProgressOut,
+  ProgressOverviewOut,
+  QuestionsProgress,
+} from "../api/types";
 
-function StatsHero({ ov }: { ov: ProgressOverviewOut }) {
+function StatsHero({
+  ov,
+  questions,
+}: {
+  ov: ProgressOverviewOut;
+  questions?: QuestionsProgress;
+}) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const pct =
@@ -17,16 +27,35 @@ function StatsHero({ ov }: { ov: ProgressOverviewOut }) {
       : 0;
 
   return (
-    <div className="mb-8 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-sm sm:flex-row sm:gap-7">
+    <div className="mb-3 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-sm sm:flex-row sm:gap-7">
       <ScoreGauge score={pct} size={104} />
       <div className="flex-1 text-center sm:text-left">
         <h1 className="text-xl font-bold text-ink">
           {t("dashboard.hello", { name: user?.display_name || "👋" })}
         </h1>
-        <div className="mt-3 flex justify-center gap-6 sm:justify-start">
-          <Stat label={t("dashboard.mastered")} value={`${ov.mastered_concepts}/${ov.total_concepts}`} />
-          <Stat label={t("dashboard.attempted")} value={`${ov.attempted_concepts}`} />
-          <Stat label={t("dashboard.due")} value={`${ov.due_concepts}`} />
+        <div className="mt-3 flex flex-wrap justify-center gap-6 sm:justify-start">
+          <Stat
+            label={t("dashboard.mastered")}
+            value={`${ov.mastered_concepts}/${ov.total_concepts}`}
+            hint={t("dashboard.masteredHint")}
+          />
+          <Stat
+            label={t("dashboard.attempted")}
+            value={`${ov.attempted_concepts}`}
+            hint={t("dashboard.attemptedHint")}
+          />
+          <Stat
+            label={t("dashboard.due")}
+            value={`${ov.due_concepts}`}
+            hint={t("dashboard.dueHint")}
+          />
+          {questions && (
+            <Stat
+              label={t("dashboard.answered")}
+              value={`${questions.answered}/${questions.total}`}
+              hint={t("dashboard.answeredHint")}
+            />
+          )}
         </div>
       </div>
       <Link to="/review" className="w-full sm:w-auto">
@@ -47,6 +76,7 @@ export function CatalogPage() {
   const { t } = useTranslation();
   const courses = useCourses();
   const progress = useProgress();
+  const questions = useQuestionsProgress();
 
   if (courses.isLoading) return <PageLoader label={t("common.loading")} />;
   if (courses.isError || !courses.data)
@@ -58,7 +88,18 @@ export function CatalogPage() {
 
   return (
     <div>
-      {progress.data && <StatsHero ov={progress.data} />}
+      {progress.data && (
+        <StatsHero ov={progress.data} questions={questions.data} />
+      )}
+      <p className="mb-8 text-center text-xs text-faint sm:text-left">
+        {t("dashboard.legend")}{" "}
+        <Link
+          to="/progress"
+          className="font-semibold text-primary hover:underline"
+        >
+          {t("dashboard.seeProgress")}
+        </Link>
+      </p>
 
       <div className="mb-4">
         <h2 className="text-lg font-bold text-ink">{t("catalog.title")}</h2>
@@ -114,11 +155,22 @@ export function CatalogPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
-    <div>
+    <div title={hint} className={hint ? "cursor-help" : undefined}>
       <div className="text-2xl font-bold text-ink">{value}</div>
-      <div className="text-xs text-faint">{label}</div>
+      <div className="text-xs text-faint">
+        {label}
+        {hint && <span className="ml-0.5 text-faint">ⓘ</span>}
+      </div>
     </div>
   );
 }

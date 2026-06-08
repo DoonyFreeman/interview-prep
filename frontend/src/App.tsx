@@ -7,6 +7,7 @@ import { CoursePage } from "./pages/CoursePage";
 import { LessonPage } from "./pages/LessonPage";
 import { QuizPage } from "./pages/QuizPage";
 import { QuestionsPage } from "./pages/QuestionsPage";
+import { ProgressPage } from "./pages/ProgressPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
@@ -29,6 +30,7 @@ export function App() {
         <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
         <Route path="/slang" element={<SlangPage />} />
         <Route path="/review" element={<ReviewPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/courses/:courseSlug" element={<CoursePage />} />
         <Route

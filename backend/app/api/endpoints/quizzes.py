@@ -18,6 +18,7 @@ from app.schemas import (
     HintIn,
     HintOut,
     LessonQuestionsOut,
+    QuestionAttemptsOut,
     QuestionOut,
 )
 from app.services import quiz
@@ -65,6 +66,19 @@ async def get_question(
 ):
     """Serve one specific question by id (re-practice). No reference answer."""
     return await quiz.get_question(session, question_id)
+
+
+@router.get(
+    "/quiz/questions/{question_id}/attempts",
+    response_model=QuestionAttemptsOut,
+)
+async def question_attempts(
+    question_id: int,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """The user's past attempts at a question (their answers + stored reviews)."""
+    return await quiz.get_question_attempts(session, question_id, user_id=user.id)
 
 
 @router.post(

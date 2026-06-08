@@ -33,8 +33,10 @@ from app.repositories import (
     QuestionRepository,
 )
 from app.schemas import (
+    AttemptOut,
     EvaluationOut,
     LessonQuestionsOut,
+    QuestionAttemptsOut,
     QuestionOut,
     QuestionStatusOut,
 )
@@ -193,6 +195,46 @@ async def list_lesson_questions(
 
     return LessonQuestionsOut(
         course_slug=course_slug, lesson_slug=lesson_slug, questions=items
+    )
+
+
+async def get_question_attempts(
+    session: AsyncSession, question_id: int, *, user_id: int
+) -> QuestionAttemptsOut:
+    """The user's past attempts at a question: their answer + the stored review,
+    newest first. Lets the user revisit what they wrote and how it was graded."""
+    ctx = await _get_context(session, question_id)
+    attempts = await AttemptRepository(session).list_for_question(user_id, question_id)
+
+    out: list[AttemptOut] = []
+    for a in attempts:
+        try:
+            review = json.loads(a.review_json)
+        except (ValueError, TypeError):
+            review = {}
+        out.append(
+            AttemptOut(
+                id=a.id,
+                score=a.score,
+                verdict=str(review.get("verdict", "")),
+                summary=str(review.get("summary", "")),
+                strengths=list(review.get("strengths") or []),
+                gaps=list(review.get("gaps") or []),
+                suggestion=str(review.get("suggestion", "")),
+                answer_text=a.answer_text,
+                hint_used=a.hint_used,
+                created_at=a.created_at,
+            )
+        )
+
+    return QuestionAttemptsOut(
+        question_id=ctx.question.id,
+        text=ctx.question.text,
+        concept_title=ctx.concept.title,
+        anchor=ctx.concept.anchor,
+        course_slug=ctx.course.slug,
+        lesson_slug=ctx.lesson.slug,
+        attempts=out,
     )
 
 

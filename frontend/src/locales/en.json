@@ -9,7 +9,8 @@
     "slang": "Slang",
     "review": "To review",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "progress": "Progress"
   },
   "slang": {
     "title": "Developer slang",
@@ -127,7 +128,14 @@
     "attempted": "Started",
     "due": "To review",
     "reviewCta": "Review: {{count}}",
-    "reviewNone": "All reviewed"
+    "reviewNone": "All reviewed",
+    "answered": "Answered",
+    "masteredHint": "A concept is mastered after ≥2 successful reviews scoring ≥80 (spaced repetition).",
+    "attemptedHint": "Concepts you've answered a question on at least once.",
+    "dueHint": "Concepts due for review per the schedule.",
+    "answeredHint": "How many distinct questions you've attempted at least once, out of all questions.",
+    "legend": "Progress is tracked by concepts and spaced repetition.",
+    "seeProgress": "What's left →"
   },
   "review": {
     "title": "To review",
@@ -172,7 +180,12 @@
     "attemptsMany": "Attempts: {{count}}",
     "practice": "Practice",
     "retry": "Answer again",
-    "backToLesson": "Back to lesson"
+    "backToLesson": "Back to lesson",
+    "myAnswers": "My answers ({{count}})",
+    "hideAnswers": "Hide answers",
+    "yourAnswer": "Your answer",
+    "noAnswersYet": "No saved answers yet.",
+    "hintUsed": "Hint used"
   },
   "quiz": {
     "title": "Quiz",
@@ -201,5 +214,12 @@
     },
     "loadError": "Failed to load the question",
     "noQuestions": "No questions for this lesson yet"
+  },
+  "progress": {
+    "title": "What's left",
+    "subtitle": "How many questions you've completed per course and lesson.",
+    "answeredOf": "Answered {{answered}} of {{total}} questions",
+    "left": "{{count}} left",
+    "allDone": "all done"
   }
 }

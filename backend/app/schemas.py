@@ -86,6 +86,33 @@ class LessonQuestionsOut(BaseModel):
     questions: list[QuestionStatusOut]
 
 
+class AttemptOut(BaseModel):
+    """One past attempt at a question: the user's answer + the stored review."""
+
+    id: int
+    score: int
+    verdict: str
+    summary: str
+    strengths: list[str]
+    gaps: list[str]
+    suggestion: str
+    answer_text: str
+    hint_used: bool
+    created_at: datetime
+
+
+class QuestionAttemptsOut(BaseModel):
+    """A question's context + the current user's attempt history, newest first."""
+
+    question_id: int
+    text: str
+    concept_title: str
+    anchor: str
+    course_slug: str
+    lesson_slug: str
+    attempts: list[AttemptOut]
+
+
 class EvaluateIn(BaseModel):
     answer_text: str
     hint_used: bool = False
@@ -181,6 +208,30 @@ class ProgressOverviewOut(BaseModel):
     mastered_concepts: int
     due_concepts: int
     courses: list[CourseProgressOut]
+
+
+# --------------------------------------------------------------------------- #
+# Questions-answered progress ("what's left" overview)
+# --------------------------------------------------------------------------- #
+class LessonQuestionsProgressOut(BaseModel):
+    slug: str
+    title: str
+    total: int
+    answered: int
+
+
+class CourseQuestionsProgressOut(BaseModel):
+    slug: str
+    title: str
+    total: int
+    answered: int
+    lessons: list[LessonQuestionsProgressOut]
+
+
+class QuestionsProgressOut(BaseModel):
+    total: int
+    answered: int
+    courses: list[CourseQuestionsProgressOut]
 
 
 class LessonProgressIn(BaseModel):
