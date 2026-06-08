@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLessonQuestions } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Button } from "../components/Button";
 import { ScorePill } from "../components/ScorePill";
+import { AttemptHistory } from "../components/AttemptHistory";
 import type { QuestionStatus } from "../api/types";
 
 function StatusLabel({ q }: { q: QuestionStatus }) {
@@ -24,6 +26,7 @@ export function QuestionsPage() {
   const { t } = useTranslation();
   const { courseSlug = "", lessonSlug = "" } = useParams();
   const data = useLessonQuestions(courseSlug, lessonSlug);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   if (data.isLoading) return <PageLoader label={t("common.loading")} />;
   if (data.isError || !data.data)
@@ -57,7 +60,7 @@ export function QuestionsPage() {
               </span>
             </div>
             <p className="text-sm leading-relaxed text-ink">{q.text}</p>
-            <div className="mt-3">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               <Link
                 to={`/courses/${courseSlug}/lessons/${lessonSlug}/quiz/${q.id}`}
               >
@@ -67,7 +70,18 @@ export function QuestionsPage() {
                     : t("questions.retry")}
                 </Button>
               </Link>
+              {q.attempts > 0 && (
+                <button
+                  onClick={() => setOpenId(openId === q.id ? null : q.id)}
+                  className="rounded-lg px-3 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                >
+                  {openId === q.id
+                    ? t("questions.hideAnswers")
+                    : t("questions.myAnswers", { count: q.attempts })}
+                </button>
+              )}
             </div>
+            {openId === q.id && <AttemptHistory questionId={q.id} />}
           </div>
         ))}
       </div>

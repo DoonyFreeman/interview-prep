@@ -173,6 +173,49 @@ async def test_lesson_questions_requires_auth(client):
     assert r.status_code in (401, 403)
 
 
+async def test_question_attempts_history(client):
+    headers = await _auth_header(client)
+    qid = await _first_question_id(client, headers)
+
+    # No attempts yet.
+    r = await client.get(f"/api/quiz/questions/{qid}/attempts", headers=headers)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["question_id"] == qid
+    assert body["text"]
+    assert body["attempts"] == []
+    assert "reference_answer" not in r.text
+
+    # Two answers → two attempts, newest first, carrying answer + review.
+    await client.post(
+        f"/api/quiz/questions/{qid}/evaluate",
+        json={"answer_text": "первый ответ"},
+        headers=headers,
+    )
+    await client.post(
+        f"/api/quiz/questions/{qid}/evaluate",
+        json={"answer_text": "второй ответ", "hint_used": True},
+        headers=headers,
+    )
+    r = await client.get(f"/api/quiz/questions/{qid}/attempts", headers=headers)
+    attempts = r.json()["attempts"]
+    assert len(attempts) == 2
+    assert attempts[0]["answer_text"] == "второй ответ"  # newest first
+    assert attempts[1]["answer_text"] == "первый ответ"
+    assert attempts[0]["hint_used"] is True
+    # Stored review surfaces (fake LLM defaults).
+    assert attempts[0]["score"] == 75
+    assert attempts[0]["verdict"] == "частично"
+    assert attempts[0]["gaps"]
+    assert attempts[0]["created_at"]
+    assert "reference_answer" not in r.text
+
+
+async def test_question_attempts_requires_auth(client):
+    r = await client.get("/api/quiz/questions/1/attempts")
+    assert r.status_code in (401, 403)
+
+
 # --------------------------------------------------------------------------- #
 # Evaluate
 # --------------------------------------------------------------------------- #

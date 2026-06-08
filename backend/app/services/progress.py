@@ -20,6 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ConceptMastery, LessonProgress, _utcnow
 from app.repositories import (
+    AttemptRepository,
     ConceptMasteryRepository,
     CourseRepository,
     LessonProgressRepository,
@@ -29,9 +30,12 @@ from app.repositories import (
 from app.schemas import (
     ConceptProgressOut,
     CourseProgressOut,
+    CourseQuestionsProgressOut,
     LessonProgressOut,
+    LessonQuestionsProgressOut,
     MasteryOut,
     ProgressOverviewOut,
+    QuestionsProgressOut,
     ReviewItem,
     ReviewQueueOut,
 )
@@ -230,6 +234,55 @@ async def get_overview(
         mastered_concepts=g_mastered,
         due_concepts=g_due,
         courses=course_outs,
+    )
+
+
+# --------------------------------------------------------------------------- #
+# Questions-answered overview ("what's left")
+# --------------------------------------------------------------------------- #
+async def get_questions_overview(
+    session: AsyncSession, *, user_id: int
+) -> QuestionsProgressOut:
+    """Per course / lesson: how many questions exist vs. how many the user has
+    answered at least once. Drives the 'what's left to practice' view."""
+    courses = await CourseRepository(session).list_published_with_lessons_concepts()
+    totals = await QuestionRepository(session).count_by_lesson()
+    answered = await AttemptRepository(session).answered_counts_by_lesson(user_id)
+
+    course_outs: list[CourseQuestionsProgressOut] = []
+    g_total = g_answered = 0
+
+    for course in courses:
+        lesson_outs: list[LessonQuestionsProgressOut] = []
+        c_total = c_answered = 0
+        for lesson in sorted(course.lessons, key=lambda x: x.order_index):
+            l_total = totals.get(lesson.id, 0)
+            l_answered = min(answered.get(lesson.id, 0), l_total)
+            lesson_outs.append(
+                LessonQuestionsProgressOut(
+                    slug=lesson.slug,
+                    title=lesson.title,
+                    total=l_total,
+                    answered=l_answered,
+                )
+            )
+            c_total += l_total
+            c_answered += l_answered
+
+        course_outs.append(
+            CourseQuestionsProgressOut(
+                slug=course.slug,
+                title=course.title,
+                total=c_total,
+                answered=c_answered,
+                lessons=lesson_outs,
+            )
+        )
+        g_total += c_total
+        g_answered += c_answered
+
+    return QuestionsProgressOut(
+        total=g_total, answered=g_answered, courses=course_outs
     )
 
 

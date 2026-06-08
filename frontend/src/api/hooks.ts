@@ -14,7 +14,9 @@ import type {
   LessonDetail,
   LessonQuestions,
   ProgressOverviewOut,
+  QuestionAttempts,
   QuestionOut,
+  QuestionsProgress,
   QuizResultItem,
   ReviewQueue,
   TokenOut,
@@ -55,6 +57,14 @@ export function useProgress() {
     queryKey: ["progress"],
     queryFn: async () =>
       (await api.get<ProgressOverviewOut>("/progress")).data,
+  });
+}
+
+export function useQuestionsProgress() {
+  return useQuery({
+    queryKey: ["questions-progress"],
+    queryFn: async () =>
+      (await api.get<QuestionsProgress>("/progress/questions")).data,
   });
 }
 
@@ -162,6 +172,22 @@ export function useLessonQuestions(courseSlug: string, lessonSlug: string) {
   });
 }
 
+export function useQuestionAttempts(
+  questionId: number | null,
+  options: { enabled?: boolean } = {},
+) {
+  return useQuery({
+    queryKey: ["question-attempts", questionId],
+    enabled: (options.enabled ?? true) && questionId != null,
+    queryFn: async () =>
+      (
+        await api.get<QuestionAttempts>(
+          `/quiz/questions/${questionId}/attempts`,
+        )
+      ).data,
+  });
+}
+
 export function useEvaluate() {
   const qc = useQueryClient();
   return useMutation({
@@ -176,10 +202,14 @@ export function useEvaluate() {
           { answer_text: vars.answerText, hint_used: vars.hintUsed },
         )
       ).data,
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       qc.invalidateQueries({ queryKey: ["progress"] });
+      qc.invalidateQueries({ queryKey: ["questions-progress"] });
       qc.invalidateQueries({ queryKey: ["lesson-questions"] });
       qc.invalidateQueries({ queryKey: ["review"] });
+      qc.invalidateQueries({
+        queryKey: ["question-attempts", vars.questionId],
+      });
     },
   });
 }

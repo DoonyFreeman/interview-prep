@@ -141,6 +141,40 @@ async def _serve_qid(client, headers) -> int:
     return r.json()["id"]
 
 
+async def test_questions_overview_counts_answered(client):
+    headers = await _auth(client)
+
+    # Baseline: nothing answered, but totals are populated from content.
+    r = await client.get("/api/progress/questions", headers=headers)
+    assert r.status_code == 200
+    ov = r.json()
+    assert ov["total"] > 0
+    assert ov["answered"] == 0
+    pycore = next(c for c in ov["courses"] if c["slug"] == "python-core")
+    gil = next(l for l in pycore["lessons"] if l["slug"] == "gil")
+    assert gil["total"] == 5  # GIL lesson: 5 concepts × 1 question
+    assert gil["answered"] == 0
+
+    # Answer one question → answered counts tick up (course + global + lesson).
+    qid = await _serve_qid(client, headers)
+    await client.post(
+        f"/api/quiz/questions/{qid}/evaluate",
+        json={"answer_text": "ответ"},
+        headers=headers,
+    )
+    ov = (await client.get("/api/progress/questions", headers=headers)).json()
+    assert ov["answered"] == 1
+    pycore = next(c for c in ov["courses"] if c["slug"] == "python-core")
+    assert pycore["answered"] == 1
+    gil = next(l for l in pycore["lessons"] if l["slug"] == "gil")
+    assert gil["answered"] == 1
+
+
+async def test_questions_overview_requires_auth(client):
+    r = await client.get("/api/progress/questions")
+    assert r.status_code in (401, 403)
+
+
 # --------------------------------------------------------------------------- #
 # Mastery via evaluate
 # --------------------------------------------------------------------------- #
