@@ -13,7 +13,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.dependencies import get_current_user
 from app.database import get_session
 from app.models import User
-from app.schemas import LessonProgressIn, ProgressOverviewOut, ReviewQueueOut
+from app.schemas import (
+    LessonProgressIn,
+    ProgressOverviewOut,
+    QuestionsProgressOut,
+    ReviewQueueOut,
+)
 from app.services import progress
 
 router = APIRouter()
@@ -26,6 +31,15 @@ async def overview(
 ):
     """Per-course / lesson / concept mastery rollup for the current user."""
     return await progress.get_overview(session, user_id=user.id)
+
+
+@router.get("/progress/questions", response_model=QuestionsProgressOut)
+async def questions_overview(
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Per-course / lesson: questions answered vs. total ('what's left')."""
+    return await progress.get_questions_overview(session, user_id=user.id)
 
 
 @router.get("/progress/review", response_model=ReviewQueueOut)

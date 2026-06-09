@@ -117,6 +117,8 @@ export interface EvaluationOut {
   strengths: string[];
   gaps: string[];
   suggestion: string;
+  /** Authored reference answer — revealed only after grading. */
+  reference_answer: string;
   concept_slug: string;
   mastery: MasteryOut;
 }
@@ -215,4 +217,48 @@ export interface GlossaryProgress {
 export interface QuizResultItem {
   term_slug: string;
   correct: boolean;
+}
+
+export interface AttemptOut {
+  id: number;
+  score: number;
+  verdict: Verdict | string;
+  summary: string;
+  strengths: string[];
+  gaps: string[];
+  suggestion: string;
+  answer_text: string;
+  hint_used: boolean;
+  created_at: string;
+}
+
+export interface QuestionAttempts {
+  question_id: number;
+  text: string;
+  concept_title: string;
+  anchor: string;
+  course_slug: string;
+  lesson_slug: string;
+  attempts: AttemptOut[];
+}
+
+export interface LessonQuestionsProgress {
+  slug: string;
+  title: string;
+  total: number;
+  answered: number;
+}
+
+export interface CourseQuestionsProgress {
+  slug: string;
+  title: string;
+  total: number;
+  answered: number;
+  lessons: LessonQuestionsProgress[];
+}
+
+export interface QuestionsProgress {
+  total: number;
+  answered: number;
+  courses: CourseQuestionsProgress[];
 }
