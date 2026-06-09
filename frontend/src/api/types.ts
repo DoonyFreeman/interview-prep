@@ -117,6 +117,8 @@ export interface EvaluationOut {
   strengths: string[];
   gaps: string[];
   suggestion: string;
+  /** Authored reference answer — revealed only after grading. */
+  reference_answer: string;
   concept_slug: string;
   mastery: MasteryOut;
 }

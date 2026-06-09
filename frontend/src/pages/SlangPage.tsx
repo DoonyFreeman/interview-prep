@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGlossary } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
@@ -47,10 +48,20 @@ export function SlangPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-bold text-ink">{t("slang.title")}</h1>
-      <p className="mt-1 text-muted">
-        {t("slang.subtitle", { count: slang.data.count })}
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-ink">{t("slang.title")}</h1>
+          <p className="mt-1 text-muted">
+            {t("slang.subtitle", { count: slang.data.count })}
+          </p>
+        </div>
+        <Link
+          to="/slang/quiz"
+          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg transition-opacity hover:opacity-90"
+        >
+          {t("slang.quizCta")}
+        </Link>
+      </div>
 
       <div className="sticky top-15 z-10 -mx-4 mt-5 mb-6 bg-bg/80 px-4 py-3 backdrop-blur">
         <input

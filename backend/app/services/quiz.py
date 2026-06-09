@@ -2,7 +2,9 @@
 
 Serving a question is a pure DB read — no LLM. Evaluation and hints each make a
 single Gemini call grounded in the lesson text + the question's reference answer.
-The reference answer is used only server-side and never returned to the client.
+The reference answer is never sent pre-answer (serve / list / attempts); the one
+deliberate exception is the evaluation response, which reveals it AFTER the
+user's answer has been submitted and graded so they can compare.
 
 All DB access goes through repositories; this module holds the orchestration
 (LLM call, normalization, transaction boundary) and the spaced-repetition-aware
@@ -295,6 +297,9 @@ async def evaluate_answer(
 
     return EvaluationOut(
         attempt_id=attempt.id,
+        # Revealed post-answer only: the user has already committed their own
+        # answer, so showing the authored reference is a learning aid, not a leak.
+        reference_answer=ctx.question.reference_answer,
         concept_slug=ctx.concept.slug,
         mastery=progress.mastery_to_out(mastery, now),
         **review,
