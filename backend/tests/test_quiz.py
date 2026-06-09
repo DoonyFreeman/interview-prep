@@ -234,6 +234,9 @@ async def test_evaluate_returns_review_and_stores_attempt(client, Session, fake_
     assert body["verdict"] == "частично"
     assert body["strengths"] and body["gaps"]
     assert body["attempt_id"]
+    # Post-answer the response deliberately reveals the authored reference
+    # answer (the user has already committed their own answer).
+    assert body["reference_answer"].strip()
 
     # The grader was called with the eval system prompt and the reference answer.
     assert fake_llm.calls and fake_llm.calls[0][0] == "json"

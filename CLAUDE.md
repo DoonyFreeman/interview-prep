@@ -174,10 +174,13 @@ can't get from one file:
   naive values, so everything stays naive-UTC: mixing aware/naive raises, and an
   offset suffix would break the lexical ordering SQLite uses for `due_at` filters.
   Use `_utcnow()` for any new timestamp/`now` rather than `datetime.now(...)`.
-- **`reference_answer` must never reach the client.** It grounds server-side
-  grading only; the read schemas in `app/schemas.py` deliberately omit it, and a
-  test (`test_reference_answers_never_leak`) guards this. Keep it server-side when
-  adding quiz endpoints.
+- **`reference_answer` must never reach the client pre-answer.** It grounds
+  server-side grading; the read schemas in `app/schemas.py` deliberately omit it
+  (serve / lesson list / attempts history), and tests
+  (`test_reference_answers_never_leak*`) guard this. The **one deliberate
+  exception** is `EvaluationOut`: after the user submits an answer and it is
+  graded, the response reveals the authored reference answer for
+  self-comparison. Keep every new pre-answer endpoint reference-free.
 - **bcrypt is used directly, not via passlib** (`app/auth/security.py`): passlib
   1.7.4 breaks against bcrypt ≥ 4/5. Passwords are truncated to 72 bytes (bcrypt's
   limit) before hashing/verifying.
@@ -197,7 +200,7 @@ backend/app/
   config.py    Settings (pydantic-settings), cached get_settings(), Gemini model_chain
   database.py  async engine (SQLite WAL), SessionLocal, get_session(), init_db()
   models.py    all ORM tables (content mirror + user state)
-  schemas.py   Pydantic read responses + quiz I/O (no reference_answer)
+  schemas.py   Pydantic read responses + quiz I/O (reference_answer only post-grade)
   main.py      create_app(), lifespan (init_db + seed_from_dir), /health, CORS, routers
   content/     loader.py, seed.py, registry.py            — DONE
   auth/        security.py, tokens.py, dependencies.py, schemas.py  — DONE
@@ -269,7 +272,11 @@ hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
    `glossary_terms` table via a `kind` discriminator (`reference` | `slang`); the
    public `GET /api/glossary?kind=slang` serves it (default `kind=reference`, so the
    glossary page and quizzes stay reference-only). A `/slang` page groups terms
-   alphabetically with client-side search; nav item "Сленг".
+   alphabetically with client-side search; nav item "Сленг". **Slang quiz**: the
+   `/slang/quiz` route reuses `GlossaryQuizPage` with `kind="slang"` (category
+   picker hidden — slang is one flat category); stats flow through the same
+   `glossary_term_stats` endpoints (`all_slugs` is kind-agnostic by design, and
+   the reference category rollup ignores slang slugs).
 6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
    glossary P1/P2 fill in here too). Done so far: full curriculum across **20
    courses / 97 lessons / 346 concepts / 346 questions** under `content/courses/`

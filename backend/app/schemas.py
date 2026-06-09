@@ -1,7 +1,9 @@
 """Pydantic response models for the read API.
 
-Question reference answers are intentionally NOT exposed here — they ground the
-LLM evaluation server-side and must never be sent to the client.
+Question reference answers ground the LLM evaluation server-side and are never
+exposed pre-answer (serve / lesson list / attempts history). The one deliberate
+exception is EvaluationOut: after the user submits an answer and it is graded,
+the response reveals the authored reference answer for self-comparison.
 """
 from __future__ import annotations
 
@@ -137,6 +139,10 @@ class EvaluationOut(BaseModel):
     strengths: list[str]
     gaps: list[str]
     suggestion: str
+    # The authored reference answer, revealed ONLY here — after the user has
+    # submitted their own answer and it has been graded. Pre-answer endpoints
+    # (serve / lesson list / attempts history) must keep omitting it.
+    reference_answer: str
     concept_slug: str
     mastery: MasteryOut
 

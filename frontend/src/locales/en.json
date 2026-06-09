@@ -16,7 +16,14 @@
     "title": "Developer slang",
     "subtitle": "{{count}} pieces of dev jargon — in plain words.",
     "searchPlaceholder": "Search a word…",
-    "noResults": "Nothing found"
+    "noResults": "Nothing found",
+    "quizCta": "Take a quiz"
+  },
+  "slangQuiz": {
+    "title": "Slang quiz",
+    "subtitle": "Check you actually get the dev jargon.",
+    "back": "To slang",
+    "toList": "To slang"
   },
   "glossary": {
     "title": "Developer glossary",
@@ -204,6 +211,7 @@
     "strengths": "Strengths",
     "gaps": "Gaps",
     "suggestion": "Suggestion",
+    "referenceAnswer": "Reference answer",
     "nextReviewIn": "Next review in {{count}} d",
     "nextReviewToday": "Review again today",
     "emptyAnswer": "Write an answer first",

@@ -29,6 +29,7 @@ export function App() {
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
         <Route path="/slang" element={<SlangPage />} />
+        <Route path="/slang/quiz" element={<GlossaryQuizPage kind="slang" />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />

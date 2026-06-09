@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { EvaluationOut } from "../api/types";
+import { Markdown } from "./Markdown";
 import { ScoreGauge } from "./ScoreGauge";
 import { VerdictBadge } from "./VerdictBadge";
 
@@ -56,6 +57,17 @@ export function EvaluationCard({ data }: { data: EvaluationOut }) {
         <div className="mt-4 rounded-xl bg-primary-soft px-4 py-3 text-sm text-ink">
           <span className="font-semibold">{t("quiz.suggestion")}: </span>
           {data.suggestion}
+        </div>
+      )}
+
+      {data.reference_answer && (
+        <div className="mt-4 rounded-xl border border-success/30 bg-success-soft px-4 py-3">
+          <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-success">
+            {t("quiz.referenceAnswer")}
+          </h4>
+          <div className="prose-sm text-sm leading-relaxed text-ink">
+            <Markdown markdown={data.reference_answer} />
+          </div>
         </div>
       )}
 
