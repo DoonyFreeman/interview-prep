@@ -4,6 +4,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
+import { BottomNavBar } from "./BottomNavBar";
 
 function DueBadge() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export function Layout() {
             <span className="hidden sm:inline">{t("app.name")}</span>
           </Link>
 
-          <nav className="ml-2 flex items-center gap-1">
+          <nav className="ml-2 hidden items-center gap-1 sm:flex">
             <NavLink
               to="/"
               end
@@ -118,7 +119,7 @@ export function Layout() {
               </NavLink>
               <button
                 onClick={logout}
-                className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                className="hidden rounded-lg px-2.5 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-ink sm:block"
               >
                 {t("nav.logout")}
               </button>
@@ -127,9 +128,11 @@ export function Layout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:pb-8">
         <Outlet />
       </main>
+
+      <BottomNavBar />
     </div>
   );
 }
