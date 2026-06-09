@@ -1,7 +1,9 @@
 """Pydantic response models for the read API.
 
-Question reference answers are intentionally NOT exposed here — they ground the
-LLM evaluation server-side and must never be sent to the client.
+Question reference answers ground the LLM evaluation server-side and are never
+exposed pre-answer (serve / lesson list / attempts history). The one deliberate
+exception is EvaluationOut: after the user submits an answer and it is graded,
+the response reveals the authored reference answer for self-comparison.
 """
 from __future__ import annotations
 
@@ -86,6 +88,33 @@ class LessonQuestionsOut(BaseModel):
     questions: list[QuestionStatusOut]
 
 
+class AttemptOut(BaseModel):
+    """One past attempt at a question: the user's answer + the stored review."""
+
+    id: int
+    score: int
+    verdict: str
+    summary: str
+    strengths: list[str]
+    gaps: list[str]
+    suggestion: str
+    answer_text: str
+    hint_used: bool
+    created_at: datetime
+
+
+class QuestionAttemptsOut(BaseModel):
+    """A question's context + the current user's attempt history, newest first."""
+
+    question_id: int
+    text: str
+    concept_title: str
+    anchor: str
+    course_slug: str
+    lesson_slug: str
+    attempts: list[AttemptOut]
+
+
 class EvaluateIn(BaseModel):
     answer_text: str
     hint_used: bool = False
@@ -110,6 +139,10 @@ class EvaluationOut(BaseModel):
     strengths: list[str]
     gaps: list[str]
     suggestion: str
+    # The authored reference answer, revealed ONLY here — after the user has
+    # submitted their own answer and it has been graded. Pre-answer endpoints
+    # (serve / lesson list / attempts history) must keep omitting it.
+    reference_answer: str
     concept_slug: str
     mastery: MasteryOut
 
@@ -181,6 +214,30 @@ class ProgressOverviewOut(BaseModel):
     mastered_concepts: int
     due_concepts: int
     courses: list[CourseProgressOut]
+
+
+# --------------------------------------------------------------------------- #
+# Questions-answered progress ("what's left" overview)
+# --------------------------------------------------------------------------- #
+class LessonQuestionsProgressOut(BaseModel):
+    slug: str
+    title: str
+    total: int
+    answered: int
+
+
+class CourseQuestionsProgressOut(BaseModel):
+    slug: str
+    title: str
+    total: int
+    answered: int
+    lessons: list[LessonQuestionsProgressOut]
+
+
+class QuestionsProgressOut(BaseModel):
+    total: int
+    answered: int
+    courses: list[CourseQuestionsProgressOut]
 
 
 class LessonProgressIn(BaseModel):

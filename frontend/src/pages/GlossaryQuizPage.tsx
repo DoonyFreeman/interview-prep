@@ -62,12 +62,21 @@ function catLabel(t: (k: string) => string, slug: string): string {
   return label === key ? slug : label;
 }
 
-export function GlossaryQuizPage() {
+export function GlossaryQuizPage({
+  kind = "reference",
+}: {
+  /** "slang" reuses the same engine/stats over the slang dictionary. */
+  kind?: "reference" | "slang";
+}) {
   const { t } = useTranslation();
   const [params] = useSearchParams();
-  const glossary = useGlossary(null, "");
+  const glossary = useGlossary(null, "", kind);
   const progress = useGlossaryProgress();
   const record = useRecordQuizResult();
+
+  const isSlang = kind === "slang";
+  const basePath = isSlang ? "/slang" : "/glossary";
+  const i18nNs = isSlang ? "slangQuiz" : "glossaryQuiz";
 
   const allTerms = glossary.data?.terms ?? [];
   const categories = glossary.data?.categories ?? [];
@@ -164,37 +173,39 @@ export function GlossaryQuizPage() {
 
     return (
       <div className="mx-auto max-w-2xl">
-        <Link to="/glossary" className="text-sm font-medium text-muted hover:text-ink">
-          ← {t("glossaryQuiz.back")}
+        <Link to={basePath} className="text-sm font-medium text-muted hover:text-ink">
+          ← {t(`${i18nNs}.back`)}
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-ink">{t("glossaryQuiz.title")}</h1>
-        <p className="mt-1 mb-6 text-muted">{t("glossaryQuiz.subtitle")}</p>
+        <h1 className="mt-2 text-2xl font-bold text-ink">{t(`${i18nNs}.title`)}</h1>
+        <p className="mt-1 mb-6 text-muted">{t(`${i18nNs}.subtitle`)}</p>
 
         <div className="space-y-6 rounded-2xl border border-border bg-surface p-5 shadow-sm">
-          {/* Categories */}
-          <section>
-            <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-sm font-bold text-ink">{t("glossaryQuiz.categories")}</h2>
-              <Chip
-                active={allSelected}
-                onClick={() =>
-                  setSelectedCats(allSelected ? [] : [...categories])
-                }
-              >
-                {t("glossaryQuiz.selectAll")}
-              </Chip>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <Chip key={c} active={selectedCats.includes(c)} onClick={() => toggleCat(c)}>
-                  {catLabel(t, c)}
+          {/* Categories (hidden for slang — it is a single flat dictionary) */}
+          {!isSlang && (
+            <section>
+              <div className="mb-2 flex items-center justify-between">
+                <h2 className="text-sm font-bold text-ink">{t("glossaryQuiz.categories")}</h2>
+                <Chip
+                  active={allSelected}
+                  onClick={() =>
+                    setSelectedCats(allSelected ? [] : [...categories])
+                  }
+                >
+                  {t("glossaryQuiz.selectAll")}
                 </Chip>
-              ))}
-            </div>
-            {selectedCats.length === 0 && (
-              <p className="mt-2 text-xs text-danger">{t("glossaryQuiz.needCategory")}</p>
-            )}
-          </section>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((c) => (
+                  <Chip key={c} active={selectedCats.includes(c)} onClick={() => toggleCat(c)}>
+                    {catLabel(t, c)}
+                  </Chip>
+                ))}
+              </div>
+              {selectedCats.length === 0 && (
+                <p className="mt-2 text-xs text-danger">{t("glossaryQuiz.needCategory")}</p>
+              )}
+            </section>
+          )}
 
           {/* Count */}
           <section>
@@ -285,7 +296,7 @@ export function GlossaryQuizPage() {
               total: questions.length,
             })}
           </span>
-          <Link to="/glossary" className="text-xs font-medium text-muted hover:text-ink">
+          <Link to={basePath} className="text-xs font-medium text-muted hover:text-ink">
             ✕
           </Link>
         </div>
@@ -382,7 +393,7 @@ export function GlossaryQuizPage() {
             {missed.map((a) => (
               <Link
                 key={a.termSlug}
-                to={`/glossary#${a.termSlug}`}
+                to={`${basePath}#${a.termSlug}`}
                 className="rounded-full bg-danger-soft px-3 py-1 text-xs font-semibold text-danger hover:opacity-80"
               >
                 {a.term}
@@ -410,8 +421,10 @@ export function GlossaryQuizPage() {
         >
           {t("glossaryQuiz.toSetup")}
         </Button>
-        <Link to="/glossary">
-          <Button variant="ghost">{t("glossaryQuiz.toGlossary")}</Button>
+        <Link to={basePath}>
+          <Button variant="ghost">
+            {t(isSlang ? "slangQuiz.toList" : "glossaryQuiz.toGlossary")}
+          </Button>
         </Link>
       </div>
     </div>

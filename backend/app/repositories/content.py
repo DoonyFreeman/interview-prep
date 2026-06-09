@@ -118,3 +118,15 @@ class QuestionRepository(BaseRepository[Question]):
                 )
             )
         ).scalar()
+
+    async def count_by_lesson(self) -> dict[int, int]:
+        """Per lesson: total number of questions (across all its concepts)."""
+        rows = (
+            await self.session.execute(
+                select(Lesson.id, func.count(Question.id))
+                .join(Concept, Question.concept_id == Concept.id)
+                .join(Lesson, Concept.lesson_id == Lesson.id)
+                .group_by(Lesson.id)
+            )
+        ).all()
+        return {lesson_id: n for lesson_id, n in rows}

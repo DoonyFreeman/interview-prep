@@ -2,7 +2,9 @@
 
 Serving a question is a pure DB read — no LLM. Evaluation and hints each make a
 single Gemini call grounded in the lesson text + the question's reference answer.
-The reference answer is used only server-side and never returned to the client.
+The reference answer is never sent pre-answer (serve / list / attempts); the one
+deliberate exception is the evaluation response, which reveals it AFTER the
+user's answer has been submitted and graded so they can compare.
 
 All DB access goes through repositories; this module holds the orchestration
 (LLM call, normalization, transaction boundary) and the spaced-repetition-aware
@@ -33,8 +35,10 @@ from app.repositories import (
     QuestionRepository,
 )
 from app.schemas import (
+    AttemptOut,
     EvaluationOut,
     LessonQuestionsOut,
+    QuestionAttemptsOut,
     QuestionOut,
     QuestionStatusOut,
 )
@@ -196,6 +200,46 @@ async def list_lesson_questions(
     )
 
 
+async def get_question_attempts(
+    session: AsyncSession, question_id: int, *, user_id: int
+) -> QuestionAttemptsOut:
+    """The user's past attempts at a question: their answer + the stored review,
+    newest first. Lets the user revisit what they wrote and how it was graded."""
+    ctx = await _get_context(session, question_id)
+    attempts = await AttemptRepository(session).list_for_question(user_id, question_id)
+
+    out: list[AttemptOut] = []
+    for a in attempts:
+        try:
+            review = json.loads(a.review_json)
+        except (ValueError, TypeError):
+            review = {}
+        out.append(
+            AttemptOut(
+                id=a.id,
+                score=a.score,
+                verdict=str(review.get("verdict", "")),
+                summary=str(review.get("summary", "")),
+                strengths=list(review.get("strengths") or []),
+                gaps=list(review.get("gaps") or []),
+                suggestion=str(review.get("suggestion", "")),
+                answer_text=a.answer_text,
+                hint_used=a.hint_used,
+                created_at=a.created_at,
+            )
+        )
+
+    return QuestionAttemptsOut(
+        question_id=ctx.question.id,
+        text=ctx.question.text,
+        concept_title=ctx.concept.title,
+        anchor=ctx.concept.anchor,
+        course_slug=ctx.course.slug,
+        lesson_slug=ctx.lesson.slug,
+        attempts=out,
+    )
+
+
 # --------------------------------------------------------------------------- #
 # Evaluate (one LLM call + persist an Attempt + advance mastery)
 # --------------------------------------------------------------------------- #
@@ -253,6 +297,9 @@ async def evaluate_answer(
 
     return EvaluationOut(
         attempt_id=attempt.id,
+        # Revealed post-answer only: the user has already committed their own
+        # answer, so showing the authored reference is a learning aid, not a leak.
+        reference_answer=ctx.question.reference_answer,
         concept_slug=ctx.concept.slug,
         mastery=progress.mastery_to_out(mastery, now),
         **review,

@@ -12,9 +12,10 @@ internet ──443──> caddy (TLS, Let's Encrypt) ──> app:8000 (FastAPI: 
 ## Prerequisites
 
 - A host (1 small VPS is enough) with **Docker Engine + Compose v2**.
-- A **domain** with a DNS **A/AAAA record pointing at the host** (required before
-  Caddy can issue a Let's Encrypt cert).
 - Ports **80 and 443** open to the internet (HTTP-01/TLS-ALPN challenge + serving).
+- **For HTTPS:** either a real domain with A/AAAA record pointing at the host, OR
+  use `{IP}.sslip.io` (see below) for automatic Let's Encrypt certs without
+  owning a domain.
 
 ## First deploy
 
@@ -42,6 +43,25 @@ curl -fsS https://$DOMAIN/health  # {"status":"ok"}
 
 Caddy provisions and auto-renews the certificate; certs persist in the
 `caddy_data` volume, so restarts don't re-issue.
+
+## Fast start without a domain: sslip.io
+
+If you don't have a domain yet, use the free `sslip.io` service:
+
+```bash
+# In .env:
+DOMAIN=176.123.168.87.sslip.io        # Replace IP with your host's IP
+ACME_EMAIL=your-real@email.com         # Let's Encrypt notifications
+
+# Deploy as normal:
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+# The domain auto-resolves to your IP; Caddy issues a real Let's Encrypt cert.
+# Open https://176.123.168.87.sslip.io in your browser (no warnings).
+```
+
+Later, when you have a domain, just edit `DOMAIN` in `.env` and restart — Caddy
+auto-renews the cert under the new domain.
 
 ## Updates
 
