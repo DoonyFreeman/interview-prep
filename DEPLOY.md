@@ -63,17 +63,69 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 Later, when you have a domain, just edit `DOMAIN` in `.env` and restart — Caddy
 auto-renews the cert under the new domain.
 
-## Updates
+## Updates (CI/CD via GitHub Actions + GHCR)
+
+The image is built **in CI**, not on the host — the small VPS OOMs on a Vite
+build. On every push to `master`, `.github/workflows/build.yml` builds the
+`linux/amd64` image and pushes it to GHCR
+(`ghcr.io/doonyfreeman/interview-prep:{latest,<sha>}`, a private package). The
+host only ever **pulls** that image:
 
 ```bash
 cd /opt/interview-prep
-git pull
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+./scripts/deploy.sh
 ```
 
-Content markdown is baked into the image and re-seeded idempotently on startup
-(match by slug; a concept's questions are replaced wholesale). User state on the
-volume is untouched.
+`deploy.sh` does: backup DB → `git pull` (configs) → `docker compose pull app` →
+`up -d --no-build` → health check. It never builds and never touches the data
+volume. Content is re-seeded idempotently on startup; user state on the volume
+is untouched.
+
+### One-time setup
+
+**On the host** (so it can pull code + the private image):
+
+```bash
+# 1. Read-only GitHub deploy key (for `git pull` of the private repo):
+ssh-keygen -t ed25519 -f ~/.ssh/gh_deploy -N "" -C "interview-prep-deploy"
+cat ~/.ssh/gh_deploy.pub        # add in GitHub → repo → Settings → Deploy keys (read-only)
+cat >> ~/.ssh/config <<'EOF'
+Host github.com
+  IdentityFile ~/.ssh/gh_deploy
+  IdentitiesOnly yes
+EOF
+
+# 2. Turn /opt/interview-prep into a git checkout in place (keeps .env, backups/):
+cd /opt/interview-prep
+git init -q && git remote add origin git@github.com:DoonyFreeman/interview-prep.git
+git fetch origin && git reset --hard origin/master
+git checkout -B master --track origin/master
+
+# 3. Log in to GHCR to pull the private image (PAT with read:packages scope):
+echo "<PAT>" | docker login ghcr.io -u DoonyFreeman --password-stdin
+```
+
+**In GitHub** (repo → Settings):
+- **Deploy keys:** add `gh_deploy.pub` (read-only).
+- **Personal access token** (classic, scope `read:packages`) for the host's
+  `docker login` above.
+
+### Continuous deployment (auto-deploy on push) — opt-in
+
+The `deploy` job in the workflow is **skipped** until you enable it:
+
+1. Create a CI SSH key pair; put its **public** key in the host's
+   `~/.ssh/authorized_keys`, restricted to only run the deploy:
+   `command="/opt/interview-prep/scripts/deploy.sh",no-port-forwarding,no-pty ssh-ed25519 AAAA...`
+2. In GitHub → repo → Settings:
+   - Secret `DEPLOY_SSH_KEY` = the CI **private** key.
+   - Variables: `CD_ENABLED=true`, `DEPLOY_HOST=176.123.168.87`, `DEPLOY_USER=root`.
+   - (Optional) Environment `production` with a required reviewer → deploys wait
+     for your approval in the Actions tab.
+
+With that set, `git push` → CI builds the image → SSHes the host → `deploy.sh`.
+The forced-command key means a leaked secret can at most trigger a deploy of the
+current `master`, not get a shell.
 
 ## Backups
 
