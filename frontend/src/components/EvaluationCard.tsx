@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import type { EvaluationOut } from "../api/types";
 import { Markdown } from "./Markdown";
 import { ScoreGauge } from "./ScoreGauge";
 import { VerdictBadge } from "./VerdictBadge";
+import { fadeInUp, staggerContainer } from "../lib/motion";
 
 function Bullets({
   title,
@@ -16,7 +18,7 @@ function Bullets({
   if (items.length === 0) return null;
   const dot = tone === "good" ? "text-success" : "text-danger";
   return (
-    <div>
+    <motion.div variants={fadeInUp}>
       <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-faint">
         {title}
       </h4>
@@ -28,7 +30,7 @@ function Bullets({
           </li>
         ))}
       </ul>
-    </div>
+    </motion.div>
   );
 }
 
@@ -37,8 +39,13 @@ export function EvaluationCard({ data }: { data: EvaluationOut }) {
   const days = Math.max(1, Math.round(data.mastery.interval_days));
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm sm:p-6">
-      <div className="flex items-center gap-4">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+      className="rounded-2xl border border-border bg-surface p-5 shadow-raised sm:p-6"
+    >
+      <motion.div variants={fadeInUp} className="flex items-center gap-4">
         <ScoreGauge score={data.score} />
         <div className="min-w-0">
           <VerdictBadge verdict={data.verdict} />
@@ -46,7 +53,7 @@ export function EvaluationCard({ data }: { data: EvaluationOut }) {
             <p className="mt-2 text-sm leading-relaxed text-ink">{data.summary}</p>
           )}
         </div>
-      </div>
+      </motion.div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <Bullets title={t("quiz.strengths")} items={data.strengths} tone="good" />
@@ -54,28 +61,38 @@ export function EvaluationCard({ data }: { data: EvaluationOut }) {
       </div>
 
       {data.suggestion && (
-        <div className="mt-4 rounded-xl bg-primary-soft px-4 py-3 text-sm text-ink">
+        <motion.div
+          variants={fadeInUp}
+          className="mt-4 rounded-xl bg-primary-soft px-4 py-3 text-sm text-ink"
+        >
           <span className="font-semibold">{t("quiz.suggestion")}: </span>
           {data.suggestion}
-        </div>
+        </motion.div>
       )}
 
       {data.reference_answer && (
-        <div className="mt-4 rounded-xl border border-success/30 bg-success-soft px-4 py-3">
+        <motion.div
+          variants={fadeInUp}
+          className="mt-4 rounded-xl border border-success/30 bg-success-soft px-4 py-3"
+        >
           <h4 className="mb-1.5 text-xs font-bold uppercase tracking-wide text-success">
             {t("quiz.referenceAnswer")}
           </h4>
           <div className="prose-sm text-sm leading-relaxed text-ink">
             <Markdown markdown={data.reference_answer} />
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <p className="mt-4 text-xs font-medium text-muted">
+      <motion.p
+        variants={fadeInUp}
+        className="mt-4 flex items-center gap-1.5 text-xs font-medium text-muted"
+      >
+        <span aria-hidden>↻</span>
         {data.mastery.due
           ? t("quiz.nextReviewToday")
           : t("quiz.nextReviewIn", { count: days })}
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
   );
 }

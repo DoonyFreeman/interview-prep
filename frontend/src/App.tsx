@@ -13,6 +13,7 @@ import { ReviewPage } from "./pages/ReviewPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
 import { GlossaryQuizPage } from "./pages/GlossaryQuizPage";
 import { SlangPage } from "./pages/SlangPage";
+import { DictLayout } from "./components/DictLayout";
 
 export function App() {
   return (
@@ -26,9 +27,12 @@ export function App() {
         }
       >
         <Route path="/" element={<CatalogPage />} />
-        <Route path="/glossary" element={<GlossaryPage />} />
+        {/* Glossary + Slang share a persistent tab shell (DictLayout). */}
+        <Route element={<DictLayout />}>
+          <Route path="/glossary" element={<GlossaryPage />} />
+          <Route path="/slang" element={<SlangPage />} />
+        </Route>
         <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
-        <Route path="/slang" element={<SlangPage />} />
         <Route path="/slang/quiz" element={<GlossaryQuizPage kind="slang" />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/progress" element={<ProgressPage />} />

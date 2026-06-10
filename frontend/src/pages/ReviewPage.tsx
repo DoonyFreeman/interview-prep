@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import { useReview } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Button } from "../components/Button";
 import { ScorePill } from "../components/ScorePill";
+import { EmptyState } from "../components/EmptyState";
+import { fadeInUp, staggerContainer } from "../lib/motion";
 
 export function ReviewPage() {
   const { t, i18n } = useTranslation();
@@ -17,29 +20,34 @@ export function ReviewPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-bold text-ink">{t("review.title")}</h1>
+      <h1 className="font-display text-2xl font-bold text-ink">
+        {t("review.title")}
+      </h1>
       <p className="mt-1 mb-6 text-muted">{t("review.subtitle")}</p>
 
       {count === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-sm">
-          <div className="text-3xl">🎉</div>
-          <p className="mt-3 font-semibold text-ink">{t("review.emptyTitle")}</p>
-          <p className="mt-1 text-sm text-muted">{t("review.emptyHint")}</p>
-          <Link to="/" className="mt-4 inline-block">
+        <EmptyState icon="🎉" title={t("review.emptyTitle")} hint={t("review.emptyHint")}>
+          <Link to="/">
             <Button variant="secondary">{t("review.toCourses")}</Button>
           </Link>
-        </div>
+        </EmptyState>
       ) : (
-        <div className="space-y-3">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="space-y-3"
+        >
           {items.map((item) => {
             const due = new Date(item.due_at).toLocaleDateString(
               i18n.resolvedLanguage,
               { month: "short", day: "numeric" },
             );
             return (
-              <div
+              <motion.div
                 key={item.concept_slug}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-sm"
+                variants={fadeInUp}
+                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-card"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
@@ -60,10 +68,10 @@ export function ReviewPage() {
                     <Button>{t("review.practice")}</Button>
                   </Link>
                 )}
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
     </div>
   );

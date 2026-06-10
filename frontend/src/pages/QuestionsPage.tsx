@@ -41,14 +41,16 @@ export function QuestionsPage() {
         ← {t("questions.backToLesson")}
       </Link>
 
-      <h1 className="mt-3 text-2xl font-bold text-ink">{t("questions.title")}</h1>
+      <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-ink">
+        {t("questions.title")}
+      </h1>
       <p className="mt-1 mb-6 text-muted">{t("questions.subtitle")}</p>
 
       <div className="space-y-3">
         {data.data.questions.map((q) => (
           <div
             key={q.id}
-            className="rounded-2xl border border-border bg-surface p-4 shadow-sm"
+            className="rounded-2xl border border-border bg-surface p-4 shadow-card"
           >
             <div className="mb-2 flex items-center gap-2">
               <span className="rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary">

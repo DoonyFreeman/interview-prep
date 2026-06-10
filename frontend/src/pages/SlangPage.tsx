@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGlossary } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
+import { EmptyState } from "../components/EmptyState";
 import type { GlossaryTerm } from "../api/types";
 
 export function SlangPage() {
@@ -47,19 +48,21 @@ export function SlangPage() {
     return <p className="text-danger">{t("common.error")}</p>;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-ink">{t("slang.title")}</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">
+            {t("slang.title")}
+          </h1>
           <p className="mt-1 text-muted">
             {t("slang.subtitle", { count: slang.data.count })}
           </p>
         </div>
         <Link
           to="/slang/quiz"
-          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg transition-opacity hover:opacity-90"
+          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg shadow-card transition-[background-color] hover:bg-primary-strong"
         >
-          {t("slang.quizCta")}
+          🎯 {t("slang.quizCta")}
         </Link>
       </div>
 
@@ -74,10 +77,7 @@ export function SlangPage() {
       </div>
 
       {groups.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-sm">
-          <div className="text-3xl">🔍</div>
-          <p className="mt-3 font-semibold text-ink">{t("slang.noResults")}</p>
-        </div>
+        <EmptyState icon="🔍" title={t("slang.noResults")} />
       ) : (
         <div className="space-y-8">
           {groups.map(({ letter, terms }) => (
@@ -90,9 +90,9 @@ export function SlangPage() {
                   <div
                     key={term.slug}
                     id={term.slug}
-                    className="scroll-mt-24 rounded-2xl border border-border bg-surface p-4 shadow-sm"
+                    className="scroll-mt-24 rounded-2xl border border-border bg-surface p-4 shadow-card"
                   >
-                    <h3 className="font-bold text-ink">{term.term}</h3>
+                    <h3 className="font-display font-bold text-ink">{term.term}</h3>
                     {term.aliases.length > 0 && (
                       <p className="text-xs text-faint">{term.aliases.join(" · ")}</p>
                     )}

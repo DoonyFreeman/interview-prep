@@ -4,8 +4,9 @@ import { useAuth } from "../auth/AuthContext";
 import { useChangePassword, useUpdateProfile } from "../api/hooks";
 import { apiErrorMessage } from "../lib/api";
 import { Button } from "../components/Button";
-import { Spinner, PageLoader } from "../components/Spinner";
+import { PageLoader } from "../components/Spinner";
 import { LanguageToggle } from "../components/LanguageToggle";
+import { useToast } from "../components/Toast";
 
 function Section({
   title,
@@ -15,31 +16,28 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm sm:p-6">
-      <h2 className="mb-4 text-base font-bold text-ink">{title}</h2>
+    <section className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
+      <h2 className="mb-4 font-display text-base font-bold text-ink">{title}</h2>
       {children}
     </section>
   );
 }
 
 const inputCls =
-  "w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-primary";
+  "w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary";
 const labelCls = "mb-1 block text-xs font-semibold text-muted";
 
 export function SettingsPage() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
+  const toast = useToast();
 
   const updateProfile = useUpdateProfile();
   const changePassword = useChangePassword();
 
   const [name, setName] = useState(user?.display_name ?? "");
-  const [profileSaved, setProfileSaved] = useState(false);
-
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
-  const [pwError, setPwError] = useState<string | null>(null);
-  const [pwSaved, setPwSaved] = useState(false);
 
   if (!user) return <PageLoader />;
 
@@ -50,31 +48,34 @@ export function SettingsPage() {
 
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
-    setProfileSaved(false);
-    await updateProfile.mutateAsync({ display_name: name });
-    setProfileSaved(true);
+    try {
+      await updateProfile.mutateAsync({ display_name: name });
+      toast.success(t("settings.saved"));
+    } catch (err) {
+      toast.error(apiErrorMessage(err, t("common.error")));
+    }
   }
 
   async function savePassword(e: React.FormEvent) {
     e.preventDefault();
-    setPwError(null);
-    setPwSaved(false);
     try {
       await changePassword.mutateAsync({
         current_password: currentPw,
         new_password: newPw,
       });
-      setPwSaved(true);
+      toast.success(t("settings.passwordChanged"));
       setCurrentPw("");
       setNewPw("");
     } catch (err) {
-      setPwError(apiErrorMessage(err, t("common.error")));
+      toast.error(apiErrorMessage(err, t("common.error")));
     }
   }
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="mb-6 text-2xl font-bold text-ink">{t("settings.title")}</h1>
+      <h1 className="mb-6 font-display text-2xl font-bold tracking-tight text-ink">
+        {t("settings.title")}
+      </h1>
 
       <div className="space-y-5">
         {/* Profile */}
@@ -89,24 +90,13 @@ export function SettingsPage() {
               <span className={labelCls}>{t("settings.displayName")}</span>
               <input
                 value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  setProfileSaved(false);
-                }}
+                onChange={(e) => setName(e.target.value)}
                 className={inputCls}
               />
             </label>
-            <div className="flex items-center gap-3">
-              <Button type="submit" disabled={updateProfile.isPending}>
-                {updateProfile.isPending && <Spinner />}
-                {t("settings.save")}
-              </Button>
-              {profileSaved && (
-                <span className="text-sm font-medium text-success">
-                  ✓ {t("settings.saved")}
-                </span>
-              )}
-            </div>
+            <Button type="submit" loading={updateProfile.isPending}>
+              {t("settings.save")}
+            </Button>
             <p className="text-xs text-faint">
               {t("settings.memberSince", { date: since })}
             </p>
@@ -138,22 +128,9 @@ export function SettingsPage() {
               />
               <p className="mt-1 text-xs text-faint">{t("auth.passwordHint")}</p>
             </label>
-            {pwError && (
-              <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
-                {pwError}
-              </p>
-            )}
-            <div className="flex items-center gap-3">
-              <Button type="submit" disabled={changePassword.isPending}>
-                {changePassword.isPending && <Spinner />}
-                {t("settings.changePassword")}
-              </Button>
-              {pwSaved && (
-                <span className="text-sm font-medium text-success">
-                  ✓ {t("settings.passwordChanged")}
-                </span>
-              )}
-            </div>
+            <Button type="submit" loading={changePassword.isPending}>
+              {t("settings.changePassword")}
+            </Button>
           </form>
         </Section>
 
