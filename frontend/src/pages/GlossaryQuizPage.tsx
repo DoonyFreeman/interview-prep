@@ -176,10 +176,12 @@ export function GlossaryQuizPage({
         <Link to={basePath} className="text-sm font-medium text-muted hover:text-ink">
           ← {t(`${i18nNs}.back`)}
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-ink">{t(`${i18nNs}.title`)}</h1>
+        <h1 className="mt-2 font-display text-2xl font-bold tracking-tight text-ink">
+          {t(`${i18nNs}.title`)}
+        </h1>
         <p className="mt-1 mb-6 text-muted">{t(`${i18nNs}.subtitle`)}</p>
 
-        <div className="space-y-6 rounded-2xl border border-border bg-surface p-5 shadow-sm">
+        <div className="space-y-6 rounded-2xl border border-border bg-surface p-5 shadow-card">
           {/* Categories (hidden for slang — it is a single flat dictionary) */}
           {!isSlang && (
             <section>
@@ -301,13 +303,13 @@ export function GlossaryQuizPage({
           </Link>
         </div>
 
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-card">
           {q.promptIsMarkdown ? (
             <div className="prose-sm">
               <Markdown markdown={q.prompt} />
             </div>
           ) : (
-            <p className="text-xl font-bold text-ink">{q.prompt}</p>
+            <p className="font-display text-xl font-bold text-ink">{q.prompt}</p>
           )}
         </div>
 
@@ -369,7 +371,9 @@ export function GlossaryQuizPage({
 
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <h1 className="text-2xl font-bold text-ink">{t("glossaryQuiz.resultTitle")}</h1>
+      <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
+        {t("glossaryQuiz.resultTitle")}
+      </h1>
 
       <div className="mt-6 flex flex-col items-center gap-3">
         <ScoreGauge score={pct} size={120} />

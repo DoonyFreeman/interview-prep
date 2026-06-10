@@ -7,6 +7,7 @@ import { apiErrorMessage } from "../lib/api";
 import { Button } from "../components/Button";
 import { Spinner } from "../components/Spinner";
 import { LanguageToggle } from "../components/LanguageToggle";
+import { BrandMark } from "../components/icons";
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -56,18 +57,20 @@ export function LoginPage() {
       <div className="flex flex-1 items-center justify-center px-4 pb-20">
         <div className="w-full max-w-sm">
           <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-primary-fg">
-              ip
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-fg shadow-card">
+              <BrandMark className="h-6 w-6" />
             </div>
-            <h1 className="text-xl font-bold text-ink">{t("app.name")}</h1>
+            <h1 className="font-display text-xl font-bold tracking-tight text-ink">
+              {t("app.name")}
+            </h1>
             <p className="mt-1 text-sm text-muted">{t("auth.subtitle")}</p>
           </div>
 
           <form
             onSubmit={submit}
-            className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
+            className="rounded-2xl border border-border bg-surface p-6 shadow-card"
           >
-            <h2 className="mb-4 text-base font-bold text-ink">
+            <h2 className="mb-4 font-display text-base font-bold text-ink">
               {mode === "login" ? t("auth.loginTitle") : t("auth.registerTitle")}
             </h2>
 

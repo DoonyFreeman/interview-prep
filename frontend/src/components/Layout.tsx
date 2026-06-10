@@ -1,15 +1,46 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, useLocation, useOutlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
 import { BottomNavBar } from "./BottomNavBar";
+import { BrandMark } from "./icons";
+import { routeTransition } from "../lib/motion";
 
+/** A desktop nav link with an animated "pill" that glides to the active item. */
+function NavItem({ to, end, label }: { to: string; end?: boolean; label: string }) {
+  return (
+    <NavLink to={to} end={end} className="relative px-3 py-1.5 text-sm font-semibold">
+      {({ isActive }) => (
+        <>
+          {isActive && (
+            <motion.span
+              layoutId="nav-pill"
+              className="absolute inset-0 rounded-lg bg-primary-soft"
+              transition={{ type: "spring", stiffness: 480, damping: 38 }}
+            />
+          )}
+          <span
+            className={`relative transition-colors ${
+              isActive ? "text-primary" : "text-muted hover:text-ink"
+            }`}
+          >
+            {label}
+          </span>
+        </>
+      )}
+    </NavLink>
+  );
+}
+
+/** Single "to review" indicator — accent when due, calm when clear. */
 function DueBadge() {
   const { t } = useTranslation();
   const { data } = useProgress();
   const due = data?.due_concepts ?? 0;
+  const hot = due > 0;
   return (
     <NavLink
       to="/review"
@@ -17,12 +48,19 @@ function DueBadge() {
         `inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
           isActive
             ? "border-primary/40 bg-primary-soft text-primary"
-            : "border-border bg-surface text-muted hover:bg-surface-2"
+            : hot
+              ? "border-accent/40 bg-accent-soft text-accent"
+              : "border-border bg-surface text-muted hover:bg-surface-2"
         }`
       }
     >
-      <span className={due > 0 ? "text-accent" : "text-faint"}>●</span>
-      {t("nav.review")}: <span className="text-ink">{due}</span>
+      <span
+        className={`inline-block h-1.5 w-1.5 rounded-full ${
+          hot ? "bg-accent" : "bg-faint"
+        }`}
+      />
+      {t("nav.review")}
+      <span className={hot ? "text-accent" : "text-faint"}>{due}</span>
     </NavLink>
   );
 }
@@ -30,106 +68,79 @@ function DueBadge() {
 export function Layout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const location = useLocation();
+  const outlet = useOutlet();
+
+  // Glossary and Slang live in one shared shell (DictLayout); collapse them to
+  // a single transition key so switching tabs doesn't replay the page fade —
+  // the shell stays mounted and only its inner list swaps.
+  const path = location.pathname;
+  const transitionKey =
+    path === "/glossary" || path === "/slang" ? "dict-section" : path;
 
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur">
-        <div className="mx-auto flex h-15 max-w-6xl items-center gap-4 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 font-bold text-ink">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-sm text-primary-fg">
-              ip
+        <div className="mx-auto flex h-15 max-w-6xl items-center gap-4 px-4">
+          <Link to="/" className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-fg shadow-card">
+              <BrandMark className="h-[18px] w-[18px]" />
             </span>
-            <span className="hidden sm:inline">{t("app.name")}</span>
+            <span className="hidden font-display text-[15px] font-bold tracking-tight text-ink sm:inline">
+              {t("app.name")}
+            </span>
           </Link>
 
           <nav className="ml-2 hidden items-center gap-1 sm:flex">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
-                  isActive
-                    ? "bg-primary-soft text-primary"
-                    : "text-muted hover:text-ink"
-                }`
-              }
-            >
-              {t("nav.courses")}
-            </NavLink>
-            <NavLink
-              to="/glossary"
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
-                  isActive
-                    ? "bg-primary-soft text-primary"
-                    : "text-muted hover:text-ink"
-                }`
-              }
-            >
-              {t("nav.glossary")}
-            </NavLink>
-            <NavLink
-              to="/slang"
-              className={({ isActive }) =>
-                `hidden rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors sm:block ${
-                  isActive
-                    ? "bg-primary-soft text-primary"
-                    : "text-muted hover:text-ink"
-                }`
-              }
-            >
-              {t("nav.slang")}
-            </NavLink>
-            <NavLink
-              to="/progress"
-              className={({ isActive }) =>
-                `rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
-                  isActive
-                    ? "bg-primary-soft text-primary"
-                    : "text-muted hover:text-ink"
-                }`
-              }
-            >
-              {t("nav.progress")}
-            </NavLink>
+            <NavItem to="/" end label={t("nav.courses")} />
+            <NavItem to="/glossary" label={t("nav.glossary")} />
+            <NavItem to="/progress" label={t("nav.progress")} />
           </nav>
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:block">
               <DueBadge />
             </div>
             <ThemeToggle />
             <LanguageToggle />
-            <div className="flex items-center gap-1">
-              <NavLink
-                to="/settings"
-                title={t("nav.settings")}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
-                    isActive
-                      ? "bg-primary-soft text-primary"
-                      : "text-muted hover:bg-surface-2 hover:text-ink"
-                  }`
-                }
-              >
-                <span aria-hidden>⚙</span>
-                <span className="hidden max-w-[150px] truncate md:inline">
-                  {user?.display_name || user?.email}
-                </span>
-              </NavLink>
-              <button
-                onClick={logout}
-                className="hidden rounded-lg px-2.5 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-ink sm:block"
-              >
-                {t("nav.logout")}
-              </button>
-            </div>
+            <NavLink
+              to="/settings"
+              title={t("nav.settings")}
+              className={({ isActive }) =>
+                `flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? "bg-primary-soft text-primary"
+                    : "text-muted hover:bg-surface-2 hover:text-ink"
+                }`
+              }
+            >
+              <span aria-hidden>⚙</span>
+              <span className="hidden max-w-[150px] truncate md:inline">
+                {user?.display_name || user?.email}
+              </span>
+            </NavLink>
+            <button
+              onClick={logout}
+              className="hidden rounded-lg px-2.5 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-ink sm:block"
+            >
+              {t("nav.logout")}
+            </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:pb-8">
-        <Outlet />
+      <main className="mx-auto max-w-6xl px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-8 sm:pb-12">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={transitionKey}
+            variants={routeTransition}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
+            {outlet}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <BottomNavBar />

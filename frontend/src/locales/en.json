@@ -9,6 +9,7 @@
     "slang": "Slang",
     "review": "To review",
     "settings": "Settings",
+    "profile": "Profile",
     "logout": "Log out",
     "progress": "Progress"
   },
@@ -141,7 +142,8 @@
     "attemptedHint": "Concepts you've answered a question on at least once.",
     "dueHint": "Concepts due for review per the schedule.",
     "answeredHint": "How many distinct questions you've attempted at least once, out of all questions.",
-    "legend": "Progress is tracked by concepts and spaced repetition.",
+    "legend": "Progress grows as you read lessons and answer questions; a concept counts fully once mastered (spaced repetition).",
+    "ringHint": "Overall progress: each concept earns a half for a read lesson or an answer, and a full point once mastered.",
     "seeProgress": "What's left →"
   },
   "review": {
@@ -166,6 +168,7 @@
     "lessonsTitle": "Lessons",
     "concepts": "{{count}} concepts",
     "masteredOf": "{{mastered}} of {{total}} mastered",
+    "progress": "{{pct}}% done",
     "completed": "Completed",
     "open": "Open lesson"
   },
