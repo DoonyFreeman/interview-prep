@@ -1,16 +1,41 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import { useCourses, useProgress, useQuestionsProgress } from "../api/hooks";
-import { PageLoader } from "../components/Spinner";
+import { Skeleton, SkeletonGrid } from "../components/Skeleton";
 import { ProgressBar } from "../components/ProgressBar";
 import { ScoreGauge } from "../components/ScoreGauge";
 import { Button } from "../components/Button";
 import { useAuth } from "../auth/AuthContext";
+import { courseAccent, courseInitials } from "../lib/accent";
+import { courseProgressPct, overallProgressPct } from "../lib/progress";
+import { fadeInUp, staggerContainer } from "../lib/motion";
 import type {
   CourseProgressOut,
+  CourseSummary,
   ProgressOverviewOut,
   QuestionsProgress,
 } from "../api/types";
+
+function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
+  return (
+    <div title={hint} className={hint ? "cursor-help" : undefined}>
+      <div className="font-display text-2xl font-bold text-ink">{value}</div>
+      <div className="text-xs text-faint">
+        {label}
+        {hint && <span className="ml-0.5 text-faint">ⓘ</span>}
+      </div>
+    </div>
+  );
+}
 
 function StatsHero({
   ov,
@@ -21,16 +46,24 @@ function StatsHero({
 }) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const pct =
-    ov.total_concepts > 0
-      ? Math.round((ov.mastered_concepts / ov.total_concepts) * 100)
-      : 0;
+
+  // Overall progress that actually moves as you work (see lib/progress.ts):
+  // reading a lesson or answering a concept earns a half, mastering it the full
+  // point — so the ring isn't stuck at zero behind the strict mastery gate.
+  const pct = overallProgressPct(ov);
 
   return (
-    <div className="mb-3 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-sm sm:flex-row sm:gap-7">
-      <ScoreGauge score={pct} size={104} />
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-3 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-raised sm:flex-row sm:gap-7"
+    >
+      <div title={t("dashboard.ringHint")} className="cursor-help">
+        <ScoreGauge score={pct} size={104} />
+      </div>
       <div className="flex-1 text-center sm:text-left">
-        <h1 className="text-xl font-bold text-ink">
+        <h1 className="font-display text-xl font-bold tracking-tight text-ink">
           {t("dashboard.hello", { name: user?.display_name || "👋" })}
         </h1>
         <div className="mt-3 flex flex-wrap justify-center gap-6 sm:justify-start">
@@ -68,7 +101,71 @@ function StatsHero({
             : t("dashboard.reviewNone")}
         </Button>
       </Link>
-    </div>
+    </motion.div>
+  );
+}
+
+function CourseCard({
+  course,
+  p,
+}: {
+  course: CourseSummary;
+  p?: CourseProgressOut;
+}) {
+  const { t } = useTranslation();
+  const accent = courseAccent(course.slug);
+  const cpct = p ? courseProgressPct(p) : 0;
+  const complete = cpct >= 100;
+
+  return (
+    <motion.div variants={fadeInUp} whileHover={{ y: -3 }} className="h-full">
+      <Link
+        to={`/courses/${course.slug}`}
+        className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-card transition-[border-color,box-shadow] hover:border-primary/40 hover:shadow-raised"
+      >
+        <div className="flex items-start gap-3">
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold"
+            style={{ background: accent.bg, color: accent.fg }}
+          >
+            {courseInitials(course.title)}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-display font-bold leading-tight text-ink group-hover:text-primary">
+              {course.title}
+            </h2>
+            <span className="text-xs font-semibold text-faint">
+              {t("catalog.lessons", { count: course.lesson_count })}
+            </span>
+          </div>
+        </div>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
+          {course.description}
+        </p>
+        {p && p.total_concepts > 0 && (
+          <div className="mt-4">
+            <div
+              className="mb-1.5 flex justify-between text-xs text-faint"
+              title={t("course.masteredOf", {
+                mastered: p.mastered_concepts,
+                total: p.total_concepts,
+              })}
+            >
+              <span
+                className={complete ? "font-semibold text-celebrate" : undefined}
+              >
+                {complete ? "✓ " : ""}
+                {t("course.progress", { pct: cpct })}
+              </span>
+              {p.due_concepts > 0 && (
+                <span className="font-semibold text-accent">● {p.due_concepts}</span>
+              )}
+            </div>
+            <ProgressBar pct={cpct} tone={complete ? "celebrate" : "primary"} />
+          </div>
+        )}
+      </Link>
+    </motion.div>
   );
 }
 
@@ -78,7 +175,19 @@ export function CatalogPage() {
   const progress = useProgress();
   const questions = useQuestionsProgress();
 
-  if (courses.isLoading) return <PageLoader label={t("common.loading")} />;
+  if (courses.isLoading)
+    return (
+      <div>
+        <div className="mb-8 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 shadow-card sm:flex-row">
+          <Skeleton className="h-26 w-26 shrink-0 rounded-full" />
+          <div className="flex-1 space-y-3">
+            <Skeleton className="h-5 w-40" />
+            <Skeleton className="h-3 w-full max-w-md" />
+          </div>
+        </div>
+        <SkeletonGrid count={6} />
+      </div>
+    );
   if (courses.isError || !courses.data)
     return <p className="text-danger">{t("common.error")}</p>;
 
@@ -102,75 +211,22 @@ export function CatalogPage() {
       </p>
 
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-ink">{t("catalog.title")}</h2>
+        <h2 className="font-display text-lg font-bold text-ink">
+          {t("catalog.title")}
+        </h2>
         <p className="text-sm text-muted">{t("catalog.subtitle")}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {courses.data.map((course) => {
-          const p = byCourse.get(course.slug);
-          return (
-            <Link
-              key={course.slug}
-              to={`/courses/${course.slug}`}
-              className="group flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="text-lg font-bold text-ink group-hover:text-primary">
-                  {course.title}
-                </h2>
-                <span className="shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted">
-                  {t("catalog.lessons", { count: course.lesson_count })}
-                </span>
-              </div>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
-                {course.description}
-              </p>
-              {p && p.total_concepts > 0 && (
-                <div className="mt-4">
-                  <div className="mb-1.5 flex justify-between text-xs text-faint">
-                    <span>
-                      {t("course.masteredOf", {
-                        mastered: p.mastered_concepts,
-                        total: p.total_concepts,
-                      })}
-                    </span>
-                    {p.due_concepts > 0 && (
-                      <span className="font-semibold text-accent">
-                        ● {p.due_concepts}
-                      </span>
-                    )}
-                  </div>
-                  <ProgressBar
-                    value={p.mastered_concepts}
-                    total={p.total_concepts}
-                  />
-                </div>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-}) {
-  return (
-    <div title={hint} className={hint ? "cursor-help" : undefined}>
-      <div className="text-2xl font-bold text-ink">{value}</div>
-      <div className="text-xs text-faint">
-        {label}
-        {hint && <span className="ml-0.5 text-faint">ⓘ</span>}
-      </div>
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="grid gap-4 sm:grid-cols-2"
+      >
+        {courses.data.map((course) => (
+          <CourseCard key={course.slug} course={course} p={byCourse.get(course.slug)} />
+        ))}
+      </motion.div>
     </div>
   );
 }

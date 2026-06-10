@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import {
   IconCourses,
   IconGlossary,
   IconProgress,
-  IconSlang,
+  IconUser,
 } from "./icons";
 
 type Item = {
@@ -17,14 +18,15 @@ type Item = {
 const ITEMS: Item[] = [
   { to: "/", end: true, labelKey: "nav.courses", Icon: IconCourses },
   { to: "/glossary", labelKey: "nav.glossary", Icon: IconGlossary },
-  { to: "/slang", labelKey: "nav.slang", Icon: IconSlang },
   { to: "/progress", labelKey: "nav.progress", Icon: IconProgress },
+  { to: "/settings", labelKey: "nav.profile", Icon: IconUser },
 ];
 
 /**
  * Mobile-only bottom tab bar. Hidden on sm+ (desktop keeps the header nav).
  * Fixed to the bottom, respects the iOS home-bar safe area, and mirrors the
- * four primary destinations from the desktop header.
+ * primary destinations from the desktop header (review is reached from the
+ * dashboard CTA).
  */
 export function BottomNavBar() {
   const { t } = useTranslation();
@@ -51,11 +53,16 @@ export function BottomNavBar() {
             >
               {({ isActive }) => (
                 <>
-                  <Icon
-                    className={`h-[22px] w-[22px] ${
-                      isActive ? "stroke-[2.4]" : "stroke-2"
-                    }`}
-                  />
+                  <motion.span
+                    animate={{ scale: isActive ? 1.12 : 1, y: isActive ? -1 : 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  >
+                    <Icon
+                      className={`h-[22px] w-[22px] ${
+                        isActive ? "stroke-[2.4]" : "stroke-2"
+                      }`}
+                    />
+                  </motion.span>
                   <span className="leading-none">{t(labelKey)}</span>
                 </>
               )}

@@ -29,10 +29,25 @@
   --color-danger: #c2410c;
   --color-danger-soft: #fbe9e1;
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
+  /* Reward / celebration accent — a fresh teal-green, distinct from the
+     muted success used for "verdict: correct". Used for mastery moments. */
+  --color-celebrate: #0d9488;
+  --color-celebrate-soft: #dbf3ee;
+
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui,
+    "Segoe UI", sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
     monospace;
+
+  /* Elevation scale — three deliberate steps instead of one flat shadow. */
+  --shadow-card: 0 1px 2px rgba(27, 26, 23, 0.04),
+    0 1px 3px rgba(27, 26, 23, 0.06);
+  --shadow-raised: 0 4px 6px rgba(27, 26, 23, 0.05),
+    0 10px 20px rgba(27, 26, 23, 0.07);
+  --shadow-pop: 0 10px 25px rgba(27, 26, 23, 0.1),
+    0 20px 48px rgba(27, 26, 23, 0.12);
 
   --radius-card: 16px;
 }
@@ -61,18 +76,70 @@
   --color-warn-soft: #2a2210;
   --color-danger: #f08a5d;
   --color-danger-soft: #2c1a12;
+
+  --color-celebrate: #2dd4bf;
+  --color-celebrate-soft: #10312c;
+
+  /* Softer shadows on dark — rely more on borders/contrast than on shadow. */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-raised: 0 6px 16px rgba(0, 0, 0, 0.4);
+  --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
 html {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* No grey flash on tap (iOS Safari / Chrome Android). */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS zooms the page when focusing a control smaller than 16px. Bump form
+   controls to 16px on phones only — keeps the tighter look on desktop. */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-ink);
+  /* Atmospheric depth: two faint colour washes fixed behind the content,
+     so flat surfaces read as floating rather than painted onto a slab. */
+  background-image:
+    radial-gradient(
+      62rem 62rem at 12% -8%,
+      color-mix(in oklab, var(--color-primary) 9%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      48rem 48rem at 105% 0%,
+      color-mix(in oklab, var(--color-accent) 8%, transparent),
+      transparent 55%
+    );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Headings and brand wordmarks use the display family. */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Respect users who ask for less motion — kill transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Smooth the light/dark flip for surfaces, borders and text. */
@@ -112,8 +179,9 @@ body,
 .prose h1,
 .prose h2,
 .prose h3 {
+  font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
   scroll-margin-top: 90px; /* offset for the sticky top bar on anchor jumps */
 }
 .prose h1 {

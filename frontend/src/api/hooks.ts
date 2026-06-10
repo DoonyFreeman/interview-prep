@@ -90,6 +90,9 @@ export function useGlossary(
       if (q.trim()) params.q = q.trim();
       return (await api.get<GlossaryList>("/glossary", { params })).data;
     },
+    // Glossary/slang content is static for the session — keep it fresh forever
+    // so switching the Glossary↔Slang tab is instant (no refetch spinner).
+    staleTime: Infinity,
   });
 }
 

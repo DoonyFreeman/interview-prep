@@ -66,3 +66,41 @@ export function IconProgress({ className }: IconProps) {
     </Svg>
   );
 }
+
+/** Profile / settings — a person. */
+export function IconUser({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </Svg>
+  );
+}
+
+/**
+ * Brand glyph — a rising "mastery" curve to a sparkle at the apex. Matches the
+ * app icon (`public/favicon.svg`). Drawn on a solid primary tile by the caller;
+ * the curve is stroked and the sparkle filled, both in `currentColor`.
+ */
+export function BrandMark({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 17.5 L9.5 11.5 L13 14.5 L18.5 8.5"
+        stroke="currentColor"
+        strokeWidth={2.3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.5 5.5 L19.6 7.4 L21.5 8.5 L19.6 9.6 L18.5 11.5 L17.4 9.6 L15.5 8.5 L17.4 7.4 Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

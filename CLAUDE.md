@@ -228,11 +228,37 @@ questions-answered-vs-total per course/lesson (the "what's left" view).
 
 Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
 Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code
-highlighting). Layered: `lib/` (axios `api` with Bearer + 401 bounce, token
-store, slugify matching content anchors, Shiki singleton), `api/` (typed
-hooks + types), `auth/` (token context + `RequireAuth`), `components/`,
-`pages/`. `VITE_API_BASE` points at the backend (default `:8000`). Run with
-`npm install && npm run dev` (port 5173, matches backend CORS default).
+highlighting) + Motion (Framer Motion). Layered: `lib/` (axios `api` with
+Bearer + 401 bounce, token store, slugify matching content anchors, Shiki
+singleton, `motion.ts` shared animation presets, `accent.ts` per-course colour,
+`useActiveAnchor` TOC observer), `api/` (typed hooks + types), `auth/` (token
+context + `RequireAuth`), `components/`, `pages/`. `VITE_API_BASE` points at the
+backend (default `:8000`). Run with `npm install && npm run dev` (port 5173,
+matches backend CORS default).
+
+**Design system** (Phase 5f, "own identity" redesign): one warm-stone palette
+driven entirely by CSS custom properties in `index.css` (`@theme` for light, a
+`.dark` override). Tokens map to Tailwind v4 utilities: colours (`bg-surface`,
+`text-ink`, `bg-primary-soft`, `text-accent`, plus a teal `celebrate` reward
+accent), a 3-step elevation scale (`shadow-card`/`shadow-raised`/`shadow-pop`),
+and fonts — **self-hosted via `@fontsource`** (Docker-friendly, no external
+requests): **Bricolage Grotesque** display (`font-display`, used on every page
+title/brand/heading), **Geist** body (`--font-sans`), JetBrains Mono code. Body
+has a faint two-wash radial gradient mesh for depth. Motion is deliberately
+**subtle** (6–10px offsets, 0.12–0.28s) and everything honours
+`prefers-reduced-motion` (global CSS reset + Motion's `useReducedMotion`):
+route crossfades (`Layout` wraps `useOutlet()` in `AnimatePresence` keyed by
+pathname so the header/nav stay put), staggered list/card reveals, an animated
+nav "pill" (`layoutId`), count-up + ring sweep in `ScoreGauge`, quiz phase
+crossfade. Shared primitives: `Button` (variants + `loading` + `active:scale`),
+`Skeleton`/`SkeletonCard`/`SkeletonGrid` (replace the dashboard spinner to cut
+layout shift), `EmptyState`, a lightweight `Toast` context (`ToastProvider` in
+`main.tsx`, `useToast()` — used for settings save/error), `DictTabs` (segmented
+Glossary↔Slang switch; slang is no longer a top-nav item). Primary nav is 3
+items (Courses / Glossary / Progress) + a single "to review" badge; the mobile
+`BottomNavBar` mirrors them + Profile. **iOS**: `viewport-fit=cover` +
+`env(safe-area-inset-*)` padding on the bottom bar/main/toasts, 16px form-control
+font on phones to stop focus-zoom, `theme-color` per scheme.
 
 ## Roadmap (phases)
 
