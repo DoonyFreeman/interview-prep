@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tile" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#4338CA"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#tile)"/>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="#ffffff" fill-opacity="0.06"/>
+  <!-- rising "mastery" curve -->
+  <path d="M16 45 L27 33 L35 39 L47 24"
+        stroke="#ffffff" stroke-width="4.6"
+        stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.96"/>
+  <!-- baseline dots marking each answered step -->
+  <circle cx="16" cy="45" r="2.4" fill="#ffffff" fill-opacity="0.55"/>
+  <circle cx="27" cy="33" r="2.4" fill="#ffffff" fill-opacity="0.75"/>
+  <circle cx="35" cy="39" r="2.4" fill="#ffffff" fill-opacity="0.75"/>
+  <!-- sparkle at the apex (achievement) -->
+  <path d="M47 15 L49.6 21.4 L56 24 L49.6 26.6 L47 33 L44.4 26.6 L38 24 L44.4 21.4 Z"
+        fill="#ffffff"/>
+</svg>

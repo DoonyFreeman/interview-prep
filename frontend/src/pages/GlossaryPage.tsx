@@ -5,6 +5,7 @@ import { useGlossary, useGlossaryProgress } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
+import { EmptyState } from "../components/EmptyState";
 import type { GlossaryCategoryProgress, GlossaryTerm } from "../api/types";
 
 function categoryLabel(t: (k: string) => string, slug: string): string {
@@ -18,10 +19,10 @@ function TermCard({ term }: { term: GlossaryTerm }) {
   return (
     <article
       id={term.slug}
-      className="scroll-mt-24 rounded-2xl border border-border bg-surface p-5 shadow-sm"
+      className="scroll-mt-24 rounded-2xl border border-border bg-surface p-5 shadow-card"
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="text-lg font-bold text-ink">{term.term}</h3>
+        <h3 className="font-display text-lg font-bold text-ink">{term.term}</h3>
         {term.aliases.length > 0 && (
           <span className="text-sm text-faint">{term.aliases.join(" · ")}</span>
         )}
@@ -95,10 +96,12 @@ export function GlossaryPage() {
   const categories = glossary.data.categories;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-ink">{t("glossary.title")}</h1>
+          <h1 className="font-display text-2xl font-bold text-ink">
+            {t("glossary.title")}
+          </h1>
           <p className="mt-1 text-muted">
             {t("glossary.subtitle", { count: glossary.data.count })}
           </p>
@@ -145,10 +148,7 @@ export function GlossaryPage() {
       </div>
 
       {groups.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-sm">
-          <div className="text-3xl">🔍</div>
-          <p className="mt-3 font-semibold text-ink">{t("glossary.noResults")}</p>
-        </div>
+        <EmptyState icon="🔍" title={t("glossary.noResults")} />
       ) : (
         <div className="space-y-10">
           {groups.map(({ category: c, terms }) => (

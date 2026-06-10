@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion, useScroll } from "motion/react";
 import { useLesson, useMarkLesson, useProgress } from "../api/hooks";
-import { PageLoader, Spinner } from "../components/Spinner";
+import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
+import { useActiveAnchor } from "../lib/useActiveAnchor";
 
 export function LessonPage() {
   const { t } = useTranslation();
@@ -13,6 +15,15 @@ export function LessonPage() {
   const lesson = useLesson(courseSlug, lessonSlug);
   const progress = useProgress();
   const markLesson = useMarkLesson();
+
+  const articleRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: articleRef,
+    offset: ["start start", "end end"],
+  });
+
+  const anchors = (lesson.data?.concepts ?? []).map((c) => c.anchor);
+  const activeAnchor = useActiveAnchor(anchors);
 
   // Once the markdown is rendered, jump to the #anchor from "Back to theory".
   useEffect(() => {
@@ -33,10 +44,17 @@ export function LessonPage() {
 
   return (
     <div className="lg:flex lg:gap-10">
-      <article className="min-w-0 flex-1">
+      {/* Reading-progress hairline, pinned just under the sticky header. */}
+      <motion.div
+        style={{ scaleX: scrollYProgress }}
+        className="fixed inset-x-0 top-15 z-30 h-0.5 origin-left bg-primary"
+        aria-hidden
+      />
+
+      <article ref={articleRef} className="min-w-0 flex-1">
         <Link
           to={`/courses/${courseSlug}`}
-          className="text-sm font-medium text-muted hover:text-ink"
+          className="text-sm font-medium text-muted transition-colors hover:text-ink"
         >
           ← {t("lesson.backToCourse")}
         </Link>
@@ -47,29 +65,38 @@ export function LessonPage() {
       </article>
 
       <aside className="mt-8 lg:mt-0 lg:w-64 lg:shrink-0">
-        <div className="lg:sticky lg:top-24 space-y-4">
+        <div className="space-y-4 lg:sticky lg:top-24">
           {lesson.data.concepts.length > 0 && (
-            <nav className="rounded-2xl border border-border bg-surface p-4">
+            <nav className="hidden rounded-2xl border border-border bg-surface p-4 lg:block">
               <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-faint">
                 {t("lesson.toc")}
               </h3>
-              <ul className="space-y-1">
-                {lesson.data.concepts.map((c) => (
-                  <li key={c.slug}>
-                    <a
-                      href={`#${c.anchor}`}
-                      className="block rounded-lg px-2 py-1.5 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-ink"
-                    >
-                      {c.title}
-                    </a>
-                  </li>
-                ))}
+              <ul className="space-y-0.5">
+                {lesson.data.concepts.map((c) => {
+                  const active = c.anchor === activeAnchor;
+                  return (
+                    <li key={c.slug}>
+                      <a
+                        href={`#${c.anchor}`}
+                        className={`block rounded-lg border-l-2 px-2.5 py-1.5 text-sm transition-colors ${
+                          active
+                            ? "border-primary bg-primary-soft font-semibold text-primary"
+                            : "border-transparent text-muted hover:bg-surface-2 hover:text-ink"
+                        }`}
+                      >
+                        {c.title}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
           )}
 
           <div className="rounded-2xl border border-border bg-primary-soft p-4">
-            <h3 className="font-bold text-ink">{t("lesson.actionsTitle")}</h3>
+            <h3 className="font-display font-bold text-ink">
+              {t("lesson.actionsTitle")}
+            </h3>
             <p className="mt-1 text-sm text-muted">{t("lesson.actionsHint")}</p>
             <Link to={`/courses/${courseSlug}/lessons/${lessonSlug}/quiz`}>
               <Button className="mt-3 w-full">{t("lesson.startQuiz")}</Button>
@@ -80,19 +107,18 @@ export function LessonPage() {
               </Button>
             </Link>
             {completed ? (
-              <p className="mt-3 text-center text-sm font-semibold text-success">
+              <p className="mt-3 text-center text-sm font-semibold text-celebrate">
                 ✓ {t("lesson.marked")}
               </p>
             ) : (
               <Button
                 variant="secondary"
                 className="mt-2 w-full"
-                disabled={markLesson.isPending}
+                loading={markLesson.isPending}
                 onClick={() =>
                   markLesson.mutate({ courseSlug, lessonSlug, completed: true })
                 }
               >
-                {markLesson.isPending && <Spinner />}
                 {t("lesson.markDone")}
               </Button>
             )}
