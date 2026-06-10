@@ -3,10 +3,13 @@
 # survives rebuilds. A reverse proxy + TLS is added in Phase 8.
 services:
   app:
+    # Production pulls this prebuilt image from GHCR (built by CI for linux/amd64
+    # — the small host must not build locally). For local dev, `up --build`
+    # rebuilds and tags this same name. Pin a :<sha> tag here to roll back.
+    image: ghcr.io/doonyfreeman/interview-prep:latest
     build:
       context: .
       dockerfile: Dockerfile
-    image: interview-prep:latest
     container_name: interview-prep
     restart: unless-stopped
     env_file:
