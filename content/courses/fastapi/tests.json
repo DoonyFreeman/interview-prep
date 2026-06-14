@@ -1,0 +1,516 @@
+{
+  "asgi-routing": {
+    "wsgi-vs-asgi": [
+      {
+        "type": "single",
+        "text": "Какое ключевое ограничение WSGI делает его непригодным для WebSockets?",
+        "options": [
+          "WSGI синхронный: один запрос блокирует поток, и долгоживущие соединения невозможны",
+          "WSGI не поддерживает JSON как формат ответа",
+          "WSGI работает только с GET-запросами",
+          "WSGI требует отдельного сервера для каждого клиента"
+        ],
+        "correct": 0,
+        "explanation_md": "WSGI блокирует поток на время запроса — долгоживущие соединения (WebSockets, SSE) невозможны; ASGI поддерживает их через async/await.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Разработчик хочет обслуживать тысячи одновременных WebSocket-соединений на одном воркере. Какой стандарт ему нужен?",
+        "options": [
+          "ASGI: асинхронный стандарт, держащий тысячи соединений в одном потоке через событийный цикл",
+          "WSGI с многопоточным режимом: потоки дешевле процессов",
+          "WSGI с async-расширением: оно добавляет поддержку WebSockets",
+          "WSGI достаточно: WebSockets работают через обычные HTTP-ответы"
+        ],
+        "correct": 0,
+        "explanation_md": "ASGI поддерживает async/await и долгоживущие соединения; один воркер обслуживает тысячи клиентов через событийный цикл.",
+        "difficulty": 3
+      }
+    ],
+    "starlette-uvicorn": [
+      {
+        "type": "single",
+        "text": "Какова роль uvicorn в стеке FastAPI?",
+        "options": [
+          "ASGI-сервер: принимает HTTP-соединения и вызывает ASGI-приложение",
+          "ORM-слой для работы с базой данных",
+          "Библиотека валидации данных, лежащая в основе FastAPI",
+          "Менеджер процессов для управления воркерами"
+        ],
+        "correct": 0,
+        "explanation_md": "uvicorn физически слушает порт и передаёт запросы в ASGI-приложение; в проде его оборачивают gunicorn с uvicorn-воркерами.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Что даёт Starlette FastAPI и что FastAPI добавляет поверх него?",
+        "options": [
+          "Starlette — роутинг/middleware/WebSockets; FastAPI добавляет Pydantic-валидацию, DI и OpenAPI-доки",
+          "Starlette — ORM для БД; FastAPI добавляет HTTP-роутинг",
+          "Starlette — сервер (слушает порт); FastAPI добавляет бизнес-логику",
+          "Starlette и FastAPI полностью независимы и не связаны"
+        ],
+        "correct": 0,
+        "explanation_md": "FastAPI наследует Starlette (роутинг, middleware, WebSockets) и добавляет Pydantic (валидация), DI (Depends) и авто-документацию.",
+        "difficulty": 3
+      }
+    ],
+    "routing": [
+      {
+        "type": "single",
+        "text": "Как FastAPI определяет, что параметр функции является path-параметром?",
+        "options": [
+          "Имя параметра совпадает с шаблоном в пути: @app.get('/items/{item_id}') → item_id: int",
+          "Параметр аннотирован специальным типом Path(...)",
+          "Path-параметры всегда идут первыми в сигнатуре функции",
+          "FastAPI определяет это по префиксу параметра: p_item_id"
+        ],
+        "correct": 0,
+        "explanation_md": "Совпадение имени в шаблоне пути и имени параметра функции — FastAPI сам извлекает и приводит к нужному типу.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Зачем нужен APIRouter и как он используется?",
+        "options": [
+          "Разбивает приложение на модули; подключается через app.include_router(...) с общим prefix и tags",
+          "APIRouter заменяет FastAPI() для малых приложений без DI",
+          "APIRouter автоматически создаёт CRUD-эндпоинты по переданной Pydantic-модели",
+          "APIRouter нужен только для WebSocket-эндпоинтов"
+        ],
+        "correct": 0,
+        "explanation_md": "APIRouter группирует эндпоинты по доменам (users, orders); `include_router` подключает их с общим префиксом и тегами для OpenAPI.",
+        "difficulty": 3
+      }
+    ]
+  },
+  "pydantic": {
+    "request-validation": [
+      {
+        "type": "single",
+        "text": "Что возвращает FastAPI, если тело запроса не прошло валидацию Pydantic?",
+        "options": [
+          "422 Unprocessable Entity с подробным описанием ошибок валидации",
+          "400 Bad Request с пустым телом",
+          "500 Internal Server Error — исключение валидации не перехватывается",
+          "200 OK с None вместо невалидных полей"
+        ],
+        "correct": 0,
+        "explanation_md": "FastAPI автоматически перехватывает `ValidationError` Pydantic и возвращает 422 с деталями — код эндпоинта при этом не вызывается.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Клиент передаёт строку '30' для поля возраста, аннотированного как `age: int`. Что сделает FastAPI?",
+        "options": [
+          "Автоматически приведёт '30' к int(30) и передаст в эндпоинт",
+          "Вернёт 422 — строки для int-полей недопустимы",
+          "Оставит '30' как строку, не меняя тип",
+          "Приведёт только если строка начинается с цифры, иначе 422"
+        ],
+        "correct": 0,
+        "explanation_md": "Pydantic приводит совместимые типы: строка '30' → int 30; неприводимая строка ('abc') → ValidationError → 422.",
+        "difficulty": 3
+      }
+    ],
+    "response-model": [
+      {
+        "type": "single",
+        "text": "Зачем указывать `response_model` в декораторе эндпоинта?",
+        "options": [
+          "FastAPI фильтрует ответ по этой схеме — лишние поля (например, password_hash) не попадут клиенту",
+          "response_model ускоряет сериализацию за счёт предварительной компиляции",
+          "response_model обязателен для всех эндпоинтов, иначе FastAPI не запустится",
+          "response_model нужен только для документирования, на реальные данные не влияет"
+        ],
+        "correct": 0,
+        "explanation_md": "`response_model` фильтрует исходящие данные: сколько бы полей ни вернула бизнес-логика, наружу пройдут только объявленные в схеме.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Эндпоинт возвращает ORM-объект User с полем password_hash. response_model=UserRead (без password_hash). Что получит клиент?",
+        "options": [
+          "Только поля из UserRead — password_hash будет отфильтрован FastAPI",
+          "Все поля включая password_hash — FastAPI не фильтрует ORM-объекты",
+          "Ошибку 500 — FastAPI не умеет сериализовывать ORM-объекты",
+          "Ошибку 422 — несоответствие типа возвращаемого значения"
+        ],
+        "correct": 0,
+        "explanation_md": "`response_model` фильтрует строго: возвращается только то, что объявлено в `UserRead`, независимо от содержимого ORM-объекта.",
+        "difficulty": 3
+      }
+    ],
+    "validators-settings": [
+      {
+        "type": "single",
+        "text": "Чем field_validator отличается от model_validator в Pydantic v2?",
+        "options": [
+          "field_validator проверяет одно поле; model_validator видит все поля и проверяет их согласованность",
+          "field_validator работает только со строками; model_validator — с любыми типами",
+          "model_validator запускается до парсинга; field_validator — после отправки ответа",
+          "Они идентичны, разница только в названии"
+        ],
+        "correct": 0,
+        "explanation_md": "`field_validator` — для логики одного поля; `model_validator` — для кросс-полевых проверок (пароль == подтверждение).",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Зачем использовать BaseSettings из pydantic-settings для конфигурации приложения?",
+        "options": [
+          "Автоматически читает переменные окружения с валидацией типов — 12-factor конфигурация в виде типизированного объекта",
+          "BaseSettings ускоряет работу с .env файлами за счёт кэширования",
+          "BaseSettings нужен только для тестовых настроек, в проде используют dict",
+          "BaseSettings хранит секреты в зашифрованном виде автоматически"
+        ],
+        "correct": 0,
+        "explanation_md": "`BaseSettings` превращает переменные окружения в типизированный, валидируемый объект — стандартный способ конфигурации FastAPI-приложений.",
+        "difficulty": 3
+      }
+    ],
+    "pydantic-v2": [
+      {
+        "type": "single",
+        "text": "Что главное изменилось в Pydantic v2 по сравнению с v1?",
+        "options": [
+          "Ядро переписано на Rust (pydantic-core) — кратный прирост скорости валидации",
+          "Pydantic v2 удалил поддержку вложенных моделей",
+          "Pydantic v2 заменил JSON на YAML как основной формат",
+          "Pydantic v2 убрал аннотации типов — теперь используются строки"
+        ],
+        "correct": 0,
+        "explanation_md": "Rust-ядро (pydantic-core) даёт кратный прирост скорости — важно для FastAPI, валидирующего каждый запрос.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Как в Pydantic v2 называется замена устаревшего метода `.dict()`?",
+        "options": [
+          "model_dump()",
+          "to_dict()",
+          "serialize()",
+          "json_schema()"
+        ],
+        "correct": 0,
+        "explanation_md": "В v2: `model_dump()` вместо `.dict()`, `model_validate()` вместо `.parse_obj()`, `model_config` вместо класса `Config`.",
+        "difficulty": 3
+      }
+    ]
+  },
+  "dependency-injection": {
+    "depends": [
+      {
+        "type": "single",
+        "text": "Что такое Depends в FastAPI и для чего он нужен?",
+        "options": [
+          "Механизм DI: эндпоинт объявляет нужные ресурсы, FastAPI вызывает их и подставляет автоматически",
+          "Декоратор для объявления обязательных HTTP-заголовков",
+          "Способ обозначить, что эндпоинт зависит от другого эндпоинта",
+          "Аннотация для параметров с дефолтным значением None"
+        ],
+        "correct": 0,
+        "explanation_md": "`Depends` — инверсия зависимостей: эндпоинт говорит «мне нужна сессия БД», FastAPI создаёт и подставляет её сам.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Какое преимущество Depends перед прямым вызовом get_db() внутри каждого эндпоинта?",
+        "options": [
+          "Нет дублирования; в тестах зависимость легко подменить через app.dependency_overrides",
+          "Depends выполняется быстрее прямого вызова функции",
+          "Depends делает эндпоинт асинхронным автоматически",
+          "Depends защищает от SQL-инъекций при работе с БД"
+        ],
+        "correct": 0,
+        "explanation_md": "`dependency_overrides` позволяет подменить любую зависимость в тестах без изменения кода эндпоинтов — главный бонус DI.",
+        "difficulty": 3
+      }
+    ],
+    "sub-dependencies": [
+      {
+        "type": "single",
+        "text": "Зависимость get_current_user зависит от get_token, которая зависит от get_db. Что FastAPI сделает автоматически?",
+        "options": [
+          "Разрешит всю цепочку: создаст сессию БД, извлечёт токен, найдёт пользователя",
+          "Вызовет только get_current_user и не разрешит под-зависимости",
+          "Выбросит ошибку: цепочки зависимостей не поддерживаются",
+          "Потребует явно объявить все зависимости в эндпоинте"
+        ],
+        "correct": 0,
+        "explanation_md": "FastAPI строит дерево зависимостей и разрешает всю цепочку снизу вверх; эндпоинт запрашивает только верхний уровень.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Как применить одну зависимость (например, проверку прав) сразу ко всем эндпоинтам в APIRouter?",
+        "options": [
+          "Передать в dependencies=[Depends(check_auth)] при создании APIRouter или include_router",
+          "Добавить зависимость в каждый декоратор вручную",
+          "Использовать middleware вместо Depends для групповых зависимостей",
+          "FastAPI автоматически применяет все зависимости ко всем роутерам"
+        ],
+        "correct": 0,
+        "explanation_md": "`APIRouter(dependencies=[...])` или `include_router(..., dependencies=[...])` применяет зависимость ко всем эндпоинтам группы.",
+        "difficulty": 3
+      }
+    ],
+    "yield-dependencies": [
+      {
+        "type": "single",
+        "text": "Что гарантирует код после yield в зависимости с yield?",
+        "options": [
+          "Он выполнится после эндпоинта даже при исключении — аналог блока finally",
+          "Он выполнится только если эндпоинт завершился успешно",
+          "Он выполнится немедленно после yield, не дожидаясь эндпоинта",
+          "Он выполнится в отдельном фоновом потоке"
+        ],
+        "correct": 0,
+        "explanation_md": "Код после `yield` (в `finally`) выполняется после ответа клиенту даже при исключении — гарантированная очистка ресурса.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Какой паттерн yield-зависимости используется для сессии БД?",
+        "options": [
+          "Открыть сессию до yield, yield db — отдать в эндпоинт, finally: db.close() после yield",
+          "Открыть сессию в finally, yield db после закрытия",
+          "yield session без finally — сессия закрывается сборщиком мусора",
+          "Использовать return вместо yield и закрывать сессию в эндпоинте"
+        ],
+        "correct": 0,
+        "explanation_md": "Стандартный паттерн «сессия на запрос»: создание до `yield`, использование в эндпоинте, гарантированное закрытие в `finally`.",
+        "difficulty": 3
+      }
+    ],
+    "dependency-cache": [
+      {
+        "type": "single",
+        "text": "Сколько раз вызовется get_db(), если её используют get_current_user и сам эндпоинт через Depends?",
+        "options": [
+          "Один раз: FastAPI кэширует результат зависимости в пределах одного запроса",
+          "Дважды: каждый Depends вызывает зависимость независимо",
+          "Ноль раз: get_db кэшируется между запросами",
+          "Зависит от версии FastAPI"
+        ],
+        "correct": 0,
+        "explanation_md": "FastAPI кэширует результат зависимости в рамках запроса — все потребители получат одну и ту же сессию БД.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Как отключить кэширование зависимости, если она должна вызываться каждый раз заново?",
+        "options": [
+          "Depends(my_dep, use_cache=False)",
+          "Не присваивать результат Depends переменной",
+          "Использовать @lru_cache с maxsize=0 на функции зависимости",
+          "Кэш зависимостей нельзя отключить — это встроенное поведение"
+        ],
+        "correct": 0,
+        "explanation_md": "`Depends(dep, use_cache=False)` заставляет FastAPI вызывать зависимость при каждом её использовании в рамках запроса.",
+        "difficulty": 3
+      }
+    ]
+  },
+  "async-middleware": {
+    "sync-vs-async": [
+      {
+        "type": "single",
+        "text": "Что делает FastAPI с обычным def эндпоинтом (не async def)?",
+        "options": [
+          "Выполняет его в отдельном потоке из пула, чтобы не блокировать событийный цикл",
+          "Выполняет его в событийном цикле напрямую, как async def",
+          "Преобразует его в корутину автоматически",
+          "Возвращает ошибку — FastAPI требует только async def"
+        ],
+        "correct": 0,
+        "explanation_md": "Обычный `def` FastAPI запускает в `threadpool` — блокирующий код не остановит цикл; `async def` — в событийном цикле.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Разработчик написал async def эндпоинт и внутри вызвал синхронный requests.get(url). Что произойдёт?",
+        "options": [
+          "requests.get заблокирует событийный цикл на время запроса — все другие запросы встанут",
+          "FastAPI автоматически перенесёт requests.get в поток",
+          "requests.get выполнится корректно — в async def можно вызывать любой код",
+          "FastAPI выбросит RuntimeError при обнаружении синхронного вызова"
+        ],
+        "correct": 0,
+        "explanation_md": "Блокирующий вызов в `async def` замораживает весь цикл; нужно `asyncio.to_thread(requests.get, url)` или заменить на httpx.",
+        "difficulty": 3
+      }
+    ],
+    "background-tasks": [
+      {
+        "type": "single",
+        "text": "Что делает tasks.add_task(send_email, user) в эндпоинте FastAPI?",
+        "options": [
+          "Планирует send_email для выполнения после отправки ответа клиенту",
+          "Запускает send_email немедленно до формирования ответа",
+          "Добавляет send_email в очередь Celery",
+          "Выполняет send_email в отдельном процессе"
+        ],
+        "correct": 0,
+        "explanation_md": "BackgroundTasks выполняет задачу после отправки ответа — клиент не ждёт; задача выполняется в том же процессе.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Почему BackgroundTasks не заменяет Celery для критически важных задач?",
+        "options": [
+          "BackgroundTasks живут в том же процессе: нет ретраев, нет распределения, не переживают перезапуск",
+          "BackgroundTasks работают только с async функциями",
+          "BackgroundTasks выполняются до отправки ответа, блокируя клиента",
+          "BackgroundTasks не поддерживают аргументы в задачах"
+        ],
+        "correct": 0,
+        "explanation_md": "BackgroundTasks — для лёгких послезапросных действий; Celery нужен для надёжной очереди с ретраями, воркерами и персистентностью.",
+        "difficulty": 3
+      }
+    ],
+    "middleware-cors": [
+      {
+        "type": "single",
+        "text": "В какой момент выполняется код middleware по отношению к эндпоинту?",
+        "options": [
+          "До передачи запроса в эндпоинт и после получения ответа (через call_next)",
+          "Только до эндпоинта, после — не выполняется",
+          "Только при возникновении исключения в эндпоинте",
+          "Параллельно с выполнением эндпоинта"
+        ],
+        "correct": 0,
+        "explanation_md": "Middleware оборачивает запрос/ответ: код до `call_next` — входящий, после — исходящий; слои работают как «луковица».",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Браузер блокирует запрос фронтенда на localhost:5173 к API на localhost:8000. В чём причина?",
+        "options": [
+          "Same-Origin Policy: разные порты — разные origin; нужен CORSMiddleware с разрешённым origin",
+          "Браузер запрещает запросы на localhost по соображениям безопасности",
+          "FastAPI по умолчанию блокирует все запросы без Authorization заголовка",
+          "CORS-ошибка возникает только при разных доменах, не портах"
+        ],
+        "correct": 0,
+        "explanation_md": "Origin = схема + домен + порт; 5173 и 8000 — разные origin, нужен `CORSMiddleware` с `allow_origins=['http://localhost:5173']`.",
+        "difficulty": 3
+      }
+    ],
+    "exception-handling": [
+      {
+        "type": "single",
+        "text": "Как в FastAPI поднять ошибку с конкретным HTTP-статусом?",
+        "options": [
+          "raise HTTPException(status_code=404, detail='Not found')",
+          "return Response(status_code=404)",
+          "raise ValueError('Not found') — FastAPI сам конвертирует",
+          "Вернуть None из эндпоинта"
+        ],
+        "correct": 0,
+        "explanation_md": "`HTTPException` — стандартный способ вернуть HTTP-ошибку из любого места в коде, включая зависимости.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Зачем регистрировать @app.exception_handler(MyDomainError) вместо try/except в каждом эндпоинте?",
+        "options": [
+          "Единое место для маппинга доменных исключений в HTTP-коды — эндпоинты остаются чистыми",
+          "exception_handler ускоряет обработку ошибок",
+          "Без exception_handler FastAPI не может поймать пользовательские исключения",
+          "exception_handler нужен только для 5xx ошибок"
+        ],
+        "correct": 0,
+        "explanation_md": "Глобальный обработчик — паттерн: бизнес-логика бросает доменные исключения, единый обработчик маппит их в HTTP-коды.",
+        "difficulty": 3
+      }
+    ]
+  },
+  "auth-lifespan-testing": {
+    "oauth2-jwt": [
+      {
+        "type": "single",
+        "text": "Как клиент передаёт JWT при аутентификации в FastAPI по OAuth2 password flow?",
+        "options": [
+          "В заголовке Authorization: Bearer <token> при каждом запросе",
+          "В теле каждого запроса как поле token",
+          "В cookie с именем access_token",
+          "В query-параметре ?token=<jwt>"
+        ],
+        "correct": 0,
+        "explanation_md": "OAuth2 Bearer: клиент получает токен на `/token`, затем шлёт `Authorization: Bearer <token>` в каждом запросе.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Почему JWT-аутентификация называется stateless и в чём её преимущество для масштабирования?",
+        "options": [
+          "Сервер не хранит сессию — любой инстанс может проверить подпись токена без обращения к хранилищу",
+          "Клиент не хранит токен — он передаётся только в заголовке",
+          "JWT не требует хранения секретного ключа для подписи",
+          "Stateless означает, что токен не имеет срока действия"
+        ],
+        "correct": 0,
+        "explanation_md": "JWT stateless: сервер проверяет подпись и exp из самого токена — любой сервер пула это сделает без общего хранилища сессий.",
+        "difficulty": 3
+      }
+    ],
+    "lifespan": [
+      {
+        "type": "single",
+        "text": "Что такое lifespan в FastAPI и для чего он нужен?",
+        "options": [
+          "Async context manager для кода на старте и завершении приложения (init_db, загрузка кэша)",
+          "Middleware для ограничения времени обработки запросов",
+          "Настройка таймаута соединения с базой данных",
+          "Декоратор для эндпоинтов с долгими вычислениями"
+        ],
+        "correct": 0,
+        "explanation_md": "Lifespan — код до `yield` выполняется при старте (до первого запроса), после `yield` — при остановке; замена устаревшим `@app.on_event`.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Нужно создать пул соединений к БД один раз при старте и закрыть при остановке. Что использовать?",
+        "options": [
+          "lifespan: создать пул до yield, закрыть после yield в finally",
+          "BackgroundTasks: запустить задачу создания пула при первом запросе",
+          "Зависимость с yield: открывать пул при каждом запросе",
+          "@app.on_event('startup') — актуальный способ в современных версиях FastAPI"
+        ],
+        "correct": 0,
+        "explanation_md": "Lifespan — правильное место для инициализации на уровне приложения; `@app.on_event` устарел, зависимости с yield — на уровне запроса.",
+        "difficulty": 3
+      }
+    ],
+    "testing": [
+      {
+        "type": "single",
+        "text": "Как тестировать FastAPI без реального HTTP-сервера?",
+        "options": [
+          "Через TestClient (httpx): запросы идут прямо в ASGI-приложение в памяти, без порта",
+          "Через unittest.mock.patch всех эндпоинтов",
+          "Поднимая сервер на случайном порту через subprocess",
+          "FastAPI нельзя тестировать без реального сервера — нужен docker-контейнер"
+        ],
+        "correct": 0,
+        "explanation_md": "`TestClient` (или `AsyncClient` с `ASGITransport`) доставляет запросы прямо в приложение — быстро, без сети.",
+        "difficulty": 2
+      },
+      {
+        "type": "single",
+        "text": "Как подменить зависимость get_db на тестовую in-memory БД в тестах FastAPI?",
+        "options": [
+          "app.dependency_overrides[get_db] = get_test_db перед запуском тестов",
+          "Передать get_test_db как аргумент в TestClient",
+          "Переименовать get_db в get_test_db в самом коде приложения",
+          "Использовать monkeypatch на уровне SQLAlchemy"
+        ],
+        "correct": 0,
+        "explanation_md": "`dependency_overrides` — главный инструмент тестирования в FastAPI: подменяет зависимость без изменения кода эндпоинтов.",
+        "difficulty": 3
+      }
+    ]
+  }
+}

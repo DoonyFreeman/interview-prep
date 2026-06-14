@@ -77,6 +77,70 @@ export function IconUser({ className }: IconProps) {
   );
 }
 
+/** AI interview — a microphone. */
+export function IconMic({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+    </Svg>
+  );
+}
+
+/** Lesson test — a clipboard with a checkmark. */
+export function IconClipboardCheck({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="m9 14 2 2 4-4" />
+    </Svg>
+  );
+}
+
+/** Quiz — a target. */
+export function IconTarget({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </Svg>
+  );
+}
+
+/** Retry — a counter-clockwise arrow. */
+export function IconRefresh({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </Svg>
+  );
+}
+
+/** Search — a magnifier. */
+export function IconSearch({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </Svg>
+  );
+}
+
+/** Reward — sparkles (perfect result). */
+export function IconSparkles({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 3 13.9 8.6 19.5 10.5 13.9 12.4 12 18 10.1 12.4 4.5 10.5 10.1 8.6z" />
+      <path d="M19 15v4" />
+      <path d="M21 17h-4" />
+    </Svg>
+  );
+}
+
 /**
  * Brand glyph — a rising "mastery" curve to a sparkle at the apex. Matches the
  * app icon (`public/favicon.svg`). Drawn on a solid primary tile by the caller;

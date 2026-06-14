@@ -156,6 +156,68 @@ class HintOut(BaseModel):
 
 
 # --------------------------------------------------------------------------- #
+# Lesson MCQ self-test (no LLM, graded client-side).
+#
+# Unlike the open quiz, the correct option index + explanation ARE sent to the
+# client: the options are inherently visible and grading is a plain index compare
+# (no LLM to protect), so instant client-side feedback is the deliberate design.
+# This does NOT relax the reference_answer rule — open questions stay reference-
+# free pre-answer.
+# --------------------------------------------------------------------------- #
+class McqQuestionOut(BaseModel):
+    slug: str  # stable id (course:lesson:concept:i) — also the result key
+    type: str  # "single" | "boolean"
+    text: str
+    options: list[str]
+    correct_index: int
+    explanation_md: str
+    concept_slug: str
+    concept_title: str
+    anchor: str  # markdown heading anchor for the "back to theory" deep-link
+    difficulty: int
+
+
+class LessonTestOut(BaseModel):
+    course_slug: str
+    lesson_slug: str
+    total: int
+    questions: list[McqQuestionOut]
+
+
+class TestResultItemIn(BaseModel):
+    slug: str
+    correct: bool
+
+
+class TestResultIn(BaseModel):
+    items: list[TestResultItemIn]
+
+
+class LessonTestProgressOut(BaseModel):
+    total: int  # MCQ in the lesson
+    answered: int  # MCQ attempted at least once
+    correct: int  # MCQ whose last answer was correct
+    attempts: int  # number of full runs
+    last_score: int  # 0..100, last full run
+    best_score: int  # 0..100, best full run
+    passed: bool  # best_score >= TEST_PASS_THRESHOLD
+
+
+class TestsCourseOverviewOut(BaseModel):
+    slug: str
+    total: int  # lessons in this course that have MCQ
+    passed: int  # of those, best_score >= threshold
+    started: int  # of those, at least one full run
+
+
+class TestsOverviewOut(BaseModel):
+    total: int  # lessons with MCQ across all courses
+    passed: int
+    started: int
+    courses: list[TestsCourseOverviewOut]
+
+
+# --------------------------------------------------------------------------- #
 # Progress + spaced-repetition review queue
 # --------------------------------------------------------------------------- #
 class ReviewItem(BaseModel):

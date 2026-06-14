@@ -10,6 +10,7 @@ import { PageLoader, Spinner } from "../components/Spinner";
 import { Button } from "../components/Button";
 import { Markdown } from "../components/Markdown";
 import { ScoreGauge } from "../components/ScoreGauge";
+import { IconRefresh, IconSparkles } from "../components/icons";
 import {
   buildQuiz,
   eligibleCount,
@@ -387,7 +388,10 @@ export function GlossaryQuizPage({
       </div>
 
       {missed.length === 0 ? (
-        <p className="mt-6 font-semibold text-success">🎉 {t("glossaryQuiz.perfect")}</p>
+        <p className="mt-6 inline-flex items-center gap-1.5 font-semibold text-success">
+          <IconSparkles className="h-4 w-4" />
+          {t("glossaryQuiz.perfect")}
+        </p>
       ) : (
         <div className="mt-8 text-left">
           <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-faint">
@@ -414,7 +418,8 @@ export function GlossaryQuizPage({
             start();
           }}
         >
-          ↻ {t("glossaryQuiz.retry")}
+          <IconRefresh className="h-4 w-4" />
+          {t("glossaryQuiz.retry")}
         </Button>
         <Button
           variant="secondary"

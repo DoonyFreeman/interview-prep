@@ -2,10 +2,16 @@ import { useEffect, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll } from "motion/react";
-import { useLesson, useMarkLesson, useProgress } from "../api/hooks";
+import {
+  useLesson,
+  useLessonTestProgress,
+  useMarkLesson,
+  useProgress,
+} from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
+import { IconMic, IconClipboardCheck } from "../components/icons";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
 
 export function LessonPage() {
@@ -14,6 +20,7 @@ export function LessonPage() {
   const location = useLocation();
   const lesson = useLesson(courseSlug, lessonSlug);
   const progress = useProgress();
+  const testProgress = useLessonTestProgress(courseSlug, lessonSlug);
   const markLesson = useMarkLesson();
 
   const articleRef = useRef<HTMLElement>(null);
@@ -99,8 +106,28 @@ export function LessonPage() {
             </h3>
             <p className="mt-1 text-sm text-muted">{t("lesson.actionsHint")}</p>
             <Link to={`/courses/${courseSlug}/lessons/${lessonSlug}/quiz`}>
-              <Button className="mt-3 w-full">{t("lesson.startQuiz")}</Button>
+              <Button className="mt-3 w-full">
+                <IconMic className="h-4 w-4" />
+                {t("lesson.startQuiz")}
+              </Button>
             </Link>
+            {(testProgress.data?.total ?? 0) > 0 && (
+              <Link to={`/courses/${courseSlug}/lessons/${lessonSlug}/test`}>
+                <Button variant="secondary" className="mt-2 w-full">
+                  <IconClipboardCheck className="h-4 w-4" />
+                  {t("lesson.startTest")}
+                  {testProgress.data && testProgress.data.attempts > 0 && (
+                    <span
+                      className={`ml-1.5 font-bold ${
+                        testProgress.data.passed ? "text-celebrate" : "text-muted"
+                      }`}
+                    >
+                      {testProgress.data.best_score}%
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            )}
             <Link to={`/courses/${courseSlug}/lessons/${lessonSlug}/questions`}>
               <Button variant="ghost" className="mt-2 w-full">
                 {t("lesson.allQuestions")}

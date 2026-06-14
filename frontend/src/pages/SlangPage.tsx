@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useGlossary } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { EmptyState } from "../components/EmptyState";
+import { IconTarget } from "../components/icons";
 import type { GlossaryTerm } from "../api/types";
 
 export function SlangPage() {
@@ -60,9 +61,10 @@ export function SlangPage() {
         </div>
         <Link
           to="/slang/quiz"
-          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg shadow-card transition-[background-color] hover:bg-primary-strong"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-fg shadow-card transition-[background-color] hover:bg-primary-strong"
         >
-          🎯 {t("slang.quizCta")}
+          <IconTarget className="h-4 w-4" />
+          {t("slang.quizCta")}
         </Link>
       </div>
 

@@ -13,12 +13,16 @@ import type {
   HintOut,
   LessonDetail,
   LessonQuestions,
+  LessonTest,
+  LessonTestProgress,
   ProgressOverviewOut,
   QuestionAttempts,
   QuestionOut,
   QuestionsProgress,
   QuizResultItem,
   ReviewQueue,
+  TestResultItem,
+  TestsOverview,
   TokenOut,
   UserOut,
 } from "./types";
@@ -225,6 +229,68 @@ export function useHint() {
           answer_text: vars.answerText,
         })
       ).data,
+  });
+}
+
+// --- Lesson MCQ self-test --------------------------------------------------
+export function useLessonTest(
+  courseSlug: string,
+  lessonSlug: string,
+  options: { enabled?: boolean } = {},
+) {
+  return useQuery({
+    queryKey: ["lesson-test", courseSlug, lessonSlug],
+    enabled: options.enabled ?? true,
+    queryFn: async () =>
+      (
+        await api.get<LessonTest>(
+          `/quiz/courses/${courseSlug}/lessons/${lessonSlug}/test`,
+        )
+      ).data,
+  });
+}
+
+export function useLessonTestProgress(
+  courseSlug: string,
+  lessonSlug: string,
+  options: { enabled?: boolean } = {},
+) {
+  return useQuery({
+    queryKey: ["lesson-test-progress", courseSlug, lessonSlug],
+    enabled: options.enabled ?? true,
+    queryFn: async () =>
+      (
+        await api.get<LessonTestProgress>(
+          `/quiz/courses/${courseSlug}/lessons/${lessonSlug}/test/progress`,
+        )
+      ).data,
+  });
+}
+
+export function useTestsOverview() {
+  return useQuery({
+    queryKey: ["tests-overview"],
+    queryFn: async () =>
+      (await api.get<TestsOverview>("/quiz/tests/overview")).data,
+  });
+}
+
+export function useRecordLessonTest(courseSlug: string, lessonSlug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (items: TestResultItem[]) =>
+      (
+        await api.post<LessonTestProgress>(
+          `/quiz/courses/${courseSlug}/lessons/${lessonSlug}/test/result`,
+          { items },
+        )
+      ).data,
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: ["lesson-test-progress", courseSlug, lessonSlug],
+      });
+      qc.invalidateQueries({ queryKey: ["tests-overview"] });
+    },
   });
 }
 

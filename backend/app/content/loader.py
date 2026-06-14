@@ -22,12 +22,28 @@ class QuestionData:
 
 
 @dataclass
+class McqData:
+    """A closed multiple-choice question (lesson self-test). ``slug`` is derived by
+    the loader (``course:lesson:concept:i``) so it's stable across re-seeds."""
+
+    slug: str
+    type: str
+    text: str
+    options: list[str]
+    correct_index: int
+    explanation_md: str = ""
+    difficulty: int = 3
+    order_index: int = 0
+
+
+@dataclass
 class ConceptData:
     slug: str
     title: str
     anchor: str = ""
     order_index: int = 0
     questions: list[QuestionData] = field(default_factory=list)
+    mcqs: list[McqData] = field(default_factory=list)
 
 
 @dataclass
@@ -98,7 +114,16 @@ def load_content(content_dir: str | Path) -> ContentBundle:
                 else {}
             )
 
-            bundle.courses.append(_parse_course(course_path, meta, questions_map))
+            tests_file = course_path / "tests.json"
+            tests_map: dict = (
+                json.loads(tests_file.read_text(encoding="utf-8"))
+                if tests_file.is_file()
+                else {}
+            )
+
+            bundle.courses.append(
+                _parse_course(course_path, meta, questions_map, tests_map)
+            )
 
     _load_glossary(root, bundle)
     _load_slang(root, bundle)
@@ -153,9 +178,12 @@ def _load_slang(root: Path, bundle: ContentBundle) -> None:
         )
 
 
-def _parse_course(course_path: Path, meta: dict, questions_map: dict) -> CourseData:
+def _parse_course(
+    course_path: Path, meta: dict, questions_map: dict, tests_map: dict
+) -> CourseData:
+    course_slug = meta["slug"]
     course = CourseData(
-        slug=meta["slug"],
+        slug=course_slug,
         title=meta["title"],
         description=meta.get("description", ""),
         order_index=meta.get("order", 0),
@@ -176,6 +204,7 @@ def _parse_course(course_path: Path, meta: dict, questions_map: dict) -> CourseD
         )
 
         lesson_questions = questions_map.get(lesson_slug, {})
+        lesson_tests = tests_map.get(lesson_slug, {})
         for concept_meta in lesson_meta.get("concepts", []):
             concept_slug = concept_meta["slug"]
             concept = ConceptData(
@@ -191,6 +220,20 @@ def _parse_course(course_path: Path, meta: dict, questions_map: dict) -> CourseD
                         reference_answer=q["reference_answer"],
                         difficulty=q.get("difficulty", 3),
                         order_index=q.get("order", i),
+                    )
+                )
+            for i, m in enumerate(lesson_tests.get(concept_slug, [])):
+                concept.mcqs.append(
+                    McqData(
+                        # Stable id from slugs + position — survives re-seed.
+                        slug=f"{course_slug}:{lesson_slug}:{concept_slug}:{i}",
+                        type=m.get("type", "single"),
+                        text=m["text"],
+                        options=list(m["options"]),
+                        correct_index=int(m["correct"]),
+                        explanation_md=m.get("explanation_md", ""),
+                        difficulty=m.get("difficulty", 3),
+                        order_index=m.get("order", i),
                     )
                 )
             lesson.concepts.append(concept)

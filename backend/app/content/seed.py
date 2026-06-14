@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import get_settings
 from app.content import registry
 from app.content.loader import ContentBundle, CourseData, LessonData, load_content
-from app.models import Concept, Course, GlossaryTerm, Lesson, Question
+from app.models import Concept, Course, GlossaryTerm, Lesson, McqQuestion, Question
 
 
 async def seed_from_dir(session: AsyncSession, content_dir: str | None = None) -> int:
@@ -134,6 +134,26 @@ async def _upsert_lesson(
                     reference_answer=q.reference_answer,
                     difficulty=q.difficulty,
                     order_index=q.order_index,
+                )
+            )
+        await session.flush()
+
+        # MCQ self-test bank: content is authoritative — replace the set.
+        await session.execute(
+            delete(McqQuestion).where(McqQuestion.concept_id == concept.id)
+        )
+        for m in concept_data.mcqs:
+            session.add(
+                McqQuestion(
+                    slug=m.slug,
+                    concept_id=concept.id,
+                    type=m.type,
+                    text=m.text,
+                    options=json.dumps(m.options, ensure_ascii=False),
+                    correct_index=m.correct_index,
+                    explanation_md=m.explanation_md,
+                    difficulty=m.difficulty,
+                    order_index=m.order_index,
                 )
             )
         await session.flush()

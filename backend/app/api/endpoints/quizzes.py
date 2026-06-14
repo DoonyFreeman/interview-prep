@@ -18,10 +18,14 @@ from app.schemas import (
     HintIn,
     HintOut,
     LessonQuestionsOut,
+    LessonTestOut,
+    LessonTestProgressOut,
     QuestionAttemptsOut,
     QuestionOut,
+    TestResultIn,
+    TestsOverviewOut,
 )
-from app.services import quiz
+from app.services import lesson_test, quiz
 
 router = APIRouter()
 
@@ -55,6 +59,66 @@ async def lesson_questions(
     """List all lesson questions + the user's attempt history (for re-practice)."""
     return await quiz.list_lesson_questions(
         session, course_slug, lesson_slug, user_id=user.id
+    )
+
+
+# --------------------------------------------------------------------------- #
+# Lesson MCQ self-test (no LLM, graded client-side).
+# --------------------------------------------------------------------------- #
+@router.get("/quiz/tests/overview", response_model=TestsOverviewOut)
+async def tests_overview(
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Per-course + overall test status (lessons started/passed) for the dashboard."""
+    return await lesson_test.tests_overview(session, user.id)
+
+
+@router.get(
+    "/quiz/courses/{course_slug}/lessons/{lesson_slug}/test",
+    response_model=LessonTestOut,
+)
+async def lesson_test_questions(
+    course_slug: str,
+    lesson_slug: str,
+    _user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """All MCQ for the lesson (with correct index + explanation, for client grading)."""
+    return await lesson_test.serve_test(session, course_slug, lesson_slug)
+
+
+@router.get(
+    "/quiz/courses/{course_slug}/lessons/{lesson_slug}/test/progress",
+    response_model=LessonTestProgressOut,
+)
+async def lesson_test_progress(
+    course_slug: str,
+    lesson_slug: str,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """This user's lesson "test score": total / answered / last-correct counts."""
+    return await lesson_test.get_lesson_progress(
+        session, user.id, course_slug, lesson_slug
+    )
+
+
+@router.post(
+    "/quiz/courses/{course_slug}/lessons/{lesson_slug}/test/result",
+    response_model=LessonTestProgressOut,
+)
+async def record_lesson_test_result(
+    course_slug: str,
+    lesson_slug: str,
+    data: TestResultIn,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Record a finished test (one item per answered MCQ); returns fresh progress."""
+    items = [(i.slug, i.correct) for i in data.items]
+    return await lesson_test.record_results(
+        session, user.id, course_slug, lesson_slug, items
     )
 
 

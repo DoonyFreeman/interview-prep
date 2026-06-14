@@ -262,3 +262,53 @@ export interface QuestionsProgress {
   answered: number;
   courses: CourseQuestionsProgress[];
 }
+
+// --- Lesson MCQ self-test (closed questions, graded client-side) -----------
+export interface McqQuestion {
+  slug: string; // stable id, also the result key
+  type: "single" | "boolean" | string;
+  text: string;
+  options: string[];
+  correct_index: number;
+  explanation_md: string;
+  concept_slug: string;
+  concept_title: string;
+  anchor: string;
+  difficulty: number;
+}
+
+export interface LessonTest {
+  course_slug: string;
+  lesson_slug: string;
+  total: number;
+  questions: McqQuestion[];
+}
+
+export interface TestResultItem {
+  slug: string;
+  correct: boolean;
+}
+
+export interface LessonTestProgress {
+  total: number;
+  answered: number;
+  correct: number;
+  attempts: number;
+  last_score: number;
+  best_score: number;
+  passed: boolean;
+}
+
+export interface TestsCourseOverview {
+  slug: string;
+  total: number;
+  passed: number;
+  started: number;
+}
+
+export interface TestsOverview {
+  total: number;
+  passed: number;
+  started: number;
+  courses: TestsCourseOverview[];
+}
