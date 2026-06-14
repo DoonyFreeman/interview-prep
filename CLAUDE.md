@@ -343,6 +343,33 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    updates, backup cron, restore, local `tls internal` test). Run with
    `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`.
    Still requires a real host + domain + open 80/443 to issue the public cert.
+9. **Lesson MCQ self-test** (see `content/LESSON_QUIZ_PLAN.md`). A second, no-LLM
+   way to check yourself in a lesson, alongside the AI interview: closed
+   multiple-choice questions graded **client-side** for instant feedback.
+   **9.1 done (pilot)**: `mcq_questions` + `mcq_stats` tables mirroring a new
+   `content/courses/<slug>/tests.json` (loader auto-derives a stable
+   `course:lesson:concept:i` slug; `_seed_mcq` re-seeds per concept wholesale),
+   auth-gated `GET /api/quiz/courses/{c}/lessons/{l}/test`, `…/test/progress`,
+   `…/test/result`; a `/courses/:c/lessons/:l/test` page (run→result, "review
+   mistakes" mode) with a "📝 Пройти тест" entry point + score badge on the lesson
+   page; pure runner helpers in `frontend/src/lib/lessonTest.ts` (vitest).
+   Stats are kept **separate from SM-2** (an MCQ guess shouldn't move
+   spaced-repetition mastery).
+   **Deliberate exception to the answer-hiding rule**: unlike `reference_answer`
+   (hidden to protect LLM grading), the MCQ `correct_index` + `explanation_md` are
+   sent to the client — the options are visible anyway and grading is a plain index
+   compare, exactly like the glossary quiz. The `reference_answer` rule is
+   unchanged (the lesson endpoint leaks neither).
+   **9.1b done**: lesson-test progress is surfaced on the dashboard as a separate
+   indicator — `lesson_test_results` (best/last/attempts per lesson, full-run
+   detection so "review mistakes" can't inflate the score), `GET /api/quiz/tests/
+   overview`, a "Тесты X/Y" stat + per-course indicator on the catalog, lesson
+   badge shows best-score % (passed at ≥80%); the mastery ring is untouched. UI
+   emoji on buttons replaced with SVG icons (`icons.tsx`).
+   **9.2 done**: MCQ authored for **all 20 courses — 692 MCQ (2 per concept ×
+   346)** via the `content/MCQ_AUTHORING_GUIDE.md` runbook (Sonnet agents,
+   batched by course, each validated). `test_content_integrity` now asserts every
+   concept of every course has ≥2 MCQ (≥692 total). Backend 112 passing.
 
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a

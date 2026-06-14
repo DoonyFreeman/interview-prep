@@ -6,6 +6,7 @@ import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
+import { IconTarget } from "../components/icons";
 import type { GlossaryCategoryProgress, GlossaryTerm } from "../api/types";
 
 function categoryLabel(t: (k: string) => string, slug: string): string {
@@ -107,7 +108,10 @@ export function GlossaryPage() {
           </p>
         </div>
         <Link to="/glossary/quiz">
-          <Button>🎯 {t("glossary.quizCta")}</Button>
+          <Button>
+            <IconTarget className="h-4 w-4" />
+            {t("glossary.quizCta")}
+          </Button>
         </Link>
       </div>
 
@@ -167,9 +171,10 @@ export function GlossaryPage() {
                 </h2>
                 <Link
                   to={`/glossary/quiz?cat=${c}`}
-                  className="text-xs font-semibold text-primary hover:underline"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                 >
-                  🎯 {t("glossary.categoryQuiz")}
+                  <IconTarget className="h-3.5 w-3.5" />
+                  {t("glossary.categoryQuiz")}
                 </Link>
               </div>
               <div className="space-y-4">

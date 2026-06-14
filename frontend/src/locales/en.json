@@ -138,10 +138,12 @@
     "reviewCta": "Review: {{count}}",
     "reviewNone": "All reviewed",
     "answered": "Answered",
+    "tests": "Tests",
     "masteredHint": "A concept is mastered after ≥2 successful reviews scoring ≥80 (spaced repetition).",
     "attemptedHint": "Concepts you've answered a question on at least once.",
     "dueHint": "Concepts due for review per the schedule.",
     "answeredHint": "How many distinct questions you've attempted at least once, out of all questions.",
+    "testsHint": "How many lessons whose test you passed at ≥80% (separate from spaced repetition).",
     "legend": "Progress grows as you read lessons and answer questions; a concept counts fully once mastered (spaced repetition).",
     "ringHint": "Overall progress: each concept earns a half for a read lesson or an answer, and a full point once mastered.",
     "seeProgress": "What's left →"
@@ -161,7 +163,8 @@
     "lessons": "{{count}} lessons",
     "open": "Open",
     "summaryMastered": "Concepts mastered",
-    "summaryDue": "To review"
+    "summaryDue": "To review",
+    "testProgress": "Tests: {{passed}}/{{total}}"
   },
   "course": {
     "back": "All courses",
@@ -175,12 +178,13 @@
   "lesson": {
     "backToCourse": "Back to course",
     "toc": "Contents",
-    "startQuiz": "Start quiz",
+    "startQuiz": "AI interview",
+    "startTest": "Take a test",
     "allQuestions": "All lesson questions",
     "markDone": "Mark as done",
     "marked": "Lesson completed",
     "actionsTitle": "Ready to test yourself?",
-    "actionsHint": "Answer questions — the AI grades against this lesson."
+    "actionsHint": "Talk to the AI interviewer, or check yourself with a quick test."
   },
   "questions": {
     "title": "Lesson questions",
@@ -225,6 +229,35 @@
     },
     "loadError": "Failed to load the question",
     "noQuestions": "No questions for this lesson yet"
+  },
+  "lessonTest": {
+    "title": "Lesson test",
+    "introMeta": "{{count}} questions · instant feedback · no AI",
+    "introNote": "Pick an option — you'll instantly see if it's right, with an explanation. This doesn't affect spaced repetition.",
+    "lastResult": "Last result",
+    "start": "Start test",
+    "toLesson": "To lesson",
+    "toTheory": "To theory",
+    "empty": "No test for this lesson yet",
+    "progress": "{{current}} / {{total}}",
+    "tally": "{{count}} correct",
+    "verdictCorrect": "Correct",
+    "verdictWrong": "Wrong",
+    "yourAnswer": "Your answer",
+    "correctAnswer": "Correct answer",
+    "next": "Next",
+    "finish": "Finish",
+    "hintKeys": "Keys 1–{{max}} to answer, Enter for next",
+    "resultTitle": "Test result",
+    "score": "{{correct}} of {{total}}",
+    "perfect": "Perfect, not a single mistake!",
+    "resultGood": "Great score — you've got this topic.",
+    "resultMid": "Not bad, but a few things to review.",
+    "resultLow": "Worth revisiting the theory and trying again.",
+    "missedTitle": "Mistake review",
+    "retry": "Retry",
+    "retryMistakes": "Mistakes only",
+    "savingError": "Couldn't save the result"
   },
   "progress": {
     "title": "What's left",

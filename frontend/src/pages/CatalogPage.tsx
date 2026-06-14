@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
-import { useCourses, useProgress, useQuestionsProgress } from "../api/hooks";
+import {
+  useCourses,
+  useProgress,
+  useQuestionsProgress,
+  useTestsOverview,
+} from "../api/hooks";
 import { Skeleton, SkeletonGrid } from "../components/Skeleton";
 import { ProgressBar } from "../components/ProgressBar";
 import { ScoreGauge } from "../components/ScoreGauge";
 import { Button } from "../components/Button";
+import { IconClipboardCheck } from "../components/icons";
 import { useAuth } from "../auth/AuthContext";
 import { courseAccent, courseInitials } from "../lib/accent";
 import { courseProgressPct, overallProgressPct } from "../lib/progress";
@@ -15,6 +21,8 @@ import type {
   CourseSummary,
   ProgressOverviewOut,
   QuestionsProgress,
+  TestsCourseOverview,
+  TestsOverview,
 } from "../api/types";
 
 function Stat({
@@ -40,9 +48,11 @@ function Stat({
 function StatsHero({
   ov,
   questions,
+  tests,
 }: {
   ov: ProgressOverviewOut;
   questions?: QuestionsProgress;
+  tests?: TestsOverview;
 }) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -89,6 +99,13 @@ function StatsHero({
               hint={t("dashboard.answeredHint")}
             />
           )}
+          {tests && tests.total > 0 && (
+            <Stat
+              label={t("dashboard.tests")}
+              value={`${tests.passed}/${tests.total}`}
+              hint={t("dashboard.testsHint")}
+            />
+          )}
         </div>
       </div>
       <Link to="/review" className="w-full sm:w-auto">
@@ -108,9 +125,11 @@ function StatsHero({
 function CourseCard({
   course,
   p,
+  tc,
 }: {
   course: CourseSummary;
   p?: CourseProgressOut;
+  tc?: TestsCourseOverview;
 }) {
   const { t } = useTranslation();
   const accent = courseAccent(course.slug);
@@ -164,6 +183,18 @@ function CourseCard({
             <ProgressBar pct={cpct} tone={complete ? "celebrate" : "primary"} />
           </div>
         )}
+        {tc && tc.total > 0 && (
+          <div className="mt-2.5 flex items-center gap-1.5 text-xs text-faint">
+            <IconClipboardCheck className="h-3.5 w-3.5 shrink-0" />
+            <span
+              className={
+                tc.passed === tc.total ? "font-semibold text-celebrate" : undefined
+              }
+            >
+              {t("catalog.testProgress", { passed: tc.passed, total: tc.total })}
+            </span>
+          </div>
+        )}
       </Link>
     </motion.div>
   );
@@ -174,6 +205,7 @@ export function CatalogPage() {
   const courses = useCourses();
   const progress = useProgress();
   const questions = useQuestionsProgress();
+  const tests = useTestsOverview();
 
   if (courses.isLoading)
     return (
@@ -194,11 +226,18 @@ export function CatalogPage() {
   const byCourse = new Map<string, CourseProgressOut>(
     (progress.data?.courses ?? []).map((c) => [c.slug, c]),
   );
+  const testsByCourse = new Map<string, TestsCourseOverview>(
+    (tests.data?.courses ?? []).map((c) => [c.slug, c]),
+  );
 
   return (
     <div>
       {progress.data && (
-        <StatsHero ov={progress.data} questions={questions.data} />
+        <StatsHero
+          ov={progress.data}
+          questions={questions.data}
+          tests={tests.data}
+        />
       )}
       <p className="mb-8 text-center text-xs text-faint sm:text-left">
         {t("dashboard.legend")}{" "}
@@ -224,7 +263,12 @@ export function CatalogPage() {
         className="grid gap-4 sm:grid-cols-2"
       >
         {courses.data.map((course) => (
-          <CourseCard key={course.slug} course={course} p={byCourse.get(course.slug)} />
+          <CourseCard
+            key={course.slug}
+            course={course}
+            p={byCourse.get(course.slug)}
+            tc={testsByCourse.get(course.slug)}
+          />
         ))}
       </motion.div>
     </div>

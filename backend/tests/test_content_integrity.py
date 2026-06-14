@@ -137,6 +137,52 @@ def test_questions_json_has_no_orphan_keys(content_root):
 
 
 # --------------------------------------------------------------------------- #
+# Lesson MCQ self-test bank (pilot: python-core)
+# --------------------------------------------------------------------------- #
+def test_mcq_are_well_formed(bundle):
+    """Across all courses, every authored MCQ is structurally valid and its
+    auto-derived slug is globally unique."""
+    seen_slugs: set[str] = set()
+    problems: list[str] = []
+    for course in bundle.courses:
+        for lesson in course.lessons:
+            for concept in lesson.concepts:
+                for m in concept.mcqs:
+                    where = f"{course.slug}/{lesson.slug}/{concept.slug}"
+                    if m.slug in seen_slugs:
+                        problems.append(f"{where}: duplicate slug {m.slug!r}")
+                    seen_slugs.add(m.slug)
+                    if m.type not in ("single", "boolean"):
+                        problems.append(f"{where}: bad type {m.type!r}")
+                    if len(m.options) < 2:
+                        problems.append(f"{where}: <2 options")
+                    if len(m.options) != len(set(m.options)):
+                        problems.append(f"{where}: duplicate options")
+                    if not (0 <= m.correct_index < len(m.options)):
+                        problems.append(f"{where}: correct_index out of range")
+                    if not m.text.strip():
+                        problems.append(f"{where}: empty text")
+    assert not problems, "MCQ problems:\n" + "\n".join(problems)
+
+
+def test_all_concepts_have_two_mcq(bundle):
+    """Phase 9.2: every concept of every course carries at least 2 MCQ, and the
+    whole curriculum totals 2 per concept (>= 692 across 346 concepts)."""
+    missing = [
+        f"{c.slug}/{l.slug}/{con.slug} ({len(con.mcqs)})"
+        for c in bundle.courses
+        for l in c.lessons
+        for con in l.concepts
+        if len(con.mcqs) < 2
+    ]
+    assert not missing, "concepts without 2 MCQ: " + ", ".join(missing)
+    total = sum(
+        len(con.mcqs) for c in bundle.courses for l in c.lessons for con in l.concepts
+    )
+    assert total >= 692
+
+
+# --------------------------------------------------------------------------- #
 # Reference answers never leak through the lesson endpoint (all courses)
 # --------------------------------------------------------------------------- #
 async def test_reference_answers_never_leak_any_lesson(client):

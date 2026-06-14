@@ -12,6 +12,7 @@ import { PageLoader } from "../components/Spinner";
 import { Button } from "../components/Button";
 import { EvaluationCard } from "../components/EvaluationCard";
 import { EmptyState } from "../components/EmptyState";
+import { IconRefresh } from "../components/icons";
 import { apiErrorMessage } from "../lib/api";
 import type { EvaluationOut } from "../api/types";
 
@@ -243,7 +244,10 @@ export function QuizPage() {
                   >
                     <Button variant="secondary">{t("quiz.toQuestions")}</Button>
                   </Link>
-                  <Button onClick={resetAttempt}>↻ {t("quiz.again")}</Button>
+                  <Button onClick={resetAttempt}>
+                    <IconRefresh className="h-4 w-4" />
+                    {t("quiz.again")}
+                  </Button>
                 </div>
               ) : (
                 <Button onClick={nextQuestion} loading={nextQuery.isFetching}>

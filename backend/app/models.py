@@ -93,6 +93,11 @@ class Concept(Base):
         cascade="all, delete-orphan",
         order_by="Question.order_index",
     )
+    mcqs: Mapped[list["McqQuestion"]] = relationship(
+        back_populates="concept",
+        cascade="all, delete-orphan",
+        order_by="McqQuestion.order_index",
+    )
 
 
 class Question(Base):
@@ -109,6 +114,35 @@ class Question(Base):
     order_index: Mapped[int] = mapped_column(Integer, default=0)
 
     concept: Mapped["Concept"] = relationship(back_populates="questions")
+
+
+class McqQuestion(Base):
+    """A closed multiple-choice question for the lesson self-test (no LLM).
+
+    Mirrors ``content/courses/<slug>/tests.json``. Unlike the open ``Question``
+    (graded by the LLM against a *hidden* ``reference_answer``), an MCQ is graded
+    by comparing the chosen option index — so the correct index + explanation are
+    sent to the client and graded there for instant feedback. ``slug`` is a stable
+    id (``course:lesson:concept:i``, derived by the loader) that survives the
+    wholesale re-seed and keys the per-user :class:`McqStat`.
+    """
+
+    __tablename__ = "mcq_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(160), unique=True, index=True)
+    concept_id: Mapped[int] = mapped_column(
+        ForeignKey("concepts.id", ondelete="CASCADE"), index=True
+    )
+    type: Mapped[str] = mapped_column(String(20), default="single")  # single|boolean
+    text: Mapped[str] = mapped_column(Text)
+    options: Mapped[str] = mapped_column(Text, default="[]")  # JSON list[str]
+    correct_index: Mapped[int] = mapped_column(Integer, default=0)
+    explanation_md: Mapped[str] = mapped_column(Text, default="")
+    difficulty: Mapped[int] = mapped_column(Integer, default=3)
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+
+    concept: Mapped["Concept"] = relationship(back_populates="mcqs")
 
 
 class GlossaryTerm(Base):
@@ -228,3 +262,59 @@ class GlossaryTermStat(Base):
     correct: Mapped[int] = mapped_column(Integer, default=0)
     last_correct: Mapped[bool] = mapped_column(Boolean, default=False)
     last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class McqStat(Base):
+    """Per-(user, MCQ) self-test stats — drives the lesson "test score" badge and
+    the "review mistakes" mode.
+
+    References an MCQ by its stable ``slug`` (not an FK) so the test bank can be
+    re-seeded wholesale without touching user data, mirroring
+    :class:`GlossaryTermStat`. An MCQ is "mastered" when answered correctly at
+    least twice and the last answer was correct.
+    """
+
+    __tablename__ = "mcq_stats"
+    __table_args__ = (
+        UniqueConstraint("user_id", "mcq_slug", name="uq_mcq_stat_user_mcq"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    mcq_slug: Mapped[str] = mapped_column(String(160), index=True)
+    seen: Mapped[int] = mapped_column(Integer, default=0)
+    correct: Mapped[int] = mapped_column(Integer, default=0)
+    last_correct: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class LessonTestResult(Base):
+    """Per-(user, lesson) MCQ test score — drives the lesson badge and the
+    dashboard "tests passed" indicator.
+
+    Only **full** runs (every MCQ of the lesson answered) update this; the
+    "review mistakes" mode posts a subset and must not inflate ``best_score``.
+    Keyed by ``course_slug``/``lesson_slug`` (not an FK) so it survives the
+    wholesale content re-seed, mirroring :class:`McqStat`. "Passed" is derived
+    on read (``best_score >= TEST_PASS_THRESHOLD``), not stored.
+    """
+
+    __tablename__ = "lesson_test_results"
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id", "course_slug", "lesson_slug", name="uq_test_result_user_lesson"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    course_slug: Mapped[str] = mapped_column(String(64), index=True)
+    lesson_slug: Mapped[str] = mapped_column(String(64), index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)  # full runs
+    last_score: Mapped[int] = mapped_column(Integer, default=0)  # 0..100
+    best_score: Mapped[int] = mapped_column(Integer, default=0)  # 0..100
+    last_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
