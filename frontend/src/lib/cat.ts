@@ -2,7 +2,7 @@
 // network, no localStorage here — just functions over plain data so they're
 // trivially testable (see cat.test.ts). The hook (cat/useCat.ts) owns side
 // effects (persistence, timers); the widget owns rendering.
-import type { GlossaryTerm, ProgressOverviewOut } from "../api/types";
+import type { GlossaryTerm, PetState, ProgressOverviewOut } from "../api/types";
 import { makeRng } from "./glossaryQuiz";
 
 // --- Persistent state ------------------------------------------------------
@@ -10,7 +10,10 @@ import { makeRng } from "./glossaryQuiz";
 export type CatStage = "kitten" | "cat" | "bigcat" | "wizard";
 export type CatSkin = "classic" | "tabby" | "tuxedo" | "calico" | "void";
 
+/** Client-side (camelCase) mirror of the server `PetState`. */
 export interface CatState {
+  /** The pet's name (empty → a default label is shown). */
+  name: string;
   /** Current daily streak (consecutive days the app was opened). */
   streak: number;
   /** All-time best streak — gates which skins are unlocked. */
@@ -24,12 +27,50 @@ export interface CatState {
 }
 
 export const DEFAULT_CAT_STATE: CatState = {
+  name: "",
   streak: 0,
   bestStreak: 0,
   lastActiveDay: null,
   skin: "classic",
   hidden: false,
 };
+
+/** Server `PetState` (snake_case) → client `CatState` (camelCase). */
+export function petToCatState(p: PetState): CatState {
+  return {
+    name: p.name,
+    streak: p.streak,
+    bestStreak: p.best_streak,
+    lastActiveDay: p.last_active_day,
+    skin: resolveSkin(p.skin as CatSkin, p.best_streak),
+    hidden: p.hidden,
+  };
+}
+
+/** Client `CatState` → a server PATCH body (snake_case). */
+export function catStateToPatch(s: CatState): Partial<PetState> {
+  return {
+    name: s.name,
+    streak: s.streak,
+    best_streak: s.bestStreak,
+    last_active_day: s.lastActiveDay,
+    skin: s.skin,
+    hidden: s.hidden,
+  };
+}
+
+/** Field-level diff (server vs. desired) → minimal PATCH, or null if equal. */
+export function petDiff(server: CatState, desired: CatState): Partial<PetState> | null {
+  const patch: Partial<PetState> = {};
+  if (server.name !== desired.name) patch.name = desired.name;
+  if (server.skin !== desired.skin) patch.skin = desired.skin;
+  if (server.streak !== desired.streak) patch.streak = desired.streak;
+  if (server.bestStreak !== desired.bestStreak) patch.best_streak = desired.bestStreak;
+  if (server.lastActiveDay !== desired.lastActiveDay)
+    patch.last_active_day = desired.lastActiveDay;
+  if (server.hidden !== desired.hidden) patch.hidden = desired.hidden;
+  return Object.keys(patch).length ? patch : null;
+}
 
 /** Local calendar day as "YYYY-MM-DD" (not UTC — the streak is about *their* day). */
 export function todayKey(d: Date = new Date()): string {

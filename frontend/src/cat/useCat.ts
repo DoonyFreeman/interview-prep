@@ -1,117 +1,99 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "motion/react";
+import { useCallback } from "react";
+import { usePet, useUpdatePet } from "../api/hooks";
 import {
   DEFAULT_CAT_STATE,
-  resolveSkin,
+  petDiff,
+  petToCatState,
   rolloverStreak,
   skinsUnlocked,
   stageForStreak,
   todayKey,
   type CatSkin,
-  type CatStage,
   type CatState,
 } from "../lib/cat";
 
-const KEY = "ip_cat";
+const LEGACY_KEY = "ip_cat";
 
-function load(): CatState {
+/** Read the pre-server localStorage state (for the one-time migration). */
+function readLegacy(): CatState | null {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return { ...DEFAULT_CAT_STATE };
+    const raw = localStorage.getItem(LEGACY_KEY);
+    if (!raw) return null;
     return { ...DEFAULT_CAT_STATE, ...(JSON.parse(raw) as Partial<CatState>) };
   } catch {
-    return { ...DEFAULT_CAT_STATE };
+    return null;
   }
 }
 
-function save(state: CatState) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(state));
-  } catch {
-    // private mode / quota — the cat just won't remember. No-op.
-  }
-}
-
-export type CatMood = "idle" | "sleep" | "play";
-
-export interface CatApi {
-  state: CatState;
-  stage: CatStage;
-  mood: CatMood;
+export interface CatPersistApi {
+  /** Server-backed pet state (defaults while the query loads). */
+  pet: CatState;
+  loaded: boolean;
+  stage: ReturnType<typeof stageForStreak>;
   skin: CatSkin;
   unlocked: CatSkin[];
-  reducedMotion: boolean;
-  pet: () => void;
-  wake: () => void;
-  setSkin: (s: CatSkin) => void;
-  setHidden: (h: boolean) => void;
+  setName: (name: string) => void;
+  setSkin: (skin: CatSkin) => void;
+  setHidden: (hidden: boolean) => void;
+  /** Roll the daily streak (and migrate legacy localStorage) once on load. */
+  syncDailyStreak: () => void;
 }
 
-const SLEEP_AFTER_MS = 30_000;
-const PLAY_MS = 2200;
+/**
+ * Pet state, server-backed via TanStack Query. The query cache is shared, so
+ * the corner widget and the settings form see the same data and update live.
+ * The streak's "day" is the user's *local* day, so the rollover is computed
+ * here and pushed up.
+ */
+export function useCat(): CatPersistApi {
+  const { data, isSuccess } = usePet();
+  const update = useUpdatePet();
 
-/** Stateful cat: persists to localStorage, rolls the daily streak once on
- *  mount, and runs a tiny mood machine (idle ⇄ sleep, momentary play). */
-export function useCat(): CatApi {
-  const [state, setState] = useState<CatState>(() => {
-    const rolled = rolloverStreak(load(), todayKey());
-    const skin = resolveSkin(rolled.skin, rolled.bestStreak);
-    return skin === rolled.skin ? rolled : { ...rolled, skin };
-  });
-  const [mood, setMood] = useState<CatMood>("idle");
-  const sleepTimer = useRef<ReturnType<typeof setTimeout>>();
-  const playTimer = useRef<ReturnType<typeof setTimeout>>();
-  const reducedMotion = useReducedMotion() ?? false;
+  const pet: CatState = data ? petToCatState(data) : { ...DEFAULT_CAT_STATE };
 
-  useEffect(() => {
-    save(state);
-  }, [state]);
+  const syncDailyStreak = useCallback(() => {
+    if (!data) return;
+    const server = petToCatState(data);
 
-  const armSleep = useCallback(() => {
-    clearTimeout(sleepTimer.current);
-    sleepTimer.current = setTimeout(() => setMood("sleep"), SLEEP_AFTER_MS);
-  }, []);
+    // One-time migration: if the server pet was never active but this browser
+    // has a legacy streak, carry it over so nothing visibly resets.
+    let base = server;
+    const legacy = readLegacy();
+    if (
+      server.lastActiveDay == null &&
+      legacy &&
+      (legacy.streak > 0 || legacy.name || legacy.skin !== "classic")
+    ) {
+      base = {
+        ...server,
+        name: server.name || legacy.name,
+        skin: legacy.skin,
+        streak: legacy.streak,
+        bestStreak: Math.max(legacy.bestStreak, legacy.streak),
+        lastActiveDay: legacy.lastActiveDay,
+        hidden: legacy.hidden,
+      };
+    }
 
-  useEffect(() => {
-    armSleep();
-    return () => {
-      clearTimeout(sleepTimer.current);
-      clearTimeout(playTimer.current);
-    };
-  }, [armSleep]);
-
-  const wake = useCallback(() => {
-    setMood("idle");
-    armSleep();
-  }, [armSleep]);
-
-  const pet = useCallback(() => {
-    clearTimeout(playTimer.current);
-    setMood("play");
-    playTimer.current = setTimeout(() => setMood("idle"), PLAY_MS);
-    armSleep();
-  }, [armSleep]);
-
-  const setSkin = useCallback((s: CatSkin) => {
-    setState((prev) =>
-      skinsUnlocked(prev.bestStreak).includes(s) ? { ...prev, skin: s } : prev,
-    );
-  }, []);
-
-  const setHidden = useCallback((h: boolean) => {
-    setState((prev) => ({ ...prev, hidden: h }));
-  }, []);
+    const rolled = rolloverStreak(base, todayKey());
+    const patch = petDiff(server, rolled);
+    if (patch) update.mutate(patch);
+    try {
+      localStorage.removeItem(LEGACY_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [data, update]);
 
   return {
-    state,
-    stage: stageForStreak(state.streak),
-    mood,
-    skin: state.skin,
-    unlocked: skinsUnlocked(state.bestStreak),
-    reducedMotion,
     pet,
-    wake,
-    setSkin,
-    setHidden,
+    loaded: isSuccess,
+    stage: stageForStreak(pet.streak),
+    skin: pet.skin,
+    unlocked: skinsUnlocked(pet.bestStreak),
+    setName: (name) => update.mutate({ name }),
+    setSkin: (skin) => update.mutate({ skin }),
+    setHidden: (hidden) => update.mutate({ hidden }),
+    syncDailyStreak,
   };
 }

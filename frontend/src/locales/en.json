@@ -7,8 +7,15 @@
     "read": "Read",
     "streakDays": "{{count}}-day streak",
     "hide": "Hide",
-    "show": "Cat",
-    "emptyThought": "Finish a lesson and I'll tell you something! 🐱"
+    "defaultName": "Kitty",
+    "emptyThought": "Finish a lesson and I'll tell you something! 🐱",
+    "skins": {
+      "classic": "Ginger",
+      "tabby": "Grey",
+      "tuxedo": "Tuxedo",
+      "calico": "Calico",
+      "void": "Black"
+    }
   },
   "nav": {
     "courses": "Courses",
@@ -114,7 +121,13 @@
     "passwordChanged": "Password changed",
     "language": "Interface language",
     "account": "Account",
-    "logout": "Log out"
+    "logout": "Log out",
+    "pet": "Pet",
+    "petName": "Pet name",
+    "petSkin": "Skin",
+    "petSkinLocked": "unlocks on day {{count}}",
+    "petVisible": "Show in the corner",
+    "petBest": "best {{count}}"
   },
   "common": {
     "loading": "Loading…",

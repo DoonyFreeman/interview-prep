@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { CatSkin, CatStage } from "../lib/cat";
-import type { CatMood } from "./useCat";
+import type { CatMood } from "./useCatMood";
 
 interface Palette {
   B: string; // body base
@@ -43,10 +43,18 @@ function set(rows: string[], r: number, c: number, ch: string) {
 
 function gridFor(mood: CatMood): string[] {
   const rows = BASE.slice();
-  // Eyes: open when idle, a happy/closed line otherwise.
-  const eye = mood === "idle" ? "E" : "C";
-  set(rows, 6, 4, eye);
-  set(rows, 6, 7, eye);
+  // Eyes: open & forward when idle/stretch, glancing aside when "look", a
+  // happy/closed line when playing/grooming/sleeping.
+  if (mood === "idle" || mood === "stretch") {
+    set(rows, 6, 4, "E");
+    set(rows, 6, 7, "E");
+  } else if (mood === "look") {
+    set(rows, 6, 5, "E"); // both eyes shifted one column → a glance
+    set(rows, 6, 8, "E");
+  } else {
+    set(rows, 6, 4, "C");
+    set(rows, 6, 7, "C");
+  }
   // Nose.
   set(rows, 7, 5, "N");
   set(rows, 7, 6, "N");
@@ -54,6 +62,11 @@ function gridFor(mood: CatMood): string[] {
   if (mood === "play") {
     set(rows, 8, 5, "O");
     set(rows, 8, 6, "O");
+  }
+  // Grooming: a raised paw to the cheek.
+  if (mood === "groom") {
+    set(rows, 7, 8, "P");
+    set(rows, 8, 8, "P");
   }
   return rows;
 }

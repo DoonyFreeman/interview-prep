@@ -15,6 +15,7 @@ import type {
   LessonQuestions,
   LessonTest,
   LessonTestProgress,
+  PetState,
   ProgressOverviewOut,
   QuestionAttempts,
   QuestionOut,
@@ -291,6 +292,36 @@ export function useRecordLessonTest(courseSlug: string, lessonSlug: string) {
       });
       qc.invalidateQueries({ queryKey: ["tests-overview"] });
     },
+  });
+}
+
+// --- Pet (corner cat) state ------------------------------------------------
+export function usePet() {
+  return useQuery({
+    queryKey: ["pet"],
+    queryFn: async () => (await api.get<PetState>("/pet")).data,
+    staleTime: 60_000,
+  });
+}
+
+export function useUpdatePet() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (patch: Partial<PetState>) =>
+      (await api.patch<PetState>("/pet", patch)).data,
+    // Optimistic: update the shared cache immediately so the corner cat and the
+    // settings form stay in lockstep; the server reply (skin clamped, etc.)
+    // replaces it on success.
+    onMutate: async (patch) => {
+      await qc.cancelQueries({ queryKey: ["pet"] });
+      const prev = qc.getQueryData<PetState>(["pet"]);
+      if (prev) qc.setQueryData<PetState>(["pet"], { ...prev, ...patch });
+      return { prev };
+    },
+    onError: (_e, _patch, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["pet"], ctx.prev);
+    },
+    onSuccess: (data) => qc.setQueryData(["pet"], data),
   });
 }
 

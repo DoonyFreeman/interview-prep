@@ -23,6 +23,7 @@ from app.repositories.mcq import (
     McqRepository,
     McqStatsRepository,
 )
+from app.repositories.pet import PetStateRepository
 from app.repositories.users import UserRepository
 
 __all__ = [
@@ -37,6 +38,7 @@ __all__ = [
     "LessonTestResultRepository",
     "McqRepository",
     "McqStatsRepository",
+    "PetStateRepository",
     "QuestionRepository",
     "UserRepository",
 ]

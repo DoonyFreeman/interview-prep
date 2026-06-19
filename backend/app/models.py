@@ -318,3 +318,29 @@ class LessonTestResult(Base):
     last_score: Mapped[int] = mapped_column(Integer, default=0)  # 0..100
     best_score: Mapped[int] = mapped_column(Integer, default=0)  # 0..100
     last_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)
+
+
+class PetState(Base):
+    """Per-user state for the corner "tamagotchi" cat (name, skin, daily streak).
+
+    One row per user (``UniqueConstraint``). The streak's "day" is the user's
+    *local* calendar day, so the rollover is computed client-side and the chosen
+    day pushed up as ``last_active_day`` ("YYYY-MM-DD" string) — the server only
+    stores it (avoids tz ambiguity with naive-UTC columns). ``skin`` is clamped
+    server-side to what ``best_streak`` has unlocked.
+    """
+
+    __tablename__ = "pet_state"
+    __table_args__ = (UniqueConstraint("user_id", name="uq_pet_user"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    name: Mapped[str] = mapped_column(String(40), default="")
+    skin: Mapped[str] = mapped_column(String(20), default="classic")
+    streak: Mapped[int] = mapped_column(Integer, default=0)
+    best_streak: Mapped[int] = mapped_column(Integer, default=0)
+    last_active_day: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    hidden: Mapped[bool] = mapped_column(Boolean, default=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)

@@ -363,3 +363,24 @@ class GlossaryProgressOut(BaseModel):
     recorded: int  # number of stat rows posted (returned by /result)
     categories: list[GlossaryCategoryProgressOut]
     terms: list[GlossaryTermStatOut]
+
+
+# --- Pet (corner cat) state ------------------------------------------------
+class PetStateOut(BaseModel):
+    name: str
+    skin: str
+    streak: int
+    best_streak: int
+    last_active_day: str | None
+    hidden: bool
+
+
+class PetStateUpdate(BaseModel):
+    """Partial update — every field optional (PATCH semantics)."""
+
+    name: str | None = None
+    skin: str | None = None
+    streak: int | None = None
+    best_streak: int | None = None
+    last_active_day: str | None = None
+    hidden: bool | None = None
