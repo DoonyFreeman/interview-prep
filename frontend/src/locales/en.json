@@ -8,7 +8,7 @@
     "streakDays": "{{count}}-day streak",
     "hide": "Hide",
     "defaultName": "Kitty",
-    "emptyThought": "Finish a lesson and I'll tell you something! 🐱",
+    "emptyThought": "Finish a lesson and mark it done — I'll tell you something about it! 🐱",
     "skins": {
       "classic": "Ginger",
       "tabby": "Grey",

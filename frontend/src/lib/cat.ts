@@ -144,9 +144,74 @@ export function resolveSkin(skin: CatSkin, bestStreak: number): CatSkin {
 // --- "Thought" picked from already-studied topics --------------------------
 
 export interface CatThought {
+  /** Stable id for anti-repeat (term slug, or a concept-anchor for fallbacks). */
+  key: string;
   term: string;
   definition: string;
   link: { course_slug: string; lesson_slug: string; anchor: string };
+}
+
+/** Normalise to lowercase tokens (latin + cyrillic), ё→е, drop punctuation. */
+function normTokens(s: string): string[] {
+  return s
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(/[^a-z0-9а-я]+/gi, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+/** Match phrases for a glossary term: its name (with/without the parenthetical),
+ *  the parenthetical itself, and any aliases. Each as a token array. */
+function termPhrases(t: GlossaryTerm): string[][] {
+  const raw: string[] = [t.term, t.term.replace(/\([^)]*\)/g, " ")];
+  const paren = t.term.match(/\(([^)]+)\)/);
+  if (paren) raw.push(paren[1]);
+  for (const a of t.aliases ?? []) raw.push(a);
+  return raw
+    .map(normTokens)
+    .filter((toks) => toks.length > 0 && toks.join("").length >= 3);
+}
+
+/** True if `needle` appears as a contiguous run of tokens in `hay`. */
+function hasContiguous(hay: string[], needle: string[]): boolean {
+  if (!needle.length || needle.length > hay.length) return false;
+  for (let i = 0; i + needle.length <= hay.length; i++) {
+    let ok = true;
+    for (let j = 0; j < needle.length; j++) {
+      if (hay[i + j] !== needle[j]) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) return true;
+  }
+  return false;
+}
+
+/** Best glossary term whose name/alias phrase occurs in a concept title (most
+ *  specific match wins), or null. Token-contiguous matching avoids false hits
+ *  like "is" inside "history". */
+export function matchConceptToTerm(
+  conceptTitle: string,
+  terms: GlossaryTerm[],
+): GlossaryTerm | null {
+  const hay = normTokens(conceptTitle);
+  let best: GlossaryTerm | null = null;
+  let bestScore = 0;
+  for (const t of terms) {
+    for (const phrase of termPhrases(t)) {
+      if (hasContiguous(hay, phrase)) {
+        const score = phrase.join("").length + phrase.length * 2;
+        if (score > bestScore) {
+          bestScore = score;
+          best = t;
+        }
+      }
+    }
+  }
+  return best;
 }
 
 /** Strip the lightest markdown and trim to a friendly bubble length. */
@@ -163,59 +228,63 @@ export function plainDefinition(md: string, max = 160): string {
 }
 
 /**
- * Pick one glossary term whose theory the user has actually been through, so
- * the cat "remembers" something real. A lesson counts as studied once it's
- * marked done ("Урок пройден") OR the user has answered a question on it;
- * mastered lessons are preferred. Returns null when nothing qualifies (the
- * widget then shows a friendly nudge to study first). Deterministic per seed.
+ * Pick a "thought" about a topic the user has actually finished. Source: the
+ * concepts of **completed** lessons ("Урок пройден" → `lesson.completed`); each
+ * concept gives a precise lesson section (its `anchor`) and is matched to a
+ * glossary term for a real definition. Picks at random, skipping the recently
+ * shown keys so repeated clicks vary. Returns null when no lesson is completed
+ * (the widget then shows a friendly nudge). Deterministic per seed.
  */
 export function pickThought(
   terms: GlossaryTerm[],
   progress: ProgressOverviewOut | undefined,
+  recentKeys: string[],
   seed: number,
 ): CatThought | null {
-  if (!terms.length || !progress) return null;
+  if (!progress) return null;
 
-  const studied = new Set<string>();
-  const mastered = new Set<string>();
+  const matched: CatThought[] = []; // concept matched to a glossary term (has a definition)
+  const fallback: CatThought[] = []; // completed-lesson concept with no term match (title only)
+
   for (const c of progress.courses) {
     for (const l of c.lessons) {
-      const key = `${c.slug}/${l.slug}`;
-      if (l.completed || l.attempted_concepts > 0) studied.add(key);
-      if (l.mastered_concepts > 0) mastered.add(key);
+      if (!l.completed) continue;
+      for (const cn of l.concepts) {
+        const link = { course_slug: c.slug, lesson_slug: l.slug, anchor: cn.anchor };
+        const term = terms.length ? matchConceptToTerm(cn.title, terms) : null;
+        if (term) {
+          matched.push({
+            key: term.slug,
+            term: term.term,
+            definition: plainDefinition(term.short_md),
+            link,
+          });
+        } else {
+          fallback.push({
+            key: `${c.slug}/${l.slug}#${cn.anchor}`,
+            term: cn.title,
+            definition: "",
+            link,
+          });
+        }
+      }
     }
   }
-  if (!studied.size) return null;
 
-  // Build candidate list, preferring mastered lessons.
-  const candidates: { term: GlossaryTerm; pref: number }[] = [];
-  for (const t of terms) {
-    const link = t.links.find((l) => studied.has(`${l.course_slug}/${l.lesson_slug}`));
-    if (!link) continue;
-    const pref = mastered.has(`${link.course_slug}/${link.lesson_slug}`) ? 1 : 0;
-    candidates.push({ term: t, pref });
-  }
-  if (!candidates.length) return null;
+  // Prefer real definitions; fall back to bare concept titles only if needed.
+  const pool = matched.length ? matched : fallback;
+  if (!pool.length) return null;
 
-  const masteredCands = candidates.filter((c) => c.pref === 1);
-  const pool = masteredCands.length ? masteredCands : candidates;
+  // De-dup by key (a term can match concepts across several lessons).
+  const byKey = new Map<string, CatThought>();
+  for (const cand of pool) if (!byKey.has(cand.key)) byKey.set(cand.key, cand);
+  const unique = [...byKey.values()];
+
+  // Anti-repeat: drop recently shown keys, unless that would empty the pool.
+  const recent = new Set(recentKeys);
+  const filtered = unique.filter((c) => !recent.has(c.key));
+  const choices = filtered.length ? filtered : unique;
 
   const rng = makeRng(seed >>> 0 || 1);
-  const chosen = pool[Math.floor(rng() * pool.length)].term;
-  const link =
-    chosen.links.find(
-      (l) =>
-        mastered.has(`${l.course_slug}/${l.lesson_slug}`) ||
-        studied.has(`${l.course_slug}/${l.lesson_slug}`),
-    ) ?? chosen.links[0];
-
-  return {
-    term: chosen.term,
-    definition: plainDefinition(chosen.short_md),
-    link: {
-      course_slug: link.course_slug,
-      lesson_slug: link.lesson_slug,
-      anchor: link.anchor,
-    },
-  };
+  return choices[Math.floor(rng() * choices.length)];
 }
