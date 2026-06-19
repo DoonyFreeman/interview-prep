@@ -2,6 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export type CatMood = "idle" | "sleep" | "play" | "groom" | "look" | "stretch";
 
+/** Different cute ways the cat reacts to a tap (picked at random each time). */
+export type CatReaction = "hop" | "wiggle" | "wobble" | "pounce" | "spin";
+const REACTIONS: CatReaction[] = ["hop", "wiggle", "wobble", "pounce", "spin"];
+
 const PLAY_MS = 2200;
 const MIN_GAP = 4000;
 const MAX_GAP = 11000;
@@ -23,6 +27,10 @@ function pick<T>(arr: T[]): T {
  */
 export function useCatMood(reducedMotion: boolean) {
   const [mood, setMood] = useState<CatMood>("idle");
+  const [reaction, setReaction] = useState<CatReaction>("hop");
+  // Bumped on every tap so the widget can re-trigger a one-shot particle even
+  // when the same reaction is rolled twice in a row.
+  const [playId, setPlayId] = useState(0);
   const sleepiness = useRef(0);
   const ambientTimer = useRef<ReturnType<typeof setTimeout>>();
   const playTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -73,11 +81,13 @@ export function useCatMood(reducedMotion: boolean) {
   const pet = useCallback(() => {
     sleepiness.current = 0;
     clearTimeout(playTimer.current);
+    setReaction(pick(REACTIONS));
+    setPlayId((n) => n + 1);
     setMood("play");
     playTimer.current = setTimeout(() => setMood("idle"), PLAY_MS);
   }, []);
 
   useEffect(() => () => clearTimeout(playTimer.current), []);
 
-  return { mood, pet, wake };
+  return { mood, reaction, playId, pet, wake };
 }

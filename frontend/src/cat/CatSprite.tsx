@@ -140,8 +140,24 @@ export function CatSprite({ skin, stage, mood, animate, size = 64 }: CatSpritePr
           .cat-eye { animation: cat-blink 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
           @keyframes cat-z { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-2px); } }
           .cat-z { animation: cat-z 2.4s ease-out infinite; }
+          @keyframes cat-tail { 0%,100% { transform: rotate(-9deg); } 50% { transform: rotate(11deg); } }
+          .cat-tail { transform-box: view-box; transform-origin: 2px 10px; animation: cat-tail 2.8s ease-in-out infinite; }
+          .cat-tail-play { animation-duration: 0.55s; }
         `}</style>
       )}
+
+      {/* Swishing tail (curls off the lower-left, behind the body) */}
+      <g
+        className={
+          animate ? `cat-tail ${mood === "play" ? "cat-tail-play" : ""}` : undefined
+        }
+      >
+        <rect x={1} y={10} width={1} height={1} fill={p.B} />
+        <rect x={0} y={9} width={1} height={1} fill={p.B} />
+        <rect x={0} y={8} width={1} height={1} fill={p.B} />
+        <rect x={-1} y={7} width={1} height={1} fill={p.B} />
+        <rect x={-1} y={6} width={1} height={1} fill={p.D} />
+      </g>
 
       {/* Wizard hat */}
       {wizard && (

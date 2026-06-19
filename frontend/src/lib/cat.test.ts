@@ -3,6 +3,7 @@ import {
   DEFAULT_CAT_STATE,
   catStateToPatch,
   daysBetween,
+  matchConceptToTerm,
   petDiff,
   petToCatState,
   pickThought,
@@ -15,6 +16,7 @@ import {
   type CatState,
 } from "./cat";
 import type {
+  ConceptProgressOut,
   CourseProgressOut,
   GlossaryTerm,
   LessonProgressOut,
@@ -168,36 +170,85 @@ describe("plainDefinition", () => {
   });
 });
 
-// --- pickThought -----------------------------------------------------------
-function term(
-  slug: string,
-  links: { course_slug: string; lesson_slug: string; anchor: string }[],
-): GlossaryTerm {
+// --- matchConceptToTerm ----------------------------------------------------
+function gterm(slug: string, name: string, aliases: string[] = []): GlossaryTerm {
   return {
     slug,
-    term: `Term ${slug}`,
+    term: name,
     category: "python",
     short_md: `Definition of ${slug}.`,
-    aliases: [],
-    links,
+    aliases,
+    links: [],
+  };
+}
+
+const TERMS = [
+  gterm("gil", "GIL (Global Interpreter Lock)"),
+  gterm("decorator", "Декоратор"),
+  gterm("asyncio", "asyncio", ["асинхронность"]),
+];
+
+describe("matchConceptToTerm", () => {
+  it("matches a term name appearing as tokens in the concept title", () => {
+    expect(matchConceptToTerm("Что такое GIL и зачем он нужен", TERMS)?.slug).toBe("gil");
+    expect(matchConceptToTerm("Декоратор и его применение", TERMS)?.slug).toBe(
+      "decorator",
+    );
+  });
+  it("matches via the parenthetical english", () => {
+    expect(matchConceptToTerm("Зачем нужен global interpreter lock", TERMS)?.slug).toBe(
+      "gil",
+    );
+  });
+  it("matches via an alias", () => {
+    expect(matchConceptToTerm("Асинхронность в Python", TERMS)?.slug).toBe("asyncio");
+  });
+  it("returns null when nothing matches", () => {
+    expect(matchConceptToTerm("Совершенно другая тема", TERMS)).toBeNull();
+  });
+});
+
+// --- pickThought -----------------------------------------------------------
+function concept(title: string, anchor: string): ConceptProgressOut {
+  return {
+    slug: anchor,
+    title,
+    anchor,
+    attempted: false,
+    mastered: false,
+    reps: 0,
+    last_score: 0,
+    due_at: null,
+    due: false,
   };
 }
 
 function lesson(
   slug: string,
-  attempted: number,
-  mastered: number,
-  completed = false,
+  completed: boolean,
+  concepts: ConceptProgressOut[],
 ): LessonProgressOut {
   return {
     slug,
     title: slug,
     completed,
-    total_concepts: 5,
-    attempted_concepts: attempted,
-    mastered_concepts: mastered,
+    total_concepts: concepts.length,
+    attempted_concepts: 0,
+    mastered_concepts: 0,
     due_concepts: 0,
-    concepts: [],
+    concepts,
+  };
+}
+
+function course(slug: string, lessons: LessonProgressOut[]): CourseProgressOut {
+  return {
+    slug,
+    title: slug,
+    total_concepts: 0,
+    attempted_concepts: 0,
+    mastered_concepts: 0,
+    due_concepts: 0,
+    lessons,
   };
 }
 
@@ -211,62 +262,70 @@ function progress(courses: CourseProgressOut[]): ProgressOverviewOut {
   };
 }
 
+const cGil = concept("Что такое GIL", "what-is-gil");
+const cDeco = concept("Декоратор и его применение", "decorators");
+
 describe("pickThought", () => {
-  const terms = [
-    term("a", [{ course_slug: "python-core", lesson_slug: "gil", anchor: "gil" }]),
-    term("b", [{ course_slug: "fastapi", lesson_slug: "di", anchor: "di" }]),
-    term("c", [{ course_slug: "redis", lesson_slug: "ttl", anchor: "ttl" }]),
-  ];
-
-  it("returns null with no terms or no progress", () => {
-    expect(pickThought([], progress([]), 1)).toBeNull();
-    expect(pickThought(terms, undefined, 1)).toBeNull();
+  it("returns null with no progress", () => {
+    expect(pickThought(TERMS, undefined, [], 1)).toBeNull();
   });
 
-  it("returns null when nothing has been attempted", () => {
-    const p = progress([
-      { slug: "python-core", title: "", total_concepts: 5, attempted_concepts: 0, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("gil", 0, 0)] },
-    ]);
-    expect(pickThought(terms, p, 1)).toBeNull();
+  it("returns null when no lesson is completed (attempts don't count)", () => {
+    const p = progress([course("python-core", [lesson("gil", false, [cGil])])]);
+    expect(pickThought(TERMS, p, [], 1)).toBeNull();
   });
 
-  it("counts a lesson marked done (no answers yet) as studied", () => {
-    const p = progress([
-      { slug: "python-core", title: "", total_concepts: 5, attempted_concepts: 0, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("gil", 0, 0, true)] },
-    ]);
-    const got = pickThought(terms, p, 1);
+  it("returns a matched term + concept-anchor link for a completed lesson", () => {
+    const p = progress([course("python-core", [lesson("gil", true, [cGil])])]);
+    const got = pickThought(TERMS, p, [], 1);
     expect(got).not.toBeNull();
-    expect(got!.term).toBe("Term a");
-    expect(got!.link.lesson_slug).toBe("gil");
+    expect(got!.key).toBe("gil");
+    expect(got!.term).toBe("GIL (Global Interpreter Lock)");
+    expect(got!.definition).toBe("Definition of gil.");
+    expect(got!.link).toEqual({
+      course_slug: "python-core",
+      lesson_slug: "gil",
+      anchor: "what-is-gil",
+    });
   });
 
-  it("only picks terms linked to a studied lesson", () => {
+  it("only draws from completed lessons", () => {
     const p = progress([
-      { slug: "python-core", title: "", total_concepts: 5, attempted_concepts: 2, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("gil", 2, 0)] },
+      course("python-core", [lesson("gil", true, [cGil])]),
+      course("python-idioms", [lesson("decorators", false, [cDeco])]),
     ]);
-    const got = pickThought(terms, p, 1);
-    expect(got).not.toBeNull();
-    expect(got!.term).toBe("Term a");
-    expect(got!.link.lesson_slug).toBe("gil");
-    expect(got!.definition).toBe("Definition of a.");
-  });
-
-  it("prefers a term linked to a mastered lesson", () => {
-    const p = progress([
-      { slug: "python-core", title: "", total_concepts: 5, attempted_concepts: 5, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("gil", 5, 0)] },
-      { slug: "fastapi", title: "", total_concepts: 5, attempted_concepts: 5, mastered_concepts: 3, due_concepts: 0, lessons: [lesson("di", 5, 3)] },
-    ]);
-    // Both 'a' (attempted) and 'b' (mastered) qualify; mastered must win.
-    for (let seed = 1; seed < 6; seed++) {
-      expect(pickThought(terms, p, seed)!.term).toBe("Term b");
+    for (let seed = 1; seed < 8; seed++) {
+      expect(pickThought(TERMS, p, [], seed)!.key).toBe("gil");
     }
+  });
+
+  it("skips a recently shown key while an alternative exists", () => {
+    const p = progress([
+      course("python-core", [lesson("gil", true, [cGil])]),
+      course("python-idioms", [lesson("decorators", true, [cDeco])]),
+    ]);
+    for (let seed = 1; seed < 8; seed++) {
+      expect(pickThought(TERMS, p, ["gil"], seed)!.key).toBe("decorator");
+      expect(pickThought(TERMS, p, ["decorator"], seed)!.key).toBe("gil");
+    }
+  });
+
+  it("falls back to the bare concept when no term matches", () => {
+    const cMisc = concept("Совсем другое", "misc");
+    const p = progress([course("python-core", [lesson("x", true, [cMisc])])]);
+    const got = pickThought(TERMS, p, [], 1);
+    expect(got!.term).toBe("Совсем другое");
+    expect(got!.definition).toBe("");
+    expect(got!.link.anchor).toBe("misc");
+    // Same when the glossary hasn't loaded.
+    expect(pickThought([], p, [], 1)!.term).toBe("Совсем другое");
   });
 
   it("is deterministic for a given seed", () => {
     const p = progress([
-      { slug: "python-core", title: "", total_concepts: 5, attempted_concepts: 2, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("gil", 2, 0)] },
-      { slug: "redis", title: "", total_concepts: 5, attempted_concepts: 2, mastered_concepts: 0, due_concepts: 0, lessons: [lesson("ttl", 2, 0)] },
+      course("python-core", [lesson("gil", true, [cGil])]),
+      course("python-idioms", [lesson("decorators", true, [cDeco])]),
     ]);
-    expect(pickThought(terms, p, 42)!.term).toBe(pickThought(terms, p, 42)!.term);
+    expect(pickThought(TERMS, p, [], 42)!.key).toBe(pickThought(TERMS, p, [], 42)!.key);
   });
 });

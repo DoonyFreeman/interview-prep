@@ -54,9 +54,11 @@ export function ThoughtBubble({ name, thought, streak, onClose, onHide }: Props)
           <p className="mb-0.5 font-display text-[15px] font-bold leading-snug text-ink">
             {thought.term}
           </p>
-          <p className="mb-2.5 text-sm leading-relaxed text-muted">
-            {thought.definition}
-          </p>
+          {thought.definition && (
+            <p className="mb-2.5 text-sm leading-relaxed text-muted">
+              {thought.definition}
+            </p>
+          )}
           <Link
             to={`/courses/${thought.link.course_slug}/lessons/${thought.link.lesson_slug}#${thought.link.anchor}`}
             onClick={onClose}
