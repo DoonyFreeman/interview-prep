@@ -3,6 +3,13 @@
     "name": "Interview Prep",
     "tagline": "Подготовка к собеседованию Python-разработчика"
   },
+  "cat": {
+    "read": "Читать",
+    "streakDays": "{{count}} дн. подряд",
+    "hide": "Скрыть",
+    "show": "Котик",
+    "emptyThought": "Пройди урок — и я расскажу тебе что-нибудь! 🐱"
+  },
   "nav": {
     "courses": "Курсы",
     "glossary": "Словарь",
