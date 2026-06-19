@@ -3,6 +3,13 @@
     "name": "Interview Prep",
     "tagline": "Python developer interview preparation"
   },
+  "cat": {
+    "read": "Read",
+    "streakDays": "{{count}}-day streak",
+    "hide": "Hide",
+    "show": "Cat",
+    "emptyThought": "Finish a lesson and I'll tell you something! 🐱"
+  },
   "nav": {
     "courses": "Courses",
     "glossary": "Glossary",

@@ -6,6 +6,7 @@ import { useProgress } from "../api/hooks";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
 import { BottomNavBar } from "./BottomNavBar";
+import { CatWidget } from "../cat/CatWidget";
 import { BrandMark } from "./icons";
 import { routeTransition } from "../lib/motion";
 
@@ -144,6 +145,7 @@ export function Layout() {
       </main>
 
       <BottomNavBar />
+      <CatWidget />
     </div>
   );
 }
