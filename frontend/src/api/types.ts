@@ -312,3 +312,13 @@ export interface TestsOverview {
   started: number;
   courses: TestsCourseOverview[];
 }
+
+// --- Pet (corner cat) state ------------------------------------------------
+export interface PetState {
+  name: string;
+  skin: string;
+  streak: number;
+  best_streak: number;
+  last_active_day: string | null;
+  hidden: boolean;
+}

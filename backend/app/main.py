@@ -13,7 +13,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api.endpoints import auth, courses, glossary, lessons, progress, quizzes
+from app.api.endpoints import (
+    auth,
+    courses,
+    glossary,
+    lessons,
+    pet,
+    progress,
+    quizzes,
+)
 from app.config import get_settings
 from app.content.seed import seed_from_dir
 from app.database import SessionLocal, init_db
@@ -54,6 +62,7 @@ def create_app() -> FastAPI:
     app.include_router(lessons.router, prefix="/api", tags=["lessons"])
     app.include_router(quizzes.router, prefix="/api", tags=["quiz"])
     app.include_router(progress.router, prefix="/api", tags=["progress"])
+    app.include_router(pet.router, prefix="/api", tags=["pet"])
 
     _mount_spa(app)
     return app

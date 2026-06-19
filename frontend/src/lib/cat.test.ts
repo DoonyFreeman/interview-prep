@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_CAT_STATE,
+  catStateToPatch,
   daysBetween,
+  petDiff,
+  petToCatState,
   pickThought,
   plainDefinition,
   resolveSkin,
@@ -15,6 +18,7 @@ import type {
   CourseProgressOut,
   GlossaryTerm,
   LessonProgressOut,
+  PetState,
   ProgressOverviewOut,
 } from "../api/types";
 
@@ -94,6 +98,60 @@ describe("skinsUnlocked / resolveSkin", () => {
   it("clamps a locked skin choice to classic", () => {
     expect(resolveSkin("void", 5)).toBe("classic");
     expect(resolveSkin("tabby", 5)).toBe("tabby");
+  });
+});
+
+// --- server <-> client mapping ---------------------------------------------
+describe("petToCatState / catStateToPatch / petDiff", () => {
+  const server: PetState = {
+    name: "Мурзик",
+    skin: "tabby",
+    streak: 4,
+    best_streak: 5,
+    last_active_day: "2026-06-18",
+    hidden: false,
+  };
+
+  it("maps snake_case server state to camelCase", () => {
+    expect(petToCatState(server)).toEqual({
+      name: "Мурзик",
+      skin: "tabby",
+      streak: 4,
+      bestStreak: 5,
+      lastActiveDay: "2026-06-18",
+      hidden: false,
+    });
+  });
+
+  it("clamps a locked skin when mapping in", () => {
+    expect(petToCatState({ ...server, skin: "void", best_streak: 2 }).skin).toBe(
+      "classic",
+    );
+  });
+
+  it("round-trips through a PATCH body", () => {
+    expect(catStateToPatch(petToCatState(server))).toEqual({
+      name: "Мурзик",
+      skin: "tabby",
+      streak: 4,
+      best_streak: 5,
+      last_active_day: "2026-06-18",
+      hidden: false,
+    });
+  });
+
+  it("petDiff returns null when nothing changed", () => {
+    const s = petToCatState(server);
+    expect(petDiff(s, s)).toBeNull();
+  });
+
+  it("petDiff emits only the changed fields (snake_case)", () => {
+    const s = petToCatState(server); // streak 4, bestStreak 5
+    const next = { ...s, streak: 5, lastActiveDay: "2026-06-19" };
+    expect(petDiff(s, next)).toEqual({
+      streak: 5,
+      last_active_day: "2026-06-19",
+    });
   });
 });
 

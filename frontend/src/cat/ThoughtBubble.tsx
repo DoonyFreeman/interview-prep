@@ -1,36 +1,17 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
-import type { CatSkin } from "../lib/cat";
 import type { CatThought } from "../lib/cat";
 
-const SKIN_DOT: Record<CatSkin, string> = {
-  classic: "#f0a84a",
-  tabby: "#9aa3ad",
-  tuxedo: "#2d2f36",
-  calico: "#efe7da",
-  void: "#4b3b6b",
-};
-
 interface Props {
+  name: string;
   thought: CatThought | null;
   streak: number;
-  skin: CatSkin;
-  unlocked: CatSkin[];
-  onSkin: (s: CatSkin) => void;
   onClose: () => void;
   onHide: () => void;
 }
 
-export function ThoughtBubble({
-  thought,
-  streak,
-  skin,
-  unlocked,
-  onSkin,
-  onClose,
-  onHide,
-}: Props) {
+export function ThoughtBubble({ name, thought, streak, onClose, onHide }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -42,12 +23,15 @@ export function ThoughtBubble({
       style={{ transformOrigin: "bottom right" }}
       className="absolute bottom-full right-0 mb-2 w-72 max-w-[78vw] rounded-2xl border border-border bg-surface p-3.5 text-left shadow-pop"
     >
-      <div className="mb-2 flex items-center justify-between">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent">
-          <span aria-hidden>🔥</span>
-          {t("cat.streakDays", { count: streak })}
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span className="flex min-w-0 items-center gap-1.5 text-xs font-semibold">
+          <span className="truncate font-display text-ink">{name}</span>
+          <span className="inline-flex shrink-0 items-center gap-0.5 text-accent">
+            <span aria-hidden>🔥</span>
+            {t("cat.streakDays", { count: streak })}
+          </span>
         </span>
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             onClick={onHide}
             title={t("cat.hide")}
@@ -83,23 +67,6 @@ export function ThoughtBubble({
         </>
       ) : (
         <p className="text-sm leading-relaxed text-muted">{t("cat.emptyThought")}</p>
-      )}
-
-      {/* Skin picker — unlocked palettes */}
-      {unlocked.length > 1 && (
-        <div className="mt-3 flex items-center gap-2 border-t border-border pt-2.5">
-          {unlocked.map((s) => (
-            <button
-              key={s}
-              onClick={() => onSkin(s)}
-              aria-label={`skin ${s}`}
-              className={`h-5 w-5 rounded-full border-2 transition-transform hover:scale-110 ${
-                s === skin ? "border-primary" : "border-border"
-              }`}
-              style={{ backgroundColor: SKIN_DOT[s] }}
-            />
-          ))}
-        </div>
       )}
     </motion.div>
   );

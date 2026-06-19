@@ -7,6 +7,7 @@ import { Button } from "../components/Button";
 import { PageLoader } from "../components/Spinner";
 import { LanguageToggle } from "../components/LanguageToggle";
 import { useToast } from "../components/Toast";
+import { PetSettings } from "../cat/PetSettings";
 
 function Section({
   title,
@@ -132,6 +133,11 @@ export function SettingsPage() {
               {t("settings.changePassword")}
             </Button>
           </form>
+        </Section>
+
+        {/* Pet */}
+        <Section title={t("settings.pet")}>
+          <PetSettings />
         </Section>
 
         {/* Language */}
