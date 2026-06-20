@@ -384,3 +384,19 @@ class PetStateUpdate(BaseModel):
     best_streak: int | None = None
     last_active_day: str | None = None
     hidden: bool | None = None
+
+
+# --- Cat "thoughts" (corner cat) -------------------------------------------
+class CatThoughtOut(BaseModel):
+    """One studyable topic the corner cat can mention, from a completed lesson.
+
+    ``definition`` is the first prose paragraph of the concept's H2 section
+    (may be "" for a code-only section); the cat then shows the title alone.
+    """
+
+    key: str  # "{course_slug}/{lesson_slug}#{anchor}" — stable id for anti-repeat
+    term: str  # concept title (the H2 heading)
+    definition: str
+    course_slug: str
+    lesson_slug: str
+    anchor: str

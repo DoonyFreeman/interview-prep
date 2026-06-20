@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useGlossary, useProgress } from "../api/hooks";
+import { useCatThoughts } from "../api/hooks";
 import { pickThought, type CatThought } from "../lib/cat";
 import { CatSprite } from "./CatSprite";
 import { ThoughtBubble } from "./ThoughtBubble";
@@ -81,18 +81,40 @@ function moodMotion(mood: CatMood, reaction: CatReaction, reduced: boolean) {
 // Little tokens of affection that float up when you tap the cat.
 const PARTICLES = ["❤️", "✨", "⭐", "🐾", "🎵", "😻"];
 
+// Anti-repeat: remember the last N thought keys across reloads so the cat keeps
+// varying what it says even after a page refresh.
+const SEEN_KEY = "cat_recent_v1";
+const SEEN_WINDOW = 30;
+
+function loadRecent(): string[] {
+  try {
+    const raw = localStorage.getItem(SEEN_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecent(keys: string[]): void {
+  try {
+    localStorage.setItem(SEEN_KEY, JSON.stringify(keys));
+  } catch {
+    /* storage may be unavailable (private mode) — anti-repeat is best-effort */
+  }
+}
+
 export function CatWidget() {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion() ?? false;
   const cat = useCat();
   const { mood, reaction, playId, pet, wake } = useCatMood(reducedMotion);
-  const { data: glossary } = useGlossary(null, "", "reference");
-  const { data: progress } = useProgress();
+  const { data: thoughts } = useCatThoughts();
 
   const [open, setOpen] = useState(false);
   const [thought, setThought] = useState<CatThought | null>(null);
-  // Keys of the last few thoughts shown, so repeated clicks don't repeat a term.
-  const recentRef = useRef<string[]>([]);
+  // Keys of recently shown thoughts (persisted), so clicks don't repeat a topic.
+  const recentRef = useRef<string[]>(loadRecent());
 
   // Roll the daily streak (and migrate legacy localStorage) once after load.
   const rolled = useRef(false);
@@ -110,19 +132,15 @@ export function CatWidget() {
       setOpen(false);
       return;
     }
-    const next = pickThought(
-      glossary?.terms ?? [],
-      progress,
-      recentRef.current,
-      Date.now(),
-    );
+    const next = pickThought(thoughts ?? [], recentRef.current, Date.now());
     if (next) {
-      // Remember the last 4 keys so the next picks avoid an immediate repeat.
-      recentRef.current = [...recentRef.current, next.key].slice(-4);
+      // Remember the last N keys (persisted) so picks avoid recent repeats.
+      recentRef.current = [...recentRef.current, next.key].slice(-SEEN_WINDOW);
+      saveRecent(recentRef.current);
     }
     setThought(next);
     setOpen(true);
-  }, [wake, pet, open, glossary, progress]);
+  }, [wake, pet, open, thoughts]);
 
   if (!cat.loaded) return null;
 

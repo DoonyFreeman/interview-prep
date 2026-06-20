@@ -10,8 +10,14 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.content import registry
-from app.repositories import CourseRepository, LessonRepository
+from app.content.excerpt import extract_h2_excerpts
+from app.repositories import (
+    CourseRepository,
+    LessonProgressRepository,
+    LessonRepository,
+)
 from app.schemas import (
+    CatThoughtOut,
     ConceptOut,
     CourseDetail,
     CourseSummary,
@@ -90,3 +96,40 @@ async def get_lesson(
         markdown=markdown,
         concepts=concepts,
     )
+
+
+async def get_cat_thoughts(
+    session: AsyncSession, user_id: int
+) -> list[CatThoughtOut]:
+    """All studyable topics the corner cat can mention: one per concept of every
+    lesson the user has marked complete ("Урок пройден"). Each carries the first
+    prose paragraph of its H2 section as a short definition (parsed from the
+    lesson markdown), so coverage spans every completed lesson, not just those
+    whose concepts happen to match a glossary term.
+    """
+    completed_ids = await LessonProgressRepository(session).completed_lesson_ids(
+        user_id
+    )
+    if not completed_ids:
+        return []
+
+    courses = await CourseRepository(session).list_published_with_lessons_concepts()
+    thoughts: list[CatThoughtOut] = []
+    for course in courses:
+        for lesson in course.lessons:
+            if lesson.id not in completed_ids:
+                continue
+            markdown = registry.get_lesson_text(course.slug, lesson.slug) or ""
+            excerpts = extract_h2_excerpts(markdown)
+            for concept in sorted(lesson.concepts, key=lambda x: x.order_index):
+                thoughts.append(
+                    CatThoughtOut(
+                        key=f"{course.slug}/{lesson.slug}#{concept.anchor}",
+                        term=concept.title,
+                        definition=excerpts.get(concept.anchor, ""),
+                        course_slug=course.slug,
+                        lesson_slug=lesson.slug,
+                        anchor=concept.anchor,
+                    )
+                )
+    return thoughts
