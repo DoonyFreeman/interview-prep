@@ -219,12 +219,21 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `GET /api/quiz/questions/{id}`, `GET /api/quiz/questions/{id}/attempts`,
 `POST /api/quiz/questions/{id}/{evaluate,hint}`;
 `GET /api/progress`, `GET /api/progress/questions`, `GET /api/progress/review`,
-`POST /api/progress/courses/{course}/lessons/{lesson}` (all quiz + progress +
+`POST /api/progress/courses/{course}/lessons/{lesson}`;
+`GET/PATCH /api/pet`; `GET /api/cat/thoughts` (all quiz + progress + pet/cat +
 profile-mutation routes require auth). `…/questions` lists a lesson's questions
 with the user's attempt history; `GET /quiz/questions/{id}` serves one for
 re-practice; `…/{id}/attempts` returns the user's past answers + stored reviews
 for that question (newest first). `GET /api/progress/questions` rolls up
 questions-answered-vs-total per course/lesson (the "what's left" view).
+`GET /api/cat/thoughts` powers the corner cat: one entry per concept of every
+**completed** lesson, each carrying the first prose paragraph of its H2 section
+(parsed from the lesson markdown by `app/content/excerpt.py`, truncated on a
+sentence boundary). The client (`lib/cat.ts:pickThought`) picks **two-stage** —
+a random lesson, then a random concept within it — so big lessons don't dominate
+and topics jump around; it avoids the lesson shown last and a 30-key
+localStorage anti-repeat window. `useMarkLesson` invalidates `["cat-thoughts"]`
+so newly completed lessons appear without a reload.
 
 Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
 Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code

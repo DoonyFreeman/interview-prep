@@ -2,7 +2,7 @@
 // network, no localStorage here — just functions over plain data so they're
 // trivially testable (see cat.test.ts). The hook (cat/useCat.ts) owns side
 // effects (persistence, timers); the widget owns rendering.
-import type { GlossaryTerm, PetState, ProgressOverviewOut } from "../api/types";
+import type { CatThoughtApi, PetState } from "../api/types";
 import { makeRng } from "./glossaryQuiz";
 
 // --- Persistent state ------------------------------------------------------
@@ -144,77 +144,15 @@ export function resolveSkin(skin: CatSkin, bestStreak: number): CatSkin {
 // --- "Thought" picked from already-studied topics --------------------------
 
 export interface CatThought {
-  /** Stable id for anti-repeat (term slug, or a concept-anchor for fallbacks). */
+  /** Stable id for anti-repeat: "{course}/{lesson}#{anchor}" per concept. */
   key: string;
   term: string;
   definition: string;
   link: { course_slug: string; lesson_slug: string; anchor: string };
 }
 
-/** Normalise to lowercase tokens (latin + cyrillic), ё→е, drop punctuation. */
-function normTokens(s: string): string[] {
-  return s
-    .toLowerCase()
-    .replace(/ё/g, "е")
-    .replace(/[^a-z0-9а-я]+/gi, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-/** Match phrases for a glossary term: its name (with/without the parenthetical),
- *  the parenthetical itself, and any aliases. Each as a token array. */
-function termPhrases(t: GlossaryTerm): string[][] {
-  const raw: string[] = [t.term, t.term.replace(/\([^)]*\)/g, " ")];
-  const paren = t.term.match(/\(([^)]+)\)/);
-  if (paren) raw.push(paren[1]);
-  for (const a of t.aliases ?? []) raw.push(a);
-  return raw
-    .map(normTokens)
-    .filter((toks) => toks.length > 0 && toks.join("").length >= 3);
-}
-
-/** True if `needle` appears as a contiguous run of tokens in `hay`. */
-function hasContiguous(hay: string[], needle: string[]): boolean {
-  if (!needle.length || needle.length > hay.length) return false;
-  for (let i = 0; i + needle.length <= hay.length; i++) {
-    let ok = true;
-    for (let j = 0; j < needle.length; j++) {
-      if (hay[i + j] !== needle[j]) {
-        ok = false;
-        break;
-      }
-    }
-    if (ok) return true;
-  }
-  return false;
-}
-
-/** Best glossary term whose name/alias phrase occurs in a concept title (most
- *  specific match wins), or null. Token-contiguous matching avoids false hits
- *  like "is" inside "history". */
-export function matchConceptToTerm(
-  conceptTitle: string,
-  terms: GlossaryTerm[],
-): GlossaryTerm | null {
-  const hay = normTokens(conceptTitle);
-  let best: GlossaryTerm | null = null;
-  let bestScore = 0;
-  for (const t of terms) {
-    for (const phrase of termPhrases(t)) {
-      if (hasContiguous(hay, phrase)) {
-        const score = phrase.join("").length + phrase.length * 2;
-        if (score > bestScore) {
-          bestScore = score;
-          best = t;
-        }
-      }
-    }
-  }
-  return best;
-}
-
-/** Strip the lightest markdown and trim to a friendly bubble length. */
+/** Strip the lightest markdown and trim to a friendly bubble length. The server
+ *  already truncates, but this keeps the bubble tidy if a definition is reused. */
 export function plainDefinition(md: string, max = 160): string {
   const text = md
     .replace(/`([^`]*)`/g, "$1")
@@ -227,64 +165,71 @@ export function plainDefinition(md: string, max = 160): string {
   return text.slice(0, max).replace(/\s+\S*$/, "") + "…";
 }
 
+/** The "{course}/{lesson}" a thought belongs to (its key without the anchor). */
+function lessonOf(key: string): string {
+  return key.split("#")[0];
+}
+
 /**
- * Pick a "thought" about a topic the user has actually finished. Source: the
- * concepts of **completed** lessons ("Урок пройден" → `lesson.completed`); each
- * concept gives a precise lesson section (its `anchor`) and is matched to a
- * glossary term for a real definition. Picks at random, skipping the recently
- * shown keys so repeated clicks vary. Returns null when no lesson is completed
- * (the widget then shows a friendly nudge). Deterministic per seed.
+ * Pick a "thought" about a topic the user has actually finished. The pool comes
+ * straight from the server (`GET /api/cat/thoughts`): one entry per concept of
+ * every **completed** lesson ("Урок пройден"), each with its lesson section
+ * (`anchor`) and a short definition parsed from the lesson markdown.
+ *
+ * Selection is **two-stage** so it feels like jumping between topics rather than
+ * walking a list: pick a random *lesson* first (every lesson gets equal weight,
+ * regardless of how many concepts it has — so a big lesson doesn't dominate),
+ * then a random concept within it. It avoids the lesson shown last and skips
+ * recently shown concept keys, so repeated clicks keep moving across the
+ * curriculum. Returns null when nothing is completed (the widget then shows a
+ * friendly nudge). Deterministic per seed.
  */
 export function pickThought(
-  terms: GlossaryTerm[],
-  progress: ProgressOverviewOut | undefined,
+  thoughts: CatThoughtApi[],
   recentKeys: string[],
   seed: number,
 ): CatThought | null {
-  if (!progress) return null;
+  if (!thoughts.length) return null;
 
-  const matched: CatThought[] = []; // concept matched to a glossary term (has a definition)
-  const fallback: CatThought[] = []; // completed-lesson concept with no term match (title only)
-
-  for (const c of progress.courses) {
-    for (const l of c.lessons) {
-      if (!l.completed) continue;
-      for (const cn of l.concepts) {
-        const link = { course_slug: c.slug, lesson_slug: l.slug, anchor: cn.anchor };
-        const term = terms.length ? matchConceptToTerm(cn.title, terms) : null;
-        if (term) {
-          matched.push({
-            key: term.slug,
-            term: term.term,
-            definition: plainDefinition(term.short_md),
-            link,
-          });
-        } else {
-          fallback.push({
-            key: `${c.slug}/${l.slug}#${cn.anchor}`,
-            term: cn.title,
-            definition: "",
-            link,
-          });
-        }
-      }
-    }
-  }
-
-  // Prefer real definitions; fall back to bare concept titles only if needed.
-  const pool = matched.length ? matched : fallback;
-  if (!pool.length) return null;
-
-  // De-dup by key (a term can match concepts across several lessons).
-  const byKey = new Map<string, CatThought>();
-  for (const cand of pool) if (!byKey.has(cand.key)) byKey.set(cand.key, cand);
+  // De-dup by key (defensive — the server already yields one per concept).
+  const byKey = new Map<string, CatThoughtApi>();
+  for (const t of thoughts) if (!byKey.has(t.key)) byKey.set(t.key, t);
   const unique = [...byKey.values()];
 
-  // Anti-repeat: drop recently shown keys, unless that would empty the pool.
+  // Anti-repeat: drop recently shown concepts, unless that would empty the pool.
   const recent = new Set(recentKeys);
-  const filtered = unique.filter((c) => !recent.has(c.key));
-  const choices = filtered.length ? filtered : unique;
+  const fresh = unique.filter((t) => !recent.has(t.key));
+  const pool = fresh.length ? fresh : unique;
+
+  // Group the candidate concepts by lesson.
+  const byLesson = new Map<string, CatThoughtApi[]>();
+  for (const t of pool) {
+    const lk = lessonOf(t.key);
+    (byLesson.get(lk) ?? byLesson.set(lk, []).get(lk)!).push(t);
+  }
+
+  // Stage 1 — choose a lesson, avoiding the one shown last when we can.
+  const lastLesson = recentKeys.length
+    ? lessonOf(recentKeys[recentKeys.length - 1])
+    : null;
+  let lessons = [...byLesson.keys()];
+  const others = lessons.filter((lk) => lk !== lastLesson);
+  if (others.length) lessons = others;
 
   const rng = makeRng(seed >>> 0 || 1);
-  return choices[Math.floor(rng() * choices.length)];
+  const lesson = lessons[Math.floor(rng() * lessons.length)];
+
+  // Stage 2 — choose a concept within that lesson.
+  const concepts = byLesson.get(lesson)!;
+  const chosen = concepts[Math.floor(rng() * concepts.length)];
+  return {
+    key: chosen.key,
+    term: chosen.term,
+    definition: chosen.definition,
+    link: {
+      course_slug: chosen.course_slug,
+      lesson_slug: chosen.lesson_slug,
+      anchor: chosen.anchor,
+    },
+  };
 }

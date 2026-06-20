@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import type {
+  CatThoughtApi,
   CourseDetail,
   CourseSummary,
   EvaluationOut,
@@ -134,7 +135,11 @@ export function useMarkLesson() {
         { completed: vars.completed },
       );
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["progress"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["progress"] });
+      // Completing/uncompleting a lesson changes the corner cat's thought pool.
+      qc.invalidateQueries({ queryKey: ["cat-thoughts"] });
+    },
   });
 }
 
@@ -301,6 +306,18 @@ export function usePet() {
     queryKey: ["pet"],
     queryFn: async () => (await api.get<PetState>("/pet")).data,
     staleTime: 60_000,
+  });
+}
+
+/** Topics the corner cat can mention — one per concept of every completed
+ *  lesson. Lesson content rarely changes, so cache generously. */
+export function useCatThoughts() {
+  return useQuery({
+    queryKey: ["cat-thoughts"],
+    queryFn: async () =>
+      (await api.get<CatThoughtApi[]>("/cat/thoughts")).data,
+    staleTime: 5 * 60_000,
+    retry: false,
   });
 }
 

@@ -322,3 +322,15 @@ export interface PetState {
   last_active_day: string | null;
   hidden: boolean;
 }
+
+/** One topic the corner cat can mention, from a completed lesson (one per
+ *  concept). `definition` is the first prose paragraph of its section ("" for
+ *  a code-only section). Mirrors backend `CatThoughtOut`. */
+export interface CatThoughtApi {
+  key: string;
+  term: string;
+  definition: string;
+  course_slug: string;
+  lesson_slug: string;
+  anchor: string;
+}
