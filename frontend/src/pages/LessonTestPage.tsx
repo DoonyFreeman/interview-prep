@@ -12,6 +12,7 @@ import { Button } from "../components/Button";
 import { Markdown } from "../components/Markdown";
 import { ScoreGauge } from "../components/ScoreGauge";
 import { EmptyState } from "../components/EmptyState";
+import { CelebrateBurst } from "../components/CelebrateBurst";
 import { IconClipboardCheck, IconRefresh } from "../components/icons";
 import { fade } from "../lib/motion";
 import {
@@ -340,7 +341,8 @@ export function LessonTestPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
           {t("lessonTest.resultTitle")}
         </h1>
-        <div className="mt-6 flex flex-col items-center gap-3">
+        <div className="relative mt-6 flex flex-col items-center gap-3">
+          {pct === 100 && <CelebrateBurst />}
           <ScoreGauge score={pct} size={120} />
           <p className="text-lg font-semibold text-ink">
             {t("lessonTest.score", { correct: correctCount, total })}

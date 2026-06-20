@@ -9,11 +9,14 @@ export function EmptyState({
   icon = "✨",
   title,
   hint,
+  tone = "neutral",
   children,
 }: {
   icon?: ReactNode;
   title: string;
   hint?: string;
+  /** `celebrate` tints the glyph teal for "all done" moments. */
+  tone?: "neutral" | "celebrate";
   children?: ReactNode;
 }) {
   return (
@@ -23,7 +26,13 @@ export function EmptyState({
       transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
       className="rounded-2xl border border-border bg-surface p-10 text-center shadow-card"
     >
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-2 text-2xl">
+      <div
+        className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${
+          tone === "celebrate"
+            ? "bg-celebrate/15 text-celebrate"
+            : "bg-surface-2"
+        }`}
+      >
         {icon}
       </div>
       <p className="mt-4 font-display text-lg font-bold text-ink">{title}</p>

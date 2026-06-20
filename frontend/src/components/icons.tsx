@@ -141,6 +141,35 @@ export function IconSparkles({ className }: IconProps) {
   );
 }
 
+/** Copy — two stacked sheets (copy to clipboard). */
+export function IconCopy({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </Svg>
+  );
+}
+
+/** Check — a bare checkmark (copied / done). */
+export function IconCheck({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M20 6 9 17l-5-5" />
+    </Svg>
+  );
+}
+
+/** Keyboard — for the shortcuts helper. */
+export function IconKeyboard({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="2" y="6" width="20" height="12" rx="2" ry="2" />
+      <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8" />
+    </Svg>
+  );
+}
+
 /**
  * Brand glyph — a rising "mastery" curve to a sparkle at the apex. Matches the
  * app icon (`public/favicon.svg`). Drawn on a solid primary tile by the caller;
