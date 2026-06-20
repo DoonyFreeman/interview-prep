@@ -26,7 +26,12 @@ export function ReviewPage() {
       <p className="mt-1 mb-6 text-muted">{t("review.subtitle")}</p>
 
       {count === 0 ? (
-        <EmptyState icon="🎉" title={t("review.emptyTitle")} hint={t("review.emptyHint")}>
+        <EmptyState
+          icon="🎉"
+          tone="celebrate"
+          title={t("review.emptyTitle")}
+          hint={t("review.emptyHint")}
+        >
           <Link to="/">
             <Button variant="secondary">{t("review.toCourses")}</Button>
           </Link>
