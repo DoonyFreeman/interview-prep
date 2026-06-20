@@ -5,6 +5,7 @@ import { useGlossary } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { EmptyState } from "../components/EmptyState";
 import { IconTarget } from "../components/icons";
+import { Highlight } from "../lib/highlight";
 import type { GlossaryTerm } from "../api/types";
 
 export function SlangPage() {
@@ -94,12 +95,16 @@ export function SlangPage() {
                     id={term.slug}
                     className="scroll-mt-24 rounded-2xl border border-border bg-surface p-4 shadow-card"
                   >
-                    <h3 className="font-display font-bold text-ink">{term.term}</h3>
+                    <h3 className="font-display font-bold text-ink">
+                      <Highlight text={term.term} query={query} />
+                    </h3>
                     {term.aliases.length > 0 && (
-                      <p className="text-xs text-faint">{term.aliases.join(" · ")}</p>
+                      <p className="text-xs text-faint">
+                        <Highlight text={term.aliases.join(" · ")} query={query} />
+                      </p>
                     )}
                     <p className="mt-1 text-sm leading-relaxed text-muted">
-                      {term.short_md}
+                      <Highlight text={term.short_md} query={query} />
                     </p>
                   </div>
                 ))}

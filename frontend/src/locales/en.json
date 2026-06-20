@@ -135,7 +135,16 @@
     "retry": "Retry",
     "minutes": "{{count}} min",
     "days": "{{count}} d",
-    "today": "today"
+    "today": "today",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "quizSubmit": "Submit answer (AI interview)",
+    "testPick": "Pick an answer (test)",
+    "testNext": "Next question (test)",
+    "openHelp": "Open this help"
   },
   "auth": {
     "loginTitle": "Sign in",

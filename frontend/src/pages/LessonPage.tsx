@@ -68,6 +68,28 @@ export function LessonPage() {
         <div className="mt-2 mb-1 text-xs font-semibold uppercase tracking-wide text-faint">
           {t("common.minutes", { count: lesson.data.duration_minutes })}
         </div>
+
+        {/* Mobile ToC — collapsed by default; the desktop sidebar handles lg+. */}
+        {lesson.data.concepts.length > 0 && (
+          <details className="mt-4 rounded-2xl border border-border bg-surface p-1 lg:hidden">
+            <summary className="cursor-pointer list-none rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wide text-faint">
+              {t("lesson.toc")} · {lesson.data.concepts.length}
+            </summary>
+            <ul className="space-y-0.5 px-1 pb-1">
+              {lesson.data.concepts.map((c) => (
+                <li key={c.slug}>
+                  <a
+                    href={`#${c.anchor}`}
+                    className="block rounded-lg px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                  >
+                    {c.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+
         <Markdown markdown={lesson.data.markdown} />
       </article>
 
