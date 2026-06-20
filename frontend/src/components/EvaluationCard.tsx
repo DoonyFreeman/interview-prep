@@ -4,6 +4,7 @@ import type { EvaluationOut } from "../api/types";
 import { Markdown } from "./Markdown";
 import { ScoreGauge } from "./ScoreGauge";
 import { VerdictBadge } from "./VerdictBadge";
+import { CelebrateBurst } from "./CelebrateBurst";
 import { fadeInUp, staggerContainer } from "../lib/motion";
 
 function Bullets({
@@ -46,7 +47,10 @@ export function EvaluationCard({ data }: { data: EvaluationOut }) {
       className="rounded-2xl border border-border bg-surface p-5 shadow-raised sm:p-6"
     >
       <motion.div variants={fadeInUp} className="flex items-center gap-4">
-        <ScoreGauge score={data.score} />
+        <div className="relative shrink-0">
+          {data.score === 100 && <CelebrateBurst />}
+          <ScoreGauge score={data.score} />
+        </div>
         <div className="min-w-0">
           <VerdictBadge verdict={data.verdict} />
           {data.summary && (

@@ -7,6 +7,7 @@ import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
 import { IconTarget } from "../components/icons";
+import { Highlight } from "../lib/highlight";
 import type { GlossaryCategoryProgress, GlossaryTerm } from "../api/types";
 
 function categoryLabel(t: (k: string) => string, slug: string): string {
@@ -15,7 +16,7 @@ function categoryLabel(t: (k: string) => string, slug: string): string {
   return label === key ? slug : label;
 }
 
-function TermCard({ term }: { term: GlossaryTerm }) {
+function TermCard({ term, query }: { term: GlossaryTerm; query: string }) {
   const { t } = useTranslation();
   return (
     <article
@@ -23,9 +24,13 @@ function TermCard({ term }: { term: GlossaryTerm }) {
       className="scroll-mt-24 rounded-2xl border border-border bg-surface p-5 shadow-card"
     >
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="font-display text-lg font-bold text-ink">{term.term}</h3>
+        <h3 className="font-display text-lg font-bold text-ink">
+          <Highlight text={term.term} query={query} />
+        </h3>
         {term.aliases.length > 0 && (
-          <span className="text-sm text-faint">{term.aliases.join(" · ")}</span>
+          <span className="text-sm text-faint">
+            <Highlight text={term.aliases.join(" · ")} query={query} />
+          </span>
         )}
       </div>
       <div className="prose-sm mt-2">
@@ -179,7 +184,7 @@ export function GlossaryPage() {
               </div>
               <div className="space-y-4">
                 {terms.map((term) => (
-                  <TermCard key={term.slug} term={term} />
+                  <TermCard key={term.slug} term={term} query={query} />
                 ))}
               </div>
             </section>

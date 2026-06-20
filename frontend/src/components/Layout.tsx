@@ -3,8 +3,10 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
+import { useCat } from "../cat/useCat";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
+import { ShortcutsHelp } from "./ShortcutsHelp";
 import { BottomNavBar } from "./BottomNavBar";
 import { CatWidget } from "../cat/CatWidget";
 import { BrandMark } from "./icons";
@@ -66,6 +68,22 @@ function DueBadge() {
   );
 }
 
+/** A streak flame — quiet motivation, shown only when there's an active run. */
+function StreakBadge() {
+  const { t } = useTranslation();
+  const { pet, loaded } = useCat();
+  if (!loaded || pet.hidden || pet.streak <= 0) return null;
+  return (
+    <span
+      title={t("cat.streakDays", { count: pet.streak })}
+      className="inline-flex items-center gap-1 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent"
+    >
+      <span aria-hidden>🔥</span>
+      {pet.streak}
+    </span>
+  );
+}
+
 export function Layout() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
@@ -99,9 +117,11 @@ export function Layout() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <StreakBadge />
             <div className="hidden sm:block">
               <DueBadge />
             </div>
+            <ShortcutsHelp />
             <ThemeToggle />
             <LanguageToggle />
             <NavLink
