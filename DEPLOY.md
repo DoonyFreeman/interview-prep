@@ -138,17 +138,51 @@ scripts/backup.sh                 # one-off
 0 3 * * * cd /opt/interview-prep && scripts/backup.sh >> backups/backup.log 2>&1
 ```
 
-Copy `backups/` off-box periodically (rsync/object storage) so a host loss
-doesn't lose them.
+### Offsite copy (survive host loss)
+
+Local snapshots live on the same server — if it's wiped (e.g. the host is
+deleted), they're gone too. `scripts/backup-offsite.sh` pushes the newest 7
+snapshots to an **orphan `backups` branch** of this private repo, as a single
+force-pushed commit so the branch never accumulates git history (binary blobs
+don't pile up — the old commit becomes unreachable and is GC'd).
+
+```bash
+scripts/backup-offsite.sh         # one-off (run after backup.sh)
+# Cron (daily 03:00) — chain both:
+0 3 * * * cd /opt/interview-prep && scripts/backup.sh && scripts/backup-offsite.sh >> backups/backup.log 2>&1
+```
+
+**Prerequisite — push (write) access from the server to the repo.** The script
+`git push`es to `origin`, so the host needs write credentials, one of:
+
+- a **GitHub deploy key with "Allow write access"** on this repo, added to the
+  server's SSH agent / `~/.ssh` (origin stays the SSH URL); or
+- a **fine-grained PAT** (Contents: read+write, this repo only) baked into an
+  HTTPS remote or a git credential helper.
+
+The script fails early with a clear message if the remote is unreachable.
+Tunables via env: `KEEP_OFFSITE` (7), `BRANCH` (`backups`), `REMOTE`, `OUT_DIR`.
+
+> The dump is **unencrypted** — it contains user emails + bcrypt hashes. This is
+> acceptable only because the repo is private. Keep it private.
 
 ### Restore
+
+From a local snapshot:
 
 ```bash
 scripts/restore.sh backups/app-YYYYMMDD-HHMMSS.db
 ```
 
-Stops the app, replaces the DB on the volume (clearing stale WAL sidecars),
-restarts. Re-seeds content automatically; user state comes from the snapshot.
+On a fresh/wiped server (no local snapshots) — pull the newest from the offsite
+branch and restore it in one step:
+
+```bash
+scripts/restore-offsite.sh
+```
+
+Both stop the app, replace the DB on the volume (clearing stale WAL sidecars),
+and restart. Re-seeds content automatically; user state comes from the snapshot.
 
 ## Operations
 
