@@ -45,6 +45,7 @@
     "subtitle": "{{count}} terms asked in Python backend interviews.",
     "searchPlaceholder": "Search terms…",
     "allCategories": "All",
+    "filterByCategory": "Category",
     "noResults": "Nothing found",
     "toTheory": "To theory",
     "quizCta": "Take a quiz",
