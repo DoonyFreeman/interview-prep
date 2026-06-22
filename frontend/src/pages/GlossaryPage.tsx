@@ -129,7 +129,22 @@ export function GlossaryPage() {
           placeholder={t("glossary.searchPlaceholder")}
           className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none placeholder:text-faint focus:border-primary"
         />
-        <div className="mt-3 flex flex-wrap gap-2">
+        {/* Mobile: compact native select (13 long labels wrap to half a screen as chips). */}
+        <select
+          aria-label={t("glossary.filterByCategory")}
+          value={category ?? ""}
+          onChange={(e) => setCategory(e.target.value || null)}
+          className="mt-3 w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-primary sm:hidden"
+        >
+          <option value="">{t("glossary.allCategories")}</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>
+              {categoryLabel(t, c)}
+            </option>
+          ))}
+        </select>
+        {/* Desktop: full chip row. */}
+        <div className="mt-3 hidden flex-wrap gap-2 sm:flex">
           <button
             onClick={() => setCategory(null)}
             className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${

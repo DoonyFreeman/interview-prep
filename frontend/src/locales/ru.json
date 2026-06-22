@@ -45,6 +45,7 @@
     "subtitle": "{{count}} терминов, которые спрашивают на собеседованиях Python backend.",
     "searchPlaceholder": "Поиск по термину…",
     "allCategories": "Все",
+    "filterByCategory": "Категория",
     "noResults": "Ничего не найдено",
     "toTheory": "К теории",
     "quizCta": "Пройти тест",
