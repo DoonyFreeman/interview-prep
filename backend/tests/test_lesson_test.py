@@ -140,8 +140,9 @@ async def test_below_threshold_is_not_passed(client):
     assert d["best_score"] == 70 and d["passed"] is False
 
 
-async def test_partial_run_never_sets_best_score(client):
-    """A "review mistakes" style run (subset) must not create a lesson score."""
+async def test_incomplete_union_never_sets_best_score(client):
+    """A subset run that leaves some MCQ unseen records no lesson score: the
+    standing score is only computed once every MCQ has been answered."""
     headers = await _auth(client)
     slugs = [q["slug"] for q in (await client.get(f"{GIL}/test", headers=headers)).json()["questions"]]
     d = (
@@ -150,6 +151,38 @@ async def test_partial_run_never_sets_best_score(client):
         )
     ).json()
     assert d["attempts"] == 0 and d["best_score"] == 0 and d["passed"] is False
+
+
+async def test_review_mistakes_lifts_lesson_to_passed(client):
+    """Regression: a sub-80 full run, then re-answering the failed questions
+    correctly via "review mistakes" (a subset), completes the union of latest
+    answers and lifts the lesson to passed — and the overview reflects it."""
+    headers = await _auth(client)
+    slugs = [q["slug"] for q in (await client.get(f"{GIL}/test", headers=headers)).json()["questions"]]
+
+    # Full run, 7/10 = 70% → recorded but not passed.
+    wrong = set(slugs[7:])  # last 3 wrong
+    d = (
+        await client.post(f"{GIL}/test/result", json=_full_run(slugs, set(slugs[:7])), headers=headers)
+    ).json()
+    assert d["best_score"] == 70 and d["passed"] is False
+
+    ov = (await client.get("/api/quiz/tests/overview", headers=headers)).json()
+    assert ov["passed"] == 0
+
+    # Review mistakes: re-answer just the 3 wrong ones correctly (a subset).
+    d2 = (
+        await client.post(
+            f"{GIL}/test/result",
+            json={"items": [{"slug": s, "correct": True} for s in wrong]},
+            headers=headers,
+        )
+    ).json()
+    # Union of latest answers is now all-correct → standing score 100, passed.
+    assert d2["correct"] == 10 and d2["best_score"] == 100 and d2["passed"] is True
+
+    ov2 = (await client.get("/api/quiz/tests/overview", headers=headers)).json()
+    assert ov2["passed"] == 1
 
 
 async def test_tests_overview(client):
