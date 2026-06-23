@@ -8,10 +8,13 @@ to protect).
 
 Two kinds of user-state, kept separate by design:
 - ``mcq_stats`` (per MCQ): seen/correct/last_correct — for per-question review.
-- ``lesson_test_results`` (per lesson): best/last score over **full** runs — the
-  source of the lesson badge and the dashboard "tests passed" indicator. A
-  "review mistakes" run answers only a subset and must not inflate the best
-  score, so only a run that covers every MCQ of the lesson updates it.
+- ``lesson_test_results`` (per lesson): best/last **standing** score — the source
+  of the lesson badge and the dashboard "tests passed" indicator. The score is
+  computed from the user's *latest* answer to each MCQ (the ``mcq_stats`` union),
+  recorded once every MCQ of the lesson has been answered at least once. So a
+  "review mistakes" run (a subset) can complete the union and lift the lesson to
+  passed; ``best_score`` is kept as ``max`` and never drops. No inflation: the
+  score is always over the full lesson MCQ set, never a lone subset.
 
 None of this touches SM-2 mastery: an MCQ guess never moves spaced repetition.
 """
@@ -131,28 +134,36 @@ async def record_results(
     lesson_slug: str,
     items: list[tuple[str, bool]],
 ) -> LessonTestProgressOut:
-    """Record a finished test. Always upserts per-MCQ ``mcq_stats``. If the run
-    is **full** (every MCQ of the lesson answered), also records the run's score
-    into ``lesson_test_results`` (drives the badge + dashboard). Unknown slugs
-    are ignored. Commits once, then returns the refreshed progress."""
+    """Record a finished test. Always upserts per-MCQ ``mcq_stats``. Once every
+    MCQ of the lesson has been answered at least once, records the lesson's
+    **standing** score — computed from the user's *latest* answer to each MCQ
+    (the ``mcq_stats`` union, not just this submission) — into
+    ``lesson_test_results`` (drives the badge + dashboard). This means fixing a
+    failed question in "review mistakes" mode (a subset submission) can complete
+    the union and lift the lesson to passed. There is no inflation risk: the
+    score is always over the **full** lesson MCQ set, so a subset can only raise
+    it when the remaining questions were already correct. Unknown slugs are
+    ignored. Commits once, then returns the refreshed progress."""
     await _ensure_lesson(session, course_slug, lesson_slug)
     mcq_repo = McqRepository(session)
     stats_repo = McqStatsRepository(session)
 
-    lesson_slugs = {m.slug for m in await mcq_repo.list_for_lesson(course_slug, lesson_slug)}
+    lesson_slugs = [m.slug for m in await mcq_repo.list_for_lesson(course_slug, lesson_slug)]
     valid = await mcq_repo.all_slugs()
 
-    posted: dict[str, bool] = {}
     for slug, correct in items:
         if slug not in valid:
             continue
         await stats_repo.record(user_id=user_id, mcq_slug=slug, correct=correct)
-        posted[slug] = correct
+    await session.flush()
 
-    # Full run = answered every MCQ of this lesson → record the lesson score.
-    answered_lesson = {s for s in posted if s in lesson_slugs}
-    if lesson_slugs and answered_lesson >= lesson_slugs:
-        correct_count = sum(1 for s in lesson_slugs if posted.get(s))
+    # Once every MCQ of the lesson has been answered at least once, record the
+    # standing score from the latest answer to each (the mcq_stats union).
+    stats = await stats_repo.list_for_slugs(user_id, lesson_slugs)
+    by_slug = {s.mcq_slug: s for s in stats}
+    seen = [by_slug.get(s) for s in lesson_slugs]
+    if lesson_slugs and all(st is not None and st.seen > 0 for st in seen):
+        correct_count = sum(1 for st in seen if st.last_correct)
         score = round(100 * correct_count / len(lesson_slugs))
         await LessonTestResultRepository(session).record_full_run(
             user_id=user_id,

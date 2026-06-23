@@ -370,8 +370,12 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    compare, exactly like the glossary quiz. The `reference_answer` rule is
    unchanged (the lesson endpoint leaks neither).
    **9.1b done**: lesson-test progress is surfaced on the dashboard as a separate
-   indicator — `lesson_test_results` (best/last/attempts per lesson, full-run
-   detection so "review mistakes" can't inflate the score), `GET /api/quiz/tests/
+   indicator — `lesson_test_results` (best/last/attempts per lesson; the score is
+   the **standing** score over the latest answer to each MCQ — the `mcq_stats`
+   union — recorded once every MCQ of the lesson has been answered, so fixing a
+   failed question in "review mistakes" mode lifts the lesson to passed; `best_score`
+   is `max` and never drops, and a lone subset can't inflate it since the score is
+   always over the full MCQ set), `GET /api/quiz/tests/
    overview`, a "Тесты X/Y" stat + per-course indicator on the catalog, lesson
    badge shows best-score % (passed at ≥80%); the mastery ring is untouched. UI
    emoji on buttons replaced with SVG icons (`icons.tsx`).
