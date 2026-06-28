@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.dependencies import get_current_user
 from app.database import get_session
 from app.models import User
-from app.schemas import PetStateOut, PetStateUpdate
+from app.schemas import PetStateOut, PetStateUpdate, PetVisit
 from app.services import pet as pet_service
 
 router = APIRouter()
@@ -34,3 +34,13 @@ async def update_pet(
 ):
     """Update name / skin / streak / visibility (skin clamped to unlocked)."""
     return await pet_service.update(session, user_id=user.id, data=data)
+
+
+@router.post("/pet/visit", response_model=PetStateOut)
+async def visit_pet(
+    data: PetVisit,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Mark the user active today; the server rolls the daily streak atomically."""
+    return await pet_service.visit(session, user_id=user.id, today=data.today)

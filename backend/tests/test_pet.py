@@ -86,3 +86,85 @@ async def test_isolated_per_user(client):
 
     assert (await client.get("/api/pet", headers=h2)).json()["name"] == ""
     assert (await client.get("/api/pet", headers=h1)).json()["name"] == "Alpha"
+
+
+# --- Daily "visit" rollover (atomic, server-authoritative) -----------------
+# Bug repro: the streak used to be rolled client-side and pushed via an
+# optimistic PATCH that rolled back on any error and never retried. One dropped
+# write on a day the user *did* visit left `last_active_day` stale, so two days
+# later the gap looked like ≥2 and the streak reset to 1 ("visited every day but
+# it reset after day 8"). The fix moves the rollover into a single atomic server
+# call: POST /api/pet/visit {today}. These tests pin that contract.
+
+
+async def test_visit_requires_auth(client):
+    assert (
+        await client.post("/api/pet/visit", json={"today": "2026-06-20"})
+    ).status_code == 403
+
+
+async def test_visit_first_time_starts_streak(client):
+    headers = await _auth(client)
+    r = await client.post(
+        "/api/pet/visit", headers=headers, json={"today": "2026-06-20"}
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["streak"] == 1
+    assert body["best_streak"] == 1
+    assert body["last_active_day"] == "2026-06-20"
+
+
+async def test_visit_consecutive_days_never_reset(client):
+    """The core regression: visiting every day keeps climbing, atomically."""
+    headers = await _auth(client)
+    for i, day in enumerate(
+        ["2026-06-20", "2026-06-21", "2026-06-22", "2026-06-23"], start=1
+    ):
+        body = (
+            await client.post("/api/pet/visit", headers=headers, json={"today": day})
+        ).json()
+        assert body["streak"] == i, f"day {day} should be streak {i}"
+        assert body["last_active_day"] == day
+
+
+async def test_visit_same_day_is_idempotent(client):
+    headers = await _auth(client)
+    await client.post("/api/pet/visit", headers=headers, json={"today": "2026-06-20"})
+    await client.post("/api/pet/visit", headers=headers, json={"today": "2026-06-21"})
+    # Reload the same day twice — no double count.
+    a = (
+        await client.post(
+            "/api/pet/visit", headers=headers, json={"today": "2026-06-21"}
+        )
+    ).json()
+    assert a["streak"] == 2
+    assert a["last_active_day"] == "2026-06-21"
+
+
+async def test_visit_gap_resets_but_keeps_best(client):
+    headers = await _auth(client)
+    # Climb to 7 (unlocks tuxedo) over 7 consecutive days.
+    for n, day in enumerate(
+        [f"2026-06-{d:02d}" for d in range(14, 21)], start=1
+    ):
+        body = (
+            await client.post("/api/pet/visit", headers=headers, json={"today": day})
+        ).json()
+    assert body["streak"] == 7 and body["best_streak"] == 7
+    # Skip two days → reset to 1, but best_streak (and unlocked skins) survive.
+    after = (
+        await client.post(
+            "/api/pet/visit", headers=headers, json={"today": "2026-06-23"}
+        )
+    ).json()
+    assert after["streak"] == 1
+    assert after["best_streak"] == 7
+
+
+async def test_visit_persisted(client):
+    headers = await _auth(client)
+    await client.post("/api/pet/visit", headers=headers, json={"today": "2026-06-20"})
+    got = (await client.get("/api/pet", headers=headers)).json()
+    assert got["streak"] == 1
+    assert got["last_active_day"] == "2026-06-20"

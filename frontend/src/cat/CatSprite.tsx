@@ -13,10 +13,13 @@ interface Palette {
 
 // Cat keeps its *own* colour identity (so it pops on either theme); each skin
 // is a hand-tuned little palette. Unlocked by streak milestones.
-const PALETTES: Record<CatSkin, Palette> = {
+// Invariant (guarded in CatSprite.test.ts): `eye` must contrast with the face
+// `L` — otherwise open eyes vanish into the muzzle and the cat looks perpetually
+// closed-eyed (this was the tuxedo bug: eye was #f4f4f5, same as its white face).
+export const PALETTES: Record<CatSkin, Palette> = {
   classic: { B: "#f0a84a", D: "#6b4a2b", L: "#ffe2b0", P: "#e98b8b", eye: "#3a2a18", mouth: "#c65f5f" },
   tabby: { B: "#9aa3ad", D: "#3c434c", L: "#e7ebef", P: "#d99", eye: "#222831", mouth: "#c65f5f" },
-  tuxedo: { B: "#2d2f36", D: "#15161a", L: "#f4f4f5", P: "#d88", eye: "#f4f4f5", mouth: "#d88" },
+  tuxedo: { B: "#2d2f36", D: "#15161a", L: "#f4f4f5", P: "#d88", eye: "#4fae54", mouth: "#d88" },
   calico: { B: "#efe7da", D: "#7a5638", L: "#ffffff", P: "#e98b8b", eye: "#5a3d24", mouth: "#c65f5f" },
   void: { B: "#4b3b6b", D: "#241a38", L: "#cdbff0", P: "#b58be0", eye: "#9be8d8", mouth: "#b58be0" },
 };

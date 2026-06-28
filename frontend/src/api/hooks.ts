@@ -342,6 +342,19 @@ export function useUpdatePet() {
   });
 }
 
+/** Mark the user active today; the server rolls the daily streak atomically.
+ *  Authoritative (no optimistic write) so a daily visit can't be lost to a
+ *  rollback or a race — that was the streak-reset bug. Retries transient fails. */
+export function useVisitPet() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (today: string) =>
+      (await api.post<PetState>("/pet/visit", { today })).data,
+    onSuccess: (data) => qc.setQueryData(["pet"], data),
+    retry: 2,
+  });
+}
+
 // --- Auth ------------------------------------------------------------------
 export function useLogin() {
   return useMutation({

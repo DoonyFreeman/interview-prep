@@ -1,10 +1,8 @@
 import { useCallback } from "react";
-import { usePet, useUpdatePet } from "../api/hooks";
+import { usePet, useUpdatePet, useVisitPet } from "../api/hooks";
 import {
   DEFAULT_CAT_STATE,
-  petDiff,
   petToCatState,
-  rolloverStreak,
   skinsUnlocked,
   stageForStreak,
   todayKey,
@@ -48,6 +46,7 @@ export interface CatPersistApi {
 export function useCat(): CatPersistApi {
   const { data, isSuccess } = usePet();
   const update = useUpdatePet();
+  const visit = useVisitPet();
 
   const pet: CatState = data ? petToCatState(data) : { ...DEFAULT_CAT_STATE };
 
@@ -56,34 +55,32 @@ export function useCat(): CatPersistApi {
     const server = petToCatState(data);
 
     // One-time migration: if the server pet was never active but this browser
-    // has a legacy streak, carry it over so nothing visibly resets.
-    let base = server;
+    // has a legacy streak, carry over the *unlocks* (name/skin/bestStreak) so
+    // earned skins aren't lost. The streak count itself is then rolled forward
+    // by the authoritative server visit below.
     const legacy = readLegacy();
     if (
       server.lastActiveDay == null &&
       legacy &&
       (legacy.streak > 0 || legacy.name || legacy.skin !== "classic")
     ) {
-      base = {
-        ...server,
+      update.mutate({
         name: server.name || legacy.name,
         skin: legacy.skin,
-        streak: legacy.streak,
-        bestStreak: Math.max(legacy.bestStreak, legacy.streak),
-        lastActiveDay: legacy.lastActiveDay,
-        hidden: legacy.hidden,
-      };
+        best_streak: Math.max(legacy.bestStreak, legacy.streak),
+      });
     }
 
-    const rolled = rolloverStreak(base, todayKey());
-    const patch = petDiff(server, rolled);
-    if (patch) update.mutate(patch);
+    // Authoritative, atomic daily rollover (server does the gap math). This
+    // replaces the old client-side compute + optimistic PATCH that could lose a
+    // day's write and silently reset the streak.
+    visit.mutate(todayKey());
     try {
       localStorage.removeItem(LEGACY_KEY);
     } catch {
       /* ignore */
     }
-  }, [data, update]);
+  }, [data, update, visit]);
 
   return {
     pet,
