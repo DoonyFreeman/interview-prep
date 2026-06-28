@@ -7,6 +7,8 @@ and enforces two invariants on write: ``skin`` must be one the user's
 """
 from __future__ import annotations
 
+from datetime import date
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import PetState
@@ -46,6 +48,34 @@ async def get_or_create(session: AsyncSession, user_id: int) -> PetStateOut:
         pet = repo.create(user_id=user_id)
         await session.commit()
         await session.refresh(pet)
+    return _pet_out(pet)
+
+
+async def visit(session: AsyncSession, user_id: int, today: str) -> PetStateOut:
+    """Roll the daily streak for "the app was opened today" — atomically.
+
+    Mirrors the client ``rolloverStreak`` (kept in sync, like SKIN_MILESTONES):
+    same day → unchanged, next day → +1, gap ≥ 2 or clock-backwards → reset to 1
+    (today still counts). Done in one server call so a daily visit can't be lost
+    to an optimistic-write rollback or a race with other pet PATCHes.
+    """
+    repo = PetStateRepository(session)
+    pet = await repo.get(user_id)
+    if pet is None:
+        pet = repo.create(user_id=user_id)
+        await session.flush()
+
+    if pet.last_active_day != today:
+        if pet.last_active_day is None:
+            pet.streak = 1
+        else:
+            gap = (date.fromisoformat(today) - date.fromisoformat(pet.last_active_day)).days
+            pet.streak = pet.streak + 1 if gap == 1 else 1
+        pet.last_active_day = today
+        pet.best_streak = max(pet.best_streak, pet.streak)
+
+    await session.commit()
+    await session.refresh(pet)
     return _pet_out(pet)
 
 

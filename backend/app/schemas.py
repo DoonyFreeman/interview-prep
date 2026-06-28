@@ -7,9 +7,9 @@ the response reveals the authored reference answer for self-comparison.
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class CourseSummary(BaseModel):
@@ -384,6 +384,22 @@ class PetStateUpdate(BaseModel):
     best_streak: int | None = None
     last_active_day: str | None = None
     hidden: bool | None = None
+
+
+class PetVisit(BaseModel):
+    """Mark the user active *today* (their local calendar day, "YYYY-MM-DD").
+
+    The streak rollover is computed server-side from this single call so a
+    daily visit can't be lost to a client-side optimistic-write rollback/race.
+    """
+
+    today: str
+
+    @field_validator("today")
+    @classmethod
+    def _valid_day(cls, v: str) -> str:
+        date.fromisoformat(v)  # raises (→ 422) on a malformed day
+        return v
 
 
 # --- Cat "thoughts" (corner cat) -------------------------------------------
