@@ -86,6 +86,43 @@ def _is_prose(line: str) -> bool:
     return True
 
 
+def extract_h2_sections(markdown: str) -> list[tuple[str, str, str]]:
+    """Return ordered ``(anchor, title, plain_text)`` for every H2 section.
+
+    Used by the global search: ``plain_text`` is the whole section flattened to
+    one plain-text line (inline markdown stripped). Code-fence *content* is kept
+    — identifiers like ``asyncio.gather`` often appear only in code — while the
+    fence markers themselves are dropped. Prose before the first H2 (and the H1
+    line) comes back as a leading ``("", "", text)`` entry.
+    """
+    sections: list[tuple[str, str, str]] = []
+    anchor, title = "", ""
+    buf: list[str] = []
+
+    def _flush() -> None:
+        text = _strip_markdown(" ".join(buf))
+        if anchor or text:
+            sections.append((anchor, title, text))
+
+    for line in markdown.splitlines():
+        if line.startswith("## ") and not line.startswith("### "):
+            _flush()
+            title = line[3:].strip()
+            anchor = slugify(title)
+            buf = []
+            continue
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            continue
+        if stripped.startswith("#"):
+            buf.append(stripped.lstrip("#").strip())
+            continue
+        if stripped:
+            buf.append(stripped)
+    _flush()
+    return sections
+
+
 def extract_h2_excerpts(markdown: str, max_chars: int = 240, min_chars: int = 20) -> dict[str, str]:
     """Return ``{anchor: plain_text_excerpt}`` for every ``## `` H2 section.
 
