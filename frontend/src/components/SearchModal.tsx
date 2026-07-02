@@ -114,6 +114,10 @@ export function SearchModal() {
                 <input
                   autoFocus
                   type="search"
+                  name="global-search"
+                  aria-label={t("search.title")}
+                  autoComplete="off"
+                  spellCheck={false}
                   role="combobox"
                   aria-expanded={results.length > 0}
                   aria-controls="search-results"

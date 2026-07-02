@@ -118,7 +118,8 @@ def extract_h2_sections(markdown: str) -> list[tuple[str, str, str]]:
             buf.append(stripped.lstrip("#").strip())
             continue
         if stripped:
-            buf.append(stripped)
+            # Drop blockquote/list markers so snippets read as plain prose.
+            buf.append(re.sub(r"^(?:>\s*|[-*+]\s+|\d+\.\s+)+", "", stripped))
     _flush()
     return sections
 

@@ -1,6 +1,15 @@
 """Global lesson search: public GET /api/search?q= over titles + lesson markdown."""
 from __future__ import annotations
 
+from app.content.excerpt import extract_h2_sections
+
+
+def test_sections_strip_blockquote_and_list_markers():
+    md = "# T\n\n> Цель урока: понять gather.\n\n## Секция\n\n- пункт про gather\n> цитата\nпроза"
+    intro, section = extract_h2_sections(md)
+    assert intro == ("", "", "T Цель урока: понять gather.")
+    assert section[2] == "пункт про gather цитата проза"
+
 
 async def test_search_is_public_and_finds_gather(client):
     """"gather" must surface the asyncio tasks-gather lesson with a deep-link."""
