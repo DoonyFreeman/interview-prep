@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -87,7 +88,8 @@ export function SearchModal() {
         <IconSearch className="h-4 w-4" />
       </button>
 
-      <AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
         {open && (
           <motion.div
             className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[12vh]"
@@ -130,7 +132,7 @@ export function SearchModal() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onInputKey}
                   placeholder={t("search.placeholder")}
-                  className="w-full appearance-none bg-transparent py-3.5 text-base text-ink outline-none placeholder:text-faint [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none sm:text-sm"
+                  className="search-modal-input w-full appearance-none bg-transparent py-3.5 text-base text-ink outline-none placeholder:text-faint [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none sm:text-sm"
                 />
                 <kbd className="hidden shrink-0 rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-faint sm:block">
                   Esc
@@ -189,7 +191,9 @@ export function SearchModal() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }
