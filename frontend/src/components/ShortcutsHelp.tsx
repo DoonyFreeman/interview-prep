@@ -83,7 +83,7 @@ export function ShortcutsHelp() {
             transition={{ duration: 0.15 }}
             onClick={() => setOpen(false)}
           >
-            <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             <motion.div
               role="dialog"
               aria-modal="true"
