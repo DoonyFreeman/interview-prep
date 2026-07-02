@@ -8,7 +8,17 @@ import { makeRng } from "./glossaryQuiz";
 // --- Persistent state ------------------------------------------------------
 
 export type CatStage = "kitten" | "cat" | "bigcat" | "wizard";
-export type CatSkin = "classic" | "tabby" | "tuxedo" | "calico" | "void";
+export type CatSkin =
+  | "classic"
+  | "tabby"
+  | "tuxedo"
+  | "calico"
+  | "void"
+  | "sakura"
+  | "mint"
+  | "snow"
+  | "ember"
+  | "golden";
 
 /** Client-side (camelCase) mirror of the server `PetState`. */
 export interface CatState {
@@ -127,9 +137,14 @@ export function stageForStreak(streak: number): CatStage {
 export const SKIN_MILESTONES: { skin: CatSkin; at: number }[] = [
   { skin: "classic", at: 0 },
   { skin: "tabby", at: 3 },
+  { skin: "sakura", at: 5 },
   { skin: "tuxedo", at: 7 },
+  { skin: "mint", at: 10 },
   { skin: "calico", at: 14 },
+  { skin: "snow", at: 21 },
   { skin: "void", at: 30 },
+  { skin: "ember", at: 45 },
+  { skin: "golden", at: 60 },
 ];
 
 export function skinsUnlocked(bestStreak: number): CatSkin[] {
@@ -139,6 +154,39 @@ export function skinsUnlocked(bestStreak: number): CatSkin[] {
 /** Clamp a (possibly stale) skin choice to what's currently unlocked. */
 export function resolveSkin(skin: CatSkin, bestStreak: number): CatSkin {
   return skinsUnlocked(bestStreak).includes(skin) ? skin : "classic";
+}
+
+// --- Achievements (derived purely from best_streak — no storage) ------------
+
+export interface Achievement {
+  id: string; // i18n key suffix: cat.achievements.<id>
+  at: number; // best-streak threshold
+  icon: string;
+}
+
+/** Visit-streak achievements, ascending. Thresholds line up with skin/hat
+ *  unlocks where one exists, so the reward is visible in the same moment. */
+export const ACHIEVEMENTS: Achievement[] = [
+  { id: "streak-1", at: 1, icon: "🐾" },
+  { id: "streak-3", at: 3, icon: "🌱" },
+  { id: "streak-5", at: 5, icon: "🌸" },
+  { id: "streak-7", at: 7, icon: "🧶" },
+  { id: "streak-10", at: 10, icon: "🍃" },
+  { id: "streak-14", at: 14, icon: "🧙" },
+  { id: "streak-21", at: 21, icon: "❄️" },
+  { id: "streak-30", at: 30, icon: "👑" },
+  { id: "streak-45", at: 45, icon: "🎧" },
+  { id: "streak-60", at: 60, icon: "🏆" },
+  { id: "streak-100", at: 100, icon: "💯" },
+];
+
+export function achievementsUnlocked(bestStreak: number): Achievement[] {
+  return ACHIEVEMENTS.filter((a) => bestStreak >= a.at);
+}
+
+/** Achievements whose threshold was crossed going prevBest → newBest. */
+export function newlyUnlocked(prevBest: number, newBest: number): Achievement[] {
+  return ACHIEVEMENTS.filter((a) => prevBest < a.at && newBest >= a.at);
 }
 
 // --- "Thought" picked from already-studied topics --------------------------

@@ -20,9 +20,14 @@ from app.schemas import PetStateOut, PetStateUpdate
 SKIN_MILESTONES: dict[str, int] = {
     "classic": 0,
     "tabby": 3,
+    "sakura": 5,
     "tuxedo": 7,
+    "mint": 10,
     "calico": 14,
+    "snow": 21,
     "void": 30,
+    "ember": 45,
+    "golden": 60,
 }
 
 

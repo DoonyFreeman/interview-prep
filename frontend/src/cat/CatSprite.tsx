@@ -22,6 +22,11 @@ export const PALETTES: Record<CatSkin, Palette> = {
   tuxedo: { B: "#2d2f36", D: "#15161a", L: "#f4f4f5", P: "#d88", eye: "#4fae54", mouth: "#d88" },
   calico: { B: "#efe7da", D: "#7a5638", L: "#ffffff", P: "#e98b8b", eye: "#5a3d24", mouth: "#c65f5f" },
   void: { B: "#4b3b6b", D: "#241a38", L: "#cdbff0", P: "#b58be0", eye: "#9be8d8", mouth: "#b58be0" },
+  sakura: { B: "#f2b8c6", D: "#8a4a5e", L: "#ffe9ef", P: "#e87a9a", eye: "#5e2a3a", mouth: "#d16a8a" },
+  mint: { B: "#8fd8c8", D: "#2f6b5e", L: "#eafff8", P: "#f0a0a0", eye: "#234f45", mouth: "#d97f7f" },
+  snow: { B: "#f5f5f7", D: "#9aa4b5", L: "#ffffff", P: "#f2b8c0", eye: "#4a90d9", mouth: "#e08a95" },
+  ember: { B: "#5a3230", D: "#2a1512", L: "#f0c090", P: "#e06040", eye: "#7a2e12", mouth: "#c05038" },
+  golden: { B: "#e8c352", D: "#8a6a1f", L: "#fff3cf", P: "#e89a6a", eye: "#6b4a10", mouth: "#c9803a" },
 };
 
 // 12×12 sitting cat. Eyes/nose/mouth get stamped in per mood.

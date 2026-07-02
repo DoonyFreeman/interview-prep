@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../components/Button";
 import { useToast } from "../components/Toast";
-import { SKIN_MILESTONES, type CatSkin } from "../lib/cat";
+import {
+  ACHIEVEMENTS,
+  SKIN_MILESTONES,
+  achievementsUnlocked,
+  type CatSkin,
+} from "../lib/cat";
 import { CatSprite } from "./CatSprite";
 import { useCat } from "./useCat";
 
@@ -105,6 +110,40 @@ export function PetSettings() {
                   {unlocked ? t(`cat.skins.${skin}`) : `🔒 ${at}`}
                 </span>
               </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Achievements (derived from best_streak — nothing stored) */}
+      <div>
+        <span className={labelCls}>
+          {t("settings.achievements")} ·{" "}
+          {achievementsUnlocked(cat.pet.bestStreak).length}/{ACHIEVEMENTS.length}
+        </span>
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+          {ACHIEVEMENTS.map((a) => {
+            const unlocked = cat.pet.bestStreak >= a.at;
+            return (
+              <div
+                key={a.id}
+                title={t(`cat.achievements.${a.id}`)}
+                className={`flex flex-col items-center gap-0.5 rounded-xl border p-2 text-center ${
+                  unlocked
+                    ? "border-accent/40 bg-accent-soft"
+                    : "border-border bg-surface-2 opacity-60"
+                }`}
+              >
+                <span className={`text-lg ${unlocked ? "" : "grayscale"}`} aria-hidden>
+                  {unlocked ? a.icon : "🔒"}
+                </span>
+                <span className="text-[10px] font-semibold leading-tight text-ink">
+                  {t(`cat.achievements.${a.id}`)}
+                </span>
+                <span className="text-[10px] text-muted">
+                  {t("settings.achievementDays", { count: a.at })}
+                </span>
+              </div>
             );
           })}
         </div>

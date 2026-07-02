@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  ACHIEVEMENTS,
   DEFAULT_CAT_STATE,
+  achievementsUnlocked,
   catStateToPatch,
+  newlyUnlocked,
   daysBetween,
   petDiff,
   petToCatState,
@@ -92,6 +95,38 @@ describe("skinsUnlocked / resolveSkin", () => {
   it("clamps a locked skin choice to classic", () => {
     expect(resolveSkin("void", 5)).toBe("classic");
     expect(resolveSkin("tabby", 5)).toBe("tabby");
+  });
+  it("unlocks the five new skins at their milestones", () => {
+    expect(skinsUnlocked(5)).toContain("sakura");
+    expect(skinsUnlocked(4)).not.toContain("sakura");
+    expect(skinsUnlocked(10)).toContain("mint");
+    expect(skinsUnlocked(21)).toContain("snow");
+    expect(skinsUnlocked(45)).toContain("ember");
+    expect(skinsUnlocked(60)).toContain("golden");
+    expect(skinsUnlocked(59)).not.toContain("golden");
+  });
+});
+
+describe("achievements", () => {
+  it("unlocks by best streak, in threshold order", () => {
+    expect(achievementsUnlocked(0)).toEqual([]);
+    const week = achievementsUnlocked(7);
+    expect(week.map((a) => a.id)).toEqual([
+      "streak-1",
+      "streak-3",
+      "streak-5",
+      "streak-7",
+    ]);
+    expect(achievementsUnlocked(100).length).toBe(ACHIEVEMENTS.length);
+  });
+  it("newlyUnlocked returns only the crossed thresholds", () => {
+    expect(newlyUnlocked(0, 1).map((a) => a.id)).toEqual(["streak-1"]);
+    expect(newlyUnlocked(5, 7).map((a) => a.id)).toEqual(["streak-7"]);
+    expect(newlyUnlocked(7, 7)).toEqual([]);
+    expect(newlyUnlocked(9, 14).map((a) => a.id)).toEqual([
+      "streak-10",
+      "streak-14",
+    ]);
   });
 });
 

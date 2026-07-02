@@ -168,3 +168,18 @@ async def test_visit_persisted(client):
     got = (await client.get("/api/pet", headers=headers)).json()
     assert got["streak"] == 1
     assert got["last_active_day"] == "2026-06-20"
+
+
+async def test_new_skins_unlock_at_milestones(client):
+    """The five 2026-07 skins mirror the frontend ladder (5/10/21/45/60)."""
+    headers = await _auth(client)
+    # Locked at best_streak 0 → clamped to classic.
+    r = await client.patch("/api/pet", headers=headers, json={"skin": "sakura"})
+    assert r.json()["skin"] == "classic"
+
+    await client.patch(
+        "/api/pet", headers=headers, json={"streak": 60, "best_streak": 60}
+    )
+    for skin in ["sakura", "mint", "snow", "ember", "golden"]:
+        r = await client.patch("/api/pet", headers=headers, json={"skin": skin})
+        assert r.json()["skin"] == skin, skin

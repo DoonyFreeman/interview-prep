@@ -14,8 +14,27 @@
       "tabby": "Grey",
       "tuxedo": "Tuxedo",
       "calico": "Calico",
-      "void": "Black"
-    }
+      "void": "Black",
+      "sakura": "Sakura",
+      "mint": "Mint",
+      "snow": "Snow",
+      "ember": "Ember",
+      "golden": "Golden"
+    },
+    "achievements": {
+      "streak-1": "First steps",
+      "streak-3": "Warming up",
+      "streak-5": "Sakura blooms",
+      "streak-7": "A full week",
+      "streak-10": "Perfect ten",
+      "streak-14": "The cat turns wizard",
+      "streak-21": "Three weeks",
+      "streak-30": "A month of discipline",
+      "streak-45": "45 days",
+      "streak-60": "Two months",
+      "streak-100": "One hundred!"
+    },
+    "achievementUnlocked": "Achievement: {{title}}"
   },
   "nav": {
     "courses": "Courses",
@@ -128,7 +147,9 @@
     "petSkin": "Skin",
     "petSkinLocked": "unlocks on day {{count}}",
     "petVisible": "Show in the corner",
-    "petBest": "best {{count}}"
+    "petBest": "best {{count}}",
+    "achievements": "Achievements",
+    "achievementDays": "{{count}} d."
   },
   "common": {
     "loading": "Loading…",
