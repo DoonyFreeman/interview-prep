@@ -221,7 +221,15 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `GET /api/progress`, `GET /api/progress/questions`, `GET /api/progress/review`,
 `POST /api/progress/courses/{course}/lessons/{lesson}`;
 `GET/PATCH /api/pet`; `GET /api/cat/thoughts` (all quiz + progress + pet/cat +
-profile-mutation routes require auth). `…/questions` lists a lesson's questions
+profile-mutation routes require auth); `GET /api/search?q=` (public) — global
+lesson search over course/lesson/concept titles + full lesson markdown.
+Python-side whole-phrase `casefold()` scan of the in-memory registry (SQLite
+LIKE is Cyrillic-case-sensitive) in `services/search.py` via
+`excerpt.extract_h2_sections`; ranked lesson_title > section_title > body >
+course_title, deduped per (lesson, anchor), capped at 20, word-boundary
+snippets. The client is a Cmd/Ctrl+K command-palette modal
+(`frontend/src/components/SearchModal.tsx` in the header) that deep-links to
+`/courses/{c}/lessons/{l}#{anchor}`. `…/questions` lists a lesson's questions
 with the user's attempt history; `GET /quiz/questions/{id}` serves one for
 re-practice; `…/{id}/attempts` returns the user's past answers + stored reviews
 for that question (newest first). `GET /api/progress/questions` rolls up

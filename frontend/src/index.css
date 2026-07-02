@@ -160,6 +160,12 @@ body,
   border-radius: 8px;
 }
 
+/* The command-palette input is autofocused the moment it mounts — a ring is
+   redundant noise on the one input where focus is never in question. */
+.search-modal-input:focus-visible {
+  outline: none;
+}
+
 * {
   border-color: var(--color-border);
 }

@@ -402,6 +402,30 @@ class PetVisit(BaseModel):
         return v
 
 
+# --- Global lesson search ---------------------------------------------------
+class SearchResultOut(BaseModel):
+    """One search hit: a lesson (anchor "") or a specific H2 section of it.
+
+    Built from titles + lesson markdown only — question data (and with it
+    ``reference_answer``) is never loaded by the search path.
+    """
+
+    course_slug: str
+    course_title: str
+    lesson_slug: str
+    lesson_title: str
+    section_title: str | None  # H2 heading for section hits; None for lesson-top rows
+    anchor: str  # "" => deep-link to the lesson top
+    snippet: str
+    match_field: str  # "lesson_title" | "section_title" | "body" | "course_title"
+
+
+class SearchOut(BaseModel):
+    query: str
+    count: int
+    results: list[SearchResultOut]
+
+
 # --- Cat "thoughts" (corner cat) -------------------------------------------
 class CatThoughtOut(BaseModel):
     """One studyable topic the corner cat can mention, from a completed lesson.

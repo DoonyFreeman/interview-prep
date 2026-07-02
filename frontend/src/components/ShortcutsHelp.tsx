@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "motion/react";
 import { IconKeyboard } from "./icons";
@@ -73,7 +74,8 @@ export function ShortcutsHelp() {
         <IconKeyboard className="h-4 w-4" />
       </button>
 
-      <AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
         {open && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -83,7 +85,9 @@ export function ShortcutsHelp() {
             transition={{ duration: 0.15 }}
             onClick={() => setOpen(false)}
           >
-            <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" />
+            {/* Header has its own backdrop-blur; a second one here would
+                muddy it, so this scrim just dims. */}
+            <div className="absolute inset-0 bg-black/50" />
             <motion.div
               role="dialog"
               aria-modal="true"
@@ -110,7 +114,9 @@ export function ShortcutsHelp() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }

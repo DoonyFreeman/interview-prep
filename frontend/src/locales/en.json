@@ -140,6 +140,11 @@
     "copy": "Copy",
     "copied": "Copied"
   },
+  "search": {
+    "title": "Search topics",
+    "placeholder": "Search lessons… e.g. gather",
+    "noResults": "Nothing found"
+  },
   "shortcuts": {
     "title": "Keyboard shortcuts",
     "quizSubmit": "Submit answer (AI interview)",

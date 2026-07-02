@@ -334,3 +334,21 @@ export interface CatThoughtApi {
   lesson_slug: string;
   anchor: string;
 }
+
+// --- Global lesson search ----------------------------------------------------
+export interface SearchResult {
+  course_slug: string;
+  course_title: string;
+  lesson_slug: string;
+  lesson_title: string;
+  section_title: string | null;
+  anchor: string; // "" => lesson top
+  snippet: string;
+  match_field: "lesson_title" | "section_title" | "body" | "course_title";
+}
+
+export interface SearchOut {
+  query: string;
+  count: number;
+  results: SearchResult[];
+}

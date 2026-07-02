@@ -7,6 +7,7 @@ import { useCat } from "../cat/useCat";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
 import { ShortcutsHelp } from "./ShortcutsHelp";
+import { SearchModal } from "./SearchModal";
 import { BottomNavBar } from "./BottomNavBar";
 import { CatWidget } from "../cat/CatWidget";
 import { BrandMark } from "./icons";
@@ -121,6 +122,7 @@ export function Layout() {
             <div className="hidden sm:block">
               <DueBadge />
             </div>
+            <SearchModal />
             <ShortcutsHelp />
             <ThemeToggle />
             <LanguageToggle />
