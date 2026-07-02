@@ -97,7 +97,9 @@ export function SearchModal() {
             transition={{ duration: 0.15 }}
             onClick={close}
           >
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+            {/* Header already has its own backdrop-blur; stacking a second one
+                here muddies it, so this scrim just dims without re-blurring. */}
+            <div className="absolute inset-0 bg-black/50" />
             <motion.div
               role="dialog"
               aria-modal="true"
@@ -128,7 +130,7 @@ export function SearchModal() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={onInputKey}
                   placeholder={t("search.placeholder")}
-                  className="w-full bg-transparent py-3.5 text-base text-ink outline-none placeholder:text-faint sm:text-sm"
+                  className="w-full appearance-none bg-transparent py-3.5 text-base text-ink outline-none placeholder:text-faint [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none sm:text-sm"
                 />
                 <kbd className="hidden shrink-0 rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-faint sm:block">
                   Esc
