@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
@@ -23,6 +24,7 @@ import type {
   QuestionsProgress,
   QuizResultItem,
   ReviewQueue,
+  SearchOut,
   TestResultItem,
   TestsOverview,
   TokenOut,
@@ -390,5 +392,19 @@ export function useChangePassword() {
     }) => {
       await api.post("/auth/password", vars);
     },
+  });
+}
+
+/** Global lesson search (Cmd+K). Server-side ranking; keep previous results
+ *  on screen while the next keystroke's query is in flight. */
+export function useSearch(q: string) {
+  const query = q.trim();
+  return useQuery({
+    queryKey: ["search", query],
+    queryFn: async () =>
+      (await api.get<SearchOut>("/search", { params: { q: query } })).data,
+    enabled: query.length >= 2,
+    placeholderData: keepPreviousData,
+    staleTime: Infinity,
   });
 }
