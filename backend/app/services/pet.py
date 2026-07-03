@@ -35,10 +35,29 @@ def skins_unlocked(best_streak: int) -> list[str]:
     return [s for s, at in SKIN_MILESTONES.items() if best_streak >= at]
 
 
+# Hat → best-streak day it unlocks at. Mirrors HAT_MILESTONES in lib/cat.ts.
+# "none" (explicitly bare) and "wizard" (also the wizard-stage default) are
+# always selectable. Kept in sync by hand, like SKIN_MILESTONES.
+HAT_MILESTONES: dict[str, int] = {
+    "none": 0,
+    "flower": 5,
+    "beanie": 7,
+    "grad": 14,
+    "wizard": 14,
+    "crown": 30,
+    "headphones": 45,
+}
+
+
+def hats_unlocked(best_streak: int) -> list[str]:
+    return [h for h, at in HAT_MILESTONES.items() if best_streak >= at]
+
+
 def _pet_out(pet: PetState) -> PetStateOut:
     return PetStateOut(
         name=pet.name,
         skin=pet.skin,
+        hat=pet.hat,
         streak=pet.streak,
         best_streak=pet.best_streak,
         last_active_day=pet.last_active_day,
@@ -114,6 +133,16 @@ async def update(
             pet.skin = wanted
     if pet.skin not in skins_unlocked(pet.best_streak):
         pet.skin = "classic"
+
+    # Hat: clamp the chosen hat to what best_streak has unlocked. A stale/locked
+    # hat falls back to NULL (no explicit choice → the wizard-stage default can
+    # still apply client-side).
+    if "hat" in fields and fields["hat"] is not None:
+        wanted_hat = fields["hat"]
+        if wanted_hat in hats_unlocked(pet.best_streak):
+            pet.hat = wanted_hat
+    if pet.hat is not None and pet.hat not in hats_unlocked(pet.best_streak):
+        pet.hat = None
 
     await session.commit()
     await session.refresh(pet)

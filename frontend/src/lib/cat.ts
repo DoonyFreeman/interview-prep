@@ -20,6 +20,17 @@ export type CatSkin =
   | "ember"
   | "golden";
 
+/** Chosen hat. `null` = no explicit choice (wizard-stage hat can still show);
+ *  "none" = explicitly bare; "wizard" is also the wizard-stage default. */
+export type CatHat =
+  | "none"
+  | "flower"
+  | "beanie"
+  | "grad"
+  | "wizard"
+  | "crown"
+  | "headphones";
+
 /** Client-side (camelCase) mirror of the server `PetState`. */
 export interface CatState {
   /** The pet's name (empty → a default label is shown). */
@@ -32,6 +43,8 @@ export interface CatState {
   lastActiveDay: string | null;
   /** Chosen skin (must stay within `skinsUnlocked`). */
   skin: CatSkin;
+  /** Chosen hat (null = none picked; clamped within `hatsUnlocked`). */
+  hat: CatHat | null;
   /** Whether the user collapsed the cat to a tiny icon. */
   hidden: boolean;
 }
@@ -42,6 +55,7 @@ export const DEFAULT_CAT_STATE: CatState = {
   bestStreak: 0,
   lastActiveDay: null,
   skin: "classic",
+  hat: null,
   hidden: false,
 };
 
@@ -53,6 +67,7 @@ export function petToCatState(p: PetState): CatState {
     bestStreak: p.best_streak,
     lastActiveDay: p.last_active_day,
     skin: resolveSkin(p.skin as CatSkin, p.best_streak),
+    hat: resolveHat((p.hat as CatHat | null) ?? null, p.best_streak),
     hidden: p.hidden,
   };
 }
@@ -65,6 +80,7 @@ export function catStateToPatch(s: CatState): Partial<PetState> {
     best_streak: s.bestStreak,
     last_active_day: s.lastActiveDay,
     skin: s.skin,
+    hat: s.hat,
     hidden: s.hidden,
   };
 }
@@ -78,6 +94,7 @@ export function petDiff(server: CatState, desired: CatState): Partial<PetState> 
   if (server.bestStreak !== desired.bestStreak) patch.best_streak = desired.bestStreak;
   if (server.lastActiveDay !== desired.lastActiveDay)
     patch.last_active_day = desired.lastActiveDay;
+  if (server.hat !== desired.hat) patch.hat = desired.hat;
   if (server.hidden !== desired.hidden) patch.hidden = desired.hidden;
   return Object.keys(patch).length ? patch : null;
 }
@@ -154,6 +171,29 @@ export function skinsUnlocked(bestStreak: number): CatSkin[] {
 /** Clamp a (possibly stale) skin choice to what's currently unlocked. */
 export function resolveSkin(skin: CatSkin, bestStreak: number): CatSkin {
   return skinsUnlocked(bestStreak).includes(skin) ? skin : "classic";
+}
+
+// --- Hats ------------------------------------------------------------------
+
+/** Hat → best-streak day it unlocks at. Mirrors backend HAT_MILESTONES. */
+export const HAT_MILESTONES: { hat: CatHat; at: number }[] = [
+  { hat: "none", at: 0 },
+  { hat: "flower", at: 5 },
+  { hat: "beanie", at: 7 },
+  { hat: "grad", at: 14 },
+  { hat: "wizard", at: 14 },
+  { hat: "crown", at: 30 },
+  { hat: "headphones", at: 45 },
+];
+
+export function hatsUnlocked(bestStreak: number): CatHat[] {
+  return HAT_MILESTONES.filter((m) => bestStreak >= m.at).map((m) => m.hat);
+}
+
+/** Clamp a (possibly stale) hat choice; null when locked or unset. */
+export function resolveHat(hat: CatHat | null, bestStreak: number): CatHat | null {
+  if (hat == null) return null;
+  return hatsUnlocked(bestStreak).includes(hat) ? hat : null;
 }
 
 // --- Achievements (derived purely from best_streak — no storage) ------------

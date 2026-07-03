@@ -4,7 +4,9 @@ import {
   DEFAULT_CAT_STATE,
   achievementsUnlocked,
   catStateToPatch,
+  hatsUnlocked,
   newlyUnlocked,
+  resolveHat,
   daysBetween,
   petDiff,
   petToCatState,
@@ -107,6 +109,25 @@ describe("skinsUnlocked / resolveSkin", () => {
   });
 });
 
+describe("hatsUnlocked / resolveHat", () => {
+  it("unlocks hats at milestones; none is always available", () => {
+    expect(hatsUnlocked(0)).toEqual(["none"]);
+    expect(hatsUnlocked(5)).toContain("flower");
+    expect(hatsUnlocked(7)).toContain("beanie");
+    expect(hatsUnlocked(14)).toEqual(
+      expect.arrayContaining(["grad", "wizard"]),
+    );
+    expect(hatsUnlocked(30)).toContain("crown");
+    expect(hatsUnlocked(45)).toContain("headphones");
+  });
+  it("resolveHat clamps a locked/empty choice to null", () => {
+    expect(resolveHat("crown", 5)).toBeNull();
+    expect(resolveHat("flower", 5)).toBe("flower");
+    expect(resolveHat(null, 100)).toBeNull();
+    expect(resolveHat("none", 0)).toBe("none");
+  });
+});
+
 describe("achievements", () => {
   it("unlocks by best streak, in threshold order", () => {
     expect(achievementsUnlocked(0)).toEqual([]);
@@ -135,6 +156,7 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
   const server: PetState = {
     name: "Мурзик",
     skin: "tabby",
+    hat: "flower",
     streak: 4,
     best_streak: 5,
     last_active_day: "2026-06-18",
@@ -145,6 +167,7 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
     expect(petToCatState(server)).toEqual({
       name: "Мурзик",
       skin: "tabby",
+      hat: "flower",
       streak: 4,
       bestStreak: 5,
       lastActiveDay: "2026-06-18",
@@ -158,10 +181,15 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
     );
   });
 
+  it("clamps a locked hat to null when mapping in", () => {
+    expect(petToCatState({ ...server, hat: "crown", best_streak: 5 }).hat).toBeNull();
+  });
+
   it("round-trips through a PATCH body", () => {
     expect(catStateToPatch(petToCatState(server))).toEqual({
       name: "Мурзик",
       skin: "tabby",
+      hat: "flower",
       streak: 4,
       best_streak: 5,
       last_active_day: "2026-06-18",

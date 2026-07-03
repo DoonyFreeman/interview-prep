@@ -4,8 +4,10 @@ import { Button } from "../components/Button";
 import { useToast } from "../components/Toast";
 import {
   ACHIEVEMENTS,
+  HAT_MILESTONES,
   SKIN_MILESTONES,
   achievementsUnlocked,
+  type CatHat,
   type CatSkin,
 } from "../lib/cat";
 import { CatSprite } from "./CatSprite";
@@ -42,6 +44,7 @@ export function PetSettings() {
           skin={cat.skin}
           stage={cat.stage}
           mood="idle"
+          hat={cat.hat}
           animate={false}
           size={72}
         />
@@ -108,6 +111,49 @@ export function PetSettings() {
                 </span>
                 <span className="text-[10px] font-semibold text-muted">
                   {unlocked ? t(`cat.skins.${skin}`) : `🔒 ${at}`}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Hats */}
+      <div>
+        <span className={labelCls}>{t("settings.petHat")}</span>
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+          {HAT_MILESTONES.map(({ hat, at }) => {
+            const unlocked = cat.hatsUnlocked.includes(hat);
+            const selected = cat.hat === hat;
+            return (
+              <button
+                key={hat}
+                type="button"
+                disabled={!unlocked}
+                onClick={() => cat.setHat(hat as CatHat)}
+                className={`relative flex flex-col items-center gap-1 rounded-xl border p-2 transition-colors ${
+                  selected
+                    ? "border-primary bg-primary-soft"
+                    : "border-border bg-surface-2 hover:bg-surface"
+                } ${unlocked ? "" : "cursor-not-allowed"}`}
+                title={
+                  unlocked
+                    ? t(`cat.hats.${hat}`)
+                    : t("settings.petSkinLocked", { count: at })
+                }
+              >
+                <span className={unlocked ? "" : "opacity-30 grayscale"}>
+                  <CatSprite
+                    skin={cat.skin}
+                    stage={cat.stage}
+                    mood="idle"
+                    hat={hat as CatHat}
+                    animate={false}
+                    size={40}
+                  />
+                </span>
+                <span className="text-[10px] font-semibold text-muted">
+                  {unlocked ? t(`cat.hats.${hat}`) : `🔒 ${at}`}
                 </span>
               </button>
             );

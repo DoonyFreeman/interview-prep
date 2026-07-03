@@ -4,11 +4,13 @@ import { usePet, useUpdatePet, useVisitPet } from "../api/hooks";
 import { useToast } from "../components/Toast";
 import {
   DEFAULT_CAT_STATE,
+  hatsUnlocked,
   newlyUnlocked,
   petToCatState,
   skinsUnlocked,
   stageForStreak,
   todayKey,
+  type CatHat,
   type CatSkin,
   type CatState,
 } from "../lib/cat";
@@ -32,9 +34,12 @@ export interface CatPersistApi {
   loaded: boolean;
   stage: ReturnType<typeof stageForStreak>;
   skin: CatSkin;
+  hat: CatHat | null;
   unlocked: CatSkin[];
+  hatsUnlocked: CatHat[];
   setName: (name: string) => void;
   setSkin: (skin: CatSkin) => void;
+  setHat: (hat: CatHat) => void;
   setHidden: (hidden: boolean) => void;
   /** Roll the daily streak (and migrate legacy localStorage) once on load. */
   syncDailyStreak: () => void;
@@ -103,9 +108,12 @@ export function useCat(): CatPersistApi {
     loaded: isSuccess,
     stage: stageForStreak(pet.streak),
     skin: pet.skin,
+    hat: pet.hat,
     unlocked: skinsUnlocked(pet.bestStreak),
+    hatsUnlocked: hatsUnlocked(pet.bestStreak),
     setName: (name) => update.mutate({ name }),
     setSkin: (skin) => update.mutate({ skin }),
+    setHat: (hat) => update.mutate({ hat }),
     setHidden: (hidden) => update.mutate({ hidden }),
     syncDailyStreak,
   };

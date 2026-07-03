@@ -339,6 +339,10 @@ class PetState(Base):
     )
     name: Mapped[str] = mapped_column(String(40), default="")
     skin: Mapped[str] = mapped_column(String(20), default="classic")
+    # Chosen hat, clamped server-side to what best_streak unlocked. NULL = no
+    # explicit choice (the wizard hat still shows on the wizard stage);
+    # "none" = explicitly bare. Added post-launch via ensure_schema_upgrades.
+    hat: Mapped[str | None] = mapped_column(String(20), nullable=True)
     streak: Mapped[int] = mapped_column(Integer, default=0)
     best_streak: Mapped[int] = mapped_column(Integer, default=0)
     last_active_day: Mapped[str | None] = mapped_column(String(10), nullable=True)

@@ -28,6 +28,7 @@ async def test_get_creates_defaults(client):
     assert body == {
         "name": "",
         "skin": "classic",
+        "hat": None,
         "streak": 0,
         "best_streak": 0,
         "last_active_day": None,
@@ -183,3 +184,63 @@ async def test_new_skins_unlock_at_milestones(client):
     for skin in ["sakura", "mint", "snow", "ember", "golden"]:
         r = await client.patch("/api/pet", headers=headers, json={"skin": skin})
         assert r.json()["skin"] == skin, skin
+
+
+async def test_hat_defaults_null_clamps_and_persists(client):
+    headers = await _auth(client)
+    r = await client.get("/api/pet", headers=headers)
+    assert r.json()["hat"] is None
+
+    # Locked at best_streak 0 → rejected, stays bare.
+    r = await client.patch("/api/pet", headers=headers, json={"hat": "crown"})
+    assert r.json()["hat"] is None
+
+    # At 45 everything is unlocked (headphones is the last milestone).
+    await client.patch(
+        "/api/pet", headers=headers, json={"streak": 45, "best_streak": 45}
+    )
+    for hat in ["flower", "beanie", "grad", "wizard", "crown", "headphones", "none"]:
+        r = await client.patch("/api/pet", headers=headers, json={"hat": hat})
+        assert r.json()["hat"] == hat, hat
+
+    # Persisted.
+    assert (await client.get("/api/pet", headers=headers)).json()["hat"] == "none"
+
+
+async def test_hat_column_added_to_legacy_db(tmp_path):
+    """A pre-hat DB gets the column via the idempotent startup upgrade —
+    existing rows/data survive (no table recreation)."""
+    from sqlalchemy.ext.asyncio import create_async_engine
+
+    from app.database import ensure_schema_upgrades
+
+    eng = create_async_engine(f"sqlite+aiosqlite:///{tmp_path}/legacy.db")
+    async with eng.begin() as conn:
+        await conn.exec_driver_sql(
+            "CREATE TABLE pet_state (id INTEGER PRIMARY KEY, user_id INTEGER,"
+            " name VARCHAR(40), skin VARCHAR(20), streak INTEGER,"
+            " best_streak INTEGER, last_active_day VARCHAR(10),"
+            " hidden BOOLEAN, updated_at DATETIME)"
+        )
+        await conn.exec_driver_sql(
+            "INSERT INTO pet_state (user_id, name, skin, streak, best_streak, hidden)"
+            " VALUES (1, 'Мурзик', 'void', 30, 30, 0)"
+        )
+    for _ in range(2):  # runs twice → idempotent
+        async with eng.begin() as conn:
+            await conn.run_sync(ensure_schema_upgrades)
+    async with eng.begin() as conn:
+        cols = [
+            row[1]
+            for row in (
+                await conn.exec_driver_sql("PRAGMA table_info(pet_state)")
+            ).fetchall()
+        ]
+        row = (
+            await conn.exec_driver_sql(
+                "SELECT name, skin, streak, hat FROM pet_state WHERE user_id = 1"
+            )
+        ).fetchone()
+    await eng.dispose()
+    assert "hat" in cols
+    assert row == ("Мурзик", "void", 30, None)  # old data intact, hat NULL

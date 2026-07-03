@@ -34,7 +34,16 @@
       "streak-60": "Two months",
       "streak-100": "One hundred!"
     },
-    "achievementUnlocked": "Achievement: {{title}}"
+    "achievementUnlocked": "Achievement: {{title}}",
+    "hats": {
+      "none": "No hat",
+      "flower": "Flower",
+      "beanie": "Beanie",
+      "grad": "Grad cap",
+      "wizard": "Wizard",
+      "crown": "Crown",
+      "headphones": "Headphones"
+    }
   },
   "nav": {
     "courses": "Courses",
@@ -149,7 +158,8 @@
     "petVisible": "Show in the corner",
     "petBest": "best {{count}}",
     "achievements": "Achievements",
-    "achievementDays": "{{count}} d."
+    "achievementDays": "{{count}} d.",
+    "petHat": "Hat"
   },
   "common": {
     "loading": "Loading…",

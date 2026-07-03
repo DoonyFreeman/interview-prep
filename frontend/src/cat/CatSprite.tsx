@@ -1,6 +1,54 @@
 import { useMemo } from "react";
-import type { CatSkin, CatStage } from "../lib/cat";
+import type { CatHat, CatSkin, CatStage } from "../lib/cat";
 import type { CatMood } from "./useCatMood";
+
+type HatPixel = { x: number; y: number; w: number; h: number; fill: string };
+
+// Each hat as a little list of pixel rects in the 12-wide grid; negative y sits
+// above the head. Rendered above the body, so a hat can lift into the extended
+// viewBox. "none" is bare. `wizard` is also the wizard-stage default hat.
+const HATS: Record<CatHat, HatPixel[]> = {
+  none: [],
+  wizard: [
+    { x: 2, y: -1, w: 8, h: 1, fill: "#352a5e" },
+    { x: 4, y: -2, w: 4, h: 1, fill: "#3f3270" },
+    { x: 5, y: -3, w: 2, h: 1, fill: "#3f3270" },
+    { x: 6, y: -4, w: 1, h: 1, fill: "#f2c94c" },
+  ],
+  grad: [
+    { x: 1, y: -1, w: 10, h: 1, fill: "#2b2f3a" },
+    { x: 4, y: -2, w: 4, h: 1, fill: "#3a3f4d" },
+    { x: 10, y: -1, w: 1, h: 1, fill: "#f2c94c" },
+    { x: 10, y: 0, w: 1, h: 1, fill: "#f2c94c" },
+  ],
+  crown: [
+    { x: 3, y: -1, w: 6, h: 1, fill: "#e8c352" },
+    { x: 3, y: -2, w: 1, h: 1, fill: "#e8c352" },
+    { x: 5, y: -2, w: 2, h: 1, fill: "#e8c352" },
+    { x: 8, y: -2, w: 1, h: 1, fill: "#e8c352" },
+    { x: 5.5, y: -1, w: 1, h: 1, fill: "#d64550" },
+  ],
+  flower: [
+    { x: 8, y: -2, w: 1, h: 1, fill: "#f2a4bd" },
+    { x: 7, y: -1, w: 1, h: 1, fill: "#f2a4bd" },
+    { x: 9, y: -1, w: 1, h: 1, fill: "#f2a4bd" },
+    { x: 8, y: 0, w: 1, h: 1, fill: "#f2a4bd" },
+    { x: 8, y: -1, w: 1, h: 1, fill: "#f2c94c" },
+  ],
+  beanie: [
+    { x: 3, y: -1, w: 6, h: 1, fill: "#3b8ea5" },
+    { x: 4, y: -2, w: 4, h: 1, fill: "#f4ead2" },
+    { x: 5, y: -3, w: 2, h: 1, fill: "#3b8ea5" },
+    { x: 5.5, y: -4, w: 1, h: 1, fill: "#f4ead2" },
+  ],
+  headphones: [
+    { x: 3, y: -1, w: 6, h: 1, fill: "#3a3f4a" },
+    { x: 1, y: 0, w: 1, h: 2, fill: "#3a3f4a" },
+    { x: 10, y: 0, w: 1, h: 2, fill: "#3a3f4a" },
+    { x: 1, y: 1, w: 1, h: 1, fill: "#7a86f0" },
+    { x: 10, y: 1, w: 1, h: 1, fill: "#7a86f0" },
+  ],
+};
 
 interface Palette {
   B: string; // body base
@@ -108,12 +156,18 @@ export interface CatSpriteProps {
   mood: CatMood;
   /** Enable idle blink / sleep z's animation (caller passes !reducedMotion). */
   animate: boolean;
+  /** Explicit hat: null → wizard-stage default; "none" → bare. */
+  hat?: CatHat | null;
   size?: number;
 }
 
-export function CatSprite({ skin, stage, mood, animate, size = 64 }: CatSpriteProps) {
+export function CatSprite({ skin, stage, mood, animate, hat = null, size = 64 }: CatSpriteProps) {
   const p = PALETTES[skin] ?? PALETTES.classic;
-  const wizard = stage === "wizard";
+  // Explicit choice wins; "none" = bare; no choice → the wizard stage still
+  // gets its signature hat (unchanged behavior).
+  const activeHat: CatHat | null =
+    hat === "none" ? null : (hat ?? (stage === "wizard" ? "wizard" : null));
+  const hatPixels = activeHat ? HATS[activeHat] : [];
   const collared = stage === "bigcat" || stage === "wizard";
 
   const cells = useMemo(() => {
@@ -128,9 +182,9 @@ export function CatSprite({ skin, stage, mood, animate, size = 64 }: CatSpritePr
     return out;
   }, [mood, p]);
 
-  // viewBox grows upward when the wizard hat is on.
-  const top = wizard ? -4 : 0;
-  const height = wizard ? 16 : 12;
+  // viewBox grows upward when a hat is on (all hats fit within 4px of headroom).
+  const top = activeHat ? -4 : 0;
+  const height = activeHat ? 16 : 12;
 
   return (
     <svg
@@ -167,13 +221,12 @@ export function CatSprite({ skin, stage, mood, animate, size = 64 }: CatSpritePr
         <rect x={-1} y={6} width={1} height={1} fill={p.D} />
       </g>
 
-      {/* Wizard hat */}
-      {wizard && (
+      {/* Hat (chosen, or the wizard-stage default) */}
+      {hatPixels.length > 0 && (
         <g>
-          <rect x={2} y={-1} width={8} height={1} fill="#352a5e" />
-          <rect x={4} y={-2} width={4} height={1} fill="#3f3270" />
-          <rect x={5} y={-3} width={2} height={1} fill="#3f3270" />
-          <rect x={6} y={-4} width={1} height={1} fill="#f2c94c" />
+          {hatPixels.map((h, i) => (
+            <rect key={i} x={h.x} y={h.y} width={h.w} height={h.h} fill={h.fill} />
+          ))}
         </g>
       )}
 

@@ -34,7 +34,16 @@
       "streak-60": "Два месяца",
       "streak-100": "Сотка!"
     },
-    "achievementUnlocked": "Достижение: {{title}}"
+    "achievementUnlocked": "Достижение: {{title}}",
+    "hats": {
+      "none": "Без шляпы",
+      "flower": "Цветочек",
+      "beanie": "Шапочка",
+      "grad": "Академка",
+      "wizard": "Волшебник",
+      "crown": "Корона",
+      "headphones": "Наушники"
+    }
   },
   "nav": {
     "courses": "Курсы",
@@ -149,7 +158,8 @@
     "petVisible": "Показывать в углу экрана",
     "petBest": "рекорд {{count}}",
     "achievements": "Достижения",
-    "achievementDays": "{{count}} дн."
+    "achievementDays": "{{count}} дн.",
+    "petHat": "Шляпка"
   },
   "common": {
     "loading": "Загрузка…",
