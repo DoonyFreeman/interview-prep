@@ -190,8 +190,15 @@ can't get from one file:
   `client` fixture and `get_session` is dependency-overridden — don't rely on the
   real `data/app.db` in tests.
 - **Moving the project breaks `backend/.venv`** (absolute paths) — recreate it.
-- **No Alembic**: schema is created via `create_all`. There are no migrations
-  yet; changing models means recreating `data/app.db` during early development.
+- **No Alembic**: schema is created via `create_all`. For a *new table* that's
+  enough. For a *new column on an existing table* (which `create_all` won't add),
+  append an idempotent, additive step to `database.ensure_schema_upgrades()` — it
+  runs after `create_all` on startup and `ALTER TABLE … ADD COLUMN`s a nullable
+  column only if `PRAGMA table_info` shows it missing (e.g. `pet_state.hat`). This
+  lets the live `data/app.db` / docker volume gain columns without recreation or
+  data loss. Only ever ADD nullable columns there (never drop/alter), so re-runs
+  are safe. Anything more complex than an additive column still means Alembic or a
+  manual migration.
 
 ## Layout
 
