@@ -119,3 +119,12 @@ async def test_admin_pet_override_skips_unlock_clamp(client):
         f"/api/admin/users/{uid}/pet", headers=admin, json={"best_streak": 3}
     )
     assert r.json()["best_streak"] == 15
+
+    # negative counters clamp to 0 (same as the user-path PATCH)
+    r = await client.patch(
+        f"/api/admin/users/{uid}/pet",
+        headers=admin,
+        json={"streak": -5, "best_streak": -3},
+    )
+    body = r.json()
+    assert body["streak"] == 0 and body["best_streak"] == 0

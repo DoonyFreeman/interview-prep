@@ -94,6 +94,8 @@ async def update_pet(
         # hat / last_active_day are nullable — an explicit null clears them
         if value is None and field not in ("hat", "last_active_day"):
             continue
+        if field in ("streak", "best_streak"):
+            value = max(0, value)
         setattr(pet, field, value)
 
     # The one invariant kept even for admins: best_streak >= streak.
