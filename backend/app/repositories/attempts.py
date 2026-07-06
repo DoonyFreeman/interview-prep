@@ -56,6 +56,17 @@ class AttemptRepository(BaseRepository[Attempt]):
         ).all()
         return {lesson_id: n for lesson_id, n in rows}
 
+    async def count_and_avg_for_user(self, user_id: int) -> tuple[int, int]:
+        """(attempt count, rounded average score) for a user — (0, 0) if none."""
+        count, avg = (
+            await self.session.execute(
+                select(func.count(Attempt.id), func.avg(Attempt.score)).where(
+                    Attempt.user_id == user_id
+                )
+            )
+        ).one()
+        return count, round(avg) if avg is not None else 0
+
     def create(
         self,
         *,

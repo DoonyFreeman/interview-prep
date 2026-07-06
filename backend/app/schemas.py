@@ -442,3 +442,31 @@ class CatThoughtOut(BaseModel):
     course_slug: str
     lesson_slug: str
     anchor: str
+
+
+# --- Admin -------------------------------------------------------------------
+class AdminUserOut(BaseModel):
+    id: int
+    email: str
+    display_name: str
+    created_at: datetime
+    pet: PetStateOut
+    total_concepts: int
+    attempted_concepts: int
+    mastered_concepts: int
+    total_lessons: int
+    completed_lessons: int
+    tests_total: int  # lessons with MCQ
+    tests_passed: int
+    attempts_count: int
+    avg_score: int  # rounded mean over all attempts, 0 if none
+
+
+class AdminUsersOut(BaseModel):
+    users: list[AdminUserOut]
+
+
+class AdminUserDetailOut(BaseModel):
+    user: AdminUserOut
+    progress: ProgressOverviewOut
+    tests: TestsOverviewOut

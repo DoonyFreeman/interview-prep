@@ -13,6 +13,7 @@ from app.auth.schemas import (
     UpdateProfileIn,
     UserOut,
 )
+from app.config import get_settings
 from app.database import get_session
 from app.models import User
 from app.services import auth as auth_service
@@ -26,6 +27,7 @@ def _user_out(user: User) -> UserOut:
         email=user.email,
         display_name=user.display_name,
         created_at=user.created_at,
+        is_admin=user.email in get_settings().admin_email_set,
     )
 
 
