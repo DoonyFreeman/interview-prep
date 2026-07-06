@@ -317,6 +317,7 @@ export interface TestsOverview {
 export interface PetState {
   name: string;
   skin: string;
+  hat: string | null;
   streak: number;
   best_streak: number;
   last_active_day: string | null;

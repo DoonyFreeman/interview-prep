@@ -1,11 +1,16 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { usePet, useUpdatePet, useVisitPet } from "../api/hooks";
+import { useToast } from "../components/Toast";
 import {
   DEFAULT_CAT_STATE,
+  hatsUnlocked,
+  newlyUnlocked,
   petToCatState,
   skinsUnlocked,
   stageForStreak,
   todayKey,
+  type CatHat,
   type CatSkin,
   type CatState,
 } from "../lib/cat";
@@ -29,9 +34,12 @@ export interface CatPersistApi {
   loaded: boolean;
   stage: ReturnType<typeof stageForStreak>;
   skin: CatSkin;
+  hat: CatHat | null;
   unlocked: CatSkin[];
+  hatsUnlocked: CatHat[];
   setName: (name: string) => void;
   setSkin: (skin: CatSkin) => void;
+  setHat: (hat: CatHat) => void;
   setHidden: (hidden: boolean) => void;
   /** Roll the daily streak (and migrate legacy localStorage) once on load. */
   syncDailyStreak: () => void;
@@ -44,6 +52,8 @@ export interface CatPersistApi {
  * here and pushed up.
  */
 export function useCat(): CatPersistApi {
+  const { t } = useTranslation();
+  const toast = useToast();
   const { data, isSuccess } = usePet();
   const update = useUpdatePet();
   const visit = useVisitPet();
@@ -74,22 +84,36 @@ export function useCat(): CatPersistApi {
     // Authoritative, atomic daily rollover (server does the gap math). This
     // replaces the old client-side compute + optimistic PATCH that could lose a
     // day's write and silently reset the streak.
-    visit.mutate(todayKey());
+    const prevBest = server.bestStreak;
+    visit.mutate(todayKey(), {
+      onSuccess: (fresh) => {
+        for (const a of newlyUnlocked(prevBest, fresh.best_streak)) {
+          toast.success(
+            `${a.icon} ${t("cat.achievementUnlocked", {
+              title: t(`cat.achievements.${a.id}`),
+            })}`,
+          );
+        }
+      },
+    });
     try {
       localStorage.removeItem(LEGACY_KEY);
     } catch {
       /* ignore */
     }
-  }, [data, update, visit]);
+  }, [data, update, visit, t, toast]);
 
   return {
     pet,
     loaded: isSuccess,
     stage: stageForStreak(pet.streak),
     skin: pet.skin,
+    hat: pet.hat,
     unlocked: skinsUnlocked(pet.bestStreak),
+    hatsUnlocked: hatsUnlocked(pet.bestStreak),
     setName: (name) => update.mutate({ name }),
     setSkin: (skin) => update.mutate({ skin }),
+    setHat: (hat) => update.mutate({ hat }),
     setHidden: (hidden) => update.mutate({ hidden }),
     syncDailyStreak,
   };

@@ -209,6 +209,7 @@ export function CatWidget() {
           skin={cat.skin}
           stage={cat.stage}
           mood={mood}
+          hat={cat.hat}
           animate={!reducedMotion}
           size={62}
         />

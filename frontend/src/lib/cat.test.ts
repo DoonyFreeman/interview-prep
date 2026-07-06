@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  ACHIEVEMENTS,
   DEFAULT_CAT_STATE,
+  achievementsUnlocked,
   catStateToPatch,
+  hatsUnlocked,
+  newlyUnlocked,
+  resolveHat,
   daysBetween,
   petDiff,
   petToCatState,
@@ -93,6 +98,57 @@ describe("skinsUnlocked / resolveSkin", () => {
     expect(resolveSkin("void", 5)).toBe("classic");
     expect(resolveSkin("tabby", 5)).toBe("tabby");
   });
+  it("unlocks the five new skins at their milestones", () => {
+    expect(skinsUnlocked(5)).toContain("sakura");
+    expect(skinsUnlocked(4)).not.toContain("sakura");
+    expect(skinsUnlocked(10)).toContain("mint");
+    expect(skinsUnlocked(21)).toContain("snow");
+    expect(skinsUnlocked(45)).toContain("ember");
+    expect(skinsUnlocked(60)).toContain("golden");
+    expect(skinsUnlocked(59)).not.toContain("golden");
+  });
+});
+
+describe("hatsUnlocked / resolveHat", () => {
+  it("unlocks hats at milestones; none is always available", () => {
+    expect(hatsUnlocked(0)).toEqual(["none"]);
+    expect(hatsUnlocked(5)).toContain("flower");
+    expect(hatsUnlocked(7)).toContain("beanie");
+    expect(hatsUnlocked(14)).toEqual(
+      expect.arrayContaining(["grad", "wizard"]),
+    );
+    expect(hatsUnlocked(30)).toContain("crown");
+    expect(hatsUnlocked(45)).toContain("headphones");
+  });
+  it("resolveHat clamps a locked/empty choice to null", () => {
+    expect(resolveHat("crown", 5)).toBeNull();
+    expect(resolveHat("flower", 5)).toBe("flower");
+    expect(resolveHat(null, 100)).toBeNull();
+    expect(resolveHat("none", 0)).toBe("none");
+  });
+});
+
+describe("achievements", () => {
+  it("unlocks by best streak, in threshold order", () => {
+    expect(achievementsUnlocked(0)).toEqual([]);
+    const week = achievementsUnlocked(7);
+    expect(week.map((a) => a.id)).toEqual([
+      "streak-1",
+      "streak-3",
+      "streak-5",
+      "streak-7",
+    ]);
+    expect(achievementsUnlocked(100).length).toBe(ACHIEVEMENTS.length);
+  });
+  it("newlyUnlocked returns only the crossed thresholds", () => {
+    expect(newlyUnlocked(0, 1).map((a) => a.id)).toEqual(["streak-1"]);
+    expect(newlyUnlocked(5, 7).map((a) => a.id)).toEqual(["streak-7"]);
+    expect(newlyUnlocked(7, 7)).toEqual([]);
+    expect(newlyUnlocked(9, 14).map((a) => a.id)).toEqual([
+      "streak-10",
+      "streak-14",
+    ]);
+  });
 });
 
 // --- server <-> client mapping ---------------------------------------------
@@ -100,6 +156,7 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
   const server: PetState = {
     name: "Мурзик",
     skin: "tabby",
+    hat: "flower",
     streak: 4,
     best_streak: 5,
     last_active_day: "2026-06-18",
@@ -110,6 +167,7 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
     expect(petToCatState(server)).toEqual({
       name: "Мурзик",
       skin: "tabby",
+      hat: "flower",
       streak: 4,
       bestStreak: 5,
       lastActiveDay: "2026-06-18",
@@ -123,10 +181,15 @@ describe("petToCatState / catStateToPatch / petDiff", () => {
     );
   });
 
+  it("clamps a locked hat to null when mapping in", () => {
+    expect(petToCatState({ ...server, hat: "crown", best_streak: 5 }).hat).toBeNull();
+  });
+
   it("round-trips through a PATCH body", () => {
     expect(catStateToPatch(petToCatState(server))).toEqual({
       name: "Мурзик",
       skin: "tabby",
+      hat: "flower",
       streak: 4,
       best_streak: 5,
       last_active_day: "2026-06-18",

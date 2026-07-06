@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../components/Button";
 import { useToast } from "../components/Toast";
-import { SKIN_MILESTONES, type CatSkin } from "../lib/cat";
+import {
+  ACHIEVEMENTS,
+  HAT_MILESTONES,
+  SKIN_MILESTONES,
+  achievementsUnlocked,
+  type CatHat,
+  type CatSkin,
+} from "../lib/cat";
 import { CatSprite } from "./CatSprite";
 import { useCat } from "./useCat";
 
@@ -37,6 +44,7 @@ export function PetSettings() {
           skin={cat.skin}
           stage={cat.stage}
           mood="idle"
+          hat={cat.hat}
           animate={false}
           size={72}
         />
@@ -105,6 +113,83 @@ export function PetSettings() {
                   {unlocked ? t(`cat.skins.${skin}`) : `🔒 ${at}`}
                 </span>
               </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Hats */}
+      <div>
+        <span className={labelCls}>{t("settings.petHat")}</span>
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+          {HAT_MILESTONES.map(({ hat, at }) => {
+            const unlocked = cat.hatsUnlocked.includes(hat);
+            const selected = cat.hat === hat;
+            return (
+              <button
+                key={hat}
+                type="button"
+                disabled={!unlocked}
+                onClick={() => cat.setHat(hat as CatHat)}
+                className={`relative flex flex-col items-center gap-1 rounded-xl border p-2 transition-colors ${
+                  selected
+                    ? "border-primary bg-primary-soft"
+                    : "border-border bg-surface-2 hover:bg-surface"
+                } ${unlocked ? "" : "cursor-not-allowed"}`}
+                title={
+                  unlocked
+                    ? t(`cat.hats.${hat}`)
+                    : t("settings.petSkinLocked", { count: at })
+                }
+              >
+                <span className={unlocked ? "" : "opacity-30 grayscale"}>
+                  <CatSprite
+                    skin={cat.skin}
+                    stage={cat.stage}
+                    mood="idle"
+                    hat={hat as CatHat}
+                    animate={false}
+                    size={40}
+                  />
+                </span>
+                <span className="text-[10px] font-semibold text-muted">
+                  {unlocked ? t(`cat.hats.${hat}`) : `🔒 ${at}`}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Achievements (derived from best_streak — nothing stored) */}
+      <div>
+        <span className={labelCls}>
+          {t("settings.achievements")} ·{" "}
+          {achievementsUnlocked(cat.pet.bestStreak).length}/{ACHIEVEMENTS.length}
+        </span>
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+          {ACHIEVEMENTS.map((a) => {
+            const unlocked = cat.pet.bestStreak >= a.at;
+            return (
+              <div
+                key={a.id}
+                title={t(`cat.achievements.${a.id}`)}
+                className={`flex flex-col items-center gap-0.5 rounded-xl border p-2 text-center ${
+                  unlocked
+                    ? "border-accent/40 bg-accent-soft"
+                    : "border-border bg-surface-2 opacity-60"
+                }`}
+              >
+                <span className={`text-lg ${unlocked ? "" : "grayscale"}`} aria-hidden>
+                  {unlocked ? a.icon : "🔒"}
+                </span>
+                <span className="text-[10px] font-semibold leading-tight text-ink">
+                  {t(`cat.achievements.${a.id}`)}
+                </span>
+                <span className="text-[10px] text-muted">
+                  {t("settings.achievementDays", { count: a.at })}
+                </span>
+              </div>
             );
           })}
         </div>

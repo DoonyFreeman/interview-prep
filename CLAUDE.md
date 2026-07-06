@@ -190,8 +190,15 @@ can't get from one file:
   `client` fixture and `get_session` is dependency-overridden — don't rely on the
   real `data/app.db` in tests.
 - **Moving the project breaks `backend/.venv`** (absolute paths) — recreate it.
-- **No Alembic**: schema is created via `create_all`. There are no migrations
-  yet; changing models means recreating `data/app.db` during early development.
+- **No Alembic**: schema is created via `create_all`. For a *new table* that's
+  enough. For a *new column on an existing table* (which `create_all` won't add),
+  append an idempotent, additive step to `database.ensure_schema_upgrades()` — it
+  runs after `create_all` on startup and `ALTER TABLE … ADD COLUMN`s a nullable
+  column only if `PRAGMA table_info` shows it missing (e.g. `pet_state.hat`). This
+  lets the live `data/app.db` / docker volume gain columns without recreation or
+  data loss. Only ever ADD nullable columns there (never drop/alter), so re-runs
+  are safe. Anything more complex than an additive column still means Alembic or a
+  manual migration.
 
 ## Layout
 
@@ -242,6 +249,19 @@ a random lesson, then a random concept within it — so big lessons don't domina
 and topics jump around; it avoids the lesson shown last and a 30-key
 localStorage anti-repeat window. `useMarkLesson` invalidates `["cat-thoughts"]`
 so newly completed lessons appear without a reload.
+
+The corner cat's **skin** (10) and **hat** (7) are streak-gated cosmetics,
+unlocked by `pet_state.best_streak` and clamped server-side (`services/pet.py:
+SKIN_MILESTONES`/`HAT_MILESTONES`, mirrored client-side in `lib/cat.ts`) so a
+stale/locked choice silently falls back (`classic` skin; `null` hat — which
+still shows the wizard hat by default on the wizard stage, `"none"` opts out
+explicitly). Skins are palette-only entries in `cat/CatSprite.tsx:PALETTES`
+(same 12×12 pixel grid); hats are a small pixel-rect registry (`HATS`) drawn
+above the head, extending the SVG viewBox upward. **Achievements** (11
+streak thresholds, 1–100 days) are purely derived from `best_streak` — no
+storage — via `lib/cat.ts:ACHIEVEMENTS`/`achievementsUnlocked`; a panel in
+`PetSettings` shows locked/unlocked, and `useCat.syncDailyStreak` toasts any
+newly crossed threshold after a visit.
 
 Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
 Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code

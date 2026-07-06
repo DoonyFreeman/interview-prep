@@ -14,7 +14,35 @@
       "tabby": "Серый",
       "tuxedo": "Смокинг",
       "calico": "Трёхцветный",
-      "void": "Чёрный"
+      "void": "Чёрный",
+      "sakura": "Сакура",
+      "mint": "Мята",
+      "snow": "Снежок",
+      "ember": "Уголёк",
+      "golden": "Золотой"
+    },
+    "achievements": {
+      "streak-1": "Первые шаги",
+      "streak-3": "Разогрев",
+      "streak-5": "Сакура цветёт",
+      "streak-7": "Неделя без пропусков",
+      "streak-10": "Десятка",
+      "streak-14": "Котик стал магом",
+      "streak-21": "Три недели",
+      "streak-30": "Месяц дисциплины",
+      "streak-45": "45 дней",
+      "streak-60": "Два месяца",
+      "streak-100": "Сотка!"
+    },
+    "achievementUnlocked": "Достижение: {{title}}",
+    "hats": {
+      "none": "Без шляпы",
+      "flower": "Цветочек",
+      "beanie": "Шапочка",
+      "grad": "Академка",
+      "wizard": "Волшебник",
+      "crown": "Корона",
+      "headphones": "Наушники"
     }
   },
   "nav": {
@@ -128,7 +156,10 @@
     "petSkin": "Скин",
     "petSkinLocked": "откроется на {{count}}-й день",
     "petVisible": "Показывать в углу экрана",
-    "petBest": "рекорд {{count}}"
+    "petBest": "рекорд {{count}}",
+    "achievements": "Достижения",
+    "achievementDays": "{{count}} дн.",
+    "petHat": "Шляпка"
   },
   "common": {
     "loading": "Загрузка…",

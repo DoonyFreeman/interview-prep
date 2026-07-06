@@ -369,6 +369,7 @@ class GlossaryProgressOut(BaseModel):
 class PetStateOut(BaseModel):
     name: str
     skin: str
+    hat: str | None
     streak: int
     best_streak: int
     last_active_day: str | None
@@ -380,6 +381,7 @@ class PetStateUpdate(BaseModel):
 
     name: str | None = None
     skin: str | None = None
+    hat: str | None = None
     streak: int | None = None
     best_streak: int | None = None
     last_active_day: str | None = None
