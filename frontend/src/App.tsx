@@ -15,6 +15,7 @@ import { GlossaryPage } from "./pages/GlossaryPage";
 import { GlossaryQuizPage } from "./pages/GlossaryQuizPage";
 import { SlangPage } from "./pages/SlangPage";
 import { DictLayout } from "./components/DictLayout";
+import { AdminPage } from "./pages/AdminPage";
 
 export function App() {
   return (
@@ -38,6 +39,7 @@ export function App() {
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/courses/:courseSlug" element={<CoursePage />} />
         <Route
           path="/courses/:courseSlug/lessons/:lessonSlug"

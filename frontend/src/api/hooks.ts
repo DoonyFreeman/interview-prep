@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import type {
+  AdminUserDetail,
+  AdminUsers,
   CatThoughtApi,
   CourseDetail,
   CourseSummary,
@@ -406,5 +408,37 @@ export function useSearch(q: string) {
     enabled: query.length >= 2,
     placeholderData: keepPreviousData,
     staleTime: Infinity,
+  });
+}
+
+// --- Admin -------------------------------------------------------------------
+export function useAdminUsers(enabled: boolean) {
+  return useQuery({
+    queryKey: ["admin-users"],
+    queryFn: async () => (await api.get<AdminUsers>("/admin/users")).data,
+    enabled,
+    staleTime: 30_000,
+  });
+}
+
+export function useAdminUser(userId: number | null) {
+  return useQuery({
+    queryKey: ["admin-user", userId],
+    queryFn: async () =>
+      (await api.get<AdminUserDetail>(`/admin/users/${userId}`)).data,
+    enabled: userId != null,
+  });
+}
+
+export function useAdminUpdatePet() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (vars: { userId: number; patch: Partial<PetState> }) =>
+      (await api.patch<PetState>(`/admin/users/${vars.userId}/pet`, vars.patch))
+        .data,
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["admin-users"] });
+      qc.invalidateQueries({ queryKey: ["admin-user", vars.userId] });
+    },
   });
 }

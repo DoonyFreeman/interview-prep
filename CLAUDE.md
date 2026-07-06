@@ -228,7 +228,16 @@ Implemented API: `GET /health`; `GET /api/courses`, `/api/courses/{slug}`,
 `GET /api/progress`, `GET /api/progress/questions`, `GET /api/progress/review`,
 `POST /api/progress/courses/{course}/lessons/{lesson}`;
 `GET/PATCH /api/pet`; `GET /api/cat/thoughts` (all quiz + progress + pet/cat +
-profile-mutation routes require auth); `GET /api/search?q=` (public) — global
+profile-mutation routes require auth); **admin** (403 unless the JWT user's
+email is in the `ADMIN_EMAILS` env list, comma-separated; `/api/auth/me`
+carries `is_admin`): `GET /api/admin/users` (per-user rollup: pet + concepts/
+lessons/tests/attempts via the existing per-user services in a loop),
+`GET /api/admin/users/{id}` (adds the full progress + tests overviews),
+`PATCH /api/admin/users/{id}/pet` (manual override — skips the unlock clamps,
+keeps `best_streak >= streak` and non-negative counters; used e.g. to restore a
+lost streak). Client: `/admin` page (users list → expandable per-course lesson
+breakdown + pet editor), linked from `/settings` only when `is_admin`;
+`GET /api/search?q=` (public) — global
 lesson search over course/lesson/concept titles + full lesson markdown.
 Python-side whole-phrase `casefold()` scan of the in-memory registry (SQLite
 LIKE is Cyrillic-case-sensitive) in `services/search.py` via

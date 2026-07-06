@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     )
     gemini_base_url: str = "https://generativelanguage.googleapis.com"
 
+    # --- Admin ---
+    # Comma-separated emails allowed on /api/admin/* (empty = nobody is admin).
+    admin_emails: str = ""
+
     # --- App ---
     cors_origins: str = "http://localhost:5173"
     content_dir: str = Field(
@@ -58,6 +62,10 @@ class Settings(BaseSettings):
                 seen.add(model)
                 chain.append(model)
         return chain
+
+    @property
+    def admin_email_set(self) -> set[str]:
+        return {e.strip().lower() for e in self.admin_emails.split(",") if e.strip()}
 
     @property
     def cors_origin_list(self) -> list[str]:

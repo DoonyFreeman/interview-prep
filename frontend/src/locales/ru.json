@@ -331,5 +331,22 @@
     "answeredOf": "Отвечено {{answered}} из {{total}} вопросов",
     "left": "осталось {{count}}",
     "allDone": "всё пройдено"
+  },
+  "admin": {
+    "title": "Админка",
+    "linkLabel": "Открыть админ-панель",
+    "subtitle": "Пользователей: {{count}}. Клик по карточке — детали и правка кота.",
+    "lessons": "Уроки",
+    "concepts": "Концепты",
+    "tests": "Тесты",
+    "attempts": "Попытки",
+    "avgScore": "Ср. балл",
+    "never": "не заходил(а)",
+    "petTitle": "Кот (ручная правка)",
+    "petStreak": "Стрик",
+    "petBest": "Рекорд",
+    "petLastActive": "Последний визит",
+    "progressTitle": "Прогресс по курсам",
+    "saved": "Сохранено"
   }
 }

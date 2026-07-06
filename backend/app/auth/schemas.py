@@ -51,6 +51,7 @@ class UserOut(BaseModel):
     email: str
     display_name: str
     created_at: datetime
+    is_admin: bool = False
 
 
 class UpdateProfileIn(BaseModel):
