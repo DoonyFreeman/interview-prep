@@ -49,6 +49,7 @@ export interface UserOut {
   email: string;
   display_name: string;
   created_at: string;
+  is_admin: boolean;
 }
 
 export interface QuestionOut {
@@ -352,4 +353,32 @@ export interface SearchOut {
   query: string;
   count: number;
   results: SearchResult[];
+}
+
+// --- Admin -------------------------------------------------------------------
+export interface AdminUser {
+  id: number;
+  email: string;
+  display_name: string;
+  created_at: string;
+  pet: PetState;
+  total_concepts: number;
+  attempted_concepts: number;
+  mastered_concepts: number;
+  total_lessons: number;
+  completed_lessons: number;
+  tests_total: number;
+  tests_passed: number;
+  attempts_count: number;
+  avg_score: number;
+}
+
+export interface AdminUsers {
+  users: AdminUser[];
+}
+
+export interface AdminUserDetail {
+  user: AdminUser;
+  progress: ProgressOverviewOut;
+  tests: TestsOverview;
 }

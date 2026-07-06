@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/AuthContext";
 import { useChangePassword, useUpdateProfile } from "../api/hooks";
@@ -144,6 +145,18 @@ export function SettingsPage() {
         <Section title={t("settings.language")}>
           <LanguageToggle />
         </Section>
+
+        {/* Admin (only for ADMIN_EMAILS accounts) */}
+        {user.is_admin && (
+          <Section title={t("admin.title")}>
+            <Link
+              to="/admin"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+            >
+              {t("admin.linkLabel")} →
+            </Link>
+          </Section>
+        )}
 
         {/* Account */}
         <Section title={t("settings.account")}>

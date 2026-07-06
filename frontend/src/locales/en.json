@@ -331,5 +331,22 @@
     "answeredOf": "Answered {{answered}} of {{total}} questions",
     "left": "{{count}} left",
     "allDone": "all done"
+  },
+  "admin": {
+    "title": "Admin",
+    "linkLabel": "Open admin panel",
+    "subtitle": "{{count}} users. Click a card for details and pet editing.",
+    "lessons": "Lessons",
+    "concepts": "Concepts",
+    "tests": "Tests",
+    "attempts": "Attempts",
+    "avgScore": "Avg score",
+    "never": "never visited",
+    "petTitle": "Cat (manual override)",
+    "petStreak": "Streak",
+    "petBest": "Best",
+    "petLastActive": "Last visit",
+    "progressTitle": "Progress by course",
+    "saved": "Saved"
   }
 }
