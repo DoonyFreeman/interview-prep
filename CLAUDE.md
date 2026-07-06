@@ -250,6 +250,19 @@ and topics jump around; it avoids the lesson shown last and a 30-key
 localStorage anti-repeat window. `useMarkLesson` invalidates `["cat-thoughts"]`
 so newly completed lessons appear without a reload.
 
+The corner cat's **skin** (10) and **hat** (7) are streak-gated cosmetics,
+unlocked by `pet_state.best_streak` and clamped server-side (`services/pet.py:
+SKIN_MILESTONES`/`HAT_MILESTONES`, mirrored client-side in `lib/cat.ts`) so a
+stale/locked choice silently falls back (`classic` skin; `null` hat — which
+still shows the wizard hat by default on the wizard stage, `"none"` opts out
+explicitly). Skins are palette-only entries in `cat/CatSprite.tsx:PALETTES`
+(same 12×12 pixel grid); hats are a small pixel-rect registry (`HATS`) drawn
+above the head, extending the SVG viewBox upward. **Achievements** (11
+streak thresholds, 1–100 days) are purely derived from `best_streak` — no
+storage — via `lib/cat.ts:ACHIEVEMENTS`/`achievementsUnlocked`; a panel in
+`PetSettings` shows locked/unlocked, and `useCat.syncDailyStreak` toasts any
+newly crossed threshold after a visit.
+
 Frontend (`frontend/`, Phase 5): React 18 + TS + Vite + Tailwind v4 + React
 Router + TanStack Query + i18next (RU/EN) + Shiki (VS Code-grammar code
 highlighting) + Motion (Framer Motion). Layered: `lib/` (axios `api` with
