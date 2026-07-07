@@ -1,0 +1,228 @@
+{
+  "stages": [
+    {
+      "slug": "core",
+      "title": "Ядро Python",
+      "summary": "Фундамент любого собеседования: объектная модель, типы, память, идиомы и типизация.",
+      "courses": [
+        {
+          "slug": "python-core",
+          "summary": "GIL, память, итераторы, области видимости — стартовые вопросы каждого собеса.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "python-data-types",
+          "summary": "Списки, словари, множества изнутри: сложность операций, хэшируемость, изменяемость.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "python-oop",
+          "summary": "Классы, MRO, дескрипторы, магические методы — проверка глубины владения языком.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "python-idioms",
+          "summary": "Питонический код: comprehensions, контекст-менеджеры, EAFP — отличают мидла от джуна.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "python-typing",
+          "summary": "Type hints, mypy и Pydantic — стандарт индустрии для продакшен-кода на Python.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "concurrency",
+      "title": "Конкурентность",
+      "summary": "Потоки, процессы и event loop: где GIL мешает, а где нет, и как пишут асинхронные сервисы.",
+      "courses": [
+        {
+          "slug": "python-concurrency",
+          "summary": "Threading vs multiprocessing, GIL на практике, гонки и блокировки.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "python-asyncio",
+          "summary": "Event loop, корутины, task'и и таймауты — сердце современных Python-бэкендов.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "data",
+      "title": "Данные и хранилища",
+      "summary": "SQL, ORM, PostgreSQL и Redis: где живут данные и как с ними работать быстро и надёжно.",
+      "courses": [
+        {
+          "slug": "databases-sql",
+          "summary": "JOIN'ы, индексы, транзакции и нормализация — SQL спрашивают всегда.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "sqlalchemy",
+          "summary": "Сессии, ленивая загрузка и N+1 — главный ORM Python-мира изнутри.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "postgresql",
+          "summary": "MVCC, планы запросов, индексы и блокировки самой популярной продакшен-СУБД.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "redis",
+          "summary": "Кэширование, структуры данных, персистентность — второй по частоте вопрос после SQL.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "web",
+      "title": "Web и сервисы",
+      "summary": "HTTP, API-фреймворк, фоновые задачи и события — то, из чего собирается бэкенд-сервис.",
+      "courses": [
+        {
+          "slug": "web-http",
+          "summary": "HTTP изнутри: методы, статусы, заголовки, REST и версии протокола.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "fastapi",
+          "summary": "DI, Pydantic-валидация, async-эндпоинты — самый востребованный Python-фреймворк.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "celery",
+          "summary": "Очереди задач, ретраи, идемпотентность — фоновая работа в каждом втором проекте.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "kafka",
+          "summary": "Лог событий, партиции, семантики доставки — событийная интеграция сервисов.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "quality",
+      "title": "Качество кода",
+      "summary": "Тесты и алгоритмы: как доказать, что код работает, и пройти лайвкодинг.",
+      "courses": [
+        {
+          "slug": "testing",
+          "summary": "pytest, фикстуры, моки и TDD — без тестов мидла не бывает.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "algorithms",
+          "summary": "Сложность, структуры данных и типовые паттерны задач для лайвкодинга.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "infra",
+      "title": "Инфраструктура",
+      "summary": "Docker, Linux/Git и reverse proxy: как код доезжает до прода и живёт там.",
+      "courses": [
+        {
+          "slug": "docker",
+          "summary": "Образы, слои, compose и multi-stage сборки — контейнеры спрашивают везде.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "devops",
+          "summary": "Linux-основы, Git-флоу и CI/CD — повседневные инструменты бэкендера.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "nginx",
+          "summary": "Reverse proxy, TLS, лимиты и балансировка — что стоит перед вашим uvicorn.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
+      "slug": "senior",
+      "title": "Senior-track",
+      "summary": "Проектирование систем и безопасность — вопросы «на вырост», которые отличают сильного мидла.",
+      "courses": [
+        {
+          "slug": "system-design",
+          "summary": "Масштабирование, кэши, очереди, консистентность — секция system design.",
+          "resources": [],
+          "lesson_resources": {}
+        },
+        {
+          "slug": "security",
+          "summary": "OWASP, аутентификация, инъекции — минимум безопасности для бэкендера.",
+          "resources": [],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": [
+        {
+          "slug": "interview-process",
+          "title": "Как проходить собеседование",
+          "summary": "Формат интервью, самопрезентация, поведение на лайвкодинге и разбор реальных мок-собесов.",
+          "resources": [
+            {
+              "type": "video",
+              "lang": "ru",
+              "title": "Публичное собеседование: Python-программист",
+              "url": "https://www.youtube.com/watch?v=I-KhxNwc1Ns",
+              "source": "Хекслет"
+            },
+            {
+              "type": "video",
+              "lang": "ru",
+              "title": "Публичное собеседование: backend-разработчик",
+              "url": "https://www.youtube.com/watch?v=jeaj5cT6_Io",
+              "source": "Хекслет"
+            },
+            {
+              "type": "article",
+              "lang": "ru",
+              "title": "Анализ 10 000 вопросов с технических интервью",
+              "url": "https://habr.com/ru/articles/769480/",
+              "source": "Хабр"
+            },
+            {
+              "type": "docs",
+              "lang": "en",
+              "title": "Tech Interview Handbook",
+              "url": "https://www.techinterviewhandbook.org/",
+              "source": "techinterviewhandbook.org"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

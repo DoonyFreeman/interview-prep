@@ -198,3 +198,74 @@ async def test_reference_answers_never_leak_any_lesson(client):
             assert "reference_answer" not in r.text
             checked += 1
     assert checked >= 90  # ~97 lessons in the full curriculum
+
+
+# --------------------------------------------------------------------------- #
+# Roadmap (content/roadmap.json) — structure + no dangling references
+# --------------------------------------------------------------------------- #
+RESOURCE_TYPES = {"video", "article", "docs"}
+RESOURCE_LANGS = {"ru", "en"}
+
+
+def _check_resources(where: str, raw: list, problems: list[str]) -> None:
+    for res in raw:
+        if res.get("type") not in RESOURCE_TYPES:
+            problems.append(f"{where}: bad resource type {res.get('type')!r}")
+        if res.get("lang") not in RESOURCE_LANGS:
+            problems.append(f"{where}: bad resource lang {res.get('lang')!r}")
+        if not str(res.get("url", "")).startswith("https://"):
+            problems.append(f"{where}: non-https url {res.get('url')!r}")
+        if not res.get("title") or not res.get("source"):
+            problems.append(f"{where}: empty resource title/source")
+
+
+def test_roadmap_structure_and_references(bundle):
+    """Every roadmap course exists in content; every content course is placed in
+    exactly one stage; lesson_resources keys are real lesson slugs; resources
+    are well-formed. Derived from the loaded bundle so it can't go stale."""
+    assert bundle.roadmap, "content/roadmap.json missing or empty"
+    stages = bundle.roadmap["stages"]
+
+    stage_slugs = [s["slug"] for s in stages]
+    assert len(stage_slugs) == len(set(stage_slugs)), "duplicate stage slugs"
+
+    content_courses = {c.slug: c for c in bundle.courses}
+    problems: list[str] = []
+
+    roadmap_course_slugs: list[str] = []
+    extra_slugs: list[str] = []
+    for stage in stages:
+        for node in stage.get("courses", []):
+            slug = node["slug"]
+            roadmap_course_slugs.append(slug)
+            course = content_courses.get(slug)
+            if course is None:
+                problems.append(f"{stage['slug']}/{slug}: unknown course")
+                continue
+            lesson_slugs = {l.slug for l in course.lessons}
+            for lesson_slug, raw in (node.get("lesson_resources") or {}).items():
+                if lesson_slug not in lesson_slugs:
+                    problems.append(
+                        f"{stage['slug']}/{slug}: unknown lesson {lesson_slug!r}"
+                    )
+                _check_resources(f"{slug}/{lesson_slug}", raw, problems)
+            _check_resources(slug, node.get("resources") or [], problems)
+        for node in stage.get("extra_nodes", []):
+            extra_slugs.append(node["slug"])
+            if not node.get("title") or not node.get("summary"):
+                problems.append(f"extra {node['slug']}: empty title/summary")
+            _check_resources(f"extra {node['slug']}", node.get("resources") or [], problems)
+
+    # exactly-once placement, both directions
+    assert sorted(roadmap_course_slugs) == sorted(set(roadmap_course_slugs)), (
+        "course placed in more than one stage"
+    )
+    missing = set(content_courses) - set(roadmap_course_slugs)
+    assert not missing, f"courses not on the roadmap: {sorted(missing)}"
+
+    # extra nodes must not shadow real courses
+    overlap = set(extra_slugs) & set(content_courses)
+    assert not overlap, f"extra nodes shadow courses: {sorted(overlap)}"
+    assert len(extra_slugs) == len(set(extra_slugs)), "duplicate extra-node slugs"
+
+    assert not problems, "roadmap problems:\n" + "\n".join(problems)

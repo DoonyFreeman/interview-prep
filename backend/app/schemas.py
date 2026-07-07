@@ -470,3 +470,53 @@ class AdminUserDetailOut(BaseModel):
     user: AdminUserOut
     progress: ProgressOverviewOut
     tests: TestsOverviewOut
+
+
+# --------------------------------------------------------------------------- #
+# Roadmap (public /api/roadmap — stages -> courses -> lessons + resources)
+# --------------------------------------------------------------------------- #
+class RoadmapResourceOut(BaseModel):
+    type: str  # video | article | docs
+    lang: str  # ru | en
+    title: str
+    url: str
+    source: str
+
+
+class RoadmapLessonOut(BaseModel):
+    slug: str
+    title: str
+    order: int
+    duration_minutes: int
+    # Lesson-specific curated links; [] => client falls back to course.resources.
+    resources: list[RoadmapResourceOut]
+
+
+class RoadmapCourseOut(BaseModel):
+    slug: str
+    title: str
+    description: str
+    summary: str
+    resources: list[RoadmapResourceOut]
+    lessons: list[RoadmapLessonOut]
+
+
+class RoadmapExtraNodeOut(BaseModel):
+    """A topic without an internal course — external resources only."""
+
+    slug: str
+    title: str
+    summary: str
+    resources: list[RoadmapResourceOut]
+
+
+class RoadmapStageOut(BaseModel):
+    slug: str
+    title: str
+    summary: str
+    courses: list[RoadmapCourseOut]
+    extra_nodes: list[RoadmapExtraNodeOut]
+
+
+class RoadmapOut(BaseModel):
+    stages: list[RoadmapStageOut]

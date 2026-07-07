@@ -33,6 +33,8 @@ async def seed_content(session: AsyncSession, bundle: ContentBundle) -> None:
         for lesson_data in course_data.lessons:
             await _upsert_lesson(session, course, course_data, lesson_data)
     await _seed_glossary(session, bundle)
+    # In-memory only (no user state, no search) — served by GET /api/roadmap.
+    registry.set_roadmap(bundle.roadmap)
     await session.commit()
 
 
