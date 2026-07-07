@@ -53,7 +53,8 @@
     "settings": "Settings",
     "profile": "Profile",
     "logout": "Log out",
-    "progress": "Progress"
+    "progress": "Progress",
+    "roadmap": "Roadmap"
   },
   "slang": {
     "title": "Developer slang",
@@ -169,7 +170,8 @@
     "days": "{{count}} d",
     "today": "today",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "close": "Close"
   },
   "search": {
     "title": "Search topics",
@@ -348,5 +350,21 @@
     "petLastActive": "Last visit",
     "progressTitle": "Progress by course",
     "saved": "Saved"
+  },
+  "roadmap": {
+    "title": "Roadmap",
+    "subtitle": "The middle Python backend path — from language core to system design",
+    "lessonsOf": "{{done}} of {{total}} lessons",
+    "status": {
+      "done": "Completed",
+      "attempted": "In progress",
+      "none": "Not started"
+    },
+    "openLesson": "Open lesson",
+    "materials": "Resources",
+    "courseMaterials": "Course resources",
+    "noMaterials": "Resources coming soon",
+    "externalTopic": "External topic",
+    "min": "min"
   }
 }

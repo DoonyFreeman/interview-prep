@@ -26,6 +26,7 @@ import type {
   QuestionsProgress,
   QuizResultItem,
   ReviewQueue,
+  RoadmapOut,
   SearchOut,
   TestResultItem,
   TestsOverview,
@@ -440,5 +441,13 @@ export function useAdminUpdatePet() {
       qc.invalidateQueries({ queryKey: ["admin-users"] });
       qc.invalidateQueries({ queryKey: ["admin-user", vars.userId] });
     },
+  });
+}
+
+export function useRoadmap() {
+  return useQuery({
+    queryKey: ["roadmap"],
+    queryFn: async () => (await api.get<RoadmapOut>("/roadmap")).data,
+    staleTime: 60 * 60 * 1000, // static per deploy
   });
 }
