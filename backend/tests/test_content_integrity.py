@@ -269,3 +269,24 @@ def test_roadmap_structure_and_references(bundle):
     assert len(extra_slugs) == len(set(extra_slugs)), "duplicate extra-node slugs"
 
     assert not problems, "roadmap problems:\n" + "\n".join(problems)
+
+
+def test_roadmap_every_course_has_curated_resources(bundle):
+    """Post-curation guarantee: every course node offers substantial material —
+    at least two resources, with something to watch-or-read authoritatively
+    (video or official docs) and something to read (article or docs). Most
+    courses have a curated video; for a handful the strongest RU material is
+    documentation, and we deliberately don't ship filler videos to pad them."""
+    problems: list[str] = []
+    for stage in bundle.roadmap["stages"]:
+        for node in stage.get("courses", []):
+            types: list[str] = [r["type"] for r in node.get("resources", [])]
+            for resources in (node.get("lesson_resources") or {}).values():
+                types += [r["type"] for r in resources]
+            if len(types) < 2:
+                problems.append(f"{node['slug']}: <2 resources")
+            if not ({"video", "docs"} & set(types)):
+                problems.append(f"{node['slug']}: no video/docs")
+            if not ({"article", "docs"} & set(types)):
+                problems.append(f"{node['slug']}: nothing to read")
+    assert not problems, "courses lacking resources:\n" + "\n".join(problems)

@@ -8,31 +8,49 @@
         {
           "slug": "python-core",
           "summary": "GIL, память, итераторы, области видимости — стартовые вопросы каждого собеса.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "GIL в Python: зачем он нужен и как с этим жить", "url": "https://www.youtube.com/watch?v=AWX4JnAnjBE", "source": "YouTube" },
+            { "type": "article", "lang": "ru", "title": "Как устроен GIL в Python: влияние на многозадачность и производительность", "url": "https://habr.com/ru/companies/otus/articles/769448/", "source": "Хабр" },
+            { "type": "docs", "lang": "en", "title": "The Python Language Reference — Data model", "url": "https://docs.python.org/3/reference/datamodel.html", "source": "docs.python.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "python-data-types",
           "summary": "Списки, словари, множества изнутри: сложность операций, хэшируемость, изменяемость.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Курс Python 3 — Списки, словари и множества", "url": "https://www.youtube.com/watch?v=UIycqGGwSSs", "source": "YouTube" },
+            { "type": "docs", "lang": "en", "title": "Data Structures (официальный туториал)", "url": "https://docs.python.org/3/tutorial/datastructures.html", "source": "docs.python.org" },
+            { "type": "docs", "lang": "en", "title": "TimeComplexity — сложность операций коллекций", "url": "https://wiki.python.org/moin/TimeComplexity", "source": "wiki.python.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "python-oop",
           "summary": "Классы, MRO, дескрипторы, магические методы — проверка глубины владения языком.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Объектно-ориентированное программирование (ООП) на Python 3 — плейлист", "url": "https://www.youtube.com/playlist?list=PLA0M1Bcd0w8zPwP7t-FgwONhZOHt9rz9E", "source": "selfedu" },
+            { "type": "docs", "lang": "en", "title": "Classes (официальный туториал)", "url": "https://docs.python.org/3/tutorial/classes.html", "source": "docs.python.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "python-idioms",
           "summary": "Питонический код: comprehensions, контекст-менеджеры, EAFP — отличают мидла от джуна.",
-          "resources": [],
+          "resources": [
+            { "type": "docs", "lang": "en", "title": "PEP 8 — Style Guide for Python Code", "url": "https://peps.python.org/pep-0008/", "source": "peps.python.org" },
+            { "type": "article", "lang": "ru", "title": "Чистый код в Python", "url": "https://habr.com/ru/articles/877118/", "source": "Хабр" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "python-typing",
           "summary": "Type hints, mypy и Pydantic — стандарт индустрии для продакшен-кода на Python.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Типизированный Python для профессиональной разработки — теория и практика", "url": "https://www.youtube.com/watch?v=dKxiHlZvULQ", "source": "YouTube" },
+            { "type": "docs", "lang": "en", "title": "typing — поддержка аннотаций типов", "url": "https://docs.python.org/3/library/typing.html", "source": "docs.python.org" },
+            { "type": "docs", "lang": "en", "title": "Pydantic — официальная документация", "url": "https://docs.pydantic.dev/latest/", "source": "pydantic.dev" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -46,13 +64,19 @@
         {
           "slug": "python-concurrency",
           "summary": "Threading vs multiprocessing, GIL на практике, гонки и блокировки.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Многопроцессность, многопоточность, асинхронность в Python — что это и как работает", "url": "https://www.youtube.com/watch?v=JIp14T9bvvc", "source": "Диджитализируй" },
+            { "type": "docs", "lang": "en", "title": "threading — потоковый параллелизм", "url": "https://docs.python.org/3/library/threading.html", "source": "docs.python.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "python-asyncio",
           "summary": "Event loop, корутины, task'и и таймауты — сердце современных Python-бэкендов.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Асинхронность, многопоточность, многопроцессность в Python — библиотека asyncio", "url": "https://www.youtube.com/watch?v=_4QY1nGFRY8", "source": "YouTube" },
+            { "type": "docs", "lang": "en", "title": "asyncio — асинхронный ввод-вывод", "url": "https://docs.python.org/3/library/asyncio.html", "source": "docs.python.org" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -66,25 +90,37 @@
         {
           "slug": "databases-sql",
           "summary": "JOIN'ы, индексы, транзакции и нормализация — SQL спрашивают всегда.",
-          "resources": [],
+          "resources": [
+            { "type": "article", "lang": "ru", "title": "Шпаргалка по SQL (postgres), которая выручает на собесах", "url": "https://habr.com/ru/articles/745948/", "source": "Хабр" },
+            { "type": "docs", "lang": "en", "title": "The SQL Language (туториал PostgreSQL)", "url": "https://www.postgresql.org/docs/current/tutorial-sql.html", "source": "postgresql.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "sqlalchemy",
           "summary": "Сессии, ленивая загрузка и N+1 — главный ORM Python-мира изнутри.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Курс по SQLAlchemy — плейлист", "url": "https://www.youtube.com/playlist?list=PLeLN0qH0-mCXARD_K-USF2wHctxzEVp40", "source": "Артём Шумейко" },
+            { "type": "docs", "lang": "en", "title": "SQLAlchemy 2.0 — официальная документация", "url": "https://docs.sqlalchemy.org/en/20/", "source": "sqlalchemy.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "postgresql",
           "summary": "MVCC, планы запросов, индексы и блокировки самой популярной продакшен-СУБД.",
-          "resources": [],
+          "resources": [
+            { "type": "article", "lang": "ru", "title": "PostgreSQL для бэкендера: 10 фич, которыми мало пользуются, а зря", "url": "https://habr.com/ru/companies/netologyru/articles/1051792/", "source": "Хабр" },
+            { "type": "docs", "lang": "ru", "title": "MVCC — общее описание (документация Postgres Pro на русском)", "url": "https://postgrespro.ru/docs/postgresql/current/mvcc-intro", "source": "Postgres Pro" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "redis",
           "summary": "Кэширование, структуры данных, персистентность — второй по частоте вопрос после SQL.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Кэширование в Python — Redis", "url": "https://www.youtube.com/watch?v=5OLNVcJikVI", "source": "Артём Шумейко" },
+            { "type": "docs", "lang": "en", "title": "Redis — официальная документация", "url": "https://redis.io/docs/latest/", "source": "redis.io" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -98,25 +134,37 @@
         {
           "slug": "web-http",
           "summary": "HTTP изнутри: методы, статусы, заголовки, REST и версии протокола.",
-          "resources": [],
+          "resources": [
+            { "type": "docs", "lang": "ru", "title": "HTTP — справочник MDN на русском", "url": "https://developer.mozilla.org/ru/docs/Web/HTTP", "source": "MDN" },
+            { "type": "article", "lang": "ru", "title": "HTTP простыми словами. Часть 1 (Основы)", "url": "https://habr.com/ru/articles/1005972/", "source": "Хабр" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "fastapi",
           "summary": "DI, Pydantic-валидация, async-эндпоинты — самый востребованный Python-фреймворк.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "FastAPI Курс — плейлист", "url": "https://www.youtube.com/playlist?list=PLeLN0qH0-mCVQKZ8-W1LhxDcVlWtTALCS", "source": "Артём Шумейко" },
+            { "type": "docs", "lang": "ru", "title": "FastAPI — официальная документация (есть перевод)", "url": "https://fastapi.tiangolo.com/ru/", "source": "fastapi.tiangolo.com" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "celery",
           "summary": "Очереди задач, ретраи, идемпотентность — фоновая работа в каждом втором проекте.",
-          "resources": [],
+          "resources": [
+            { "type": "article", "lang": "ru", "title": "Celery: изучаем на реальных примерах, часть 1", "url": "https://habr.com/ru/articles/770020/", "source": "Хабр" },
+            { "type": "docs", "lang": "en", "title": "Celery — официальная документация", "url": "https://docs.celeryq.dev/en/stable/", "source": "celeryq.dev" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "kafka",
           "summary": "Лог событий, партиции, семантики доставки — событийная интеграция сервисов.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Обкафкился по полной — вебинар про типичные ошибки с Kafka", "url": "https://www.youtube.com/watch?v=5Sf8nKRQc8Y", "source": "Слёрм" },
+            { "type": "docs", "lang": "en", "title": "Apache Kafka — официальная документация", "url": "https://kafka.apache.org/documentation/", "source": "kafka.apache.org" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -130,13 +178,20 @@
         {
           "slug": "testing",
           "summary": "pytest, фикстуры, моки и TDD — без тестов мидла не бывает.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Pytest — обзор курса по тестированию на Python", "url": "https://www.youtube.com/watch?v=rAKIK5_UMzw", "source": "Артём Шумейко" },
+            { "type": "docs", "lang": "en", "title": "pytest — официальная документация", "url": "https://docs.pytest.org/en/stable/", "source": "pytest.org" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "algorithms",
           "summary": "Сложность, структуры данных и типовые паттерны задач для лайвкодинга.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Тренировки по алгоритмам от Яндекса — плейлист", "url": "https://www.youtube.com/playlist?list=PL6Wui14DvQPySdPv5NUqV3i8sDbHkCKC5", "source": "Яндекс" },
+            { "type": "video", "lang": "ru", "title": "Тренировки по алгоритмам. Лекция 1: сложность, тестирование, особые случаи", "url": "https://www.youtube.com/watch?v=QLhqYNsPIVo", "source": "Яндекс" },
+            { "type": "docs", "lang": "en", "title": "TimeComplexity — сложность операций коллекций Python", "url": "https://wiki.python.org/moin/TimeComplexity", "source": "wiki.python.org" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -150,19 +205,28 @@
         {
           "slug": "docker",
           "summary": "Образы, слои, compose и multi-stage сборки — контейнеры спрашивают везде.",
-          "resources": [],
+          "resources": [
+            { "type": "docs", "lang": "en", "title": "Docker — Get started (официальный гайд)", "url": "https://docs.docker.com/get-started/", "source": "docs.docker.com" },
+            { "type": "article", "lang": "ru", "title": "Docker для новичков — все инструкции Dockerfile", "url": "https://habr.com/ru/articles/804325/", "source": "Хабр" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "devops",
           "summary": "Linux-основы, Git-флоу и CI/CD — повседневные инструменты бэкендера.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Полный курс Git и GitHub для начинающих (4 часа)", "url": "https://www.youtube.com/watch?v=O00FTZDxD0o", "source": "YouTube" },
+            { "type": "docs", "lang": "ru", "title": "Pro Git — книга на русском", "url": "https://git-scm.com/book/ru/v2", "source": "git-scm.com" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "nginx",
           "summary": "Reverse proxy, TLS, лимиты и балансировка — что стоит перед вашим uvicorn.",
-          "resources": [],
+          "resources": [
+            { "type": "docs", "lang": "en", "title": "nginx — Beginner's Guide", "url": "https://nginx.org/en/docs/beginners_guide.html", "source": "nginx.org" },
+            { "type": "article", "lang": "ru", "title": "Docker для новичков — Dockerfile и окружение (контекст деплоя)", "url": "https://habr.com/ru/articles/804325/", "source": "Хабр" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -176,13 +240,21 @@
         {
           "slug": "system-design",
           "summary": "Масштабирование, кэши, очереди, консистентность — секция system design.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "System Design с Валерием Бабушкиным. Выпуск 1: собеседование", "url": "https://www.youtube.com/watch?v=PZoueQ9kjCU", "source": "karpov.courses" },
+            { "type": "article", "lang": "en", "title": "System Design 101 — визуальные объяснения (ByteByteGo)", "url": "https://github.com/ByteByteGoHq/system-design-101", "source": "GitHub" },
+            { "type": "docs", "lang": "en", "title": "The System Design Primer", "url": "https://github.com/donnemartin/system-design-primer", "source": "GitHub" }
+          ],
           "lesson_resources": {}
         },
         {
           "slug": "security",
           "summary": "OWASP, аутентификация, инъекции — минимум безопасности для бэкендера.",
-          "resources": [],
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Как взламывают сайты? XSS, SQL-injection, CSRF, Code Injection", "url": "https://www.youtube.com/watch?v=jJXnjzQmAkQ", "source": "YouTube" },
+            { "type": "docs", "lang": "en", "title": "OWASP Top Ten — проект", "url": "https://owasp.org/www-project-top-ten/", "source": "owasp.org" },
+            { "type": "article", "lang": "ru", "title": "OWASP Top 10 2025 — от кода к цепочке поставок", "url": "https://habr.com/ru/companies/pvs-studio/articles/996990/", "source": "Хабр" }
+          ],
           "lesson_resources": {}
         }
       ],
@@ -192,34 +264,10 @@
           "title": "Как проходить собеседование",
           "summary": "Формат интервью, самопрезентация, поведение на лайвкодинге и разбор реальных мок-собесов.",
           "resources": [
-            {
-              "type": "video",
-              "lang": "ru",
-              "title": "Публичное собеседование: Python-программист",
-              "url": "https://www.youtube.com/watch?v=I-KhxNwc1Ns",
-              "source": "Хекслет"
-            },
-            {
-              "type": "video",
-              "lang": "ru",
-              "title": "Публичное собеседование: backend-разработчик",
-              "url": "https://www.youtube.com/watch?v=jeaj5cT6_Io",
-              "source": "Хекслет"
-            },
-            {
-              "type": "article",
-              "lang": "ru",
-              "title": "Анализ 10 000 вопросов с технических интервью",
-              "url": "https://habr.com/ru/articles/769480/",
-              "source": "Хабр"
-            },
-            {
-              "type": "docs",
-              "lang": "en",
-              "title": "Tech Interview Handbook",
-              "url": "https://www.techinterviewhandbook.org/",
-              "source": "techinterviewhandbook.org"
-            }
+            { "type": "video", "lang": "ru", "title": "Публичное собеседование: Python-программист", "url": "https://www.youtube.com/watch?v=I-KhxNwc1Ns", "source": "Хекслет" },
+            { "type": "video", "lang": "ru", "title": "Публичное собеседование: backend-разработчик", "url": "https://www.youtube.com/watch?v=jeaj5cT6_Io", "source": "Хекслет" },
+            { "type": "article", "lang": "ru", "title": "Анализ 10 000 вопросов с технических интервью", "url": "https://habr.com/ru/articles/769480/", "source": "Хабр" },
+            { "type": "docs", "lang": "en", "title": "Tech Interview Handbook", "url": "https://www.techinterviewhandbook.org/", "source": "techinterviewhandbook.org" }
           ]
         }
       ]
