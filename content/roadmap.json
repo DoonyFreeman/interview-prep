@@ -38,6 +38,7 @@
           "slug": "python-idioms",
           "summary": "Питонический код: comprehensions, контекст-менеджеры, EAFP — отличают мидла от джуна.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "Comprehensions Not Only Work With Lists — Python Tips", "url": "https://www.youtube.com/watch?v=3uQQApd59qQ", "source": "ArjanCodes" },
             { "type": "docs", "lang": "en", "title": "PEP 8 — Style Guide for Python Code", "url": "https://peps.python.org/pep-0008/", "source": "peps.python.org" },
             { "type": "article", "lang": "ru", "title": "Чистый код в Python", "url": "https://habr.com/ru/articles/877118/", "source": "Хабр" }
           ],
@@ -91,6 +92,7 @@
           "slug": "databases-sql",
           "summary": "JOIN'ы, индексы, транзакции и нормализация — SQL спрашивают всегда.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "Database Engineering — плейлист (индексы, транзакции, ACID)", "url": "https://www.youtube.com/playlist?list=PLQnljOFTspQXjD0HOzN7P2tgzu7scWpl2", "source": "Hussein Nasser" },
             { "type": "article", "lang": "ru", "title": "Шпаргалка по SQL (postgres), которая выручает на собесах", "url": "https://habr.com/ru/articles/745948/", "source": "Хабр" },
             { "type": "docs", "lang": "en", "title": "The SQL Language (туториал PostgreSQL)", "url": "https://www.postgresql.org/docs/current/tutorial-sql.html", "source": "postgresql.org" }
           ],
@@ -109,6 +111,7 @@
           "slug": "postgresql",
           "summary": "MVCC, планы запросов, индексы и блокировки самой популярной продакшен-СУБД.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "PostgreSQL Internals in Action: MVCC", "url": "https://www.youtube.com/watch?v=TBmDBw1IIoY", "source": "YouTube" },
             { "type": "article", "lang": "ru", "title": "PostgreSQL для бэкендера: 10 фич, которыми мало пользуются, а зря", "url": "https://habr.com/ru/companies/netologyru/articles/1051792/", "source": "Хабр" },
             { "type": "docs", "lang": "ru", "title": "MVCC — общее описание (документация Postgres Pro на русском)", "url": "https://postgrespro.ru/docs/postgresql/current/mvcc-intro", "source": "Postgres Pro" }
           ],
@@ -135,6 +138,7 @@
           "slug": "web-http",
           "summary": "HTTP изнутри: методы, статусы, заголовки, REST и версии протокола.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "Understanding HTTP for backend engineers", "url": "https://www.youtube.com/watch?v=a3C1DMswClQ", "source": "YouTube" },
             { "type": "docs", "lang": "ru", "title": "HTTP — справочник MDN на русском", "url": "https://developer.mozilla.org/ru/docs/Web/HTTP", "source": "MDN" },
             { "type": "article", "lang": "ru", "title": "HTTP простыми словами. Часть 1 (Основы)", "url": "https://habr.com/ru/articles/1005972/", "source": "Хабр" }
           ],
@@ -153,6 +157,7 @@
           "slug": "celery",
           "summary": "Очереди задач, ретраи, идемпотентность — фоновая работа в каждом втором проекте.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "Professional Task Queues in Python with Celery, RabbitMQ & Redis", "url": "https://www.youtube.com/watch?v=0gtdUkEzzn4", "source": "NeuralNine" },
             { "type": "article", "lang": "ru", "title": "Celery: изучаем на реальных примерах, часть 1", "url": "https://habr.com/ru/articles/770020/", "source": "Хабр" },
             { "type": "docs", "lang": "en", "title": "Celery — официальная документация", "url": "https://docs.celeryq.dev/en/stable/", "source": "celeryq.dev" }
           ],
@@ -206,6 +211,7 @@
           "slug": "docker",
           "summary": "Образы, слои, compose и multi-stage сборки — контейнеры спрашивают везде.",
           "resources": [
+            { "type": "video", "lang": "en", "title": "Docker Crash Course for Absolute Beginners", "url": "https://www.youtube.com/watch?v=pg19Z8LL06w", "source": "TechWorld with Nana" },
             { "type": "docs", "lang": "en", "title": "Docker — Get started (официальный гайд)", "url": "https://docs.docker.com/get-started/", "source": "docs.docker.com" },
             { "type": "article", "lang": "ru", "title": "Docker для новичков — все инструкции Dockerfile", "url": "https://habr.com/ru/articles/804325/", "source": "Хабр" }
           ],
@@ -224,8 +230,8 @@
           "slug": "nginx",
           "summary": "Reverse proxy, TLS, лимиты и балансировка — что стоит перед вашим uvicorn.",
           "resources": [
-            { "type": "docs", "lang": "en", "title": "nginx — Beginner's Guide", "url": "https://nginx.org/en/docs/beginners_guide.html", "source": "nginx.org" },
-            { "type": "article", "lang": "ru", "title": "Docker для новичков — Dockerfile и окружение (контекст деплоя)", "url": "https://habr.com/ru/articles/804325/", "source": "Хабр" }
+            { "type": "video", "lang": "en", "title": "NginX Crash Course — Layer 4 & Layer 7 Proxy, HTTPS, TLS, HTTP/2", "url": "https://www.youtube.com/watch?v=WC2-hNNBWII", "source": "Hussein Nasser" },
+            { "type": "docs", "lang": "en", "title": "nginx — Beginner's Guide", "url": "https://nginx.org/en/docs/beginners_guide.html", "source": "nginx.org" }
           ],
           "lesson_resources": {}
         }
