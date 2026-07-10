@@ -101,9 +101,19 @@ export function RoadmapDrawer({
   const reduced = useReducedMotion();
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Move focus into the sheet on open; restore it to the opener (the chip) on
+  // close so keyboard users don't lose their place in the roadmap. Depends on
+  // `selection` only, so a parent re-render while open doesn't yank focus.
+  const openerRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     if (!selection) return;
+    openerRef.current = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
+    return () => openerRef.current?.focus?.();
+  }, [selection]);
+
+  useEffect(() => {
+    if (!selection) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };

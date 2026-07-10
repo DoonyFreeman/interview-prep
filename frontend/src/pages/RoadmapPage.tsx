@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { useProgress, useRoadmap } from "../api/hooks";
@@ -237,6 +237,7 @@ export function RoadmapPage() {
   // Progress is an overlay: if it errors, the map still renders (all "none").
   const progress = useProgress();
   const [selection, setSelection] = useState<RoadmapSelection | null>(null);
+  const closeDrawer = useCallback(() => setSelection(null), []);
 
   if (roadmap.isPending) {
     return (
@@ -296,7 +297,7 @@ export function RoadmapPage() {
         ))}
       </div>
 
-      <RoadmapDrawer selection={selection} onClose={() => setSelection(null)} />
+      <RoadmapDrawer selection={selection} onClose={closeDrawer} />
     </div>
   );
 }
