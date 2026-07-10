@@ -2,7 +2,7 @@
   "slug": "devops",
   "title": "Linux, Git и DevOps",
   "description": "Эксплуатационный минимум бэкендера: Linux (процессы, сигналы, права, пайпы) и диагностика сети, Git (ветки, merge/rebase, reset/revert, конфликты), CI/CD, стратегии деплоя, наблюдаемость и 12-factor.",
-  "order": 18,
+  "order": 20,
   "lessons": [
     {
       "slug": "linux-network",

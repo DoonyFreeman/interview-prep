@@ -16,6 +16,7 @@ import { GlossaryQuizPage } from "./pages/GlossaryQuizPage";
 import { SlangPage } from "./pages/SlangPage";
 import { DictLayout } from "./components/DictLayout";
 import { AdminPage } from "./pages/AdminPage";
+import { RoadmapPage } from "./pages/RoadmapPage";
 
 export function App() {
   return (
@@ -29,6 +30,7 @@ export function App() {
         }
       >
         <Route path="/" element={<CatalogPage />} />
+        <Route path="/roadmap" element={<RoadmapPage />} />
         {/* Glossary + Slang share a persistent tab shell (DictLayout). */}
         <Route element={<DictLayout />}>
           <Route path="/glossary" element={<GlossaryPage />} />

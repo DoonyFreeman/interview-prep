@@ -2,7 +2,7 @@
   "slug": "security",
   "title": "Безопасность",
   "description": "Безопасность веб-бэкенда: OWASP Top 10 (инъекции, XSS, CSRF, SSRF, broken access), хэширование паролей и работа с JWT, управление секретами, и специфичные для Python риски (pickle, eval, supply chain).",
-  "order": 20,
+  "order": 22,
   "lessons": [
     {
       "slug": "owasp",

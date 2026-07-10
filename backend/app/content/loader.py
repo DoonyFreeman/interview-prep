@@ -90,6 +90,10 @@ class ContentBundle:
     courses: list[CourseData] = field(default_factory=list)
     glossary_categories: list[str] = field(default_factory=list)
     glossary_terms: list[GlossaryTermData] = field(default_factory=list)
+    # Raw roadmap.json (stages -> courses/extra_nodes). Kept as a plain dict:
+    # the response schemas validate it at the API boundary and the integrity
+    # tests validate the file itself.
+    roadmap: dict | None = None
 
 
 def load_content(content_dir: str | Path) -> ContentBundle:
@@ -127,7 +131,15 @@ def load_content(content_dir: str | Path) -> ContentBundle:
 
     _load_glossary(root, bundle)
     _load_slang(root, bundle)
+    _load_roadmap(root, bundle)
     return bundle
+
+
+def _load_roadmap(root: Path, bundle: ContentBundle) -> None:
+    roadmap_file = root / "roadmap.json"
+    if not roadmap_file.is_file():
+        return
+    bundle.roadmap = json.loads(roadmap_file.read_text(encoding="utf-8"))
 
 
 def _load_glossary(root: Path, bundle: ContentBundle) -> None:

@@ -5,6 +5,7 @@ import {
   IconCourses,
   IconGlossary,
   IconProgress,
+  IconRoadmap,
   IconUser,
 } from "./icons";
 
@@ -17,6 +18,7 @@ type Item = {
 
 const ITEMS: Item[] = [
   { to: "/", end: true, labelKey: "nav.courses", Icon: IconCourses },
+  { to: "/roadmap", labelKey: "nav.roadmap", Icon: IconRoadmap },
   { to: "/glossary", labelKey: "nav.glossary", Icon: IconGlossary },
   { to: "/progress", labelKey: "nav.progress", Icon: IconProgress },
   { to: "/settings", labelKey: "nav.profile", Icon: IconUser },

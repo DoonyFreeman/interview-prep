@@ -2,7 +2,7 @@
   "slug": "docker",
   "title": "Docker и контейнеры",
   "description": "Контейнеризация: контейнеры против ВМ (namespaces, cgroups), образы и слои, кэш сборки, тома и сеть, переменные окружения, docker-compose, multi-stage сборка и практики безопасности.",
-  "order": 17,
+  "order": 19,
   "lessons": [
     {
       "slug": "containers-images",

@@ -1,0 +1,45 @@
+{
+  "slug": "nginx",
+  "title": "nginx и reverse proxy",
+  "description": "nginx перед Python-бэкендом: зачем нужен reverse proxy, структура конфига и порядок матчинга location, proxy_pass и X-Forwarded-заголовки, отдача статики и SPA-fallback, TLS-терминация, таймауты и rate limiting, upstream-балансировка, WebSocket, полный docker-compose с FastAPI и отладка 502/504.",
+  "order": 18,
+  "lessons": [
+    {
+      "slug": "reverse-proxy-basics",
+      "title": "Reverse proxy и основы конфига",
+      "file": "01-reverse-proxy-basics.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        { "slug": "why-reverse-proxy", "title": "Зачем нужен reverse proxy", "anchor": "зачем-нужен-reverse-proxy", "order": 1 },
+        { "slug": "config-structure", "title": "Структура конфига: http, server, location", "anchor": "структура-конфига-http-server-location", "order": 2 },
+        { "slug": "proxy-pass-headers", "title": "proxy_pass и заголовки", "anchor": "proxypass-и-заголовки", "order": 3 }
+      ]
+    },
+    {
+      "slug": "static-tls-limits",
+      "title": "Статика, TLS и лимиты",
+      "file": "02-static-tls-limits.md",
+      "order": 2,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "static-gzip", "title": "Статика, gzip и кэширование", "anchor": "статика-gzip-и-кэширование", "order": 1 },
+        { "slug": "tls-https", "title": "TLS и HTTPS", "anchor": "tls-и-https", "order": 2 },
+        { "slug": "timeouts-limits", "title": "Таймауты, лимиты и rate limiting", "anchor": "таймауты-лимиты-и-rate-limiting", "order": 3 }
+      ]
+    },
+    {
+      "slug": "balancing-production",
+      "title": "Балансировка и продакшен",
+      "file": "03-balancing-production.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "upstream-balancing", "title": "Upstream и балансировка", "anchor": "upstream-и-балансировка", "order": 1 },
+        { "slug": "websockets", "title": "WebSocket и SSE через nginx", "anchor": "websocket-и-sse-через-nginx", "order": 2 },
+        { "slug": "docker-compose-setup", "title": "nginx и FastAPI в docker-compose", "anchor": "nginx-и-fastapi-в-docker-compose", "order": 3 },
+        { "slug": "debugging-errors", "title": "Отладка: логи и типичные ошибки", "anchor": "отладка-логи-и-типичные-ошибки", "order": 4 }
+      ]
+    }
+  ]
+}

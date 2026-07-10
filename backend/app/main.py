@@ -23,6 +23,7 @@ from app.api.endpoints import (
     pet,
     progress,
     quizzes,
+    roadmap,
     search,
 )
 from app.config import get_settings
@@ -68,6 +69,7 @@ def create_app() -> FastAPI:
     app.include_router(pet.router, prefix="/api", tags=["pet"])
     app.include_router(cat.router, prefix="/api", tags=["cat"])
     app.include_router(search.router, prefix="/api", tags=["search"])
+    app.include_router(roadmap.router, prefix="/api", tags=["roadmap"])
     app.include_router(admin.router, prefix="/api", tags=["admin"])
 
     _mount_spa(app)

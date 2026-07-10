@@ -382,3 +382,50 @@ export interface AdminUserDetail {
   progress: ProgressOverviewOut;
   tests: TestsOverview;
 }
+
+// --- Roadmap (public /api/roadmap) ------------------------------------------
+export interface RoadmapResource {
+  type: "video" | "article" | "docs" | string;
+  lang: "ru" | "en" | string;
+  title: string;
+  url: string;
+  source: string;
+}
+
+export interface RoadmapLesson {
+  slug: string;
+  title: string;
+  order: number;
+  duration_minutes: number;
+  /** Lesson-specific links; [] => fall back to the course resources. */
+  resources: RoadmapResource[];
+}
+
+export interface RoadmapCourse {
+  slug: string;
+  title: string;
+  description: string;
+  summary: string;
+  resources: RoadmapResource[];
+  lessons: RoadmapLesson[];
+}
+
+/** A topic without an internal course — external resources only. */
+export interface RoadmapExtraNode {
+  slug: string;
+  title: string;
+  summary: string;
+  resources: RoadmapResource[];
+}
+
+export interface RoadmapStage {
+  slug: string;
+  title: string;
+  summary: string;
+  courses: RoadmapCourse[];
+  extra_nodes: RoadmapExtraNode[];
+}
+
+export interface RoadmapOut {
+  stages: RoadmapStage[];
+}

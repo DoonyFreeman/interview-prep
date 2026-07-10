@@ -1,0 +1,46 @@
+{
+  "slug": "kafka",
+  "title": "Kafka и брокеры сообщений",
+  "description": "Apache Kafka для Python-бэкендера: зачем нужен брокер событий, топики/партиции/оффсеты, репликация, producer и consumer groups, семантики доставки, ретраи и DLQ, aiokafka в FastAPI, transactional outbox, локальный запуск в docker-compose и выбор между Kafka и Celery.",
+  "order": 17,
+  "lessons": [
+    {
+      "slug": "architecture",
+      "title": "Kafka: зачем и как устроена",
+      "file": "01-architecture.md",
+      "order": 1,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "why-kafka", "title": "Что такое Kafka и зачем она нужна", "anchor": "что-такое-kafka-и-зачем-она-нужна", "order": 1 },
+        { "slug": "topics-partitions-offsets", "title": "Топики, партиции и оффсеты", "anchor": "топики-партиции-и-оффсеты", "order": 2 },
+        { "slug": "brokers-replication", "title": "Брокеры и репликация", "anchor": "брокеры-и-репликация", "order": 3 }
+      ]
+    },
+    {
+      "slug": "producers-consumers",
+      "title": "Производители и потребители",
+      "file": "02-producers-consumers.md",
+      "order": 2,
+      "duration_minutes": 26,
+      "concepts": [
+        { "slug": "producer-acks-keys", "title": "Producer: ключи, партиции и acks", "anchor": "producer-ключи-партиции-и-acks", "order": 1 },
+        { "slug": "consumer-groups", "title": "Consumer groups и ребалансировка", "anchor": "consumer-groups-и-ребалансировка", "order": 2 },
+        { "slug": "delivery-semantics", "title": "Семантики доставки", "anchor": "семантики-доставки", "order": 3 },
+        { "slug": "ordering-retries", "title": "Порядок, ретраи и DLQ", "anchor": "порядок-ретраи-и-dlq", "order": 4 }
+      ]
+    },
+    {
+      "slug": "kafka-in-python",
+      "title": "Kafka в Python-сервисе",
+      "file": "03-kafka-in-python.md",
+      "order": 3,
+      "duration_minutes": 24,
+      "concepts": [
+        { "slug": "python-clients", "title": "Python-клиенты: aiokafka и confluent-kafka", "anchor": "python-клиенты-aiokafka-и-confluent-kafka", "order": 1 },
+        { "slug": "outbox-pattern", "title": "Transactional outbox", "anchor": "transactional-outbox", "order": 2 },
+        { "slug": "local-setup", "title": "Kafka в docker-compose", "anchor": "kafka-в-docker-compose", "order": 3 },
+        { "slug": "kafka-vs-celery", "title": "Kafka или Celery: карта выбора", "anchor": "kafka-или-celery-карта-выбора", "order": 4 }
+      ]
+    }
+  ]
+}

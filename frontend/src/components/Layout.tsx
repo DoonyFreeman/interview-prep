@@ -113,6 +113,7 @@ export function Layout() {
 
           <nav className="ml-2 hidden items-center gap-1 sm:flex">
             <NavItem to="/" end label={t("nav.courses")} />
+            <NavItem to="/roadmap" label={t("nav.roadmap")} />
             <NavItem to="/glossary" label={t("nav.glossary")} />
             <NavItem to="/progress" label={t("nav.progress")} />
           </nav>

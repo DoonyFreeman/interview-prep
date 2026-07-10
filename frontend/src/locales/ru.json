@@ -53,7 +53,8 @@
     "settings": "Настройки",
     "profile": "Профиль",
     "logout": "Выйти",
-    "progress": "Прогресс"
+    "progress": "Прогресс",
+    "roadmap": "Роудмап"
   },
   "slang": {
     "title": "Сленг разработчика",
@@ -169,7 +170,8 @@
     "days": "{{count}} дн.",
     "today": "сегодня",
     "copy": "Копировать",
-    "copied": "Скопировано"
+    "copied": "Скопировано",
+    "close": "Закрыть"
   },
   "search": {
     "title": "Поиск по темам",
@@ -348,5 +350,21 @@
     "petLastActive": "Последний визит",
     "progressTitle": "Прогресс по курсам",
     "saved": "Сохранено"
+  },
+  "roadmap": {
+    "title": "Роудмап",
+    "subtitle": "Путь middle Python-бэкендера — от ядра языка до system design",
+    "lessonsOf": "{{done}} из {{total}} уроков",
+    "status": {
+      "done": "Пройден",
+      "attempted": "В процессе",
+      "none": "Не начат"
+    },
+    "openLesson": "Открыть урок",
+    "materials": "Материалы",
+    "courseMaterials": "Материалы курса",
+    "noMaterials": "Материалы появятся позже",
+    "externalTopic": "Внешняя тема",
+    "min": "мин"
   }
 }

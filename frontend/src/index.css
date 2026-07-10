@@ -92,6 +92,13 @@ html {
   text-rendering: optimizeLegibility;
   /* No grey flash on tap (iOS Safari / Chrome Android). */
   -webkit-tap-highlight-color: transparent;
+  /* Tell the UA to theme native widgets (scrollbars, form controls) to match.
+     `.dark` toggles on <html>, so the override below flips it in dark mode. */
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 /* iOS zooms the page when focusing a control smaller than 16px. Bump form
