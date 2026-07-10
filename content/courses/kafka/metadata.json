@@ -2,7 +2,7 @@
   "slug": "kafka",
   "title": "Kafka и брокеры сообщений",
   "description": "Apache Kafka для Python-бэкендера: зачем нужен брокер событий, топики/партиции/оффсеты, репликация, producer и consumer groups, семантики доставки, ретраи и DLQ, aiokafka в FastAPI, transactional outbox, локальный запуск в docker-compose и выбор между Kafka и Celery.",
-  "order": 21,
+  "order": 17,
   "lessons": [
     {
       "slug": "architecture",
