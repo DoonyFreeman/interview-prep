@@ -153,7 +153,9 @@ export function TestsPage() {
           const items = toResultItems(answers);
           if (items.length) record.mutate(items);
         }}
-        exitTo="/tests"
+        // Setup and run are two phases of the same route, so leaving is a state
+        // change — a link back to /tests would land on the page we're already on.
+        onExit={() => setPrepared(null)}
         exitLabel={t("tests.toSetup")}
         // Retry draws a genuinely new set from the server; the old run stays on
         // screen until it lands, so the page never blinks back to setup.

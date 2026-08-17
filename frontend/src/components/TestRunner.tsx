@@ -21,8 +21,17 @@ interface Props {
   prepared: PreparedMcq[];
   /** Called once, when the last question is answered and the run is scored. */
   onFinish: (answers: Answer[]) => void;
-  /** The ✕ during a run and the last button on the result screen. */
-  exitTo: string;
+  /**
+   * Leaving the run — the ✕ during a run and the last button on the result.
+   *
+   * Pass `exitTo` when the exit is a real navigation (the per-lesson test goes
+   * back to its lesson) and `onExit` when it returns to an earlier phase of the
+   * *same* route (the mixed test goes back to its setup panel). The distinction
+   * matters: a `<Link>` to the path you are already on is a no-op, so the mixed
+   * test's exit silently did nothing.
+   */
+  exitTo?: string;
+  onExit?: () => void;
   exitLabel: string;
   /** Start the same kind of run again with a fresh draw. */
   onRetry: () => void;
@@ -43,10 +52,43 @@ interface Props {
  * Grading is a plain index compare (the API ships `correct_index` for MCQ by
  * design); this component owns no data fetching.
  */
+/**
+ * The exit control, rendered as whichever element actually works: an anchor
+ * when there is somewhere to navigate to, a button when the caller just needs
+ * to change its own state.
+ */
+function Exit({
+  to,
+  onExit,
+  className,
+  ariaLabel,
+  children,
+}: {
+  to?: string;
+  onExit?: () => void;
+  className?: string;
+  ariaLabel?: string;
+  children: React.ReactNode;
+}) {
+  if (onExit) {
+    return (
+      <button type="button" onClick={onExit} className={className} aria-label={ariaLabel}>
+        {children}
+      </button>
+    );
+  }
+  return (
+    <Link to={to ?? "/"} className={className} aria-label={ariaLabel}>
+      {children}
+    </Link>
+  );
+}
+
 export function TestRunner({
   prepared,
   onFinish,
   exitTo,
+  onExit,
   exitLabel,
   onRetry,
   onRetryMistakes,
@@ -157,9 +199,14 @@ export function TestRunner({
               <span className="text-success">
                 {t("lessonTest.tally", { count: correctSoFar })}
               </span>
-              <Link to={exitTo} className="text-muted hover:text-ink" aria-label="close">
+              <Exit
+                to={exitTo}
+                onExit={onExit}
+                className="text-muted hover:text-ink"
+                ariaLabel={exitLabel}
+              >
                 ✕
-              </Link>
+              </Exit>
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
@@ -387,9 +434,15 @@ export function TestRunner({
             {t("lessonTest.retryMistakes")} · {missed.length}
           </Button>
         )}
-        <Link to={exitTo}>
-          <Button variant="ghost">{exitLabel}</Button>
-        </Link>
+        {onExit ? (
+          <Button variant="ghost" onClick={onExit}>
+            {exitLabel}
+          </Button>
+        ) : (
+          <Link to={exitTo ?? "/"}>
+            <Button variant="ghost">{exitLabel}</Button>
+          </Link>
+        )}
       </div>
     </div>
   );
