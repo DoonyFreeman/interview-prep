@@ -165,21 +165,88 @@ def test_mcq_are_well_formed(bundle):
     assert not problems, "MCQ problems:\n" + "\n".join(problems)
 
 
+def _lesson_mcqs(concept):
+    """Only the per-lesson self-test bank — the exam bank is extra and must not
+    be able to stand in for a missing lesson question."""
+    return [m for m in concept.mcqs if m.bank == "lesson"]
+
+
 def test_all_concepts_have_two_mcq(bundle):
-    """Phase 9.2: every concept of every course carries at least 2 MCQ, and the
-    whole curriculum totals 2 per concept (>= 692 across 346 concepts)."""
+    """Phase 9.2: every concept of every course carries at least 2 lesson-bank
+    MCQ, and the whole curriculum totals 2 per concept (>= 692 / 346 concepts)."""
     missing = [
-        f"{c.slug}/{l.slug}/{con.slug} ({len(con.mcqs)})"
+        f"{c.slug}/{l.slug}/{con.slug} ({len(_lesson_mcqs(con))})"
         for c in bundle.courses
         for l in c.lessons
         for con in l.concepts
-        if len(con.mcqs) < 2
+        if len(_lesson_mcqs(con)) < 2
     ]
     assert not missing, "concepts without 2 MCQ: " + ", ".join(missing)
     total = sum(
-        len(con.mcqs) for c in bundle.courses for l in c.lessons for con in l.concepts
+        len(_lesson_mcqs(con))
+        for c in bundle.courses
+        for l in c.lessons
+        for con in l.concepts
     )
     assert total >= 692
+
+
+def test_exam_bank_is_separate_and_well_formed(bundle):
+    """The exam bank (`exam.json`) exists only for the mixed /tests section: its
+    slugs are namespaced so they can't collide with a lesson question, and it
+    hangs off real concepts (the loader would silently drop unknown keys)."""
+    exam = [
+        (c.slug, l.slug, con.slug, m)
+        for c in bundle.courses
+        for l in c.lessons
+        for con in l.concepts
+        for m in con.mcqs
+        if m.bank == "exam"
+    ]
+    for course, lesson, concept, m in exam:
+        assert m.slug.startswith("exam:"), f"{course}/{lesson}: un-namespaced {m.slug}"
+        assert m.slug == f"exam:{course}:{lesson}:{concept}:{m.order_index}"
+        assert m.explanation_md.strip(), f"{m.slug}: no explanation"
+
+
+def test_exam_bank_answers_are_not_guessable_by_length(content_root):
+    """The point of the exam bank is questions you can't pass by pattern-matching.
+    The most common tell is length: authors qualify the correct answer and leave
+    the distractors as stubs, so "pick the longest" wins. Guard it in aggregate —
+    the correct option may be the longest no more often than roughly chance."""
+    import statistics
+
+    for path in sorted((content_root / "courses").glob("*/exam.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        questions = [
+            q
+            for concepts in data.values()
+            for items in concepts.values()
+            for q in items
+        ]
+        if not questions:
+            continue
+
+        longest = 0
+        ratios = []
+        for q in questions:
+            lengths = [len(o) for o in q["options"]]
+            right = lengths[q["correct"]]
+            wrong = [n for i, n in enumerate(lengths) if i != q["correct"]]
+            if right == max(lengths) and lengths.count(max(lengths)) == 1:
+                longest += 1
+            ratios.append(right / statistics.mean(wrong))
+
+        share = longest / len(questions)
+        mean_ratio = statistics.mean(ratios)
+        assert share <= 0.40, (
+            f"{path.parent.name}: correct answer is the longest option in "
+            f"{share:.0%} of exam questions — guessable without reading"
+        )
+        assert mean_ratio <= 1.35, (
+            f"{path.parent.name}: correct answer averages {mean_ratio:.2f}x the "
+            "distractor length"
+        )
 
 
 # --------------------------------------------------------------------------- #

@@ -117,9 +117,10 @@ class Question(Base):
 
 
 class McqQuestion(Base):
-    """A closed multiple-choice question for the lesson self-test (no LLM).
+    """A closed multiple-choice question (no LLM).
 
-    Mirrors ``content/courses/<slug>/tests.json``. Unlike the open ``Question``
+    Mirrors ``content/courses/<slug>/tests.json`` (``bank="lesson"``) and the
+    optional ``exam.json`` (``bank="exam"``). Unlike the open ``Question``
     (graded by the LLM against a *hidden* ``reference_answer``), an MCQ is graded
     by comparing the chosen option index — so the correct index + explanation are
     sent to the client and graded there for instant feedback. ``slug`` is a stable
@@ -134,6 +135,12 @@ class McqQuestion(Base):
     concept_id: Mapped[int] = mapped_column(
         ForeignKey("concepts.id", ondelete="CASCADE"), index=True
     )
+    #: Which bank this question belongs to — a discriminator mirroring the
+    #: glossary's ``kind``. ``lesson`` is the per-lesson self-test (what the
+    #: lesson badge and the tests overview score against); ``exam`` is the extra
+    #: applied/scenario bank authored only for the mixed ``/tests`` section, so
+    #: it never changes a lesson's score.
+    bank: Mapped[str] = mapped_column(String(16), default="lesson", index=True)
     type: Mapped[str] = mapped_column(String(20), default="single")  # single|boolean
     text: Mapped[str] = mapped_column(Text)
     options: Mapped[str] = mapped_column(Text, default="[]")  # JSON list[str]

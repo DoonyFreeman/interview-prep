@@ -23,8 +23,10 @@ class QuestionData:
 
 @dataclass
 class McqData:
-    """A closed multiple-choice question (lesson self-test). ``slug`` is derived by
-    the loader (``course:lesson:concept:i``) so it's stable across re-seeds."""
+    """A closed multiple-choice question. ``slug`` is derived by the loader
+    (``course:lesson:concept:i``, prefixed ``exam:`` for the exam bank) so it's
+    stable across re-seeds. ``bank`` is ``lesson`` (from ``tests.json``) or
+    ``exam`` (from the optional ``exam.json``)."""
 
     slug: str
     type: str
@@ -34,6 +36,7 @@ class McqData:
     explanation_md: str = ""
     difficulty: int = 3
     order_index: int = 0
+    bank: str = "lesson"
 
 
 @dataclass
@@ -125,8 +128,16 @@ def load_content(content_dir: str | Path) -> ContentBundle:
                 else {}
             )
 
+            # Optional extra pool for the mixed /tests section only.
+            exam_file = course_path / "exam.json"
+            exam_map: dict = (
+                json.loads(exam_file.read_text(encoding="utf-8"))
+                if exam_file.is_file()
+                else {}
+            )
+
             bundle.courses.append(
-                _parse_course(course_path, meta, questions_map, tests_map)
+                _parse_course(course_path, meta, questions_map, tests_map, exam_map)
             )
 
     _load_glossary(root, bundle)
@@ -191,7 +202,7 @@ def _load_slang(root: Path, bundle: ContentBundle) -> None:
 
 
 def _parse_course(
-    course_path: Path, meta: dict, questions_map: dict, tests_map: dict
+    course_path: Path, meta: dict, questions_map: dict, tests_map: dict, exam_map: dict
 ) -> CourseData:
     course_slug = meta["slug"]
     course = CourseData(
@@ -217,6 +228,7 @@ def _parse_course(
 
         lesson_questions = questions_map.get(lesson_slug, {})
         lesson_tests = tests_map.get(lesson_slug, {})
+        lesson_exam = exam_map.get(lesson_slug, {})
         for concept_meta in lesson_meta.get("concepts", []):
             concept_slug = concept_meta["slug"]
             concept = ConceptData(
@@ -234,20 +246,31 @@ def _parse_course(
                         order_index=q.get("order", i),
                     )
                 )
-            for i, m in enumerate(lesson_tests.get(concept_slug, [])):
-                concept.mcqs.append(
-                    McqData(
-                        # Stable id from slugs + position — survives re-seed.
-                        slug=f"{course_slug}:{lesson_slug}:{concept_slug}:{i}",
-                        type=m.get("type", "single"),
-                        text=m["text"],
-                        options=list(m["options"]),
-                        correct_index=int(m["correct"]),
-                        explanation_md=m.get("explanation_md", ""),
-                        difficulty=m.get("difficulty", 3),
-                        order_index=m.get("order", i),
+            # Both banks share the MCQ shape; only the slug prefix differs, so
+            # an exam question can never collide with a lesson one.
+            for bank, source in (
+                ("lesson", lesson_tests),
+                ("exam", lesson_exam),
+            ):
+                prefix = "" if bank == "lesson" else "exam:"
+                for i, m in enumerate(source.get(concept_slug, [])):
+                    concept.mcqs.append(
+                        McqData(
+                            # Stable id from slugs + position — survives re-seed.
+                            slug=(
+                                f"{prefix}{course_slug}:{lesson_slug}"
+                                f":{concept_slug}:{i}"
+                            ),
+                            type=m.get("type", "single"),
+                            text=m["text"],
+                            options=list(m["options"]),
+                            correct_index=int(m["correct"]),
+                            explanation_md=m.get("explanation_md", ""),
+                            difficulty=m.get("difficulty", 3),
+                            order_index=m.get("order", i),
+                            bank=bank,
+                        )
                     )
-                )
             lesson.concepts.append(concept)
 
         course.lessons.append(lesson)

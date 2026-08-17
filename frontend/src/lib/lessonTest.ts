@@ -13,7 +13,16 @@ export interface PreparedOption {
   correct: boolean;
 }
 
-export interface PreparedMcq {
+/** Where a question came from — a mixed test spans lessons, so every question
+ *  carries its own "back to theory" target and label. */
+export interface McqOrigin {
+  courseSlug: string;
+  lessonSlug: string;
+  courseTitle: string;
+  lessonTitle: string;
+}
+
+export interface PreparedMcq extends McqOrigin {
   slug: string;
   type: string;
   text: string;
@@ -24,7 +33,9 @@ export interface PreparedMcq {
   options: PreparedOption[];
 }
 
-export interface Answer {
+// The origin is optional on an Answer: scoring and result posting never need
+// it, and it keeps callers that only care about correct/incorrect simple.
+export interface Answer extends Partial<McqOrigin> {
   slug: string;
   conceptTitle: string;
   anchor: string;
@@ -34,6 +45,14 @@ export interface Answer {
   pickedLabel?: string;
   correctLabel?: string;
   explanationMd?: string;
+}
+
+/** The lesson deep-link for a question, anchored at its concept's section.
+ *  Empty when the origin is unknown — callers should skip the link then. */
+export function theoryPath(q: Partial<McqOrigin> & { anchor?: string }): string {
+  if (!q.courseSlug || !q.lessonSlug) return "";
+  const base = `/courses/${q.courseSlug}/lessons/${q.lessonSlug}`;
+  return q.anchor ? `${base}#${q.anchor}` : base;
 }
 
 /** Deterministic PRNG (mulberry32) so a seed reproduces the same quiz in tests. */
@@ -65,6 +84,9 @@ export interface PrepareOptions {
   limit?: number;
   /** Seed the PRNG for reproducible order; omit for Math.random. */
   seed?: number;
+  /** Origin for questions that don't carry their own (the per-lesson test,
+   *  where the whole run comes from the lesson already named in the URL). */
+  origin?: Partial<McqOrigin>;
 }
 
 /** Shuffle the question order and each question's options for a run. */
@@ -84,6 +106,7 @@ export function prepareTest(
   pool = shuffle(pool, rng);
   if (opts.limit && opts.limit > 0) pool = pool.slice(0, opts.limit);
 
+  const origin = opts.origin ?? {};
   return pool.map((q) => ({
     slug: q.slug,
     type: q.type,
@@ -92,6 +115,10 @@ export function prepareTest(
     conceptTitle: q.concept_title,
     anchor: q.anchor,
     explanationMd: q.explanation_md,
+    courseSlug: q.course_slug || origin.courseSlug || "",
+    lessonSlug: q.lesson_slug || origin.lessonSlug || "",
+    courseTitle: q.course_title || origin.courseTitle || "",
+    lessonTitle: q.lesson_title || origin.lessonTitle || "",
     options: shuffle(
       q.options.map((label, i) => ({ label, correct: i === q.correct_index })),
       rng,

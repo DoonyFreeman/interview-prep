@@ -54,7 +54,8 @@
     "profile": "Profile",
     "logout": "Log out",
     "progress": "Progress",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "tests": "Tests"
   },
   "slang": {
     "title": "Developer slang",
@@ -160,7 +161,10 @@
     "petBest": "best {{count}}",
     "achievements": "Achievements",
     "achievementDays": "{{count}} d.",
-    "petHat": "Hat"
+    "petHat": "Hat",
+    "navTabs": "Bottom bar sections",
+    "navTabsHint": "What the phone's bottom bar shows: between {{min}} and {{max}} sections.",
+    "navTabsCount": "{{count}} of {{max}} selected"
   },
   "common": {
     "loading": "Loading…",
@@ -326,6 +330,41 @@
     "retry": "Retry",
     "retryMistakes": "Mistakes only",
     "savingError": "Couldn't save the result"
+  },
+  "tests": {
+    "title": "Tests",
+    "subtitle": "Mixed tests across every topic — {{count}} questions in the bank",
+    "empty": "No questions yet",
+    "presetRandom": "Random",
+    "presetRandomNote": "20 questions at random from every topic",
+    "presetSmart": "Smart pick",
+    "presetSmartNote": "What you don't know yet, or keep forgetting",
+    "presetMistakes": "My mistakes",
+    "presetMistakesNote": "Only the ones you got wrong last time",
+    "customTitle": "Build your own test",
+    "count": "Questions",
+    "mode": "Selection",
+    "modeSmart": "Smart",
+    "modeRandom": "Random",
+    "modeWeak": "Weak",
+    "modeMistakes": "Mistakes",
+    "modeHint": {
+      "smart": "Asks more about what you haven't seen or got wrong. Mastered questions show up rarely.",
+      "random": "An honest random draw: every question in the bank is equally likely.",
+      "weak": "Only new questions and the ones your last answer got wrong.",
+      "mistakes": "Only questions your last answer got wrong — pure error correction."
+    },
+    "source": "Source",
+    "source_lesson": "From lessons",
+    "source_exam": "Tests only",
+    "topics": "Topics",
+    "allTopics": "Select all",
+    "allTopicsHint": "Nothing selected — drawing from every topic.",
+    "selectedHint": "{{count}} topics selected",
+    "start": "Start",
+    "poolInfo": "{{count}} of {{pool}} matching questions",
+    "poolEmpty": "No questions match these filters",
+    "toSetup": "Back to setup"
   },
   "progress": {
     "title": "What's left",

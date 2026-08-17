@@ -175,6 +175,14 @@ class McqQuestionOut(BaseModel):
     concept_title: str
     anchor: str  # markdown heading anchor for the "back to theory" deep-link
     difficulty: int
+    # Where the question comes from. A lesson test already knows this from the
+    # URL, so it's left blank there; the mixed test spans lessons and needs each
+    # question to carry its own deep link + label.
+    bank: str = "lesson"
+    course_slug: str = ""
+    course_title: str = ""
+    lesson_slug: str = ""
+    lesson_title: str = ""
 
 
 class LessonTestOut(BaseModel):
@@ -215,6 +223,42 @@ class TestsOverviewOut(BaseModel):
     passed: int
     started: int
     courses: list[TestsCourseOverviewOut]
+
+
+# --- Mixed test (the /tests section: any course, any count) ----------------- #
+class TestTopicOut(BaseModel):
+    """One selectable topic on the mixed-test setup screen (= one course)."""
+
+    slug: str
+    title: str
+    lesson_total: int  # questions from the lesson self-tests
+    exam_total: int  # extra applied questions authored for /tests
+    total: int
+    answered: int  # of `total`, attempted at least once by this user
+    weak: int  # of `total`, last answer was wrong
+
+
+class TestTopicsOut(BaseModel):
+    topics: list[TestTopicOut]
+    total: int
+    lesson_total: int
+    exam_total: int
+    answered: int
+    weak: int
+
+
+class TestMixOut(BaseModel):
+    """A generated mixed test. `pool` is how many questions matched the filter
+    before the count cap, so the UI can say "20 of 312"."""
+
+    count: int
+    pool: int
+    questions: list[McqQuestionOut]
+
+
+class MixResultOut(BaseModel):
+    recorded: int  # MCQ stats written (unknown slugs are ignored)
+    correct: int
 
 
 # --------------------------------------------------------------------------- #
