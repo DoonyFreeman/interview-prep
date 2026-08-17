@@ -69,7 +69,7 @@ export function ShortcutsHelp() {
         onClick={() => setOpen(true)}
         title={t("shortcuts.title")}
         aria-label={t("shortcuts.title")}
-        className="hidden h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-colors hover:text-ink sm:flex"
+        className="icon-chip hidden items-center justify-center sm:inline-flex"
       >
         <IconKeyboard className="h-4 w-4" />
       </button>
@@ -97,7 +97,7 @@ export function ShortcutsHelp() {
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
               transition={{ type: "spring", stiffness: 420, damping: 30 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm rounded-2xl border border-border bg-surface p-6 shadow-pop"
+              className="glass glass-pop relative w-full max-w-sm rounded-2xl border border-border p-6"
             >
               <h2 className="flex items-center gap-2 font-display text-lg font-bold text-ink">
                 <IconKeyboard className="h-5 w-5 text-primary" />

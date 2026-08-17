@@ -276,6 +276,14 @@ export interface McqQuestion {
   concept_title: string;
   anchor: string;
   difficulty: number;
+  /** Which bank: the lesson self-test, or the extra pool for /tests. */
+  bank?: "lesson" | "exam" | string;
+  /** Origin — sent only by the mixed test, where each question is from a
+   *  different lesson and needs its own "back to theory" link. */
+  course_slug?: string;
+  course_title?: string;
+  lesson_slug?: string;
+  lesson_title?: string;
 }
 
 export interface LessonTest {
@@ -312,6 +320,48 @@ export interface TestsOverview {
   passed: number;
   started: number;
   courses: TestsCourseOverview[];
+}
+
+// --- Mixed test (/tests): pick topics + count, questions from any lesson ----
+export type MixMode = "smart" | "random" | "weak" | "mistakes";
+export type MixBank = "lesson" | "exam";
+
+export interface TestTopic {
+  slug: string;
+  title: string;
+  lesson_total: number;
+  exam_total: number;
+  total: number;
+  answered: number;
+  weak: number;
+}
+
+export interface TestTopics {
+  topics: TestTopic[];
+  total: number;
+  lesson_total: number;
+  exam_total: number;
+  answered: number;
+  weak: number;
+}
+
+export interface TestMixConfig {
+  courses: string[]; // empty = all
+  banks: MixBank[];
+  mode: MixMode;
+  count: number;
+}
+
+export interface TestMix {
+  count: number;
+  /** How many questions matched the filter before the count cap. */
+  pool: number;
+  questions: McqQuestion[];
+}
+
+export interface MixResult {
+  recorded: number;
+  correct: number;
 }
 
 // --- Pet (corner cat) state ------------------------------------------------

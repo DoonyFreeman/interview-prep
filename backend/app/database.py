@@ -68,12 +68,21 @@ def ensure_schema_upgrades(connection) -> None:
 
     Takes the sync SQLAlchemy ``Connection`` handed in by ``run_sync``.
     """
-    existing = {
-        row[1]
-        for row in connection.exec_driver_sql("PRAGMA table_info(pet_state)").fetchall()
-    }
-    if existing and "hat" not in existing:
-        connection.exec_driver_sql("ALTER TABLE pet_state ADD COLUMN hat VARCHAR(20)")
+
+    def add_column(table: str, column: str, ddl: str) -> None:
+        rows = connection.exec_driver_sql(f"PRAGMA table_info({table})").fetchall()
+        existing = {row[1] for row in rows}
+        # An empty PRAGMA means the table doesn't exist yet — create_all just
+        # made it with the column already in place, so there is nothing to add.
+        if existing and column not in existing:
+            connection.exec_driver_sql(
+                f"ALTER TABLE {table} ADD COLUMN {column} {ddl}"
+            )
+
+    add_column("pet_state", "hat", "VARCHAR(20)")
+    # `bank` splits the MCQ table into the lesson self-test and the extra "exam"
+    # pool; the DEFAULT backfills every pre-existing row as a lesson question.
+    add_column("mcq_questions", "bank", "VARCHAR(16) DEFAULT 'lesson'")
 
 
 async def init_db() -> None:

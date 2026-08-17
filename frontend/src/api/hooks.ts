@@ -19,6 +19,7 @@ import type {
   LessonQuestions,
   LessonTest,
   LessonTestProgress,
+  MixResult,
   PetState,
   ProgressOverviewOut,
   QuestionAttempts,
@@ -28,8 +29,11 @@ import type {
   ReviewQueue,
   RoadmapOut,
   SearchOut,
+  TestMix,
+  TestMixConfig,
   TestResultItem,
   TestsOverview,
+  TestTopics,
   TokenOut,
   UserOut,
 } from "./types";
@@ -301,6 +305,48 @@ export function useRecordLessonTest(courseSlug: string, lessonSlug: string) {
         queryKey: ["lesson-test-progress", courseSlug, lessonSlug],
       });
       qc.invalidateQueries({ queryKey: ["tests-overview"] });
+    },
+  });
+}
+
+// --- Mixed test (/tests) ---------------------------------------------------
+export function useTestTopics() {
+  return useQuery({
+    queryKey: ["test-topics"],
+    queryFn: async () => (await api.get<TestTopics>("/quiz/tests/topics")).data,
+  });
+}
+
+/**
+ * Generating a mix is an *action*, not a cached read — the whole point is that
+ * pressing "start" again gives a different draw. So it's a mutation, and the
+ * result is held in page state rather than the query cache.
+ */
+export function useGenerateMix() {
+  return useMutation({
+    mutationFn: async (config: TestMixConfig) => {
+      const params = new URLSearchParams({
+        courses: config.courses.join(","),
+        banks: config.banks.join(","),
+        mode: config.mode,
+        count: String(config.count),
+      });
+      return (await api.get<TestMix>(`/quiz/tests/mix?${params}`)).data;
+    },
+  });
+}
+
+export function useRecordMix() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (items: TestResultItem[]) =>
+      (await api.post<MixResult>("/quiz/tests/mix/result", { items })).data,
+    onSuccess: () => {
+      // A mixed run can complete a lesson's test, so the lesson-level views
+      // (badges, dashboard) are stale too — not just the topic tallies.
+      qc.invalidateQueries({ queryKey: ["test-topics"] });
+      qc.invalidateQueries({ queryKey: ["tests-overview"] });
+      qc.invalidateQueries({ queryKey: ["lesson-test-progress"] });
     },
   });
 }

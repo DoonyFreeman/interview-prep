@@ -7,12 +7,19 @@
 /* ------------------------------------------------------------------ */
 @theme {
   --color-bg: #f7f5f0;
-  --color-surface: #ffffff;
-  --color-surface-2: #fbfaf7;
+  /* Surfaces are deliberately *translucent* so the fixed background mesh
+     (body::before) tints through every card — that's what makes flat panels
+     read as floating glass rather than painted slabs. They carry no blur of
+     their own: blur belongs to the chrome layer (`.glass`), never to content
+     that scrolls. See docs/superpowers/specs/2026-08-16-liquid-glass-*.md. */
+  --color-surface: rgb(255 255 255 / 0.82);
+  --color-surface-2: rgb(250 248 244 / 0.72);
   --color-ink: #1b1a17;
   --color-muted: #6c675e;
   --color-faint: #9b958a;
-  --color-border: #e9e4da;
+  /* Alpha, not a solid tint: an opaque hairline over a translucent card is
+     the single biggest tell that the "glass" is fake. */
+  --color-border: rgb(38 34 28 / 0.1);
 
   --color-primary: #4f46e5;
   --color-primary-strong: #4338ca;
@@ -49,18 +56,51 @@
   --shadow-pop: 0 10px 25px rgba(27, 26, 23, 0.1),
     0 20px 48px rgba(27, 26, 23, 0.12);
 
-  --radius-card: 16px;
+  /* Softer, iOS-leaning corners. Overriding Tailwind's own radius tokens
+     re-rounds every existing `rounded-xl` / `rounded-2xl` in the app at once,
+     so no component markup has to change. */
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-card: 20px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Glass — the chrome layer only (header, tab bar, dialogs, toasts).   */
+/* Content that scrolls never gets a backdrop-filter: 20+ blurred      */
+/* cards is what makes this kind of design stutter on a phone.         */
+/* ------------------------------------------------------------------ */
+/* Wordmark ink. The supplied logo paints "iprep" in a near-black violet, which
+   is all but invisible on the dark theme — so the two gradient stops are tokens
+   and the dark theme swaps them for a light lavender. The light values are the
+   authored ones, unchanged. */
+:root {
+  --logo-word-a: #2a124a;
+  --logo-word-b: #4a247d;
+}
+.dark {
+  --logo-word-a: #ece6ff;
+  --logo-word-b: #b9a3f5;
+}
+
+:root {
+  --glass-bg: rgb(255 255 255 / 0.6);
+  --glass-bg-strong: rgb(255 255 255 / 0.88);
+  --glass-blur: 20px;
+  --glass-saturate: 180%;
+  /* The inner top highlight is what actually sells "pane of glass" — more so
+     than the blur. Kept as a token so light/dark can differ sharply. */
+  --glass-rim: inset 0 1px 0 rgb(255 255 255 / 0.75);
 }
 
 /* Dark theme — warm dark neutrals + lifted primary/accent for contrast. */
 .dark {
   --color-bg: #14130f;
-  --color-surface: #1d1b16;
-  --color-surface-2: #25221b;
+  --color-surface: rgb(33 30 24 / 0.74);
+  --color-surface-2: rgb(45 41 33 / 0.64);
   --color-ink: #f2eee6;
   --color-muted: #a8a092;
   --color-faint: #786f62;
-  --color-border: #322e26;
+  --color-border: rgb(255 248 235 / 0.1);
 
   --color-primary: #8b85f8;
   --color-primary-strong: #a29cfb;
@@ -84,6 +124,13 @@
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-raised: 0 6px 16px rgba(0, 0, 0, 0.4);
   --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+  /* Dark glass is its own recipe, not the light one inverted: the pane must
+     sit *lighter* than the page behind it, and the rim drops to a whisper —
+     a bright edge on dark reads as a bug, not as a highlight. */
+  --glass-bg: rgb(40 36 29 / 0.62);
+  --glass-bg-strong: rgb(38 34 27 / 0.9);
+  --glass-rim: inset 0 1px 0 rgb(255 255 255 / 0.07);
 }
 
 html {
@@ -115,26 +162,143 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--color-ink);
-  /* Atmospheric depth: two faint colour washes fixed behind the content,
-     so flat surfaces read as floating rather than painted onto a slab. */
+}
+
+/* Atmospheric depth: three faint colour washes on a viewport-fixed layer
+   behind the content, so translucent surfaces have something to be
+   translucent *against*. This is a real fixed element rather than
+   `background-attachment: fixed`, which iOS Safari handles badly (it either
+   ignores it or repaints the whole layer on every scroll frame). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image:
     radial-gradient(
-      62rem 62rem at 12% -8%,
-      color-mix(in oklab, var(--color-primary) 9%, transparent),
+      62rem 62rem at 10% -10%,
+      color-mix(in oklab, var(--color-primary) 12%, transparent),
       transparent 60%
     ),
     radial-gradient(
-      48rem 48rem at 105% 0%,
-      color-mix(in oklab, var(--color-accent) 8%, transparent),
+      52rem 52rem at 106% 2%,
+      color-mix(in oklab, var(--color-accent) 10%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      46rem 46rem at 48% 108%,
+      color-mix(in oklab, var(--color-celebrate) 8%, transparent),
       transparent 55%
     );
-  background-attachment: fixed;
-  background-repeat: no-repeat;
 }
 
 /* Headings and brand wordmarks use the display family. */
 .font-display {
   font-family: var(--font-display);
+}
+
+/* ------------------------------------------------------------------ */
+/* .glass — the floating-chrome material.                              */
+/* Deliberately NOT a Tailwind utility: it lives outside @layer, so it  */
+/* wins over any bg-* that might be left on an element it's applied to. */
+/* Apply it to fixed/sticky chrome only, and never nest one inside      */
+/* another — glass over glass just reads as mud.                       */
+/* ------------------------------------------------------------------ */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur))
+    saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--glass-rim), var(--shadow-raised);
+}
+
+/* Dialogs are *denser* glass than nav chrome, and for a concrete reason: they
+   sit over a 50%-black scrim, so a 60%-opaque pane samples a darkened page and
+   turns muddy grey. They also need the deeper shadow — which can't come from
+   `shadow-pop` at the call site, since unlayered `.glass` beats a layered
+   Tailwind utility. */
+.glass-pop {
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-rim), var(--shadow-pop);
+}
+
+/* ------------------------------------------------------------------ */
+/* .icon-chip — the small square controls in the header (search, keyboard
+   shortcuts, theme). One place for the tactile hover/press feel so the
+   cluster reads as a set. Deliberately sets no `display`: the shortcuts
+   button needs `hidden sm:inline-flex`, and this rule is unlayered, so a
+   `display` here would beat Tailwind's `hidden` and force it visible.    */
+/* ------------------------------------------------------------------ */
+.icon-chip {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.icon-chip:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+.icon-chip:active {
+  transform: translateY(0) scale(0.94);
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-chip,
+  .icon-chip:hover,
+  .icon-chip:active {
+    transform: none;
+  }
+}
+
+/* Firefox before 103 and anything else without backdrop-filter would show a
+   60%-transparent panel with text scrolling straight through it. Fall back to
+   the (already translucent, but readable) surface colour. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--color-surface);
+  }
+}
+
+/* "Reduce Transparency" (iOS/macOS accessibility). Pair to the reduced-motion
+   handling below: opt the whole app back to solid surfaces, chrome included. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --color-surface: #ffffff;
+    --color-surface-2: #fbfaf7;
+    --color-border: #e9e4da;
+    --glass-bg: #ffffff;
+    --glass-bg-strong: #ffffff;
+    --glass-rim: 0 0 0 0 transparent;
+  }
+  .dark {
+    --color-surface: #1d1b16;
+    --color-surface-2: #25221b;
+    --color-border: #322e26;
+    --glass-bg: #1d1b16;
+    --glass-bg-strong: #1d1b16;
+    --glass-rim: 0 0 0 0 transparent;
+  }
+  .glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: var(--shadow-raised);
+  }
+  .glass-pop {
+    box-shadow: var(--shadow-pop);
+  }
+  body::before {
+    display: none;
+  }
 }
 
 /* Respect users who ask for less motion — kill transitions/animations. */

@@ -5,7 +5,7 @@ All routes require a Bearer JWT. The reference answer never leaves the server.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import get_current_user
@@ -20,10 +20,13 @@ from app.schemas import (
     LessonQuestionsOut,
     LessonTestOut,
     LessonTestProgressOut,
+    MixResultOut,
     QuestionAttemptsOut,
     QuestionOut,
+    TestMixOut,
     TestResultIn,
     TestsOverviewOut,
+    TestTopicsOut,
 )
 from app.services import lesson_test, quiz
 
@@ -72,6 +75,49 @@ async def tests_overview(
 ):
     """Per-course + overall test status (lessons started/passed) for the dashboard."""
     return await lesson_test.tests_overview(session, user.id)
+
+
+# --- Mixed test (/tests): pick topics + count, questions from any lesson ---- #
+@router.get("/quiz/tests/topics", response_model=TestTopicsOut)
+async def mix_topics(
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Selectable topics with question counts + this user's answered/weak tallies."""
+    return await lesson_test.mix_topics(session, user.id)
+
+
+@router.get("/quiz/tests/mix", response_model=TestMixOut)
+async def tests_mix(
+    courses: str = Query("", description="Comma-separated course slugs; empty = all"),
+    banks: str = Query("lesson,exam", description="Comma-separated: lesson, exam"),
+    mode: str = Query("smart", description="smart | random | weak | mistakes"),
+    count: int = Query(20, ge=1, le=lesson_test.MAX_MIX_COUNT),
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Generate one mixed test. Selection is server-side (the full bank is far
+    too big to ship to the client just to keep a handful of questions)."""
+    return await lesson_test.generate_mix(
+        session,
+        user.id,
+        courses=[c for c in courses.split(",") if c],
+        banks=[b for b in banks.split(",") if b],
+        mode=mode,
+        count=count,
+    )
+
+
+@router.post("/quiz/tests/mix/result", response_model=MixResultOut)
+async def record_mix_result(
+    data: TestResultIn,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    """Record a finished mixed run; recomputes every lesson score it touched."""
+    return await lesson_test.record_mix_results(
+        session, user.id, [(i.slug, i.correct) for i in data.items]
+    )
 
 
 @router.get(

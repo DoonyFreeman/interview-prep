@@ -6,6 +6,7 @@ import {
   mistakeSlugs,
   scorePct,
   toResultItems,
+  theoryPath,
   type Answer,
 } from "./lessonTest";
 import type { McqQuestion } from "../api/types";
@@ -116,5 +117,40 @@ describe("shuffle + rng", () => {
     expect(shuffle([1, 2, 3, 4, 5], makeRng(7))).toEqual(
       shuffle([1, 2, 3, 4, 5], makeRng(7)),
     );
+  });
+});
+
+// --- origin (mixed test spans lessons) --------------------------------------
+describe("origin", () => {
+  const q = (over: Partial<McqQuestion> = {}): McqQuestion => ({
+    slug: "s",
+    type: "single",
+    text: "t",
+    options: ["a", "b"],
+    correct_index: 0,
+    explanation_md: "",
+    concept_slug: "c",
+    concept_title: "C",
+    anchor: "anchor",
+    difficulty: 3,
+    ...over,
+  });
+
+  it("falls back to the run's origin when a question carries none", () => {
+    const [p] = prepareTest([q()], {
+      origin: { courseSlug: "python-core", lessonSlug: "gil" },
+    });
+    expect(theoryPath(p)).toBe("/courses/python-core/lessons/gil#anchor");
+  });
+
+  it("prefers the question's own origin over the fallback", () => {
+    const [p] = prepareTest([q({ course_slug: "redis", lesson_slug: "keys" })], {
+      origin: { courseSlug: "python-core", lessonSlug: "gil" },
+    });
+    expect(theoryPath(p)).toBe("/courses/redis/lessons/keys#anchor");
+  });
+
+  it("yields no path at all when the origin is unknown", () => {
+    expect(theoryPath({ anchor: "x" })).toBe("");
   });
 });

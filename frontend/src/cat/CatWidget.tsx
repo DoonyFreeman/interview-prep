@@ -3,10 +3,12 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCatThoughts } from "../api/hooks";
 import { pickThought, type CatThought } from "../lib/cat";
+import { CatBurst } from "./CatBurst";
 import { CatSprite } from "./CatSprite";
 import { ThoughtBubble } from "./ThoughtBubble";
 import { useCat } from "./useCat";
 import { useCatMood, type CatMood, type CatReaction } from "./useCatMood";
+import { IconPaw } from "../components/icons";
 
 const EASE_SOFT = [0.22, 1, 0.36, 1] as const; // smooth, gentle ease-out
 
@@ -77,9 +79,6 @@ function moodMotion(mood: CatMood, reaction: CatReaction, reduced: boolean) {
       };
   }
 }
-
-// Little tokens of affection that float up when you tap the cat.
-const PARTICLES = ["❤️", "✨", "⭐", "🐾", "🎵", "😻"];
 
 // Anti-repeat: remember the last N thought keys across reloads so the cat keeps
 // varying what it says even after a page refresh.
@@ -152,9 +151,10 @@ export function CatWidget() {
       <button
         onClick={() => cat.setHidden(false)}
         title={petName}
-        className="fixed right-3 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-40 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-base shadow-card transition-transform hover:scale-110 sm:bottom-3"
+        className="fixed right-3 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-muted shadow-card transition-transform hover:scale-110 hover:text-accent sm:bottom-3"
+        aria-label={petName}
       >
-        <span aria-hidden>🐾</span>
+        <IconPaw className="h-[18px] w-[18px]" />
       </button>
     );
   }
@@ -162,7 +162,7 @@ export function CatWidget() {
   const { animate, transition } = moodMotion(mood, reaction, reducedMotion);
 
   return (
-    <div className="fixed right-3 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-40 sm:right-4 sm:bottom-4">
+    <div className="fixed right-3 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 sm:right-4 sm:bottom-4">
       <AnimatePresence>
         {open && (
           <ThoughtBubble
@@ -178,24 +178,14 @@ export function CatWidget() {
         )}
       </AnimatePresence>
 
-      {/* A little heart/sparkle floats up on each tap. */}
-      {!reducedMotion && (
-        <AnimatePresence>
-          {mood === "play" && (
-            <motion.span
-              key={playId}
-              initial={{ opacity: 0, y: 4, scale: 0.5 }}
-              animate={{ opacity: [0, 1, 1, 0], y: -30, scale: 1.1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.1, ease: "easeOut" }}
-              className="pointer-events-none absolute right-6 top-1 select-none text-sm"
-              aria-hidden
-            >
-              {PARTICLES[playId % PARTICLES.length]}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      )}
+      {/* A spray of hearts/stars/paws/notes on each tap. Keyed by `playId` so
+          every tap mounts a fresh burst and AnimatePresence lets the previous
+          one finish flying out instead of snapping away. */}
+      <AnimatePresence>
+        {mood === "play" && (
+          <CatBurst key={playId} seed={playId} reduced={reducedMotion} />
+        )}
+      </AnimatePresence>
 
       <motion.button
         onClick={onCatClick}

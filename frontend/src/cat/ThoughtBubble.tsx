@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import type { CatThought } from "../lib/cat";
+import { IconFlame } from "../components/icons";
 
 interface Props {
   name: string;
@@ -21,13 +22,13 @@ export function ThoughtBubble({ name, thought, streak, onClose, onHide }: Props)
       exit={{ opacity: 0, scale: 0.92, y: 6 }}
       transition={{ type: "spring", stiffness: 420, damping: 26 }}
       style={{ transformOrigin: "bottom right" }}
-      className="absolute bottom-full right-0 mb-2 w-72 max-w-[78vw] rounded-2xl border border-border bg-surface p-3.5 text-left shadow-pop"
+      className="glass glass-pop absolute bottom-full right-0 mb-2 w-72 max-w-[78vw] rounded-2xl border border-border p-3.5 text-left"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-1.5 text-xs font-semibold">
           <span className="truncate font-display text-ink">{name}</span>
           <span className="inline-flex shrink-0 items-center gap-0.5 text-accent">
-            <span aria-hidden>🔥</span>
+            <IconFlame className="h-3 w-3" />
             {t("cat.streakDays", { count: streak })}
           </span>
         </span>

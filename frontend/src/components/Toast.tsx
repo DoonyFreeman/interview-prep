@@ -22,9 +22,12 @@ interface ToastApi {
 
 const ToastContext = createContext<ToastApi | null>(null);
 
+// Translucent tone + blur: a toast is floating chrome, so it gets the glass
+// treatment — but keeps its own tint rather than `.glass`, which would replace
+// the success/error colour with a neutral pane.
 const TONE: Record<ToastTone, string> = {
-  success: "border-success/30 bg-success-soft text-success",
-  error: "border-danger/30 bg-danger-soft text-danger",
+  success: "border-success/30 bg-success-soft/85 text-success",
+  error: "border-danger/30 bg-danger-soft/85 text-danger",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -60,7 +63,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className={`pointer-events-auto rounded-xl border px-4 py-2.5 text-sm font-semibold shadow-pop ${TONE[toast.tone]}`}
+              className={`pointer-events-auto rounded-xl border px-4 py-2.5 text-sm font-semibold shadow-pop backdrop-blur-lg ${TONE[toast.tone]}`}
             >
               {toast.message}
             </motion.div>

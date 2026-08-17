@@ -140,7 +140,7 @@ async def _upsert_lesson(
             )
         await session.flush()
 
-        # MCQ self-test bank: content is authoritative — replace the set.
+        # MCQ banks (lesson + exam): content is authoritative — replace the set.
         await session.execute(
             delete(McqQuestion).where(McqQuestion.concept_id == concept.id)
         )
@@ -156,6 +156,7 @@ async def _upsert_lesson(
                     explanation_md=m.explanation_md,
                     difficulty=m.difficulty,
                     order_index=m.order_index,
+                    bank=m.bank,
                 )
             )
         await session.flush()

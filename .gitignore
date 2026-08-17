@@ -27,6 +27,10 @@ dist/
 .DS_Store
 .idea/
 .vscode/
+*.swp
+
+# Stray per-directory tool config (the launch config lives in /.claude)
+frontend/.claude/
 
 # TS incremental build cache
 *.tsbuildinfo

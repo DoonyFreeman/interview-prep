@@ -7,6 +7,7 @@ import { apiErrorMessage } from "../lib/api";
 import { Button } from "../components/Button";
 import { PageLoader } from "../components/Spinner";
 import { LanguageToggle } from "../components/LanguageToggle";
+import { NavTabsSettings } from "../components/NavTabsSettings";
 import { useToast } from "../components/Toast";
 import { PetSettings } from "../cat/PetSettings";
 
@@ -139,6 +140,11 @@ export function SettingsPage() {
         {/* Pet */}
         <Section title={t("settings.pet")}>
           <PetSettings />
+        </Section>
+
+        {/* Which sections the mobile tab bar shows */}
+        <Section title={t("settings.navTabs")}>
+          <NavTabsSettings />
         </Section>
 
         {/* Language */}

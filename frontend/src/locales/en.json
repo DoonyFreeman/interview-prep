@@ -54,7 +54,8 @@
     "profile": "Profile",
     "logout": "Log out",
     "progress": "Progress",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "tests": "Tests"
   },
   "slang": {
     "title": "Developer slang",
@@ -160,7 +161,10 @@
     "petBest": "best {{count}}",
     "achievements": "Achievements",
     "achievementDays": "{{count}} d.",
-    "petHat": "Hat"
+    "petHat": "Hat",
+    "navTabs": "Bottom bar sections",
+    "navTabsHint": "What the phone's bottom bar shows: between {{min}} and {{max}} sections.",
+    "navTabsCount": "{{count}} of {{max}} selected"
   },
   "common": {
     "loading": "Loading…",
@@ -326,6 +330,65 @@
     "retry": "Retry",
     "retryMistakes": "Mistakes only",
     "savingError": "Couldn't save the result"
+  },
+  "tests": {
+    "title": "Tests",
+    "subtitle": "Mixed tests across every topic — {{count}} questions in the bank",
+    "empty": "No questions yet",
+    "presetRandom": "Random",
+    "presetRandomNote": "20 questions at random from every topic",
+    "presetSmart": "Smart pick",
+    "presetSmartNote": "What you don't know yet, or keep forgetting",
+    "presetMistakes": "My mistakes",
+    "presetMistakesNote": "Only the ones you got wrong last time",
+    "customTitle": "Build your own test",
+    "count": "Questions",
+    "mode": "Selection",
+    "modeSmart": "Smart",
+    "modeRandom": "Random",
+    "modeWeak": "Weak",
+    "modeMistakes": "Mistakes",
+    "modeHint": {
+      "smart": "Asks more about what you haven't seen or got wrong. Mastered questions show up rarely.",
+      "random": "An honest random draw: every question in the bank is equally likely.",
+      "weak": "Only new questions and the ones your last answer got wrong.",
+      "mistakes": "Only questions your last answer got wrong — pure error correction."
+    },
+    "source": "Source",
+    "source_lesson": "From lessons",
+    "source_exam": "Tests only",
+    "topics": "Topics",
+    "allTopics": "Select all",
+    "allTopicsHint": "Nothing selected — drawing from every topic.",
+    "selectedHint": "{{count}} topics selected",
+    "start": "Start",
+    "poolInfo": "{{count}} of {{pool}} matching questions",
+    "poolEmpty": "No questions match these filters",
+    "toSetup": "Back to setup"
+  },
+  "whatsNew": {
+    "title": "What's new",
+    "subtitle": "A small update — here's what changed.",
+    "items": [
+      {
+        "title": "The Tests section",
+        "body": "Mixed tests across every course at once: a random draw, a smart pick aimed at your weak spots, or pure error correction. Pick the topics and how many questions."
+      },
+      {
+        "title": "206 new questions",
+        "body": "Written just for this section — applied rather than memorised: here's some code or a situation, work out what happens."
+      },
+      {
+        "title": "Configurable bottom bar",
+        "body": "Settings now lets you choose which sections appear in the phone's bottom bar — between 3 and 6 of them."
+      },
+      {
+        "title": "A fresher look",
+        "body": "New logo, translucent iOS-style panels, and lively vector icons in place of emoji."
+      }
+    ],
+    "cta": "Open Tests",
+    "dismiss": "Later"
   },
   "progress": {
     "title": "What's left",

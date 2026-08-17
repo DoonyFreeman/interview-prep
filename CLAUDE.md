@@ -420,6 +420,51 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    346)** via the `content/MCQ_AUTHORING_GUIDE.md` runbook (Sonnet agents,
    batched by course, each validated). `test_content_integrity` now asserts every
    concept of every course has ≥2 MCQ (≥692 total). Backend 112 passing.
+   **9.3 done — mixed tests (the `/tests` section)**: one place to drill MCQ
+   across *all* courses. `mcq_questions` gained a **`bank` discriminator**
+   (mirroring the glossary's `kind`): `lesson` mirrors `tests.json` (unchanged —
+   still the only bank a lesson badge or the tests overview scores against), and
+   `exam` mirrors a new optional `content/courses/<slug>/exam.json` of applied /
+   scenario questions authored **only** for `/tests`, with `exam:`-prefixed slugs
+   so the two can never collide. `database.ensure_schema_upgrades` adds the column
+   additively (`DEFAULT 'lesson'` backfills live rows). Auth-gated
+   `GET /api/quiz/tests/topics` (per-course counts + this user's answered/weak
+   tallies), `GET …/tests/mix` (`courses=&banks=&mode=&count=`),
+   `POST …/tests/mix/result`.
+   **Selection is server-side here** — a deliberate departure from the
+   client-generated glossary quiz, because the full bank is ~836 KB of JSON
+   (148 KB gzipped): far too much to ship in order to keep 20 questions.
+   `services/lesson_test.py:pick_mix` is pure apart from an injected `Random`
+   (unit-tested): modes `random` (uniform — "random" has to mean random),
+   `smart` (weighted: unseen > wrong > shaky > mastered, recently-seen demoted,
+   via Efraimidis–Spirakis weighted sampling without replacement), `weak`,
+   `mistakes`; the chosen questions are then round-robined across courses so a
+   mixed test actually feels mixed. Answers flow into the **same** `mcq_stats`,
+   and every lesson a run touched has its standing score recomputed
+   (`_record_standing_score`, shared with the per-lesson path) — so answering a
+   lesson's last unseen question inside a mixed run completes that lesson's test.
+   Exam-bank answers cannot reach a lesson score by construction
+   (`list_for_lesson` and `lessons_for_slugs` filter `bank == "lesson"`; guarded
+   by `test_exam_bank_never_touches_a_lesson_score`). Client: a `/tests` page
+   (three one-tap presets → a setup panel for count / mode / source / topics), and
+   the run+result UI was extracted out of `LessonTestPage` into a shared
+   `components/TestRunner.tsx` used by both (a mixed run passes `showOrigin`, and
+   each question carries its own course/lesson deep link — `prepareTest` fills the
+   origin in from the URL for the per-lesson case). The mobile bottom nav is now
+   **user-configurable**: `lib/navTabs.ts` (localStorage + `useSyncExternalStore`,
+   3–6 tabs, canonical order enforced) with a picker in Settings.
+   `scripts/check_mcq_quality.py` gates the "pick the longest option" tell
+   (`--report` surveys an existing bank without failing).
+   **The `exam.json` bank covers all 22 courses — 206 questions**, 2 per lesson,
+   every one a scenario ("given this code / this situation, what happens") rather
+   than a definition, and every file passing the length gate (correct-is-longest
+   0–40%, mean ratio ~1.0 vs the lesson bank's 1.5).
+   Backend 180 passing, frontend 85.
+   **Known content debt**: the *lesson* bank (734 MCQ, phase 9.2) has the length
+   tell badly — the correct answer is the uniquely longest option in ~80% of
+   questions (chance is 25%), mean 1.5× the distractor length. Deliberately left
+   alone for now at the author's call; `scripts/check_mcq_quality.py --report`
+   ranks the worst courses (nginx 100%, sqlalchemy 100%, postgresql 96%).
 
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a

@@ -8,6 +8,7 @@ import { LessonPage } from "./pages/LessonPage";
 import { QuizPage } from "./pages/QuizPage";
 import { QuestionsPage } from "./pages/QuestionsPage";
 import { LessonTestPage } from "./pages/LessonTestPage";
+import { TestsPage } from "./pages/TestsPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ReviewPage } from "./pages/ReviewPage";
@@ -38,6 +39,7 @@ export function App() {
         </Route>
         <Route path="/glossary/quiz" element={<GlossaryQuizPage />} />
         <Route path="/slang/quiz" element={<GlossaryQuizPage kind="slang" />} />
+        <Route path="/tests" element={<TestsPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />

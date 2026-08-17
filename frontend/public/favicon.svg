@@ -1,21 +1,44 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">iprep icon</title>
+  <desc id="desc">A friendly purple Python snake shaped as a terminal greater-than prompt and underscore.</desc>
+
   <defs>
-    <linearGradient id="tile" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6366F1"/>
-      <stop offset="1" stop-color="#4338CA"/>
+    <linearGradient id="iprep-purple" x1="29" y1="23" x2="211" y2="222" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9B7CFF"/>
+      <stop offset="0.48" stop-color="#7651E8"/>
+      <stop offset="1" stop-color="#4B218E"/>
     </linearGradient>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#tile)"/>
-  <rect x="4" y="4" width="56" height="56" rx="15" fill="#ffffff" fill-opacity="0.06"/>
-  <!-- rising "mastery" curve -->
-  <path d="M16 45 L27 33 L35 39 L47 24"
-        stroke="#ffffff" stroke-width="4.6"
-        stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.96"/>
-  <!-- baseline dots marking each answered step -->
-  <circle cx="16" cy="45" r="2.4" fill="#ffffff" fill-opacity="0.55"/>
-  <circle cx="27" cy="33" r="2.4" fill="#ffffff" fill-opacity="0.75"/>
-  <circle cx="35" cy="39" r="2.4" fill="#ffffff" fill-opacity="0.75"/>
-  <!-- sparkle at the apex (achievement) -->
-  <path d="M47 15 L49.6 21.4 L56 24 L49.6 26.6 L47 33 L44.4 26.6 L38 24 L44.4 21.4 Z"
-        fill="#ffffff"/>
+
+  <!-- Tile + inset. The bare mark is transparent and its darkest parts (the
+       underscore, the face) disappear against dark browser-tab chrome; a light
+       tile keeps every detail readable wherever the favicon lands. Drop the
+       rect and the transform to go back to the bare glyph. -->
+  <rect width="240" height="240" rx="54" fill="#F6F3FF"/>
+
+  <g transform="translate(26 24) scale(0.79)" id="snake-terminal">
+    <path
+      d="M55 48 C73 32 101 31 121 45 L178 95 C197 112 197 139 178 156 L116 209"
+      fill="none"
+      stroke="url(#iprep-purple)"
+      stroke-width="42"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+    <path
+      d="M178 156 L117 103 C105 93 90 89 75 92"
+      fill="none"
+      stroke="url(#iprep-purple)"
+      stroke-width="42"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+    <path d="M151 211 H211" fill="none" stroke="#4B218E" stroke-width="20" stroke-linecap="round"/>
+
+    <circle cx="72" cy="44" r="6" fill="#24103F"/>
+    <path d="M55 59 C62 66 73 68 82 63" fill="none" stroke="#24103F" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M47 45 L37 40" fill="none" stroke="#9B7CFF" stroke-width="4.5" stroke-linecap="round"/>
+
+    <circle cx="123" cy="73" r="4.5" fill="#CDBEFF" opacity="0.8"/>
+    <circle cx="157" cy="103" r="4.5" fill="#CDBEFF" opacity="0.65"/>
+    <circle cx="125" cy="157" r="4.5" fill="#CDBEFF" opacity="0.55"/>
+  </g>
 </svg>
