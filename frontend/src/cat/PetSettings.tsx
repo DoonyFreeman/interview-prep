@@ -12,6 +12,7 @@ import {
 } from "../lib/cat";
 import { CatSprite } from "./CatSprite";
 import { useCat } from "./useCat";
+import { IconFlame } from "../components/icons";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary";
@@ -53,7 +54,8 @@ export function PetSettings() {
             {displayName}
           </p>
           <p className="text-xs text-muted">
-            🔥 {t("cat.streakDays", { count: cat.pet.streak })} ·{" "}
+            <IconFlame className="mr-0.5 inline h-3 w-3 align-[-1px] text-accent" />
+            {t("cat.streakDays", { count: cat.pet.streak })} ·{" "}
             {t("settings.petBest", { count: cat.pet.bestStreak })}
           </p>
         </div>

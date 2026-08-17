@@ -13,6 +13,7 @@ import { HAT_MILESTONES, SKIN_MILESTONES } from "../lib/cat";
 import { Button } from "../components/Button";
 import { PageLoader } from "../components/Spinner";
 import { useToast } from "../components/Toast";
+import { IconFlame } from "../components/icons";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary";
@@ -224,7 +225,8 @@ function UserRow({
         </span>
         <span className="text-xs text-muted">{u.email}</span>
         <span className="ml-auto text-xs text-muted">
-          🔥 {u.pet.streak} · {t("settings.petBest", { count: u.pet.best_streak })}{" "}
+          <IconFlame className="mr-0.5 inline h-3 w-3 align-[-1px] text-accent" />
+          {u.pet.streak} · {t("settings.petBest", { count: u.pet.best_streak })}{" "}
           · {lastActive}
         </span>
       </button>

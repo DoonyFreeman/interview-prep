@@ -171,28 +171,128 @@ export function IconKeyboard({ className }: IconProps) {
 }
 
 /**
- * Brand glyph — a rising "mastery" curve to a sparkle at the apex. Matches the
- * app icon (`public/favicon.svg`). Drawn on a solid primary tile by the caller;
- * the curve is stroked and the sparkle filled, both in `currentColor`.
+ * Brand glyph — the iprep snake, whose body forms a terminal `>` and whose tail
+ * becomes the underscore. Transparent by design (no tile), and self-coloured in
+ * the brand violet, so it reads on both themes without a wrapper.
+ * `public/favicon.svg` is the same drawing on a light tile — a bare icon turns
+ * to mush against arbitrary browser-tab chrome.
  */
 export function BrandMark({ className }: IconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="0 0 240 240"
       fill="none"
       aria-hidden="true"
     >
+      <defs>
+        <linearGradient
+          id="iprep-icon-grad"
+          x1="29"
+          y1="23"
+          x2="211"
+          y2="222"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#9B7CFF" />
+          <stop offset="0.48" stopColor="#7651E8" />
+          <stop offset="1" stopColor="#4B218E" />
+        </linearGradient>
+      </defs>
+
       <path
-        d="M4 17.5 L9.5 11.5 L13 14.5 L18.5 8.5"
-        stroke="currentColor"
-        strokeWidth={2.3}
+        d="M55 48 C73 32 101 31 121 45 L178 95 C197 112 197 139 178 156 L116 209"
+        fill="none"
+        stroke="url(#iprep-icon-grad)"
+        strokeWidth={42}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M18.5 5.5 L19.6 7.4 L21.5 8.5 L19.6 9.6 L18.5 11.5 L17.4 9.6 L15.5 8.5 L17.4 7.4 Z"
-        fill="currentColor"
+        d="M178 156 L117 103 C105 93 90 89 75 92"
+        fill="none"
+        stroke="url(#iprep-icon-grad)"
+        strokeWidth={42}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M151 211 H211"
+        fill="none"
+        stroke="#4B218E"
+        strokeWidth={20}
+        strokeLinecap="round"
+      />
+
+      <circle cx="72" cy="44" r="6" fill="#24103F" />
+      <path
+        d="M55 59 C62 66 73 68 82 63"
+        fill="none"
+        stroke="#24103F"
+        strokeWidth={4.5}
+        strokeLinecap="round"
+      />
+      <path
+        d="M47 45 L37 40"
+        fill="none"
+        stroke="#9B7CFF"
+        strokeWidth={4.5}
+        strokeLinecap="round"
+      />
+
+      <circle cx="123" cy="73" r="4.5" fill="#CDBEFF" opacity="0.8" />
+      <circle cx="157" cy="103" r="4.5" fill="#CDBEFF" opacity="0.65" />
+      <circle cx="125" cy="157" r="4.5" fill="#CDBEFF" opacity="0.55" />
+    </svg>
+  );
+}
+
+/** The "iprep_" wordmark. Ink comes from --logo-word-* so it flips with theme. */
+export function BrandWord({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="282 58 606 184"
+      fill="none"
+      role="img"
+      aria-label="iprep"
+    >
+      <defs>
+        <linearGradient
+          id="iprep-word-grad"
+          x1="294"
+          y1="68"
+          x2="888"
+          y2="202"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="var(--logo-word-a)" />
+          <stop offset="1" stopColor="var(--logo-word-b)" />
+        </linearGradient>
+      </defs>
+      <g
+        fill="none"
+        stroke="url(#iprep-word-grad)"
+        strokeWidth={22}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M300 112 V190" />
+        <circle cx="300" cy="78" r="11" fill="#7651E8" stroke="none" />
+        <path d="M356 112 V218" />
+        <path d="M357 126 C371 111 396 107 413 119 C430 131 431 160 416 175 C401 190 373 187 357 173" />
+        <path d="M470 112 V190" />
+        <path d="M471 135 C482 117 500 110 521 115" />
+        <path d="M574 153 H648 C647 127 630 111 607 111 C580 111 563 130 563 152 C563 176 582 192 609 192 C625 192 638 187 648 178" />
+        <path d="M703 112 V218" />
+        <path d="M704 126 C718 111 743 107 760 119 C777 131 778 160 763 175 C748 190 720 187 704 173" />
+      </g>
+      <path
+        d="M813 190 H871"
+        fill="none"
+        stroke="#7651E8"
+        strokeWidth={14}
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -237,5 +337,110 @@ export function IconDocs({ className }: IconProps) {
       <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" />
       <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" />
     </Svg>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Header-cluster + cat-burst icons. These replace raw emoji and text
+   glyphs (🔥 ⚙ ☀ ☾ 🐾 ❤️ ⭐ 🎵), which rendered at the mercy of the
+   platform emoji font — inconsistent weight, size, baseline and colour
+   next to the stroked lucide set, and impossible to tint or animate.   */
+/* ------------------------------------------------------------------ */
+
+/** Streak — a flame. */
+export function IconFlame({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+    </Svg>
+  );
+}
+
+/** Light theme — a sun. */
+export function IconSun({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </Svg>
+  );
+}
+
+/** Dark theme — a crescent moon. */
+export function IconMoon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+    </Svg>
+  );
+}
+
+/** Settings — a gear. */
+export function IconSettings({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
+    </Svg>
+  );
+}
+
+/** A paw print — collapsed-cat button, and a burst particle. Filled. */
+export function IconPaw({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <ellipse cx="6.4" cy="10.4" rx="1.9" ry="2.4" />
+      <ellipse cx="10" cy="7.6" rx="1.9" ry="2.5" />
+      <ellipse cx="14" cy="7.6" rx="1.9" ry="2.5" />
+      <ellipse cx="17.6" cy="10.4" rx="1.9" ry="2.4" />
+      <path d="M12 12.6c-2.7 0-4.9 2.1-4.9 4.5 0 1.8 1.4 2.9 3.1 2.9.9 0 1.4-.3 1.8-.3s.9.3 1.8.3c1.7 0 3.1-1.1 3.1-2.9 0-2.4-2.2-4.5-4.9-4.5z" />
+    </svg>
+  );
+}
+
+/** A heart — burst particle. Filled. */
+export function IconHeart({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z" />
+    </svg>
+  );
+}
+
+/** A star — burst particle. Filled. */
+export function IconStar({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2.2l2.9 6.1 6.7.9-4.9 4.6 1.2 6.6-5.9-3.2-5.9 3.2 1.2-6.6L2.4 9.2l6.7-.9z" />
+    </svg>
+  );
+}
+
+/** A music note — burst particle. Filled. */
+export function IconNote({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M20 3.2v11.1a3 3 0 1 1-2-2.8V7.1L10 8.7v8.6a3 3 0 1 1-2-2.8V6.2z" />
+    </svg>
   );
 }

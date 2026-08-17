@@ -83,7 +83,7 @@ export function SearchModal() {
         onClick={() => setOpen(true)}
         title={t("search.title")}
         aria-label={t("search.title")}
-        className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-muted transition-colors hover:text-ink"
+        className="icon-chip inline-flex items-center justify-center"
       >
         <IconSearch className="h-4 w-4" />
       </button>
@@ -111,7 +111,7 @@ export function SearchModal() {
               exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 8 }}
               transition={{ type: "spring", stiffness: 420, damping: 30 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-surface shadow-pop"
+              className="glass glass-pop relative w-full max-w-lg overflow-hidden rounded-2xl border border-border"
             >
               <div className="flex items-center gap-2.5 border-b border-border px-4">
                 <IconSearch className="h-4 w-4 shrink-0 text-faint" />
