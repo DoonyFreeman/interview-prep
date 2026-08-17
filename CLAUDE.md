@@ -378,7 +378,7 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    and re-seeded on startup. Smoke-tested: image builds (~347 MB), container goes
    healthy, `/api/courses` returns 20 courses, SPA + deep links + assets serve,
    no `reference_answer` leak, DB persists across restart.
-8. **Deploy to a server** — *prep done, live deploy pending a host+domain.*
+8. ✅ **Deploy to a server** — **live** at `https://176.123.168.87.sslip.io`.
    Artifacts ready: `Caddyfile` (reverse_proxy `app:8000`, automatic Let's Encrypt
    TLS, HSTS/security headers), `docker-compose.prod.yml` overlay (adds a `caddy`
    service on 80/443 with persistent `caddy_data`/`caddy_config` volumes,
@@ -388,7 +388,20 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    `scripts/restore.sh`, and `DEPLOY.md` (full single-host runbook: DNS, launch,
    updates, backup cron, restore, local `tls internal` test). Run with
    `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`.
-   Still requires a real host + domain + open 80/443 to issue the public cert.
+   **Updates are CI/CD**: a push to `master` builds the `linux/amd64` image in
+   GitHub Actions, pushes it to GHCR, then SSHes the host and runs
+   `scripts/deploy.sh` (backup → `git pull` → `compose pull` → `up -d --no-build`
+   → health check). The host **never builds** — a Vite build OOMs the VPS — and
+   `deploy.sh` never touches the `app-data` volume, so user progress survives
+   every deploy. Rollback: `docker compose ... pull` an older `:<sha>` tag, or
+   `scripts/restore.sh ./backups/<snapshot>.db`.
+   **Schema changes must stay additive** (`ensure_schema_upgrades`): the live DB
+   is upgraded in place on startup, never recreated. The `bank` column was
+   validated this way against a real pre-change database — column added with
+   `DEFAULT 'lesson'` (no NULLs), every user table byte-identical, login and
+   scores intact, and idempotent across restarts. A rollback to the previous
+   image is also clean: the old seed re-writes the MCQ set per concept, so exam
+   rows simply disappear and orphaned `mcq_stats` are ignored.
 9. **Lesson MCQ self-test** (see `content/LESSON_QUIZ_PLAN.md`). A second, no-LLM
    way to check yourself in a lesson, alongside the AI interview: closed
    multiple-choice questions graded **client-side** for instant feedback.
@@ -459,7 +472,15 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    every one a scenario ("given this code / this situation, what happens") rather
    than a definition, and every file passing the length gate (correct-is-longest
    0–40%, mean ratio ~1.0 vs the lesson bank's 1.5).
-   Backend 180 passing, frontend 85.
+   Backend 184 passing, frontend 85.
+   **Release note**: `lib/whatsNew.ts` + `components/WhatsNew.tsx` show a
+   one-time dialog after an update (localStorage stores the release id, not a
+   flag). To announce the next release: bump `CURRENT_RELEASE` and rewrite the
+   `whatsNew.*` strings in both locales.
+   The SPA fallback now **404s unknown `/api/*`** instead of answering
+   `200 text/html` (`main.py:_mount_spa`, guarded by `test_spa_fallback.py`) —
+   otherwise a route that failed to register is indistinguishable from a working
+   one in a post-deploy smoke check.
    **Known content debt**: the *lesson* bank (734 MCQ, phase 9.2) has the length
    tell badly — the correct answer is the uniquely longest option in ~80% of
    questions (chance is 25%), mean 1.5× the distractor length. Deliberately left
