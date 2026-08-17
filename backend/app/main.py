@@ -8,7 +8,7 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -83,6 +83,13 @@ def _mount_spa(app: FastAPI) -> None:
     Hashed build assets get long-cache headers via ``StaticFiles``; any other
     path falls back to ``index.html`` so deep links like ``/glossary`` work on
     a hard refresh. Skipped entirely when the build is not present.
+
+    Being registered last only protects the routes that *exist*: an unmatched
+    ``/api/...`` would otherwise fall through to this catch-all and answer
+    ``200 text/html``. That turns a typo or a route that failed to register into
+    a confusing client-side parse error instead of an honest 404 — and hides a
+    bad deploy from any smoke check. So API-shaped paths 404 here rather than
+    rendering the SPA.
     """
     if not STATIC_DIR.is_dir():
         return
@@ -92,8 +99,14 @@ def _mount_spa(app: FastAPI) -> None:
     if assets_dir.is_dir():
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
+    #: Prefixes that belong to the server, never to client-side routing.
+    api_prefixes = ("api", "health", "docs", "redoc", "openapi.json")
+
     @app.get("/{full_path:path}", include_in_schema=False)
     async def spa_fallback(full_path: str) -> FileResponse:
+        head = full_path.split("/", 1)[0]
+        if head in api_prefixes:
+            raise HTTPException(status_code=404, detail="Not found")
         candidate = STATIC_DIR / full_path
         if full_path and candidate.is_file() and assets_dir not in candidate.parents:
             return FileResponse(candidate)
