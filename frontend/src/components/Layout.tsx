@@ -9,6 +9,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { ShortcutsHelp } from "./ShortcutsHelp";
 import { SearchModal } from "./SearchModal";
 import { BottomNavBar } from "./BottomNavBar";
+import { WhatsNew } from "./WhatsNew";
 import { CatWidget } from "../cat/CatWidget";
 import { BrandMark, BrandWord, IconFlame, IconSettings } from "./icons";
 import { routeTransition } from "../lib/motion";
@@ -190,6 +191,7 @@ export function Layout() {
 
       <BottomNavBar />
       <CatWidget />
+      <WhatsNew />
     </div>
   );
 }

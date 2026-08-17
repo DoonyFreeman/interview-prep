@@ -366,6 +366,30 @@
     "poolEmpty": "No questions match these filters",
     "toSetup": "Back to setup"
   },
+  "whatsNew": {
+    "title": "What's new",
+    "subtitle": "A small update — here's what changed.",
+    "items": [
+      {
+        "title": "The Tests section",
+        "body": "Mixed tests across every course at once: a random draw, a smart pick aimed at your weak spots, or pure error correction. Pick the topics and how many questions."
+      },
+      {
+        "title": "206 new questions",
+        "body": "Written just for this section — applied rather than memorised: here's some code or a situation, work out what happens."
+      },
+      {
+        "title": "Configurable bottom bar",
+        "body": "Settings now lets you choose which sections appear in the phone's bottom bar — between 3 and 6 of them."
+      },
+      {
+        "title": "A fresher look",
+        "body": "New logo, translucent iOS-style panels, and lively vector icons in place of emoji."
+      }
+    ],
+    "cta": "Open Tests",
+    "dismiss": "Later"
+  },
   "progress": {
     "title": "What's left",
     "subtitle": "How many questions you've completed per course and lesson.",
