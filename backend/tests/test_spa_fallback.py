@@ -59,3 +59,33 @@ async def test_registered_api_routes_still_work_with_the_spa_mounted(spa_client)
         assert (await client.get("/health")).json() == {"status": "ok"}
         r = await client.get("/api/quiz/tests/topics")
         assert r.status_code == 403  # auth-gated, i.e. the route exists
+
+
+# --------------------------------------------------------------------------- #
+# Cache headers. Without these, browsers cache heuristically off Last-Modified,
+# and a stale index.html pins the whole app to the previous release — a deploy
+# lands and phones keep showing the old site.
+# --------------------------------------------------------------------------- #
+async def test_index_is_revalidated_on_every_load(spa_client):
+    async with spa_client as client:
+        for path in ("/", "/tests", "/courses/python-core/lessons/gil"):
+            r = await client.get(path)
+            assert r.headers["cache-control"] == "no-cache", path
+
+
+async def test_hashed_assets_are_cached_immutably(spa_client):
+    """Safe precisely because the filename carries a content hash: a new build
+    produces a new URL, so a year-long cache can never serve stale code."""
+    async with spa_client as client:
+        r = await client.get("/assets/app.js")
+        assert r.status_code == 200
+        assert r.headers["cache-control"] == "public, max-age=31536000, immutable"
+
+
+async def test_unhashed_static_files_get_a_short_cache(spa_client):
+    """Favicons and the manifest keep stable names but do change between
+    releases — neither 'forever' nor 'never' is right for them."""
+    async with spa_client as client:
+        r = await client.get("/favicon.svg")
+        assert r.status_code == 200
+        assert r.headers["cache-control"] == "public, max-age=3600"

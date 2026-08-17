@@ -76,13 +76,41 @@ def create_app() -> FastAPI:
     return app
 
 
+#: Revalidate on every load — not "don't store". Starlette's ``FileResponse``
+#: doesn't answer ``If-None-Match``, so this is a full re-fetch rather than a
+#: 304; at ~1 KB for `index.html`, and only on a real page load (client-side
+#: routing never re-fetches it), that is cheaper than the staleness it prevents.
+NO_CACHE = "no-cache"
+#: Safe only for content-hashed filenames: a new build is a new URL.
+IMMUTABLE_CACHE = "public, max-age=31536000, immutable"
+#: For files with stable names that still change between releases.
+SHORT_CACHE = "public, max-age=3600"
+
+
+class _CachedStatic(StaticFiles):
+    """``StaticFiles`` that stamps a fixed ``Cache-Control`` on what it serves.
+
+    Starlette sets ETag and Last-Modified but no Cache-Control, which leaves
+    browsers guessing — the very thing that pinned mobile clients to an old
+    build. Hashed assets deserve the strongest possible answer instead.
+    """
+
+    def __init__(self, *args, cache_control: str, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._cache_control = cache_control
+
+    def file_response(self, *args, **kwargs) -> FileResponse:
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = self._cache_control
+        return response
+
+
 def _mount_spa(app: FastAPI) -> None:
     """Serve the built SPA same-origin (Docker), with client-side-routing fallback.
 
-    Registered last so it never shadows ``/api``, ``/health`` or ``/docs``.
-    Hashed build assets get long-cache headers via ``StaticFiles``; any other
-    path falls back to ``index.html`` so deep links like ``/glossary`` work on
-    a hard refresh. Skipped entirely when the build is not present.
+    Registered last so it never shadows ``/api``, ``/health`` or ``/docs``. Any
+    path that isn't a real file falls back to ``index.html`` so deep links like
+    ``/glossary`` work on a hard refresh. Skipped when the build is not present.
 
     Being registered last only protects the routes that *exist*: an unmatched
     ``/api/...`` would otherwise fall through to this catch-all and answer
@@ -90,6 +118,21 @@ def _mount_spa(app: FastAPI) -> None:
     a confusing client-side parse error instead of an honest 404 — and hides a
     bad deploy from any smoke check. So API-shaped paths 404 here rather than
     rendering the SPA.
+
+    **Caching is explicit, because the default is silently wrong.** Without a
+    ``Cache-Control`` header browsers fall back to *heuristic* caching off
+    ``Last-Modified`` — and mobile Safari happily reuses a stale ``index.html``
+    for a long time. Since that HTML names the content-hashed bundles, a stale
+    copy pins the whole app to the previous release: a deploy ships and the
+    phone keeps showing the old site. So:
+
+    - ``index.html`` — ``no-cache``: fetched fresh on every real page load. At
+      about a kilobyte, and never re-fetched during client-side routing, that
+      is far cheaper than the staleness it prevents.
+    - ``/assets/*`` — immutable for a year. The filenames contain a content
+      hash, so a new build is a new URL and can never collide.
+    - everything else (favicons, ``site.webmanifest``) — an hour. These keep
+      stable names *and* do change between releases, so neither extreme fits.
     """
     if not STATIC_DIR.is_dir():
         return
@@ -97,7 +140,11 @@ def _mount_spa(app: FastAPI) -> None:
     index_file = STATIC_DIR / "index.html"
     assets_dir = STATIC_DIR / "assets"
     if assets_dir.is_dir():
-        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+        app.mount(
+            "/assets",
+            _CachedStatic(directory=assets_dir, cache_control=IMMUTABLE_CACHE),
+            name="assets",
+        )
 
     #: Prefixes that belong to the server, never to client-side routing.
     api_prefixes = ("api", "health", "docs", "redoc", "openapi.json")
@@ -109,8 +156,8 @@ def _mount_spa(app: FastAPI) -> None:
             raise HTTPException(status_code=404, detail="Not found")
         candidate = STATIC_DIR / full_path
         if full_path and candidate.is_file() and assets_dir not in candidate.parents:
-            return FileResponse(candidate)
-        return FileResponse(index_file)
+            return FileResponse(candidate, headers={"Cache-Control": SHORT_CACHE})
+        return FileResponse(index_file, headers={"Cache-Control": NO_CACHE})
 
 
 app = create_app()
