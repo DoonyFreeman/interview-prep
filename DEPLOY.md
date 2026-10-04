@@ -129,42 +129,19 @@ current `master`, not get a shell.
 
 ## Backups
 
-`scripts/backup.sh` takes a consistent online SQLite snapshot from the running
-container into `./backups/` and prunes old ones (keeps 14 by default).
+**Automatic backups are off.** This is a portfolio project — losing the SQLite
+file costs a re-register, not a business. Nothing runs on cron; take a snapshot
+by hand when you actually care:
 
 ```bash
-scripts/backup.sh                 # one-off
-# Cron (daily 03:00):
-0 3 * * * cd /opt/interview-prep && scripts/backup.sh >> backups/backup.log 2>&1
+scripts/backup.sh                 # one-off snapshot into ./backups/ (host-local)
 ```
 
-### Offsite copy (survive host loss)
-
-Local snapshots live on the same server — if it's wiped (e.g. the host is
-deleted), they're gone too. `scripts/backup-offsite.sh` pushes the newest 7
-snapshots to an **orphan `backups` branch** of this private repo, as a single
-force-pushed commit so the branch never accumulates git history (binary blobs
-don't pile up — the old commit becomes unreachable and is GC'd).
-
-```bash
-scripts/backup-offsite.sh         # one-off (run after backup.sh)
-# Cron (daily 03:00) — chain both:
-0 3 * * * cd /opt/interview-prep && scripts/backup.sh && scripts/backup-offsite.sh >> backups/backup.log 2>&1
-```
-
-**Prerequisite — push (write) access from the server to the repo.** The script
-`git push`es to `origin`, so the host needs write credentials, one of:
-
-- a **GitHub deploy key with "Allow write access"** on this repo, added to the
-  server's SSH agent / `~/.ssh` (origin stays the SSH URL); or
-- a **fine-grained PAT** (Contents: read+write, this repo only) baked into an
-  HTTPS remote or a git credential helper.
-
-The script fails early with a clear message if the remote is unreachable.
-Tunables via env: `KEEP_OFFSITE` (7), `BRANCH` (`backups`), `REMOTE`, `OUT_DIR`.
-
-> The dump is **unencrypted** — it contains user emails + bcrypt hashes. This is
-> acceptable only because the repo is private. Keep it private.
+> **Never push a snapshot to this repo.** The repo is **public** and the dump
+> contains user emails + bcrypt password hashes. An earlier `backup-offsite.sh`
+> force-pushed snapshots to an orphan `backups` branch (that script is removed
+> and the branch deleted). If you ever want offsite copies, use a **private**
+> bucket (S3/R2) or a private repo — and encrypt the dump (`age`/`gpg`) first.
 
 ### Restore
 
@@ -174,15 +151,8 @@ From a local snapshot:
 scripts/restore.sh backups/app-YYYYMMDD-HHMMSS.db
 ```
 
-On a fresh/wiped server (no local snapshots) — pull the newest from the offsite
-branch and restore it in one step:
-
-```bash
-scripts/restore-offsite.sh
-```
-
-Both stop the app, replace the DB on the volume (clearing stale WAL sidecars),
-and restart. Re-seeds content automatically; user state comes from the snapshot.
+It stops the app, replaces the DB on the volume (clearing stale WAL sidecars),
+and restarts. Re-seeds content automatically; user state comes from the snapshot.
 
 ## Operations
 
