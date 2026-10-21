@@ -89,3 +89,26 @@ async def test_unhashed_static_files_get_a_short_cache(spa_client):
         r = await client.get("/favicon.svg")
         assert r.status_code == 200
         assert r.headers["cache-control"] == "public, max-age=3600"
+
+
+async def test_nested_static_files_are_served(spa_client, tmp_path):
+    """Lesson screenshots live in a subfolder of the build (public/lesson-media)."""
+    media = tmp_path / "static" / "lesson-media" / "course"
+    media.mkdir(parents=True)
+    (media / "shot.png").write_bytes(b"PNG")
+    r = await spa_client.get("/lesson-media/course/shot.png")
+    assert r.status_code == 200
+    assert r.content == b"PNG"
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/%2e%2e/secret.txt", "/..%2fsecret.txt", "/lesson-media/%2e%2e/%2e%2e/secret.txt"],
+)
+async def test_encoded_dot_segments_cannot_escape_the_static_dir(spa_client, tmp_path, path):
+    """The server decodes %2e%2e into "..": without a containment check the
+    fallback would read any file the process can (in the image — the SQLite DB)."""
+    (tmp_path / "secret.txt").write_text("TOP-SECRET", encoding="utf-8")
+    r = await spa_client.get(path)
+    assert "TOP-SECRET" not in r.text
+
