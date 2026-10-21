@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x1015">
+<link rel="stylesheet" href="_base.css">
+</head>
+<body>
+<div class="g-top"><span style="font-size:20px">☰</span><span class="g-repo">delivery-team / <b>delivery-backend</b></span><span class="lbl" style="border-radius:10px">Private</span></div>
+<div class="g-tabs"><span class="g-tab">‹› Code</span><span class="g-tab">⊙ Issues</span><span class="g-tab on">⇅ Pull requests <span class="cnt">4</span></span><span class="g-tab">▶ Actions</span><span class="g-tab">⚙ Settings</span></div>
+<div class="g-wrap">
+  <div class="row"><div class="g-title">DLV-142: повтор заказа (POST /orders/{id}/repeat) <span class="num">#318</span></div><span class="mark">1</span></div>
+  <div class="row" style="margin-top:8px; color:#59636e"><span class="state open">⇅ Open</span><b style="color:#1f2328">nvolkov</b> wants to merge 3 commits into <span class="branch">main</span> from <span class="branch">feature/DLV-142-repeat-order</span></div>
+  <div class="g-ptabs"><span class="g-ptab on">💬 Conversation <span class="cnt">4</span></span><span class="g-ptab">⊸ Commits <span class="cnt">3</span></span><span class="g-ptab">☑ Checks <span class="cnt">3</span></span><span class="g-ptab">± Files changed <span class="cnt">5</span></span></div>
+  <div class="g-layout">
+    <div class="g-col">
+      <div class="tl"><span class="av a2 lg">NV</span><div class="tl-box">
+        <div class="tl-h"><b>nvolkov</b> commented 2 days ago <span class="mark" style="margin-left:auto">2</span></div>
+        <div class="tl-b">
+          <h4>Что сделано</h4>
+          <ul><li>Эндпоинт <span class="mono">POST /orders/{id}/repeat</span> — переносит товары заказа в корзину</li><li>Товары, которых нет в наличии, пропускаются и возвращаются в поле <span class="mono">skipped</span></li></ul>
+          <h4>Зачем</h4>
+          <p>Задача <span style="color:#0969da">DLV-142</span> — покупатель повторяет прошлый заказ в один клик.</p>
+          <h4>Как проверить</h4>
+          <ul><li>Создать заказ тестовым пользователем → вызвать эндпоинт → в корзине те же товары</li><li>Тесты: <span class="mono">pytest tests/test_orders_repeat.py</span></li></ul>
+          <h4>Чек-лист</h4>
+          <div><span class="chk">☑</span>Тесты добавлены &nbsp; <span class="chk">☑</span>Миграций нет &nbsp; <span class="chk">☐</span>Документация API обновлена</div>
+        </div></div></div>
+      <div class="g-event"><span class="dot red">±</span><span><b style="color:#1f2328">dorlov</b> requested changes 1 day ago</span></div>
+      <div class="tl"><span class="av a1 lg">DO</span><div class="tl-box">
+        <div class="tl-h"><b>dorlov</b> left a review</div>
+        <div class="tl-b">Логика верная, структура понятная 👍 Но есть блокер: не проверяем, что заказ принадлежит пользователю — комментарий в <span class="mono">orders.py</span>. Остальное — мелочи (nit).</div>
+      </div></div>
+      <div class="g-event"><span class="dot gray">⊸</span><span><b style="color:#1f2328">nvolkov</b> added 1 commit: <span class="mono">fix: проверка владельца заказа + тест</span></span></div>
+      <div class="merge">
+        <div class="merge-row"><span class="dot red">✕</span><div><div class="bad">Changes requested</div><div class="small" style="color:#59636e">1 review requesting changes by reviewers with write access</div></div><span class="mark" style="margin-left:auto">5</span></div>
+        <div class="merge-row"><span class="dot green">✓</span><div class="grow"><div class="ok">All checks have passed</div><div class="small" style="color:#59636e">3 successful checks: <span class="ok">✓</span> lint &nbsp;<span class="ok">✓</span> tests (pytest) &nbsp;<span class="ok">✓</span> build</div></div><span class="mark">4</span></div>
+        <div class="merge-row"><span class="dot gray">🔒</span><div class="grow"><div class="bold">Merging is blocked</div><div class="small" style="color:#59636e">Нужен хотя бы один approve от ревьюера</div></div><span class="g-btn green disabled">Merge pull request ▾</span></div>
+      </div>
+    </div>
+    <div class="g-sidebar">
+      <div class="sh">Reviewers <span class="mark">3</span></div>
+      <div class="si"><span class="av a1">DO</span><b>dorlov</b><span class="bad" style="margin-left:auto">± changes</span></div>
+      <div class="si"><span class="av a4">OP</span><b>opetrov</b><span class="warn" style="margin-left:auto">● pending</span></div>
+      <div class="sh">Assignees</div><div class="si"><span class="av a2">NV</span>nvolkov</div>
+      <div class="sh">Labels</div><div class="si"><span class="lbl" style="background:#ddf4ff;border-color:#b6e3ff;color:#0969da">backend</span><span class="lbl">feature</span></div>
+      <div class="sh">Development</div><div class="si">Связано с задачей DLV-142 в Jira</div>
+    </div>
+  </div>
+</div>
+</body></html>

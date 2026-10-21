@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x740">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .desc h4 { margin: 16px 0 6px; font-size: 15px; display: flex; gap: 8px; align-items: center; }
+  .desc h4:first-child { margin-top: 0; }
+  .gwt { background: #f7f8f9; border-left: 3px solid #22a06b; padding: 8px 12px; margin: 6px 0; border-radius: 0 4px 4px 0; }
+  .gwt b { color: #216e4e; }
+  .us { font-size: 16px; background: #e9f2ff; border-radius: 6px; padding: 10px 14px; }
+  .link { color: #0c66e4; }
+</style></head>
+<body>
+<div class="j-top">
+  <div class="j-apps">⋮⋮</div><div class="j-brand">Jira</div>
+  <div class="j-topnav"><span>Your work</span><span>Projects</span><span>Filters</span><span>Dashboards</span></div>
+  <span class="j-create">+ Create</span>
+  <div class="j-search">🔍&nbsp; Search</div>
+  <span class="av a9">МЛ</span>
+</div>
+<div class="j-main" style="padding:20px 40px">
+  <div class="j-crumbs">Projects / Delivery / <span class="it epic"></span> DLV-120 Повторные покупки / <span class="it story"></span> DLV-142</div>
+  <div class="issue">
+    <div class="issue-main">
+      <div class="issue-title">Повтор заказа: API POST /orders/{id}/repeat</div>
+      <div class="sec-h">Description</div>
+      <div class="desc">
+        <h4>Пользовательская история <span class="mark">1</span></h4>
+        <div class="us"><b>Как</b> покупатель, <b>я хочу</b> повторить прошлый заказ в один клик, <b>чтобы</b> не собирать корзину заново.</div>
+        <h4>Критерии приёмки <span class="mark">2</span></h4>
+        <div class="gwt"><b>1. Дано</b> у меня есть доставленный заказ, <b>когда</b> я нажимаю «Повторить», <b>тогда</b> все товары из него попадают в корзину с теми же количествами.</div>
+        <div class="gwt"><b>2. Дано</b> в корзине уже есть товары, <b>когда</b> я повторяю заказ, <b>тогда</b> товары добавляются к существующим, ничего не удаляется.</div>
+        <div class="gwt"><b>3. Дано</b> части товаров нет в наличии, <b>когда</b> я повторяю заказ, <b>тогда</b> в корзину попадает остальное, а я вижу плашку «2 товара закончились».</div>
+        <div class="gwt"><b>4. Дано</b> заказ принадлежит другому пользователю, <b>когда</b> я вызываю API, <b>тогда</b> получаю 404.</div>
+        <h4>Не входит в задачу <span class="mark">3</span></h4>
+        <ul><li>Подбор аналогов для закончившихся товаров — отдельная задача DLV-152.</li><li>Кнопка в мобильном приложении — DLV-145 (фронтенд).</li></ul>
+        <h4>Материалы <span class="mark">4</span></h4>
+        <ul><li><span class="link">Макет в Figma: «История заказов — повтор»</span></li><li><span class="link">Контракт API в Confluence: POST /orders/{id}/repeat</span></li></ul>
+      </div>
+    </div>
+    <div class="issue-side">
+      <div class="row" style="margin-bottom:12px"><span class="status-btn" style="background:#dfe1e6;color:#44546f">To Do ▾</span></div>
+      <div class="box fields">
+        <div class="bold" style="padding:10px 0 4px">Details</div>
+        <div class="field"><span>Assignee</span><span class="muted">Unassigned</span></div>
+        <div class="field"><span>Reporter</span><span class="row"><span class="av a9">МЛ</span>Мария Лебедева</span></div>
+        <div class="field"><span>Story points</span><span class="row"><span class="sp">5</span><span class="mark">5</span></span></div>
+        <div class="field"><span>Priority</span><span class="row"><span class="pri high"></span>High</span></div>
+        <div class="field"><span>Labels</span><span><span class="lbl">ready-for-dev</span></span></div>
+        <div class="field"><span>Parent</span><span class="row"><span class="it epic"></span>Повторные покупки</span></div>
+      </div>
+      <div class="box" style="margin-top:12px; padding:12px 14px">
+        <div class="bold" style="margin-bottom:6px">Definition of Ready ✓</div>
+        <div class="small">☑ Есть история и критерии приёмки<br>☑ Есть макет и контракт API<br>☑ Оценена командой на груминге<br>☑ Влезает в один спринт</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

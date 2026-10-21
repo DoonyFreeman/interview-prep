@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x950">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .tree { width: 240px; flex: none; font-size: 13px; }
+  .tree div { padding: 4px 8px; border-radius: 6px; }
+  .tree .on { background: #f6f8fa; font-weight: 600; }
+  .bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .adds { color: #1a7f37; font-weight: 600; } .dels { color: #cf222e; font-weight: 600; }
+  .blk { color: #cf222e; font-weight: 700; }
+</style></head>
+<body>
+<div class="g-top"><span style="font-size:20px">☰</span><span class="g-repo">delivery-team / <b>delivery-backend</b></span></div>
+<div class="g-wrap">
+  <div class="g-title" style="font-size:22px">DLV-142: повтор заказа (POST /orders/{id}/repeat) <span class="num">#318</span></div>
+  <div class="g-ptabs"><span class="g-ptab">💬 Conversation <span class="cnt">4</span></span><span class="g-ptab">⊸ Commits <span class="cnt">3</span></span><span class="g-ptab">☑ Checks <span class="cnt">3</span></span><span class="g-ptab on">± Files changed <span class="cnt">5</span></span></div>
+  <div class="bar"><span class="muted">Changes from all commits ▾</span><span class="muted">File filter ▾</span><span style="margin-left:auto" class="row"><span class="adds">+86</span><span class="dels">−3</span><span class="muted">2 / 5 files viewed</span><span class="g-btn green">Review changes ▾</span><span class="mark">5</span></span></div>
+  <div class="row" style="align-items:flex-start; gap:20px">
+    <div class="tree">
+      <div>📁 app/api</div><div class="on">&nbsp;&nbsp;📄 orders.py</div><div>📁 app/services</div><div>&nbsp;&nbsp;📄 carts.py</div><div>📁 tests</div><div>&nbsp;&nbsp;📄 test_orders_repeat.py</div>
+    </div>
+    <div class="grow" style="min-width:0">
+      <div class="diff">
+        <div class="diff-h"><span class="mono" style="font-weight:600">app/api/orders.py</span><span class="adds small">+18</span><span class="mark">1</span><span style="margin-left:auto" class="small muted">☐ Viewed</span></div>
+        <div class="dl hunk"><span class="n"></span><span class="c">@@ -41,6 +41,24 @@ router = APIRouter(prefix="/orders", tags=["orders"])</span></div>
+        <div class="dl"><span class="n">41</span><span class="c">    return OrderOut.model_validate(order)</span></div>
+        <div class="dl"><span class="n">42</span><span class="c"></span></div>
+        <div class="dl add"><span class="n">43</span><span class="c">+@router.post("/{order_id}/repeat", response_model=RepeatOut)</span></div>
+        <div class="dl add"><span class="n">44</span><span class="c">+async def repeat_order(order_id: int, user: User = Depends(current_user),</span></div>
+        <div class="dl add"><span class="n">45</span><span class="c">+                       session: AsyncSession = Depends(get_session)):</span></div>
+        <div class="dl add"><span class="n">46</span><span class="c">+    order = await session.get(Order, order_id)</span></div>
+        <div class="thread">
+          <div class="tc"><div class="row"><span class="av a1">DO</span><b>dorlov</b><span class="muted small">1 day ago</span><span class="mark" style="margin-left:auto">2</span></div>
+            <div style="margin-top:6px"><span class="blk">Блокер:</span> не проверяем, что заказ принадлежит текущему пользователю. Подставив чужой <span class="mono">order_id</span>, можно повторить чужой заказ и увидеть его состав. Нужно <span class="mono">order.user_id == user.id</span>, иначе 404 — и тест на это.</div></div>
+          <div class="tc"><div class="row"><span class="av a2">NV</span><b>nvolkov</b><span class="muted small">20 hours ago</span><span class="mark" style="margin-left:auto">3</span></div>
+            <div style="margin-top:6px">Точно, упустил 🙈 Поправил в <span class="mono">a41c9e2</span>, добавил тест <span class="mono">test_repeat_foreign_order_404</span>.</div>
+            <div class="row" style="margin-top:8px"><span class="g-btn">Resolve conversation</span></div></div>
+        </div>
+        <div class="dl add"><span class="n">47</span><span class="c">+    if order is None:</span></div>
+        <div class="dl add"><span class="n">48</span><span class="c">+        raise HTTPException(status_code=404)</span></div>
+        <div class="dl add"><span class="n">49</span><span class="c">+    cart, skipped = await carts.fill(session, user.id, order)</span></div>
+        <div class="thread">
+          <div class="tc"><div class="row"><span class="av a1">DO</span><b>dorlov</b><span class="muted small">1 day ago</span><span class="mark" style="margin-left:auto">4</span></div>
+            <div style="margin-top:6px"><b>nit:</b> по имени <span class="mono">fill</span> непонятно, что в корзину добавляются товары заказа. Не блокирует, на твоё усмотрение.</div>
+            <div class="sugg"><div class="sugg-h">Suggested change</div>
+              <div class="dl del"><span class="n">49</span><span class="c">-    cart, skipped = await carts.fill(session, user.id, order)</span></div>
+              <div class="dl add"><span class="n">49</span><span class="c">+    cart, skipped = await carts.add_order_items(session, user.id, order)</span></div>
+            </div>
+            <div class="row" style="margin-top:8px"><span class="g-btn">Commit suggestion</span><span class="g-btn">Add suggestion to batch</span></div></div>
+        </div>
+        <div class="dl add"><span class="n">50</span><span class="c">+    await session.commit()</span></div>
+        <div class="dl add"><span class="n">51</span><span class="c">+    return RepeatOut(cart=CartOut.model_validate(cart), skipped=skipped)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

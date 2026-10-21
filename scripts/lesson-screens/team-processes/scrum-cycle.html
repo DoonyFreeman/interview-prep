@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x600">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .canvas { position: relative; }
+  .node { width: 190px; }
+  .node.big { border-color: #0c66e4; }
+  .sprint {
+    position: absolute; left: 760px; top: 140px; width: 250px; height: 250px; border-radius: 50%;
+    border: 3px solid #0c66e4; background: #e9f2ff; display: grid; place-items: center; text-align: center;
+  }
+  .sprint h5 { font-size: 18px; color: #0055cc; }
+  .daily {
+    position: absolute; left: 950px; top: 104px; width: 120px; height: 120px; border-radius: 50%;
+    border: 2px dashed #22a06b; background: #dcfff1; display: grid; place-items: center; text-align: center; font-size: 12px;
+  }
+  .daily b { display: block; font-size: 14px; color: #216e4e; }
+  .stack span { display: block; height: 10px; border-radius: 3px; background: #dfe1e6; margin-top: 5px; }
+  .stack span:nth-child(1) { width: 90%; } .stack span:nth-child(2) { width: 75%; } .stack span:nth-child(3) { width: 82%; } .stack span:nth-child(4) { width: 60%; }
+  svg { position: absolute; inset: 0; pointer-events: none; }
+  .lbl-arrow { position: absolute; font-size: 12px; color: #626f86; background: #fbfaf8; padding: 0 4px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Цикл Scrum: что происходит за один спринт</div>
+  <div class="dg-sub">Спринт длится 1–4 недели (чаще всего 2) и повторяется снова и снова</div>
+
+  <svg viewBox="0 0 1280 640" width="1280" height="640">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8590a2"/></marker></defs>
+    <g stroke="#8590a2" stroke-width="2.2" fill="none" marker-end="url(#ar)">
+      <path d="M236 265 H284"/>
+      <path d="M480 265 H528"/>
+      <path d="M724 265 H756"/>
+      <path d="M1012 265 H1060"/>
+      <path d="M1150 330 V470 H1082"/>
+      <path d="M842 520 H700"/>
+      <path d="M460 520 H140 V352"/>
+    </g>
+  </svg>
+
+  <div class="node" style="left:40px; top:180px; height:170px">
+    <h5>Бэклог продукта</h5><p>Product Backlog — общий список всего, что нужно сделать, сверху самое важное</p>
+    <div class="stack"><span></span><span></span><span></span><span></span></div>
+  </div>
+  <span class="mark abs" style="left:28px; top:166px">1</span>
+
+  <div class="node" style="left:288px; top:205px">
+    <h5>Планирование спринта</h5><p>Sprint Planning — команда выбирает задачи на спринт и ставит цель</p>
+  </div>
+  <span class="mark abs" style="left:276px; top:192px">2</span>
+
+  <div class="node" style="left:532px; top:205px">
+    <h5>Бэклог спринта</h5><p>Sprint Backlog — задачи, которые команда взяла в этот спринт</p>
+  </div>
+
+  <div class="sprint"><div><h5>Спринт</h5><p class="muted">1–4 недели<br>работа над задачами</p></div></div>
+  <div class="daily"><div><b>Дейли</b>15 минут<br>каждый день</div></div>
+  <span class="mark abs" style="left:1062px; top:98px">3</span>
+
+  <div class="node big" style="left:1064px; top:205px; width:180px">
+    <h5>Инкремент</h5><p>Increment — готовая, проверенная часть продукта</p>
+  </div>
+
+  <div class="node" style="left:846px; top:460px; width:230px">
+    <h5>Обзор спринта (демо)</h5><p>Sprint Review — показываем результат заказчику и PO, собираем отзывы</p>
+  </div>
+  <span class="mark abs" style="left:834px; top:447px">4</span>
+
+  <div class="node" style="left:466px; top:460px; width:230px">
+    <h5>Ретроспектива</h5><p>Retrospective — команда обсуждает, как работала и что улучшить</p>
+  </div>
+  <span class="mark abs" style="left:454px; top:447px">5</span>
+
+  <span class="lbl-arrow" style="left:150px; top:420px">новые идеи и отзывы → в бэклог</span>
+</div></body></html>

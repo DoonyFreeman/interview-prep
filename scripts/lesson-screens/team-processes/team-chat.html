@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x700">
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { display: flex; }
+  .ws { width: 240px; background: #1f2937; color: #d1d5db; padding: 14px 10px; flex: none; }
+  .ws .wn { font-weight: 800; font-size: 16px; color: #fff; padding: 0 8px 14px; }
+  .ws .ch { padding: 4px 10px; border-radius: 6px; font-size: 14px; }
+  .ws .ch.on { background: #2563eb; color: #fff; font-weight: 600; }
+  .ws .h { font-size: 12px; opacity: .7; padding: 12px 10px 4px; }
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .chh { height: 52px; border-bottom: 1px solid #e3e3e3; display: flex; align-items: center; padding: 0 20px; gap: 10px; }
+  .feed { flex: 1; padding: 10px 0; }
+  .day { text-align: center; font-size: 12px; font-weight: 700; color: #555; margin: 8px 0; }
+  .txt { line-height: 1.5; }
+  .mention { color: #1164a3; background: #e8f5fa; border-radius: 3px; padding: 0 2px; font-weight: 500; }
+  .link { color: #1164a3; }
+  .thr { margin-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1164a3; font-weight: 700; }
+  .thr .av { width: 20px; height: 20px; font-size: 8px; }
+  .reply { margin: 6px 0 0 0; border-left: 3px solid #e3e3e3; padding-left: 10px; }
+  .input { margin: 0 20px 16px; border: 1px solid #c4c4c4; border-radius: 8px; padding: 12px; color: #8a8f98; }
+  .msg { position: relative; }
+  .msg .mark { position: absolute; right: 24px; top: 10px; }
+</style></head>
+<body>
+<aside class="ws">
+  <div class="wn">Delivery Team</div>
+  <div class="h">Каналы</div>
+  <div class="ch"># general</div><div class="ch on"># delivery-backend</div><div class="ch"># delivery-releases</div><div class="ch"># delivery-alerts</div>
+  <div class="h">Личные сообщения</div>
+  <div class="ch">● Дмитрий Орлов</div><div class="ch">● Мария Лебедева</div><div class="ch">○ Екатерина Соколова</div>
+</aside>
+<div class="main">
+  <div class="chh"><b># delivery-backend</b><span class="muted small">разработка бэкенда · 9 участников</span></div>
+  <div class="feed">
+    <div class="day">Среда, 21 октября</div>
+    <div class="chat-msg msg"><span class="av a2 lg">НВ</span><div>
+      <div class="chat-name">Никита Волков<span class="chat-time">09:52</span></div>
+      <div class="txt">Мой статус к дейли 👇<br>✅ <b>Вчера:</b> доделал повтор заказа, по PR #318 пришло ревью — есть блокер<br>🔨 <b>Сегодня:</b> правлю замечания по ревью, потом баг DLV-151<br>⛔ <b>Блокеры:</b> нет</div>
+      <span class="react">👍 4</span><span class="react">👀 1</span>
+    </div><span class="mark">1</span></div>
+    <div class="chat-msg msg"><span class="av a2 lg">НВ</span><div>
+      <div class="chat-name">Никита Волков<span class="chat-time">11:40</span></div>
+      <div class="txt"><span class="mention">@Мария Лебедева</span> вопрос по <span class="link">DLV-142</span>: если у товара остаток на одном складе есть, а на другом нет — считаем, что он в наличии? В критериях не нашёл, проверял «вообще есть или нет». Сейчас из-за этого баг DLV-151 🙏</div>
+      <div class="reply"><div class="row"><span class="av a9">МЛ</span><b>Мария Лебедева</b><span class="chat-time">11:58</span></div>
+        <div class="txt">Смотрим только склад, к которому привязан адрес доставки. Дописала в критерии приёмки, пункт 3 👌</div></div>
+      <div class="thr"><span class="av a9">МЛ</span><span class="av a1">ДО</span>3 ответа · последний в 12:04</div>
+    </div><span class="mark">2</span></div>
+    <div class="chat-msg msg"><span class="av a2 lg">НВ</span><div>
+      <div class="chat-name">Никита Волков<span class="chat-time">16:05</span></div>
+      <div class="txt"><span class="mention">@Дмитрий Орлов</span> поправил замечания в <span class="link">PR #318</span>: проверка владельца заказа + тест на чужой заказ, nit с именем функции тоже взял. Посмотри, пожалуйста, когда будет минутка 🙏</div>
+      <div class="reply"><div class="row"><span class="av a1">ДО</span><b>Дмитрий Орлов</b><span class="chat-time">16:40</span></div><div class="txt">Посмотрел — апрув ✅ Мержи.</div></div>
+    </div><span class="mark">3</span></div>
+    <div class="chat-msg msg"><span class="av a8 lg">ЕС</span><div>
+      <div class="chat-name">Екатерина Соколова<span class="chat-time">17:10</span></div>
+      <div class="txt">DLV-142 проверила на stage — всё по критериям ✅ Перевела в Done. <span class="link">DLV-151</span> жду после мержа #324.</div>
+      <span class="react">🎉 3</span>
+    </div><span class="mark">4</span></div>
+  </div>
+  <div class="input">Написать в #delivery-backend</div>
+</div>
+</body></html>

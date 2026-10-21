@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x720">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .sprint-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+  .goal { color: #44546f; margin-top: 2px; }
+  .filters { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .fsearch { width: 200px; height: 32px; border: 1px solid #8590a2; border-radius: 4px; padding: 0 10px; display: flex; align-items: center; color: #626f86; }
+  .avs { display: flex; } .avs .av { margin-left: 3px; }
+  .avs .av:first-child { margin-left: 0; }
+  .card.hl { box-shadow: 0 0 0 2px #e5484d, 0 1px 1px rgba(9,30,66,.25); }
+</style></head>
+<body>
+<div class="j-top">
+  <div class="j-apps">⋮⋮</div><div class="j-brand">Jira</div>
+  <div class="j-topnav"><span>Your work</span><span>Projects</span><span>Filters</span><span>Dashboards</span></div>
+  <span class="j-create">+ Create</span>
+  <div class="j-search">🔍&nbsp; Search</div>
+  <span class="av a2">НВ</span>
+</div>
+<div class="j-shell">
+  <aside class="j-side">
+    <div class="j-proj"><div class="j-proj-ic">D</div><div><div class="bold">Delivery</div><div class="small muted">Software project</div></div></div>
+    <div class="j-nav-h">Planning</div>
+    <nav class="j-nav">
+      <a>▤ Summary</a><a>▦ Timeline</a><a>☰ Backlog</a><a class="on">▥ Board</a><a>◔ Reports</a>
+    </nav>
+    <div class="j-nav-h">Development</div>
+    <nav class="j-nav"><a>⌥ Code</a><a>⇪ Releases</a></nav>
+  </aside>
+  <main class="j-main">
+    <div class="j-crumbs">Projects / Delivery</div>
+    <div class="sprint-head">
+      <div class="grow">
+        <div class="row"><div class="j-h1" style="margin:0">DLV Sprint 14</div><span class="mark">1</span></div>
+        <div class="goal">🎯 Sprint goal: покупатель может повторить прошлый заказ в один клик</div>
+      </div>
+      <div class="row" style="margin-top:4px"><span class="muted">⏱ 3 days remaining</span><span class="j-btn">Complete sprint</span><span class="mark">5</span></div>
+    </div>
+    <div class="filters">
+      <div class="fsearch">🔍&nbsp; Search board</div>
+      <div class="avs"><span class="av a2">НВ</span><span class="av a4">ОП</span><span class="av a6">СК</span><span class="av a1">ДО</span><span class="av a8">ЕС</span></div>
+      <span class="mark">4</span>
+      <span class="j-btn">Epic ▾</span><span class="j-btn">Type ▾</span><span class="j-btn">Only my issues</span>
+    </div>
+
+    <div class="board">
+      <div class="col">
+        <div class="col-h">To Do <span>3</span><span class="mark" style="margin-left:auto">2</span></div>
+        <div class="card"><div class="card-t">Показать кнопку «Повторить» в истории заказов</div>
+          <div style="margin-bottom:8px"><span class="loz epic">Повторные покупки</span></div>
+          <div class="card-f"><span class="it story"></span><span class="key">DLV-145</span><span class="pri med"></span><span class="sp">3</span><span class="av a6">СК</span></div></div>
+        <div class="card"><div class="card-t">Метрика: сколько заказов повторяют</div>
+          <div class="card-f"><span class="it task"></span><span class="key">DLV-147</span><span class="pri low"></span><span class="sp">2</span><span class="av" style="background:#dfe1e6;color:#626f86">?</span></div></div>
+        <div class="card"><div class="card-t">Время в чеке показывается в UTC, а не по Москве</div>
+          <div class="card-f"><span class="it bug"></span><span class="key">DLV-149</span><span class="pri med"></span><span class="sp">1</span><span class="av a4">ОП</span></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h">In Progress <span>2</span></div>
+        <div class="card hl"><span class="mark abs" style="right:-10px; top:-10px">3</span>
+          <div class="card-t">Повтор заказа: API POST /orders/{id}/repeat</div>
+          <div style="margin-bottom:8px"><span class="loz epic">Повторные покупки</span></div>
+          <div class="card-f"><span class="it story"></span><span class="key">DLV-142</span><span class="pri high"></span><span class="sp">5</span><span class="av a2">НВ</span></div></div>
+        <div class="card"><div class="card-t">Push-уведомление о смене статуса заказа</div>
+          <div class="card-f"><span class="it story"></span><span class="key">DLV-146</span><span class="pri med"></span><span class="sp">3</span><span class="av a4">ОП</span></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h">Code Review <span>1</span></div>
+        <div class="card"><div class="card-t">Кэшировать каталог в Redis на 5 минут</div>
+          <div class="card-f"><span class="it task"></span><span class="key">DLV-143</span><span class="pri med"></span><span class="sp">3</span><span class="av a1">ДО</span></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h">Testing <span>1</span></div>
+        <div class="card"><div class="card-t">Промокод на первый заказ</div>
+          <div style="margin-bottom:8px"><span class="loz epic">Маркетинг</span></div>
+          <div class="card-f"><span class="it story"></span><span class="key">DLV-140</span><span class="pri high"></span><span class="sp">5</span><span class="av a8">ЕС</span></div></div>
+      </div>
+      <div class="col">
+        <div class="col-h">Done <span>3</span></div>
+        <div class="card"><div class="card-t" style="color:#626f86">Адрес доставки по умолчанию</div>
+          <div class="card-f"><span class="it story"></span><span class="key"><s>DLV-138</s></span><span class="sp">3</span><span class="av a6">СК</span></div></div>
+        <div class="card"><div class="card-t" style="color:#626f86">Двойное списание при повторном нажатии «Оплатить»</div>
+          <div class="card-f"><span class="it bug"></span><span class="key"><s>DLV-139</s></span><span class="sp">2</span><span class="av a4">ОП</span></div></div>
+        <div class="card"><div class="card-t" style="color:#626f86">Обновить FastAPI до свежей версии</div>
+          <div class="card-f"><span class="it task"></span><span class="key"><s>DLV-141</s></span><span class="sp">1</span><span class="av a1">ДО</span></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

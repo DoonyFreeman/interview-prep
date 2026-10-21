@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x780">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .mention { color: #0c66e4; background: #e9f2ff; border-radius: 3px; padding: 0 3px; }
+  .devpanel .field > :first-child { width: auto; }
+  .field .mark { margin-left: auto; }
+  .issue-side { width: 400px; }
+</style></head>
+<body>
+<div class="j-top">
+  <div class="j-apps">⋮⋮</div><div class="j-brand">Jira</div>
+  <div class="j-topnav"><span>Your work</span><span>Projects</span><span>Filters</span><span>Dashboards</span></div>
+  <span class="j-create">+ Create</span>
+  <div class="j-search">🔍&nbsp; Search</div>
+  <span class="av a2">НВ</span>
+</div>
+<div class="j-main" style="padding:20px 40px">
+  <div class="j-crumbs">Projects / Delivery / <span class="it epic"></span> DLV-120 Повторные покупки / <span class="it story"></span> DLV-142</div>
+  <div class="issue">
+    <div class="issue-main">
+      <div class="issue-title">Повтор заказа: API POST /orders/{id}/repeat</div>
+      <div class="row" style="margin-bottom:6px"><span class="j-btn">📎 Attach</span><span class="j-btn">⊕ Add a child issue</span><span class="j-btn">🔗 Link issue</span></div>
+      <div class="sec-h">Description</div>
+      <div class="desc muted">
+        <p>Как покупатель, я хочу повторить прошлый заказ в один клик, чтобы не собирать корзину заново.</p>
+        <p>Критерии приёмки — см. ниже в описании (развернуть)…</p>
+      </div>
+      <div class="sec-h row">Activity <span class="mark">4</span></div>
+      <div class="row small" style="gap:14px; margin-bottom:6px"><span class="bold" style="border-bottom:2px solid #0c66e4; padding-bottom:4px">Comments</span><span class="muted">History</span><span class="muted">Work log</span></div>
+      <div class="comment"><span class="av a9 lg">МЛ</span><div class="comment-b">
+        <div><b>Мария Лебедева</b> <span class="muted small">вчера в 17:40</span></div>
+        <div>Уточнила с <span class="mention">@Анна Ковалёва</span>: если товара нет в наличии — пропускаем его и показываем пользователю плашку. Дописала в критерии приёмки, пункт 3.</div>
+      </div></div>
+      <div class="comment"><span class="av a2 lg">НВ</span><div class="comment-b">
+        <div><b>Никита Волков</b> <span class="muted small">сегодня в 10:20</span></div>
+        <div>Взял в работу. <span class="mention">@Дмитрий Орлов</span>, PR будет к среде — посмотришь? Вопрос по кэшу корзины задам на дейли.</div>
+      </div></div>
+      <div class="comment"><span class="av a1 lg">ДО</span><div class="comment-b">
+        <div><b>Дмитрий Орлов</b> <span class="muted small">сегодня в 10:31</span></div>
+        <div>Да, ставь меня ревьюером 👍</div>
+      </div></div>
+    </div>
+    <div class="issue-side">
+      <div class="row" style="margin-bottom:12px"><span class="status-btn">In Progress ▾</span><span class="j-btn">⚡ Actions</span></div>
+      <div class="box fields">
+        <div class="bold" style="padding:10px 0 4px">Details</div>
+        <div class="field"><span>Assignee</span><span class="row"><span class="av a2">НВ</span>Никита Волков</span><span class="mark">1</span></div>
+        <div class="field"><span>Reporter</span><span class="row"><span class="av a9">МЛ</span>Мария Лебедева</span><span class="mark">2</span></div>
+        <div class="field"><span>Reviewer</span><span class="row"><span class="av a1">ДО</span>Дмитрий Орлов</span><span class="mark">3</span></div>
+        <div class="field"><span>QA</span><span class="row"><span class="av a8">ЕС</span>Екатерина Соколова</span></div>
+        <div class="field"><span>Sprint</span><span style="color:#0c66e4">DLV Sprint 14</span></div>
+        <div class="field"><span>Story points</span><span class="sp">5</span></div>
+        <div class="field"><span>Priority</span><span class="row"><span class="pri high"></span>High</span></div>
+        <div class="field"><span>Labels</span><span><span class="lbl">backend</span> <span class="lbl">api</span></span></div>
+        <div class="field"><span>Parent</span><span class="row"><span class="it epic"></span>Повторные покупки</span></div>
+      </div>
+      <div class="box fields devpanel" style="margin-top:12px">
+        <div class="field"><span class="bold" style="color:#172b4d">Development</span><span class="mark">5</span></div>
+        <div class="field"><span style="color:#0c66e4">⎇ 1 branch</span><span class="mono small muted">feature/DLV-142-repeat-order</span></div>
+        <div class="field"><span style="color:#0c66e4">⇅ 1 pull request</span><span class="loz prog">OPEN</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>
