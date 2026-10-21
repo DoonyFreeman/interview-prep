@@ -468,11 +468,11 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    3–6 tabs, canonical order enforced) with a picker in Settings.
    `scripts/check_mcq_quality.py` gates the "pick the longest option" tell
    (`--report` surveys an existing bank without failing).
-   **The `exam.json` bank covers all 22 courses — 206 questions**, 2 per lesson,
+   **The `exam.json` bank covers all 23 courses — 220 questions**, 2 per lesson,
    every one a scenario ("given this code / this situation, what happens") rather
    than a definition, and every file passing the length gate (correct-is-longest
    0–40%, mean ratio ~1.0 vs the lesson bank's 1.5).
-   Backend 184 passing, frontend 85.
+   Backend 197 passing, frontend 85 (as of phase 10).
    **Release note**: `lib/whatsNew.ts` + `components/WhatsNew.tsx` show a
    one-time dialog after an update (localStorage stores the release id, not a
    flag). To announce the next release: bump `CURRENT_RELEASE` and rewrite the
@@ -498,7 +498,11 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    — the repo is public), rendered by `scripts/render_lesson_screens.sh` with
    the installed Chrome (`--headless --screenshot`, frame size from a
    `<meta name="screen-size">`). `Markdown.tsx` renders images lazily, tap opens
-   full size. **The lesson page ends with "Videos & resources"**: the same
+   full size; an optional `#WxH` URL fragment becomes width/height so the space
+   is reserved (no layout shift under "back to theory" anchors). The search /
+   cat excerpts reduce `![alt](src)` to its alt text. `spa_fallback` resolves the
+   path and refuses anything outside `STATIC_DIR` (uvicorn decodes `%2e%2e`;
+   guarded by `test_spa_fallback.py`). **The lesson page ends with "Videos & resources"**: the same
    roadmap resources as the drawer (`resourcesFor` + exported `ResourceList`),
    so every course gets it. Resources may carry an optional `minutes` (video
    length), shown as "· N min" and validated by the integrity test.

@@ -60,7 +60,7 @@ PR на 2000 строк никто не прочитает внимательн�
 
 **Как это выглядит в жизни.** Вкладка Conversation твоего PR:
 
-![Pull request #318 на GitHub: описание по шаблону, ревьюеры, статус CI и заблокированный мерж](/lesson-media/team-processes/pr-conversation.png "Pull request — реконструкция интерфейса GitHub")
+![Pull request #318 на GitHub: описание по шаблону, ревьюеры, статус CI и заблокированный мерж](/lesson-media/team-processes/pr-conversation.png#1440x1015 "Pull request — реконструкция интерфейса GitHub")
 
 1. **Заголовок с ключом задачи** и строка «nvolkov wants to merge 3 commits into
    main from feature/DLV-142-repeat-order»: из какой ветки в какую вливаем.
@@ -108,7 +108,7 @@ PR на 2000 строк никто не прочитает внимательн�
 **Как это выглядит в жизни.** Вкладка Files changed: ревьюер комментирует
 конкретные строки:
 
-![Вкладка Files changed: диф файла orders.py, комментарий-блокер про проверку владельца, ответ автора, nit с suggestion](/lesson-media/team-processes/pr-files-changed.png "Ревью изменений — реконструкция интерфейса GitHub")
+![Вкладка Files changed: диф файла orders.py, комментарий-блокер про проверку владельца, ответ автора, nit с suggestion](/lesson-media/team-processes/pr-files-changed.png#1440x950 "Ревью изменений — реконструкция интерфейса GitHub")
 
 1. **Диф файла:** зелёные строки добавлены, красные удалены, слева номера строк.
 2. **Комментарий-блокер:** нет проверки, что заказ принадлежит пользователю.
@@ -121,7 +121,7 @@ PR на 2000 строк никто не прочитает внимательн�
    suggestion**.
 5. **Review changes** — кнопка, которой ревьюер завершает ревью.
 
-![Окно Finish your review: итоговый комментарий и выбор Comment, Approve или Request changes](/lesson-media/team-processes/pr-submit-review.png "Отправка ревью — реконструкция интерфейса GitHub")
+![Окно Finish your review: итоговый комментарий и выбор Comment, Approve или Request changes](/lesson-media/team-processes/pr-submit-review.png#1280x660 "Отправка ревью — реконструкция интерфейса GitHub")
 
 1. **Итоговый комментарий:** общее впечатление и что главное.
 2. **Три варианта:** **Comment** — просто комментарии без вердикта; **Approve** —

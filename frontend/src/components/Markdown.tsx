@@ -46,16 +46,24 @@ export function Markdown({ markdown }: { markdown: string }) {
           },
           // Lesson screenshots are wide: on a phone their text is tiny, so a tap
           // opens the full-size file. The caption (markdown title) sits outside
-          // the link so `.prose a` doesn't underline it.
+          // the link so `.prose a` doesn't underline it. An optional "#WxH" on
+          // the URL gives the intrinsic size, so the browser reserves the space
+          // and a lazy image loading later can't shift a "back to theory" anchor.
           img({ src, alt, title }) {
+            const [url, size] = (src ?? "").split("#");
+            const [width, height] = /^\d+x\d+$/.test(size ?? "")
+              ? size.split("x")
+              : [];
             return (
               <>
-                <a href={src} target="_blank" rel="noreferrer" className="mt-4 block">
+                <a href={url} target="_blank" rel="noreferrer" className="mt-4 block">
                   <img
-                    src={src}
+                    src={url}
                     alt={alt ?? ""}
+                    width={width}
+                    height={height}
                     loading="lazy"
-                    className="w-full rounded-xl border border-border bg-white"
+                    className="h-auto w-full rounded-xl border border-border bg-white"
                   />
                 </a>
                 {title && (
