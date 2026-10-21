@@ -487,6 +487,22 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    alone for now at the author's call; `scripts/check_mcq_quality.py --report`
    ranks the worst courses (nginx 100%, sqlalchemy 100%, postgresql 96%).
 
+10. **Team processes course + lesson media.** Course `team-processes` (order 0 —
+   first in the catalog; first roadmap stage `team`): 7 lessons, one per day,
+   on Agile/Scrum, roles, backlog/grooming, sprint events, code review, task
+   lifecycle and a developer's day. **Lessons can show images**:
+   `![alt](/lesson-media/<course>/<name>.png "caption")`; files live in
+   `frontend/public/lesson-media/` (Vite copies `public/` into `dist/`, and
+   `main.py:_mount_spa` already serves real files from it). The screenshots are
+   HTML mockups in `scripts/lesson-screens/<course>/` (fictional team, no logos
+   — the repo is public), rendered by `scripts/render_lesson_screens.sh` with
+   the installed Chrome (`--headless --screenshot`, frame size from a
+   `<meta name="screen-size">`). `Markdown.tsx` renders images lazily, tap opens
+   full size. **The lesson page ends with "Videos & resources"**: the same
+   roadmap resources as the drawer (`resourcesFor` + exported `ResourceList`),
+   so every course gets it. Resources may carry an optional `minutes` (video
+   length), shown as "· N min" and validated by the integrity test.
+
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a
 frontend to serve (Phase 7), not as an afterthought.

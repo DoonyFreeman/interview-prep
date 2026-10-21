@@ -115,7 +115,7 @@ export function WhatsNew() {
             </ul>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Link to="/tests" onClick={close}>
+              <Link to="/courses/team-processes" onClick={close}>
                 <Button>{t("whatsNew.cta")} →</Button>
               </Link>
               <Button variant="ghost" onClick={close}>

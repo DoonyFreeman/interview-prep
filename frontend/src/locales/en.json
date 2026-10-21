@@ -369,26 +369,26 @@
   },
   "whatsNew": {
     "title": "What's new",
-    "subtitle": "A small update — here's what changed.",
+    "subtitle": "A new course and a couple of lesson upgrades.",
     "items": [
       {
-        "title": "The Tests section",
-        "body": "Mixed tests across every course at once: a random draw, a smart pick aimed at your weak spots, or pure error correction. Pick the topics and how many questions."
+        "title": "The “Team processes” course",
+        "body": "Agile and Scrum, roles, backlog and grooming, daily, demo and retro, code review, a task's journey and a developer's day. 7 lessons — one a day — with tests and interview answers."
       },
       {
-        "title": "206 new questions",
-        "body": "Written just for this section — applied rather than memorised: here's some code or a situation, work out what happens."
+        "title": "Screenshots in lessons",
+        "body": "What it looks like in Jira and GitHub: the sprint board, backlog, a reviewed pull request, a bug report — with numbered callouts. Tap an image to open it full size."
       },
       {
-        "title": "Configurable bottom bar",
-        "body": "Settings now lets you choose which sections appear in the phone's bottom bar — between 3 and 6 of them."
+        "title": "Videos at the end of a lesson",
+        "body": "Every lesson now ends with curated videos and articles on the topic; videos show their length."
       },
       {
-        "title": "A fresher look",
-        "body": "New logo, translucent iOS-style panels, and lively vector icons in place of emoji."
+        "title": "New slang terms",
+        "body": "Story points, LGTM, nit, blocker, velocity and other words you'll hear in a team from day one."
       }
     ],
-    "cta": "Open Tests",
+    "cta": "Open the course",
     "dismiss": "Later"
   },
   "progress": {

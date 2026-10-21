@@ -11,7 +11,7 @@
  */
 
 /** Bump this to show a fresh note. Anything else stored means "not seen yet". */
-export const CURRENT_RELEASE = "2026-08-17-tests";
+export const CURRENT_RELEASE = "2026-10-21-team-processes";
 
 const KEY = "whats_new_seen";
 
