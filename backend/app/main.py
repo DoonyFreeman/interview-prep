@@ -157,7 +157,10 @@ def _mount_spa(app: FastAPI) -> None:
         # resolve() + containment: the server decodes %2e%2e to "..", and a bare
         # join would serve any readable file (e.g. the SQLite DB next to app/).
         root = STATIC_DIR.resolve()
-        candidate = (root / full_path).resolve()
+        try:
+            candidate = (root / full_path).resolve()
+        except (ValueError, OSError):  # e.g. a decoded %00
+            return FileResponse(index_file, headers={"Cache-Control": NO_CACHE})
         if (
             full_path
             and candidate.is_relative_to(root)

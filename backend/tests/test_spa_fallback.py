@@ -103,12 +103,22 @@ async def test_nested_static_files_are_served(spa_client, tmp_path):
 
 @pytest.mark.parametrize(
     "path",
-    ["/%2e%2e/secret.txt", "/..%2fsecret.txt", "/lesson-media/%2e%2e/%2e%2e/secret.txt"],
+    ["/%2e%2e/secret.txt", "/..%2fsecret.txt", "/lesson-media/%2e%2e/%2e%2e/secret.txt", "abs"],
 )
 async def test_encoded_dot_segments_cannot_escape_the_static_dir(spa_client, tmp_path, path):
     """The server decodes %2e%2e into "..": without a containment check the
     fallback would read any file the process can (in the image — the SQLite DB)."""
     (tmp_path / "secret.txt").write_text("TOP-SECRET", encoding="utf-8")
+    (tmp_path / "static" / "lesson-media").mkdir()  # so the old code really walked up
+    if path == "abs":  # an encoded absolute path: STATIC_DIR / "/x" == "/x"
+        path = "/%2F" + str(tmp_path / "secret.txt").lstrip("/")
     r = await spa_client.get(path)
     assert "TOP-SECRET" not in r.text
+
+
+@pytest.mark.parametrize("path", ["/%00", "/x%00y"])
+async def test_nul_byte_falls_back_instead_of_500(spa_client, path):
+    r = await spa_client.get(path)
+    assert r.status_code == 200
+    assert "<title>spa</title>" in r.text
 

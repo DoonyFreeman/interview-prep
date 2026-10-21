@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 
+_IMAGE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
 _INLINE_LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
 _BOLD = re.compile(r"\*\*([^*]*)\*\*")
 _ITALIC = re.compile(r"\*([^*]*)\*")
@@ -33,6 +34,7 @@ def slugify(text: str) -> str:
 
 def _strip_markdown(text: str) -> str:
     """Strip the lightest inline markdown so a paragraph reads as plain text."""
+    text = _IMAGE.sub(r"\1", text)  # keep the alt text, drop the URL
     text = _INLINE_LINK.sub(r"\1", text)
     text = _BOLD.sub(r"\1", text)
     text = _ITALIC.sub(r"\1", text)
@@ -78,7 +80,7 @@ def _is_prose(line: str) -> bool:
     stripped = line.strip()
     if not stripped:
         return False
-    if stripped.startswith(("#", ">", "|", "- ", "* ", "+ ")):
+    if stripped.startswith(("#", ">", "|", "- ", "* ", "+ ", "![")):
         return False
     # Ordered list item like "1. ".
     if re.match(r"^\d+\.\s", stripped):
