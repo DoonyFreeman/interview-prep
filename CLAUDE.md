@@ -378,7 +378,7 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    and re-seeded on startup. Smoke-tested: image builds (~347 MB), container goes
    healthy, `/api/courses` returns 20 courses, SPA + deep links + assets serve,
    no `reference_answer` leak, DB persists across restart.
-8. ✅ **Deploy to a server** — **live** at `https://176.123.168.87.sslip.io`.
+8. ✅ **Deploy to a server** — **live** at `https://iprep.duckdns.org` (free DuckDNS name; the old `176.123.168.87.sslip.io` 301-redirects via `REDIRECT_FROM` in the `Caddyfile`).
    Artifacts ready: `Caddyfile` (reverse_proxy `app:8000`, automatic Let's Encrypt
    TLS, HSTS/security headers), `docker-compose.prod.yml` overlay (adds a `caddy`
    service on 80/443 with persistent `caddy_data`/`caddy_config` volumes,

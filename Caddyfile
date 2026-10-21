@@ -34,3 +34,10 @@
 		format console
 	}
 }
+
+# Old hostname (e.g. 176.123.168.87.sslip.io) → permanent redirect to {$DOMAIN},
+# so old links/bookmarks keep working. Caddy gets a cert for it too.
+# Unset → a plain-HTTP placeholder that never requests a certificate.
+{$REDIRECT_FROM:http://redirect.invalid} {
+	redir https://{$DOMAIN}{uri} permanent
+}

@@ -14,7 +14,7 @@ internet ──443──> caddy (TLS, Let's Encrypt) ──> app:8000 (FastAPI: 
 - A host (1 small VPS is enough) with **Docker Engine + Compose v2**.
 - Ports **80 and 443** open to the internet (HTTP-01/TLS-ALPN challenge + serving).
 - **For HTTPS:** either a real domain with A/AAAA record pointing at the host, OR
-  use `{IP}.sslip.io` (see below) for automatic Let's Encrypt certs without
+  a free DuckDNS subdomain (see below) for automatic Let's Encrypt certs without
   owning a domain.
 
 ## First deploy
@@ -44,24 +44,25 @@ curl -fsS https://$DOMAIN/health  # {"status":"ok"}
 Caddy provisions and auto-renews the certificate; certs persist in the
 `caddy_data` volume, so restarts don't re-issue.
 
-## Fast start without a domain: sslip.io
+## Free domain: DuckDNS (current setup)
 
-If you don't have a domain yet, use the free `sslip.io` service:
+The app lives at `https://iprep.duckdns.org` (free, no domain purchase).
 
-```bash
-# In .env:
-DOMAIN=176.123.168.87.sslip.io        # Replace IP with your host's IP
-ACME_EMAIL=your-real@email.com         # Let's Encrypt notifications
+1. Sign in at https://www.duckdns.org (GitHub/Google login).
+2. In "sub domain" type `iprep` → **add domain**, then set its **current ip**
+   to the host IP (`176.123.168.87`) → **update ip**.
+3. Check it resolves: `dig +short iprep.duckdns.org` → the host IP.
+4. On the host, in `.env`:
+   ```bash
+   DOMAIN=iprep.duckdns.org
+   REDIRECT_FROM=176.123.168.87.sslip.io   # old address → 301 to the new one (optional)
+   ```
+5. Restart Caddy (no rebuild): `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d caddy`
+   — Caddy issues Let's Encrypt certs for both names within a minute.
 
-# Deploy as normal:
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-
-# The domain auto-resolves to your IP; Caddy issues a real Let's Encrypt cert.
-# Open https://176.123.168.87.sslip.io in your browser (no warnings).
-```
-
-Later, when you have a domain, just edit `DOMAIN` in `.env` and restart — Caddy
-auto-renews the cert under the new domain.
+The host IP is static, so no DuckDNS updater cron is needed. Another option
+without buying a domain is `{IP}.sslip.io` (`DOMAIN=176.123.168.87.sslip.io`).
+Moving to an own domain later = edit `DOMAIN` (and `REDIRECT_FROM`) and restart Caddy.
 
 ## Updates (CI/CD via GitHub Actions + GHCR)
 
