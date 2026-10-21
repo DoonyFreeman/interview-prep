@@ -525,6 +525,7 @@ class RoadmapResourceOut(BaseModel):
     title: str
     url: str
     source: str
+    minutes: int | None = None  # video length, optional
 
 
 class RoadmapLessonOut(BaseModel):

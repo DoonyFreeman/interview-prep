@@ -1,6 +1,60 @@
 {
   "stages": [
     {
+      "slug": "team",
+      "title": "Работа в команде",
+      "summary": "Как устроены процессы в IT-компании: Scrum, роли, бэклог, встречи, code review и рабочий день. Это спрашивают у каждого кандидата и нужно с первого дня работы.",
+      "courses": [
+        {
+          "slug": "team-processes",
+          "summary": "Agile и Scrum, роли, бэклог и груминг, дейли, демо и ретро, code review, путь задачи и рабочий день — со скриншотами Jira и GitHub.",
+          "resources": [
+            { "type": "video", "lang": "ru", "title": "Рабочие процессы в IT: как всё работает на самом деле", "url": "https://www.youtube.com/watch?v=Jx-WAc-6iPY", "source": "Не твой ментор", "minutes": 23 },
+            { "type": "docs", "lang": "ru", "title": "Scrum Guide 2020 — русский перевод", "url": "https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Russian.pdf", "source": "scrumguides.org" }
+          ],
+          "lesson_resources": {
+            "agile-scrum": [
+              { "type": "video", "lang": "ru", "title": "Весь Scrum за 14 минут: роли, артефакты, события", "url": "https://www.youtube.com/watch?v=djO9Hiey0dk", "source": "Dmitry Blinov", "minutes": 14 },
+              { "type": "video", "lang": "ru", "title": "Что такое Agile? Scrum vs Kanban для новичков", "url": "https://www.youtube.com/watch?v=UzeSGWAICYw", "source": "GeekBrains", "minutes": 9 },
+              { "type": "article", "lang": "ru", "title": "Что такое Scrum? Руководство по методологии Agile", "url": "https://www.atlassian.com/ru/agile/scrum", "source": "Atlassian" }
+            ],
+            "roles": [
+              { "type": "video", "lang": "ru", "title": "Роли в Scrum: Product Owner, Developers, Scrum Master", "url": "https://www.youtube.com/watch?v=VAsBVCoPYA8", "source": "Dmitry Blinov", "minutes": 13 },
+              { "type": "video", "lang": "ru", "title": "Роли в IT-команде и что они делают", "url": "https://www.youtube.com/watch?v=bKZvl3VOQ2c", "source": "Скрамбери", "minutes": 15 },
+              { "type": "article", "lang": "ru", "title": "Agile-роли в Scrum", "url": "https://www.atlassian.com/ru/agile/scrum/roles", "source": "Atlassian" }
+            ],
+            "backlog-grooming": [
+              { "type": "video", "lang": "ru", "title": "Что такое user story за 3 минуты", "url": "https://www.youtube.com/watch?v=USXJNKRL7NA", "source": "Listen IT", "minutes": 3 },
+              { "type": "video", "lang": "ru", "title": "Что такое груминг за 5 минут", "url": "https://www.youtube.com/watch?v=UGzhs8RPX0Q", "source": "Listen IT", "minutes": 6 },
+              { "type": "video", "lang": "ru", "title": "Оценка работ: story points и покер планирования", "url": "https://www.youtube.com/watch?v=IcyX43CAdiI", "source": "Listen IT", "minutes": 15 },
+              { "type": "article", "lang": "ru", "title": "Что такое уточнение бэклога?", "url": "https://www.atlassian.com/ru/agile/scrum/backlog-refinement", "source": "Atlassian" }
+            ],
+            "sprint-events": [
+              { "type": "video", "lang": "ru", "title": "Daily, Review, Retro: рабочие процессы в IT-команде", "url": "https://www.youtube.com/watch?v=sCdyzBt69Vw", "source": "Егор Педан", "minutes": 10 },
+              { "type": "video", "lang": "ru", "title": "Как провести ретроспективу — инструкция за 10 минут", "url": "https://www.youtube.com/watch?v=OYUw-jZAd2E", "source": "Dmitry Blinov", "minutes": 10 },
+              { "type": "video", "lang": "ru", "title": "Как проводить планирование спринта", "url": "https://www.youtube.com/watch?v=WHSAAF3w5SQ", "source": "Sergey Kuzin", "minutes": 8 },
+              { "type": "article", "lang": "ru", "title": "Scrum-собрания: как синхронизировать agile-команду", "url": "https://www.atlassian.com/ru/agile/scrum/ceremonies", "source": "Atlassian" }
+            ],
+            "code-review": [
+              { "type": "video", "lang": "ru", "title": "Что такое код-ревью?", "url": "https://www.youtube.com/watch?v=7__ZzWA-71U", "source": "Merion Academy", "minutes": 9 },
+              { "type": "video", "lang": "ru", "title": "Pull request на GitHub — инструкция для новичков", "url": "https://www.youtube.com/watch?v=MzicAnIEt0o", "source": "Хекслет", "minutes": 16 },
+              { "type": "article", "lang": "ru", "title": "Что такое код-ревью: зачем оно нужно и кто его проводит", "url": "https://practicum.yandex.ru/blog/chto-takoe-kod-review/", "source": "Яндекс Практикум" }
+            ],
+            "task-lifecycle": [
+              { "type": "video", "lang": "ru", "title": "Жизненный цикл задачи в IT: от бэклога до прода", "url": "https://www.youtube.com/watch?v=2NPlKE0wP8U", "source": "ютубэда", "minutes": 14 },
+              { "type": "video", "lang": "ru", "title": "Знакомство с Jira и Confluence", "url": "https://www.youtube.com/watch?v=d-F2hKh2mPQ", "source": "Павел Аникейчик", "minutes": 24 },
+              { "type": "article", "lang": "ru", "title": "Рабочие процессы (workflow) в управлении проектами по Agile", "url": "https://www.atlassian.com/ru/agile/project-management/workflow", "source": "Atlassian" }
+            ],
+            "dev-day": [
+              { "type": "video", "lang": "ru", "title": "Вся «менеджерская дичь» для программиста в одном видео", "url": "https://www.youtube.com/watch?v=2war2oNU8Rw", "source": "Кошачья Бацыла", "minutes": 17 },
+              { "type": "video", "lang": "ru", "title": "Как реально работают в IT: полный разбор процессов", "url": "https://www.youtube.com/watch?v=8Ulg9vOWt00", "source": "IT Garden", "minutes": 18 }
+            ]
+          }
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
       "slug": "core",
       "title": "Ядро Python",
       "summary": "Фундамент любого собеседования: объектная модель, типы, память, идиомы и типизация.",

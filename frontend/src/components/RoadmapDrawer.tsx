@@ -25,7 +25,7 @@ const RESOURCE_ICONS: Record<
   docs: IconDocs,
 };
 
-function ResourceList({
+export function ResourceList({
   resources,
   caption,
 }: {
@@ -60,6 +60,7 @@ function ResourceList({
                   </span>
                   <span className="mt-0.5 block text-xs text-muted">
                     {res.source}
+                    {res.minutes ? ` · ${res.minutes} ${t("roadmap.min")}` : ""}
                   </span>
                 </span>
                 <span

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x640">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .top { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-bottom: 1px solid #e3e3e3; }
+  .day { position: relative; margin: 10px 24px 0 24px; height: 560px; }
+  .hr { position: absolute; left: 0; right: 0; border-top: 1px solid #ececec; font-size: 11px; color: #70757a; }
+  .hr span { position: absolute; left: 0; top: -8px; background: #fff; padding-right: 6px; }
+  .ev { position: absolute; left: 70px; right: 300px; border-radius: 6px; padding: 4px 10px; font-size: 12.5px; border-left: 4px solid; overflow: hidden; display: flex; gap: 10px; align-items: center; }
+  .ev b { font-size: 13px; }
+  .ev .t { color: #44546f; white-space: nowrap; }
+  .ev.meet { background: #e9f2ff; border-color: #0c66e4; }
+  .ev.focus { background: #f3f0ff; border-color: #8270db; }
+  .ev.rev { background: #dcfff1; border-color: #22a06b; }
+  .ev.misc { background: #f1f2f4; border-color: #8590a2; }
+  .ev .mark { margin-left: auto; width: 22px; height: 22px; font-size: 12px; }
+  .side { position: absolute; right: 0; top: 0; width: 270px; background: #f7f8f9; border-radius: 10px; padding: 14px; font-size: 13px; }
+  .side h5 { font-size: 14px; margin-bottom: 8px; }
+  .side li { margin: 4px 0 4px 16px; }
+</style></head>
+<body>
+<div class="top"><b style="font-size:18px">Среда, 21 октября</b><span class="muted">календарь Никиты · Junior backend · команда Delivery</span></div>
+<div class="day">
+  <!-- 1 hour = 60px, 9:00 at top -->
+  <div class="hr" style="top:0"><span>09:00</span></div><div class="hr" style="top:60px"><span>10:00</span></div><div class="hr" style="top:120px"><span>11:00</span></div>
+  <div class="hr" style="top:180px"><span>12:00</span></div><div class="hr" style="top:240px"><span>13:00</span></div><div class="hr" style="top:300px"><span>14:00</span></div>
+  <div class="hr" style="top:360px"><span>15:00</span></div><div class="hr" style="top:420px"><span>16:00</span></div><div class="hr" style="top:480px"><span>17:00</span></div>
+  <div class="hr" style="top:540px"><span>18:00</span></div>
+
+  <div class="ev misc" style="top:30px; height:28px"><span class="t">09:30</span><b>Чат, почта, план на день</b> · проверить, что упало ночью в CI</div>
+  <div class="ev meet" style="top:60px; height:15px; padding:0 10px; font-size:11px"><span class="t">10:00</span><b style="font-size:11px">Дейли (15 мин)</b><span class="mark" style="width:16px;height:16px;font-size:10px">1</span></div>
+  <div class="ev focus" style="top:78px; height:130px; align-items:flex-start; padding-top:8px"><span class="t">10:20</span><div><b>🎧 Фокус: DLV-142 — правки по ревью</b><br>проверка владельца заказа, тест на чужой заказ, ответ ревьюеру</div><span class="mark">2</span></div>
+  <div class="ev rev" style="top:210px; height:28px"><span class="t">12:30</span><b>Ревью PR Олега</b> · #321 push-уведомления<span class="mark">4</span></div>
+  <div class="ev misc" style="top:240px; height:58px; background:#fff; border-color:#dfe1e6; border-style:dashed"><span class="t">13:00</span><b>Обед</b></div>
+  <div class="ev meet" style="top:300px; height:58px"><span class="t">14:00</span><b>Груминг бэклога</b> · оцениваем задачи на Sprint 15<span class="mark">3</span></div>
+  <div class="ev focus" style="top:362px; height:110px; align-items:flex-start; padding-top:8px"><span class="t">15:00</span><div><b>🎧 Фокус: DLV-151 — баг со складами</b><br>воспроизвести, починить, PR #324</div></div>
+  <div class="ev meet" style="top:420px; height:22px; left:420px; right:300px; font-size:11.5px"><span class="t">16:00</span><b style="font-size:12px">Синк с QA, 15 мин</b></div>
+  <div class="ev misc" style="top:480px; height:50px"><span class="t">17:00</span><b>Обновить статусы в Jira, ответить в тредах, план на завтра</b><span class="mark">5</span></div>
+
+  <div class="side">
+    <h5>Из чего состоит день</h5>
+    <ul>
+      <li>Код и решение задач — 4–5 часов</li>
+      <li>Встречи — 1–2 часа (в день планирования спринта больше)</li>
+      <li>Ревью чужого кода — 30–60 минут</li>
+      <li>Переписка, вопросы, Jira — остальное</li>
+    </ul>
+    <h5 style="margin-top:12px">Правило</h5>
+    <p>Фокус-блоки ставят в календарь заранее — иначе день разлетится на созвоны.</p>
+  </div>
+</div>
+</body></html>

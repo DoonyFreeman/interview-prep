@@ -268,7 +268,8 @@ async def test_mark_lesson_completed(client):
     assert r.status_code == 204
 
     ov = (await client.get("/api/progress", headers=headers)).json()
-    assert ov["courses"][0]["lessons"][0]["completed"] is True
+    core = next(c for c in ov["courses"] if c["slug"] == "python-core")
+    assert core["lessons"][0]["completed"] is True
 
 
 async def test_mark_lesson_unknown_404(client):

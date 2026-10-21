@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x580">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .bg { position: absolute; inset: 0; background: rgba(9,30,66,.54); }
+  .ghost { position: absolute; inset: 0; padding: 70px 60px; color: #172b4d; filter: blur(1px); }
+  .ghost .line { height: 36px; background: #f7f8f9; border-radius: 4px; margin-bottom: 6px; }
+  .modal { position: absolute; left: 50%; top: 50px; transform: translateX(-50%); width: 600px; background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(9,30,66,.3); padding: 24px; }
+  .modal h3 { font-size: 20px; margin-bottom: 6px; }
+  .f { margin-top: 14px; }
+  .f label { display: flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 700; color: #44546f; margin-bottom: 4px; }
+  .inp { border: 2px solid #dfe1e6; border-radius: 4px; padding: 7px 10px; background: #fafbfc; }
+  .inp.ta { min-height: 64px; }
+  .two { display: flex; gap: 12px; } .two > div { flex: 1; }
+  .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+</style></head>
+<body>
+<div class="ghost"><div class="j-h1">Backlog</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+<div class="bg"></div>
+<div class="modal">
+  <h3>Start Sprint</h3>
+  <div class="row muted"><span class="bold" style="color:#172b4d">6 issues</span> will be included in this sprint. <span class="mark">3</span></div>
+  <div class="f"><label>Sprint name *</label><div class="inp">DLV Sprint 15</div></div>
+  <div class="f"><label>Duration * <span class="mark">1</span></label><div class="inp" style="width:220px">2 weeks ▾</div></div>
+  <div class="two">
+    <div class="f"><label>Start date *</label><div class="inp">26/Oct/26 10:00</div></div>
+    <div class="f"><label>End date *</label><div class="inp">06/Nov/26 18:00</div></div>
+  </div>
+  <div class="f"><label>Sprint goal <span class="mark">2</span></label><div class="inp ta">Покупатель повторяет заказ, даже если части товаров нет: видит плашку и может выбрать аналоги.</div></div>
+  <div class="foot"><span class="j-btn" style="background:none">Cancel</span><span class="j-btn primary">Start</span></div>
+</div>
+</body></html>

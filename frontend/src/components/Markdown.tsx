@@ -44,6 +44,34 @@ export function Markdown({ markdown }: { markdown: string }) {
               </a>
             );
           },
+          // Lesson screenshots are wide: on a phone their text is tiny, so a tap
+          // opens the full-size file. The caption (markdown title) sits outside
+          // the link so `.prose a` doesn't underline it. An optional "#WxH" on
+          // the URL gives the intrinsic size, so the browser reserves the space
+          // and a lazy image loading later can't shift a "back to theory" anchor.
+          img({ src, alt, title }) {
+            const sized = /^(.*)#(\d+)x(\d+)$/.exec(src ?? "");
+            const [url, width, height] = sized ? sized.slice(1) : [src];
+            return (
+              <>
+                <a href={url} target="_blank" rel="noreferrer" className="mt-4 block">
+                  <img
+                    src={url}
+                    alt={alt ?? ""}
+                    width={width}
+                    height={height}
+                    loading="lazy"
+                    className="h-auto w-full rounded-xl border border-border bg-white"
+                  />
+                </a>
+                {title && (
+                  <span className="mt-2 mb-4 block text-center text-sm text-muted">
+                    {title}
+                  </span>
+                )}
+              </>
+            );
+          },
           code({ className, children }) {
             const match = /language-(\w+)/.exec(className ?? "");
             const text = String(children ?? "").replace(/\n$/, "");

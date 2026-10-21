@@ -154,8 +154,19 @@ def _mount_spa(app: FastAPI) -> None:
         head = full_path.split("/", 1)[0]
         if head in api_prefixes:
             raise HTTPException(status_code=404, detail="Not found")
-        candidate = STATIC_DIR / full_path
-        if full_path and candidate.is_file() and assets_dir not in candidate.parents:
+        # resolve() + containment: the server decodes %2e%2e to "..", and a bare
+        # join would serve any readable file (e.g. the SQLite DB next to app/).
+        root = STATIC_DIR.resolve()
+        try:
+            candidate = (root / full_path).resolve()
+        except (ValueError, OSError):  # e.g. a decoded %00
+            return FileResponse(index_file, headers={"Cache-Control": NO_CACHE})
+        if (
+            full_path
+            and candidate.is_relative_to(root)
+            and candidate.is_file()
+            and root / "assets" not in candidate.parents
+        ):
             return FileResponse(candidate, headers={"Cache-Control": SHORT_CACHE})
         return FileResponse(index_file, headers={"Cache-Control": NO_CACHE})
 

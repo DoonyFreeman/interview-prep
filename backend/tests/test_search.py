@@ -11,6 +11,12 @@ def test_sections_strip_blockquote_and_list_markers():
     assert section[2] == "пункт про gather цитата проза"
 
 
+def test_sections_reduce_images_to_alt_text():
+    md = '## Доска\n\n![Доска спринта в Jira](/lesson-media/c/board.png "Подпись") Текст после.'
+    (section,) = [s for s in extract_h2_sections(md) if s[0]]
+    assert section[2] == "Доска спринта в Jira Текст после."
+
+
 async def test_search_is_public_and_finds_gather(client):
     """"gather" must surface the asyncio tasks-gather lesson with a deep-link."""
     r = await client.get("/api/search", params={"q": "gather"})

@@ -30,8 +30,8 @@ quizzes: client-side generation with smart progress-weighted selection, a
 `/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
 terms in `content/slang.json`, served via a `kind` discriminator on the glossary
 table, a `/slang` page). Frontend now has vitest. **Phase 6 (content authoring)
-in progress** — the curriculum is now authored across **20 courses / 97 lessons /
-346 concepts / 346 questions** (`content/courses/`), each lesson with full theory,
+in progress** — the curriculum is now authored across **23 courses / 110 lessons /
+392 concepts / 392 questions** (`content/courses/`), each lesson with full theory,
 analogies, simple explanations and an authored reference answer per concept. Tests
 updated for the multi-course content (6 stale single-course assertions rewritten to
 derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
@@ -350,8 +350,8 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    `glossary_term_stats` endpoints (`all_slugs` is kind-agnostic by design, and
    the reference category rollup ignores slang slugs).
 6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
-   glossary P1/P2 fill in here too). Done so far: full curriculum across **20
-   courses / 97 lessons / 346 concepts / 346 questions** under `content/courses/`
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **23
+   courses / 110 lessons / 392 concepts / 392 questions** under `content/courses/`
    (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
    python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,
    algorithms, python-typing, postgresql, redis, celery, docker, devops,
@@ -468,11 +468,11 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    3–6 tabs, canonical order enforced) with a picker in Settings.
    `scripts/check_mcq_quality.py` gates the "pick the longest option" tell
    (`--report` surveys an existing bank without failing).
-   **The `exam.json` bank covers all 22 courses — 206 questions**, 2 per lesson,
+   **The `exam.json` bank covers all 23 courses — 220 questions**, 2 per lesson,
    every one a scenario ("given this code / this situation, what happens") rather
    than a definition, and every file passing the length gate (correct-is-longest
    0–40%, mean ratio ~1.0 vs the lesson bank's 1.5).
-   Backend 184 passing, frontend 85.
+   Backend 197 passing, frontend 85 (as of phase 10).
    **Release note**: `lib/whatsNew.ts` + `components/WhatsNew.tsx` show a
    one-time dialog after an update (localStorage stores the release id, not a
    flag). To announce the next release: bump `CURRENT_RELEASE` and rewrite the
@@ -486,6 +486,26 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    questions (chance is 25%), mean 1.5× the distractor length. Deliberately left
    alone for now at the author's call; `scripts/check_mcq_quality.py --report`
    ranks the worst courses (nginx 100%, sqlalchemy 100%, postgresql 96%).
+
+10. **Team processes course + lesson media.** Course `team-processes` (order 0 —
+   first in the catalog; first roadmap stage `team`): 7 lessons, one per day,
+   on Agile/Scrum, roles, backlog/grooming, sprint events, code review, task
+   lifecycle and a developer's day. **Lessons can show images**:
+   `![alt](/lesson-media/<course>/<name>.png "caption")`; files live in
+   `frontend/public/lesson-media/` (Vite copies `public/` into `dist/`, and
+   `main.py:_mount_spa` already serves real files from it). The screenshots are
+   HTML mockups in `scripts/lesson-screens/<course>/` (fictional team, no logos
+   — the repo is public), rendered by `scripts/render_lesson_screens.sh` with
+   the installed Chrome (`--headless --screenshot`, frame size from a
+   `<meta name="screen-size">`). `Markdown.tsx` renders images lazily, tap opens
+   full size; an optional `#WxH` URL fragment becomes width/height so the space
+   is reserved (no layout shift under "back to theory" anchors). The search /
+   cat excerpts reduce `![alt](src)` to its alt text. `spa_fallback` resolves the
+   path and refuses anything outside `STATIC_DIR` (uvicorn decodes `%2e%2e`;
+   guarded by `test_spa_fallback.py`). **The lesson page ends with "Videos & resources"**: the same
+   roadmap resources as the drawer (`resourcesFor` + exported `ResourceList`),
+   so every course gets it. Resources may carry an optional `minutes` (video
+   length), shown as "· N min" and validated by the integrity test.
 
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a

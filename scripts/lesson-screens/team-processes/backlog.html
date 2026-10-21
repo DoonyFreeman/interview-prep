@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1440x820">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .bl { display: flex; gap: 16px; }
+  .epics { width: 210px; flex: none; border: 1px solid #dfe1e6; border-radius: 6px; padding: 10px; }
+  .epics .e { padding: 8px; border-radius: 4px; margin-bottom: 6px; border-left: 4px solid; background: #f7f8f9; }
+  .lists { flex: 1; min-width: 0; }
+  .cont { background: #f7f8f9; border-radius: 6px; padding: 8px; margin-bottom: 16px; }
+  .cont-h { display: flex; align-items: center; gap: 8px; padding: 6px 8px 10px; }
+  .tot { display: inline-grid; place-items: center; min-width: 24px; height: 20px; border-radius: 10px; font-size: 12px; font-weight: 600; padding: 0 6px; }
+  .tot.g { background: #dfe1e6; } .tot.b { background: #cce0ff; color: #0055cc; } .tot.d { background: #baf3db; color: #216e4e; }
+  .irow { display: flex; align-items: center; gap: 10px; background: #fff; padding: 8px 10px; border-bottom: 1px solid #f1f2f4; }
+  .irow:first-of-type { border-radius: 4px 4px 0 0; }
+  .irow .t { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .grip { color: #b3b9c4; letter-spacing: -2px; }
+  .nosp { display: inline-grid; place-items: center; min-width: 22px; height: 20px; border-radius: 10px; border: 1px dashed #8590a2; color: #626f86; font-size: 12px; }
+</style></head>
+<body>
+<div class="j-top">
+  <div class="j-apps">⋮⋮</div><div class="j-brand">Jira</div>
+  <div class="j-topnav"><span>Your work</span><span>Projects</span><span>Filters</span><span>Dashboards</span></div>
+  <span class="j-create">+ Create</span>
+  <div class="j-search">🔍&nbsp; Search</div>
+  <span class="av a3">АК</span>
+</div>
+<div class="j-shell">
+  <aside class="j-side">
+    <div class="j-proj"><div class="j-proj-ic">D</div><div><div class="bold">Delivery</div><div class="small muted">Software project</div></div></div>
+    <div class="j-nav-h">Planning</div>
+    <nav class="j-nav"><a>▤ Summary</a><a>▦ Timeline</a><a class="on">☰ Backlog</a><a>▥ Board</a><a>◔ Reports</a></nav>
+  </aside>
+  <main class="j-main">
+    <div class="j-crumbs">Projects / Delivery</div>
+    <div class="j-h1">Backlog</div>
+    <div class="bl">
+      <div class="epics">
+        <div class="row bold" style="margin-bottom:10px">Epic <span class="mark" style="margin-left:auto">1</span></div>
+        <div class="e" style="border-color:#8f7ee7"><b>Повторные покупки</b><div class="small muted">4 из 9 задач готово</div></div>
+        <div class="e" style="border-color:#e56910"><b>Маркетинг</b><div class="small muted">2 из 6</div></div>
+        <div class="e" style="border-color:#22a06b"><b>Оплата</b><div class="small muted">7 из 8</div></div>
+        <div class="small muted" style="padding:6px">+ Create epic</div>
+      </div>
+      <div class="lists">
+        <div class="cont">
+          <div class="cont-h"><span class="mark">2</span><b>DLV Sprint 15</b><span class="muted small">26 Oct – 6 Nov · 6 issues</span>
+            <span style="margin-left:auto" class="row"><span class="tot g">21</span><span class="tot b">0</span><span class="tot d">0</span><span class="j-btn primary">Start sprint</span></span></div>
+          <div class="irow"><span class="it story"></span><span class="key">DLV-152</span><span class="t">Подменять закончившиеся товары аналогами при повторе заказа</span><span class="loz epic">Повторные покупки</span><span class="loz todo">To Do</span><span class="sp">5</span><span class="av a2">НВ</span></div>
+          <div class="irow"><span class="it story"></span><span class="key">DLV-145</span><span class="t">Показать кнопку «Повторить» в истории заказов</span><span class="loz epic">Повторные покупки</span><span class="loz todo">To Do</span><span class="sp">3</span><span class="av a6">СК</span></div>
+          <div class="irow"><span class="it bug"></span><span class="key">DLV-149</span><span class="t">Время в чеке показывается в UTC, а не по Москве</span><span class="loz todo">To Do</span><span class="sp">1</span><span class="av a4">ОП</span></div>
+          <div class="irow"><span class="it story"></span><span class="key">DLV-153</span><span class="t">Оплата сохранённой картой в один клик</span><span class="loz epic" style="background:#dcfff1;color:#216e4e">Оплата</span><span class="loz todo">To Do</span><span class="sp">8</span><span class="av a4">ОП</span></div>
+          <div class="irow"><span class="it task"></span><span class="key">DLV-147</span><span class="t">Метрика: сколько заказов повторяют</span><span class="loz todo">To Do</span><span class="sp">2</span><span class="av" style="background:#dfe1e6;color:#626f86">?</span></div>
+          <div class="irow"><span class="it task"></span><span class="key">DLV-154</span><span class="t">Алерт, если API отвечает дольше 1 секунды</span><span class="loz todo">To Do</span><span class="sp">2</span><span class="av" style="background:#6e5dc6">РЗ</span></div>
+        </div>
+        <div class="cont">
+          <div class="cont-h"><span class="mark">3</span><b>Backlog</b><span class="muted small">38 issues</span><span style="margin-left:auto" class="row"><span class="tot g">64</span><span class="j-btn">Create sprint</span></span></div>
+          <div class="irow"><span class="grip">⋮⋮</span><span class="it story"></span><span class="key">DLV-155</span><span class="t">Напоминание «пора повторить заказ» через 7 дней</span><span class="loz epic">Повторные покупки</span><span class="pri high"></span><span class="sp">5</span><span class="mark">4</span></div>
+          <div class="irow"><span class="grip">⋮⋮</span><span class="it story"></span><span class="key">DLV-156</span><span class="t">Промокод на повторный заказ</span><span class="loz epic" style="background:#fff3eb;color:#a54800">Маркетинг</span><span class="pri med"></span><span class="sp">3</span></div>
+          <div class="irow"><span class="grip">⋮⋮</span><span class="it bug"></span><span class="key">DLV-150</span><span class="t">На iPad кнопка «Оплатить» уезжает за экран</span><span class="pri med"></span><span class="sp">2</span></div>
+          <div class="irow"><span class="grip">⋮⋮</span><span class="it story"></span><span class="key">DLV-157</span><span class="t">Сравнить два заказа из истории</span><span class="lbl">needs-grooming</span><span class="pri low"></span><span class="nosp">–</span><span class="mark">5</span></div>
+          <div class="irow"><span class="grip">⋮⋮</span><span class="it task"></span><span class="key">DLV-158</span><span class="t">Перевести отчёты на реплику базы</span><span class="lbl">tech-debt</span><span class="pri low"></span><span class="nosp">–</span></div>
+          <div class="irow muted"><span>+ Create issue</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

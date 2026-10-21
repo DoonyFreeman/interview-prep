@@ -7,11 +7,14 @@ import {
   useLessonTestProgress,
   useMarkLesson,
   useProgress,
+  useRoadmap,
 } from "../api/hooks";
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
 import { IconMic, IconClipboardCheck } from "../components/icons";
+import { ResourceList } from "../components/RoadmapDrawer";
+import { resourcesFor } from "../lib/roadmap";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
 
 export function LessonPage() {
@@ -22,6 +25,7 @@ export function LessonPage() {
   const progress = useProgress();
   const testProgress = useLessonTestProgress(courseSlug, lessonSlug);
   const markLesson = useMarkLesson();
+  const roadmap = useRoadmap();
 
   const articleRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -48,6 +52,13 @@ export function LessonPage() {
     progress.data?.courses
       .find((c) => c.slug === courseSlug)
       ?.lessons.find((l) => l.slug === lessonSlug)?.completed ?? false;
+
+  // Same curated videos/articles as the roadmap drawer: the lesson's own list,
+  // else the course's shared one.
+  const roadmapCourse = roadmap.data?.stages
+    .flatMap((s) => s.courses)
+    .find((c) => c.slug === courseSlug);
+  const materials = roadmapCourse ? resourcesFor(roadmapCourse, lessonSlug) : null;
 
   return (
     <div className="lg:flex lg:gap-10">
@@ -91,6 +102,18 @@ export function LessonPage() {
         )}
 
         <Markdown markdown={lesson.data.markdown} />
+
+        {materials && materials.resources.length > 0 && (
+          <section className="mt-10 rounded-2xl border border-border bg-surface p-4">
+            <h2 className="mb-2 px-3 font-display text-lg font-bold text-ink">
+              {t("lesson.materials")}
+            </h2>
+            <ResourceList
+              resources={materials.resources}
+              caption={materials.fromCourse ? t("roadmap.courseMaterials") : undefined}
+            />
+          </section>
+        )}
       </article>
 
       <aside className="mt-8 lg:mt-0 lg:w-64 lg:shrink-0">

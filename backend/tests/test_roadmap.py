@@ -8,11 +8,11 @@ async def test_roadmap_is_public_and_complete(client):
     stages = r.json()["stages"]
 
     assert [s["slug"] for s in stages] == [
-        "core", "concurrency", "data", "web", "quality", "infra", "senior",
+        "team", "core", "concurrency", "data", "web", "quality", "infra", "senior",
     ]
     # every published course appears exactly once across stages
     course_slugs = [c["slug"] for s in stages for c in s["courses"]]
-    assert len(course_slugs) == len(set(course_slugs)) == 22
+    assert len(course_slugs) == len(set(course_slugs)) == 23
 
     for stage in stages:
         assert stage["title"] and stage["summary"]
@@ -55,3 +55,10 @@ async def test_roadmap_extra_node_has_resources_and_no_lessons(client):
 async def test_roadmap_reference_answers_never_leak(client):
     r = await client.get("/api/roadmap")
     assert "reference_answer" not in r.text
+
+
+async def test_roadmap_video_minutes_are_served(client):
+    stages = (await client.get("/api/roadmap")).json()["stages"]
+    team = next(c for s in stages for c in s["courses"] if c["slug"] == "team-processes")
+    minutes = [r["minutes"] for l in team["lessons"] for r in l["resources"] if r["type"] == "video"]
+    assert minutes and all(isinstance(m, int) and m > 0 for m in minutes)

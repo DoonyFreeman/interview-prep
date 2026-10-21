@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x510">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .cal-top { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-bottom: 1px solid #e3e3e3; }
+  .cal { padding: 14px 24px; }
+  .wk { display: grid; grid-template-columns: 70px repeat(5, 1fr); gap: 0; margin-bottom: 16px; border: 1px solid #e3e3e3; border-radius: 8px; overflow: hidden; }
+  .wk > div { border-left: 1px solid #ececec; min-height: 200px; padding: 6px; position: relative; }
+  .wk > div:first-child { border-left: 0; background: #fafafa; color: #70757a; font-size: 12px; padding-top: 10px; }
+  .dh { font-size: 12px; color: #70757a; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .dh b { color: #172b4d; font-size: 15px; }
+  .ev { border-radius: 6px; padding: 4px 8px; margin-bottom: 5px; font-size: 12px; line-height: 1.3; border-left: 4px solid; }
+  .ev b { display: block; font-size: 12.5px; }
+  .ev.plan { background: #e9f2ff; border-color: #0c66e4; }
+  .ev.daily { background: #dcfff1; border-color: #22a06b; }
+  .ev.groom { background: #fff7d6; border-color: #b38600; }
+  .ev.rev { background: #f3f0ff; border-color: #8270db; }
+  .ev.retro { background: #ffeceb; border-color: #e2483d; }
+  .ev .mark { float: right; width: 20px; height: 20px; font-size: 11px; }
+  .legend { display: flex; gap: 18px; font-size: 12px; color: #44546f; margin-left: auto; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+</style></head>
+<body>
+<div class="cal-top"><b style="font-size:18px">Календарь команды Delivery</b><span class="muted">12–23 октября 2026 · DLV Sprint 14</span>
+  <div class="legend"><span><i style="background:#0c66e4"></i>Планирование</span><span><i style="background:#22a06b"></i>Дейли</span><span><i style="background:#b38600"></i>Груминг</span><span><i style="background:#8270db"></i>Демо</span><span><i style="background:#e2483d"></i>Ретро</span></div>
+</div>
+<div class="cal">
+  <div class="wk">
+    <div>Неделя 1</div>
+    <div><div class="dh"><span>Пн</span><b>12</b></div>
+      <div class="ev plan"><span class="mark">1</span><b>Планирование спринта</b>10:00–12:00 · вся команда</div></div>
+    <div><div class="dh"><span>Вт</span><b>13</b></div>
+      <div class="ev daily"><span class="mark">2</span><b>Дейли</b>10:00–10:15</div></div>
+    <div><div class="dh"><span>Ср</span><b>14</b></div>
+      <div class="ev daily"><b>Дейли</b>10:00–10:15</div></div>
+    <div><div class="dh"><span>Чт</span><b>15</b></div>
+      <div class="ev daily"><b>Дейли</b>10:00–10:15</div>
+      <div class="ev groom"><span class="mark">3</span><b>Груминг бэклога</b>15:00–16:00 · PO, аналитик, разработчики, QA</div></div>
+    <div><div class="dh"><span>Пт</span><b>16</b></div>
+      <div class="ev daily"><b>Дейли</b>10:00–10:15</div></div>
+  </div>
+  <div class="wk">
+    <div>Неделя 2</div>
+    <div><div class="dh"><span>Пн</span><b>19</b></div><div class="ev daily"><b>Дейли</b>10:00–10:15</div></div>
+    <div><div class="dh"><span>Вт</span><b>20</b></div><div class="ev daily"><b>Дейли</b>10:00–10:15</div></div>
+    <div><div class="dh"><span>Ср</span><b>21</b></div><div class="ev daily"><b>Дейли</b>10:00–10:15</div></div>
+    <div><div class="dh"><span>Чт</span><b>22</b></div><div class="ev daily"><b>Дейли</b>10:00–10:15</div>
+      <div class="ev groom"><b>Груминг бэклога</b>15:00–16:00 · готовим Sprint 15</div></div>
+    <div><div class="dh"><span>Пт</span><b>23</b></div><div class="ev daily"><b>Дейли</b>10:00–10:15</div>
+      <div class="ev rev"><span class="mark">4</span><b>Демо (Sprint Review)</b>14:00–15:00 · + заказчик</div>
+      <div class="ev retro"><span class="mark">5</span><b>Ретроспектива</b>15:30–16:30 · только команда</div></div>
+  </div>
+</div>
+</body></html>

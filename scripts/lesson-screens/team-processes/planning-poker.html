@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x680">
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { background: #f4f5f7; }
+  .pp-top { height: 52px; background: #fff; border-bottom: 1px solid #dfe1e6; display: flex; align-items: center; padding: 0 24px; gap: 12px; }
+  .pp { padding: 22px 32px; }
+  .cur { background: #fff; border-radius: 10px; padding: 16px 20px; box-shadow: 0 1px 2px rgba(0,0,0,.08); display: flex; align-items: center; gap: 12px; }
+  .table { margin: 22px 0; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .players { display: flex; gap: 26px; justify-content: center; }
+  .pl { text-align: center; position: relative; }
+  .pc { width: 72px; height: 100px; border-radius: 10px; border: 2px solid #0c66e4; background: #fff; display: grid; place-items: center; font-size: 34px; font-weight: 700; color: #0c66e4; margin: 0 auto 10px; }
+  .pc.hi { border-color: #e56910; color: #e56910; background: #fff7f0; }
+  .pc.lo { border-color: #8270db; color: #8270db; background: #f8f6ff; }
+  .stats { display: flex; gap: 28px; justify-content: center; margin-top: 18px; color: #44546f; }
+  .stats b { color: #172b4d; font-size: 18px; }
+  .deck { display: flex; gap: 10px; justify-content: center; }
+  .dc { width: 56px; height: 80px; border-radius: 8px; background: #fff; border: 1px solid #c7d1db; display: grid; place-items: center; font-size: 22px; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .dc.sel { transform: translateY(-10px); border: 2px solid #0c66e4; color: #0c66e4; }
+  .note { background: #fff7d6; border-radius: 8px; padding: 10px 14px; margin-top: 16px; color: #533f04; text-align: center; }
+</style></head>
+<body>
+<div class="pp-top"><b>Planning Poker</b><span class="muted">· Груминг Delivery · 22 октября</span><span style="margin-left:auto" class="j-btn">Next issue →</span></div>
+<div class="pp">
+  <div class="cur"><span class="mark">1</span><span class="it story"></span><span class="key">DLV-152</span><b style="font-size:16px">Подменять закончившиеся товары аналогами при повторе заказа</b><span class="muted" style="margin-left:auto">Оценивают 5 человек</span></div>
+  <div class="table">
+    <div class="row" style="justify-content:center; margin-bottom:16px"><span class="bold">Карты открыты</span><span class="mark">2</span></div>
+    <div class="players">
+      <div class="pl"><div class="pc">5</div><div class="row" style="justify-content:center"><span class="av a2">НВ</span>Никита</div></div>
+      <div class="pl"><div class="pc hi">13</div><div class="row" style="justify-content:center"><span class="av a4">ОП</span>Олег</div></div>
+      <div class="pl"><div class="pc">5</div><div class="row" style="justify-content:center"><span class="av a6">СК</span>Сергей</div></div>
+      <div class="pl"><div class="pc lo">3</div><div class="row" style="justify-content:center"><span class="av a1">ДО</span>Дмитрий</div></div>
+      <div class="pl"><div class="pc">8</div><div class="row" style="justify-content:center"><span class="av a8">ЕС</span>Екатерина</div></div>
+    </div>
+    <div class="stats"><span>Минимум <b>3</b></span><span>Максимум <b>13</b></span><span>Разброс большой — обсуждаем</span></div>
+    <div class="note row" style="justify-content:center"><span class="mark">3</span>Олег (13): «Аналоги надо где-то брать — в каталоге нет связи товаров». Дмитрий (3): «Связь уже есть в рекомендациях, переиспользуем». → Переголосуем</div>
+  </div>
+  <div class="row" style="justify-content:center; margin-bottom:12px"><span class="muted">Твоя колода (числа Фибоначчи)</span><span class="mark">4</span></div>
+  <div class="deck"><div class="dc">0</div><div class="dc">1</div><div class="dc">2</div><div class="dc">3</div><div class="dc sel">5</div><div class="dc">8</div><div class="dc">13</div><div class="dc">21</div><div class="dc">?</div><div class="dc">☕</div></div>
+</div>
+</body></html>

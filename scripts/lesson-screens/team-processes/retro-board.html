@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1280x585">
+<link rel="stylesheet" href="_base.css">
+<style>
+  body { background: #f2f2ef; }
+  .rt-top { height: 52px; background: #fff; border-bottom: 1px solid #e0e0dc; display: flex; align-items: center; padding: 0 24px; gap: 12px; }
+  .rt { padding: 18px 24px; }
+  .cols { display: flex; gap: 16px; }
+  .rc { flex: 1; background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .rc h4 { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 15px; }
+  .st { border-radius: 4px; padding: 9px 10px; margin-bottom: 8px; font-size: 13px; line-height: 1.35; box-shadow: 0 1px 2px rgba(0,0,0,.12); position: relative; }
+  .st.g { background: #d3f5df; } .st.r { background: #ffe0dd; } .st.y { background: #fff3b0; }
+  .votes { display: flex; gap: 3px; margin-top: 6px; }
+  .votes i { width: 10px; height: 10px; border-radius: 50%; background: #5e4db2; }
+  .ai { margin-top: 16px; background: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #ececec; font-size: 13px; }
+  th { color: #626f86; font-size: 12px; }
+</style></head>
+<body>
+<div class="rt-top"><b>Ретроспектива · DLV Sprint 14</b><span class="muted">23 октября · 7 участников · голосование: 3 голоса на человека</span><span style="margin-left:auto" class="muted">⏱ 60 мин</span></div>
+<div class="rt">
+  <div class="cols">
+    <div class="rc"><h4>👍 Что было хорошо <span class="mark">1</span></h4>
+      <div class="st g">Цель спринта достигнута: повтор заказа на проде</div>
+      <div class="st g">Критерии приёмки были готовы до планирования — меньше вопросов в процессе</div>
+      <div class="st g">Екатерина подключилась к грумингу и сразу нашла кейс с чужим заказом</div>
+    </div>
+    <div class="rc"><h4>👎 Что мешало <span class="mark">2</span></h4>
+      <div class="st r">PR висели на ревью по 2–3 дня, задачи копились в Code Review<div class="votes"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="st r">Тестовый стенд падал два раза, QA ждала полдня<div class="votes"><i></i><i></i><i></i></div></div>
+      <div class="st r">Дейли растягивались до 30 минут — обсуждали детали задач<div class="votes"><i></i><i></i></div></div>
+    </div>
+    <div class="rc"><h4>💡 Что попробуем <span class="mark">3</span></h4>
+      <div class="st y">Дежурный ревьюер на день: смотрит новые PR до обеда</div>
+      <div class="st y">Детали — после дейли, отдельным созвоном только с нужными людьми</div>
+      <div class="st y">Алерт в чат, когда стенд недоступен</div>
+    </div>
+  </div>
+  <div class="ai"><div class="row bold">✅ Action items <span class="mark">4</span><span class="muted small" style="font-weight:400">проверим на следующем ретро</span></div>
+    <table>
+      <tr><th>Что делаем</th><th>Ответственный</th><th>Срок</th></tr>
+      <tr><td>Ревью PR — в течение 1 рабочего дня; график дежурных ревьюеров</td><td><span class="row"><span class="av a1">ДО</span>Дмитрий</span></td><td>с 26 октября</td></tr>
+      <tr><td>Дейли строго 15 минут, обсуждения — «после дейли»</td><td><span class="row"><span class="av a7">ИС</span>Илья</span></td><td>с 26 октября</td></tr>
+      <tr><td>Алерт в чат команды при падении тестового стенда</td><td><span class="row"><span class="av" style="background:#6e5dc6">РЗ</span>Роман</span></td><td>до 30 октября</td></tr>
+    </table>
+  </div>
+</div>
+</body></html>
