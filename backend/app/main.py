@@ -46,7 +46,15 @@ async def lifespan(_app: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="Interview Prep API", version="0.1.0", lifespan=lifespan)
+    docs = settings.api_docs
+    app = FastAPI(
+        title="Interview Prep API",
+        version="0.1.0",
+        lifespan=lifespan,
+        docs_url="/docs" if docs else None,
+        redoc_url="/redoc" if docs else None,
+        openapi_url="/openapi.json" if docs else None,
+    )
 
     app.add_middleware(
         CORSMiddleware,

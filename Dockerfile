@@ -24,6 +24,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     CONTENT_DIR=/app/content \
+    API_DOCS=false \
     DATABASE_URL=sqlite+aiosqlite:///./data/app.db
 
 WORKDIR /app/backend
