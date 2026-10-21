@@ -52,7 +52,6 @@ def test_extract_h2_excerpts_skips_code_and_lists():
     assert out[slugify("Со списком")].startswith("Настоящий абзац")
 
 
-
 def test_extract_h2_excerpts_skips_image_lines():
     md = (
         "## Доска\n\n"
@@ -60,6 +59,7 @@ def test_extract_h2_excerpts_skips_image_lines():
         "Доска показывает, на каком этапе каждая задача спринта.\n"
     )
     assert extract_h2_excerpts(md)[slugify("Доска")].startswith("Доска показывает")
+
 
 def test_extract_h2_excerpts_truncates():
     long_para = "слово " * 100

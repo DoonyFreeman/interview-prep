@@ -30,8 +30,8 @@ quizzes: client-side generation with smart progress-weighted selection, a
 `/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
 terms in `content/slang.json`, served via a `kind` discriminator on the glossary
 table, a `/slang` page). Frontend now has vitest. **Phase 6 (content authoring)
-in progress** — the curriculum is now authored across **20 courses / 97 lessons /
-346 concepts / 346 questions** (`content/courses/`), each lesson with full theory,
+in progress** — the curriculum is now authored across **23 courses / 110 lessons /
+392 concepts / 392 questions** (`content/courses/`), each lesson with full theory,
 analogies, simple explanations and an authored reference answer per concept. Tests
 updated for the multi-course content (6 stale single-course assertions rewritten to
 derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
@@ -350,8 +350,8 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    `glossary_term_stats` endpoints (`all_slugs` is kind-agnostic by design, and
    the reference category rollup ignores slang slugs).
 6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
-   glossary P1/P2 fill in here too). Done so far: full curriculum across **20
-   courses / 97 lessons / 346 concepts / 346 questions** under `content/courses/`
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **23
+   courses / 110 lessons / 392 concepts / 392 questions** under `content/courses/`
    (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
    python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,
    algorithms, python-typing, postgresql, redis, celery, docker, devops,

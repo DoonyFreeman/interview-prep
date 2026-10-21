@@ -18,7 +18,7 @@ out="$root/frontend/public/lesson-media/$course"
 chrome="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 scale="${SCALE:-2}"
 
-[ -x "$chrome" ] || { echo "Chrome not found: $chrome (set CHROME=...)" >&2; exit 1; }
+command -v "$chrome" >/dev/null || { echo "Chrome not found: $chrome (set CHROME=...)" >&2; exit 1; }
 [ -d "$src" ] || { echo "no mockups for course '$course': $src" >&2; exit 1; }
 
 shopt -s nullglob

@@ -50,10 +50,8 @@ export function Markdown({ markdown }: { markdown: string }) {
           // the URL gives the intrinsic size, so the browser reserves the space
           // and a lazy image loading later can't shift a "back to theory" anchor.
           img({ src, alt, title }) {
-            const [url, size] = (src ?? "").split("#");
-            const [width, height] = /^\d+x\d+$/.test(size ?? "")
-              ? size.split("x")
-              : [];
+            const sized = /^(.*)#(\d+)x(\d+)$/.exec(src ?? "");
+            const [url, width, height] = sized ? sized.slice(1) : [src];
             return (
               <>
                 <a href={url} target="_blank" rel="noreferrer" className="mt-4 block">
