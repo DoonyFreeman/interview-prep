@@ -44,6 +44,28 @@ export function Markdown({ markdown }: { markdown: string }) {
               </a>
             );
           },
+          // Lesson screenshots are wide: on a phone their text is tiny, so a tap
+          // opens the full-size file. The caption (markdown title) sits outside
+          // the link so `.prose a` doesn't underline it.
+          img({ src, alt, title }) {
+            return (
+              <>
+                <a href={src} target="_blank" rel="noreferrer" className="mt-4 block">
+                  <img
+                    src={src}
+                    alt={alt ?? ""}
+                    loading="lazy"
+                    className="w-full rounded-xl border border-border bg-white"
+                  />
+                </a>
+                {title && (
+                  <span className="mt-2 mb-4 block text-center text-sm text-muted">
+                    {title}
+                  </span>
+                )}
+              </>
+            );
+          },
           code({ className, children }) {
             const match = /language-(\w+)/.exec(className ?? "");
             const text = String(children ?? "").replace(/\n$/, "");

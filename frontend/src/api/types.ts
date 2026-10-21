@@ -440,6 +440,7 @@ export interface RoadmapResource {
   title: string;
   url: string;
   source: string;
+  minutes?: number | null; // videos only, so a reader sees the length up front
 }
 
 export interface RoadmapLesson {

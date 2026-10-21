@@ -284,6 +284,9 @@ def _check_resources(where: str, raw: list, problems: list[str]) -> None:
             problems.append(f"{where}: non-https url {res.get('url')!r}")
         if not res.get("title") or not res.get("source"):
             problems.append(f"{where}: empty resource title/source")
+        minutes = res.get("minutes")
+        if minutes is not None and not (isinstance(minutes, int) and minutes > 0):
+            problems.append(f"{where}: bad resource minutes {minutes!r}")
 
 
 def test_roadmap_structure_and_references(bundle):
