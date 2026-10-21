@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     admin_emails: str = ""
 
     # --- App ---
+    # Swagger /docs, /redoc, /openapi.json. On for dev; the Docker image turns it off.
+    api_docs: bool = True
     cors_origins: str = "http://localhost:5173"
     content_dir: str = Field(
         default="../content",
