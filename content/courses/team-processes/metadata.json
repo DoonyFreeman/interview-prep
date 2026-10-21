@@ -1,0 +1,221 @@
+{
+  "slug": "team-processes",
+  "title": "Процессы в IT-команде",
+  "description": "Как устроена работа в команде разработки — то, что спрашивают у каждого кандидата и что нужно с первого дня на работе: Agile и Scrum, спринт, роли, бэклог и груминг, оценка задач, дейли, демо и ретро, code review и pull request, путь задачи и взаимодействие с QA, аналитиком и менеджерами, рабочий день разработчика. 7 уроков — по одному в день, со скриншотами Jira и GitHub, практикой и видео.",
+  "order": 0,
+  "lessons": [
+    {
+      "slug": "agile-scrum",
+      "title": "Agile и Scrum: как работает команда",
+      "file": "01-agile-scrum.md",
+      "order": 1,
+      "duration_minutes": 22,
+      "concepts": [
+        {
+          "slug": "agile",
+          "title": "Что такое Agile",
+          "anchor": "что-такое-agile",
+          "order": 1
+        },
+        {
+          "slug": "scrum",
+          "title": "Scrum: роли, события, артефакты",
+          "anchor": "scrum-роли-события-артефакты",
+          "order": 2
+        },
+        {
+          "slug": "sprint",
+          "title": "Спринт",
+          "anchor": "спринт",
+          "order": 3
+        },
+        {
+          "slug": "scrum-vs-kanban",
+          "title": "Scrum и Kanban: в чём разница",
+          "anchor": "scrum-и-kanban-в-чём-разница",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "roles",
+      "title": "Роли в команде",
+      "file": "02-roles.md",
+      "order": 2,
+      "duration_minutes": 20,
+      "concepts": [
+        {
+          "slug": "scrum-roles",
+          "title": "Роли в Scrum: Product Owner, Scrum Master, Developers",
+          "anchor": "роли-в-scrum-product-owner-scrum-master-developers",
+          "order": 1
+        },
+        {
+          "slug": "real-roles",
+          "title": "Кто ещё есть в команде: тимлид, аналитик, QA, дизайнер, DevOps",
+          "anchor": "кто-ещё-есть-в-команде-тимлид-аналитик-qa-дизайнер-devops",
+          "order": 2
+        },
+        {
+          "slug": "junior-in-team",
+          "title": "Junior в команде: кто ставит задачи и к кому идти",
+          "anchor": "junior-в-команде-кто-ставит-задачи-и-к-кому-идти",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "slug": "backlog-grooming",
+      "title": "Бэклог и груминг",
+      "file": "03-backlog-grooming.md",
+      "order": 3,
+      "duration_minutes": 25,
+      "concepts": [
+        {
+          "slug": "backlog",
+          "title": "Product backlog и sprint backlog",
+          "anchor": "product-backlog-и-sprint-backlog",
+          "order": 1
+        },
+        {
+          "slug": "user-story",
+          "title": "User story и критерии приёмки",
+          "anchor": "user-story-и-критерии-приёмки",
+          "order": 2
+        },
+        {
+          "slug": "estimation",
+          "title": "Оценка задач: story points и planning poker",
+          "anchor": "оценка-задач-story-points-и-planning-poker",
+          "order": 3
+        },
+        {
+          "slug": "grooming",
+          "title": "Груминг (backlog refinement)",
+          "anchor": "груминг-backlog-refinement",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "sprint-events",
+      "title": "События спринта: планирование, дейли, демо, ретро",
+      "file": "04-sprint-events.md",
+      "order": 4,
+      "duration_minutes": 22,
+      "concepts": [
+        {
+          "slug": "planning",
+          "title": "Планирование спринта",
+          "anchor": "планирование-спринта",
+          "order": 1
+        },
+        {
+          "slug": "daily",
+          "title": "Дейли (daily scrum)",
+          "anchor": "дейли-daily-scrum",
+          "order": 2
+        },
+        {
+          "slug": "review",
+          "title": "Демо (sprint review)",
+          "anchor": "демо-sprint-review",
+          "order": 3
+        },
+        {
+          "slug": "retro",
+          "title": "Ретроспектива",
+          "anchor": "ретроспектива",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "code-review",
+      "title": "Code review",
+      "file": "05-code-review.md",
+      "order": 5,
+      "duration_minutes": 25,
+      "concepts": [
+        {
+          "slug": "what-why",
+          "title": "Что такое code review и зачем оно",
+          "anchor": "что-такое-code-review-и-зачем-оно",
+          "order": 1
+        },
+        {
+          "slug": "pull-request",
+          "title": "Pull request: путь кода от ветки до main",
+          "anchor": "pull-request-путь-кода-от-ветки-до-main",
+          "order": 2
+        },
+        {
+          "slug": "reviewing",
+          "title": "Как ревьюить: что смотреть и как писать комментарии",
+          "anchor": "как-ревьюить-что-смотреть-и-как-писать-комментарии",
+          "order": 3
+        },
+        {
+          "slug": "receiving",
+          "title": "Как проходить ревью своего кода",
+          "anchor": "как-проходить-ревью-своего-кода",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "task-lifecycle",
+      "title": "Путь задачи и взаимодействие ролей",
+      "file": "06-task-lifecycle.md",
+      "order": 6,
+      "duration_minutes": 22,
+      "concepts": [
+        {
+          "slug": "lifecycle",
+          "title": "Жизненный цикл задачи: статусы",
+          "anchor": "жизненный-цикл-задачи-статусы",
+          "order": 1
+        },
+        {
+          "slug": "dev-qa",
+          "title": "Разработчик и тестировщик: баг-репорт, ретест, возвраты",
+          "anchor": "разработчик-и-тестировщик-баг-репорт-ретест-возвраты",
+          "order": 2
+        },
+        {
+          "slug": "dev-managers",
+          "title": "Разработчик, аналитик и менеджеры: уточнения, сроки, блокеры",
+          "anchor": "разработчик-аналитик-и-менеджеры-уточнения-сроки-блокеры",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "slug": "dev-day",
+      "title": "Рабочий день разработчика",
+      "file": "07-dev-day.md",
+      "order": 7,
+      "duration_minutes": 20,
+      "concepts": [
+        {
+          "slug": "typical-day",
+          "title": "Типичный день по часам",
+          "anchor": "типичный-день-по-часам",
+          "order": 1
+        },
+        {
+          "slug": "communication",
+          "title": "Общение в команде: чат, созвоны, статусы",
+          "anchor": "общение-в-команде-чат-созвоны-статусы",
+          "order": 2
+        },
+        {
+          "slug": "first-weeks",
+          "title": "Первые недели на новой работе",
+          "anchor": "первые-недели-на-новой-работе",
+          "order": 3
+        }
+      ]
+    }
+  ]
+}
