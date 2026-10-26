@@ -2,7 +2,7 @@
   "slug": "celery",
   "title": "Celery и очереди задач",
   "description": "Фоновая обработка с Celery: зачем нужны очереди задач, архитектура producer/broker/worker, определение и вызов задач, ретраи и идемпотентность, маршрутизация, расписание и гарантии доставки.",
-  "order": 16,
+  "order": 17,
   "lessons": [
     {
       "slug": "why-architecture",

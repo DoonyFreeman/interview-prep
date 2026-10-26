@@ -2,7 +2,7 @@
   "slug": "redis",
   "title": "Redis",
   "description": "In-memory хранилище Redis: почему оно быстрое, структуры данных, кэширование (cache-aside, вытеснение, stampede), персистентность RDB/AOF, транзакции и Lua, Pub/Sub и Streams, масштабирование.",
-  "order": 15,
+  "order": 16,
   "lessons": [
     {
       "slug": "what-data-types",

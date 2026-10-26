@@ -2,7 +2,7 @@
   "slug": "web-http",
   "title": "Web, HTTP и API",
   "description": "Основы веб-взаимодействия: методы и статус-коды HTTP, идемпотентность, проектирование REST API, аутентификация (сессии/JWT/CSRF/CORS), кэширование, real-time и сравнение REST/GraphQL/gRPC.",
-  "order": 10,
+  "order": 11,
   "lessons": [
     {
       "slug": "http-basics",

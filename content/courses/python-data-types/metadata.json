@@ -2,7 +2,7 @@
   "slug": "python-data-types",
   "title": "Типы данных и структуры",
   "description": "Внутреннее устройство и сложность встроенных типов Python: числа и точность, строки и Unicode, списки, кортежи, словари и множества, collections/itertools и шпаргалка Big-O.",
-  "order": 2,
+  "order": 3,
   "lessons": [
     {
       "slug": "numbers",

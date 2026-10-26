@@ -2,7 +2,7 @@
   "slug": "python-asyncio",
   "title": "Async / Asyncio",
   "description": "Асинхронность в Python: событийный цикл и кооперативная многозадачность, корутины и await, конкурентный запуск через задачи и gather, работа с блокирующим кодом и типичные подводные камни.",
-  "order": 6,
+  "order": 7,
   "lessons": [
     {
       "slug": "event-loop",

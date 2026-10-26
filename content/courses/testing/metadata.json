@@ -2,7 +2,7 @@
   "slug": "testing",
   "title": "Тестирование и качество",
   "description": "Тестирование Python-кода: пирамида тестов, pytest с фикстурами и параметризацией, моки и патчинг, тестирование async-кода, покрытие, TDD и property-based подход.",
-  "order": 11,
+  "order": 12,
   "lessons": [
     {
       "slug": "test-pyramid",
