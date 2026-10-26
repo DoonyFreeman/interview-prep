@@ -2,7 +2,7 @@
   "slug": "postgresql",
   "title": "PostgreSQL",
   "description": "Углублённый PostgreSQL: архитектура (MVCC, WAL, VACUUM), богатые типы и JSONB, специализированные индексы, конкурентность и блокировки (FOR UPDATE, SKIP LOCKED), продвинутый SQL, производительность и эксплуатация.",
-  "order": 14,
+  "order": 15,
   "lessons": [
     {
       "slug": "architecture-mvcc",

@@ -2,7 +2,7 @@
   "slug": "fastapi",
   "title": "FastAPI",
   "description": "Современный async-фреймворк: ASGI и роутинг, Pydantic-валидация и сериализация, dependency injection, sync/async-эндпоинты, middleware и CORS, аутентификация JWT, lifespan и тестирование.",
-  "order": 9,
+  "order": 10,
   "lessons": [
     {
       "slug": "asgi-routing",

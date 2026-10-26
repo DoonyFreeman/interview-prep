@@ -2,7 +2,7 @@
   "slug": "python-oop",
   "title": "ООП в Python",
   "description": "Объектно-ориентированное программирование в Python от классов и инкапсуляции до MRO, дескрипторов, метаклассов, ABC/Protocol и принципов проектирования (SOLID, композиция, паттерны).",
-  "order": 3,
+  "order": 4,
   "lessons": [
     {
       "slug": "classes-instances",

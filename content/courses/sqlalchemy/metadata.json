@@ -2,7 +2,7 @@
   "slug": "sqlalchemy",
   "title": "SQLAlchemy",
   "description": "ORM и Core в SQLAlchemy 2.0: архитектура и пул соединений, Session с identity map и unit of work, связи и стратегии загрузки против N+1, запросы 2.0, миграции Alembic и async.",
-  "order": 8,
+  "order": 9,
   "lessons": [
     {
       "slug": "core-vs-orm",

@@ -507,7 +507,8 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    so every course gets it. Resources may carry an optional `minutes` (video
    length), shown as "· N min" and validated by the integrity test.
 
-11. **LLM course.** Course `llm` «LLM, RAG и агенты» (order 23, roadmap stage `ai`
+11. **LLM course.** Course `llm` «LLM, RAG и агенты» (order 1 — second in the catalog, right after
+   team-processes; roadmap stage `ai`
    «LLM и ИИ-сервисы» between `infra` and `senior`): 2 lessons / 21 concepts —
    `llm-basics` (tokens & context window, next token & hallucinations, sampling,
    open vs closed models, chat roles, streaming, prompting, valid JSON, cost) and

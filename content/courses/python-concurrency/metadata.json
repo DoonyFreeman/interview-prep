@@ -2,7 +2,7 @@
   "slug": "python-concurrency",
   "title": "Конкурентность и параллелизм",
   "description": "Многозадачность в Python: конкурентность vs параллелизм, потоки и гонки данных, процессы для CPU-bound, concurrent.futures и обоснованный выбор инструмента под задачу.",
-  "order": 5,
+  "order": 6,
   "lessons": [
     {
       "slug": "concurrency-vs-parallelism",

@@ -2,7 +2,7 @@
   "slug": "python-typing",
   "title": "Типизация и Pydantic",
   "description": "Типы в Python: аннотации и их роль, Optional/Union, дженерики (TypeVar/Generic), Protocol и спецтипы, статическая проверка mypy и граница между типами и валидацией данных в рантайме.",
-  "order": 13,
+  "order": 14,
   "lessons": [
     {
       "slug": "typing-basics",
