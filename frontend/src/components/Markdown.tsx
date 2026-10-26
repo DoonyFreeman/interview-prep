@@ -85,7 +85,7 @@ export function Markdown({ markdown }: { markdown: string }) {
           // scroll on its own instead of pushing the whole page sideways.
           table({ children }) {
             return (
-              <div className="overflow-x-auto">
+              <div className="table-scroll">
                 <table>{children}</table>
               </div>
             );

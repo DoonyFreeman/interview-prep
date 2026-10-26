@@ -41,7 +41,7 @@ def cosine(a: list[float], b: list[float]) -> float:
 
 resp = client.embeddings.create(model=EMB_MODEL, input=["Как вернуть деньги?", "возврат товара"])
 q, doc = resp.data[0].embedding, resp.data[1].embedding
-print(cosine(q, doc))  # близко к 1 — тексты похожи по смыслу
+print(cosine(q, doc))  # чем больше, тем ближе по смыслу; порог подбирают на своих данных
 ```
 
 **Модели эмбеддингов** бывают закрытые (например, `text-embedding-3-small` и
@@ -317,13 +317,18 @@ for _ in range(5):                                        # лимит раун�
         break                                             # финальный ответ текстом
     messages.append(msg)                                  # запрос модели на вызов
     for call in msg.tool_calls:
-        try:
-            args = OrderArgs.model_validate_json(call.function.arguments)
-            result = get_order_status(user, args.order_id)  # НАШ код, внутри проверка прав
-        except ValidationError as exc:
-            result = {"error": f"неверные аргументы: {exc}"}
+        if call.function.name != "get_order_status":
+            result = {"error": "неизвестный инструмент"}
+        else:
+            try:
+                args = OrderArgs.model_validate_json(call.function.arguments)
+                result = get_order_status(user, args.order_id)  # НАШ код, внутри проверка прав
+            except ValidationError as exc:
+                result = {"error": f"неверные аргументы: {exc}"}
         messages.append({"role": "tool", "tool_call_id": call.id,
                          "content": json.dumps(result, ensure_ascii=False)})
+else:                                                     # break не случился
+    raise RuntimeError("модель не уложилась в лимит раундов")
 print(msg.content)
 ```
 

@@ -275,10 +275,15 @@ def test_lesson_images_exist_and_sizes_match(bundle, content_root):
             for match in _LESSON_IMAGE.finditer(lesson.markdown):
                 url, width, height = match.groups()
                 where = f"{course.slug}/{lesson.slug}: {url}"
-                file = public / url.lstrip("/")
-                # exact name: macOS matches "TOKENS.png" to tokens.png, the Linux
-                # container serving the app does not
-                if not file.is_file() or file.name not in os.listdir(file.parent):
+                rel = Path(url.lstrip("/"))
+                file = public / rel
+                # exact case for every segment: macOS matches "LLM/TOKENS.png" to
+                # llm/tokens.png, the Linux container serving the app does not
+                exact = file.is_file() and all(
+                    part in os.listdir(public.joinpath(*rel.parts[:i]))
+                    for i, part in enumerate(rel.parts)
+                )
+                if not exact:
                     problems.append(f"{where}: file missing")
                     continue
                 if width is None:

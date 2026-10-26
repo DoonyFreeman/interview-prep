@@ -344,8 +344,8 @@ def classify(text: str, attempts: int = 3) -> Ticket:
             response_format={"type": "json_object"},  # JSON mode
         )
         choice = resp.choices[0]
-        if choice.finish_reason == "length":  # обрыв на лимите — повтор не поможет
-            raise ValueError("ответ не влез в max_tokens")
+        if choice.finish_reason != "stop":  # обрыв на лимите, фильтр, отказ — повтор не поможет
+            raise ValueError(f"модель не закончила ответ: {choice.finish_reason}")
         raw = choice.message.content
         try:
             return Ticket.model_validate_json(raw)
