@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x600">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .frame { margin-bottom: 0; }
+  .flow > .box { min-height: 112px; }
+  .flow .box h5 { font-size: 16px; }
+  .flow .box p { font-size: 14px; }
+  .arr { width: 22px; margin: 0 7px 0 3px; }
+  .link { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; height: 54px; }
+  .link > div { position: relative; }
+  .db-down { position: absolute; left: 50%; top: -2px; width: 3px; height: 56px; background: #8590a2; }
+  .db-down::after { content: ""; position: absolute; bottom: -10px; left: -5px; border-top: 11px solid #8590a2; border-left: 6.5px solid transparent; border-right: 6.5px solid transparent; }
+  .db-lbl { position: absolute; right: calc(50% + 14px); top: 14px; font-size: 14px; color: #626f86; white-space: nowrap; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">RAG-пайплайн по шагам</div>
+  <div class="dg-sub">Retrieval-Augmented Generation: сначала найти нужные куски документов, потом сгенерировать ответ по ним</div>
+
+  <div class="frame"><span class="ft">Индексация — заранее, в фоне, при изменении документов</span>
+    <div class="flow">
+      <div class="box"><span class="mark">1</span><h5>Документы</h5><p>PDF, wiki, тикеты, БД — загрузить и очистить текст</p></div>
+      <div class="arr"></div>
+      <div class="box"><span class="mark">2</span><h5>Чанкинг</h5><p>разрезать на куски по 300–800 токенов с перекрытием</p></div>
+      <div class="arr"></div>
+      <div class="box"><span class="mark">3</span><h5>Эмбеддинги</h5><p>каждый чанк → вектор моделью эмбеддингов</p></div>
+      <div class="arr"></div>
+      <div class="box blue"><span class="mark">4</span><h5>Векторная БД</h5><p>вектор + текст чанка + метаданные (источник, дата, права)</p></div>
+    </div>
+  </div>
+
+  <div class="link"><div></div><div></div><div></div><div><span class="db-down"></span><span class="db-lbl">на шаге 6 ищем ближайшие векторы в этой базе</span></div></div>
+
+  <div class="frame"><span class="ft">Ответ на запрос — онлайн, на каждый вопрос</span>
+    <div class="flow">
+      <div class="box"><span class="mark">5</span><h5>Вопрос → вектор</h5><p>той же моделью эмбеддингов, что и чанки</p></div>
+      <div class="arr"></div>
+      <div class="box"><span class="mark">6</span><h5>Поиск top-k</h5><p>k ближайших чанков + фильтр по метаданным</p></div>
+      <div class="arr"></div>
+      <div class="box dashed"><span class="mark">7</span><h5>Реранкинг</h5><p>по желанию: точнее отсортировать кандидатов</p></div>
+      <div class="arr"></div>
+      <div class="box"><span class="mark">8</span><h5>Промпт</h5><p>инструкция + чанки с id источников + вопрос</p></div>
+      <div class="arr"></div>
+      <div class="box blue"><h5>LLM</h5><p>генерирует ответ по контексту</p></div>
+      <div class="arr green"></div>
+      <div class="box green"><h5>Ответ</h5><p>со ссылками на источники</p></div>
+    </div>
+  </div>
+</div></body></html>

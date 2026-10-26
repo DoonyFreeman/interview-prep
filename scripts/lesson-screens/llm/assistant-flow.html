@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x600">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .flow > .box { min-height: 150px; }
+  .flow .box h5 { font-size: 16px; }
+  .flow .box p { font-size: 14px; }
+  .arr { width: 24px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+  .turn { position: relative; height: 44px; } .turn .varr { position: absolute; left: 70.5%; margin: 0; }
+  .ctx { font: 13px/1.45 "SF Mono", Menlo, monospace; background: #fff; border: 1px solid #dfe1e6; border-radius: 6px; padding: 6px 8px; margin-top: 6px; color: #44546f; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Ассистент по документам: как всё связано</div>
+  <div class="dg-sub">Токены и окно задают бюджет, RAG приносит знания, tool calling — живые данные, а проверка источников ловит выдумки</div>
+
+  <div class="flow">
+    <div class="box"><span class="mark">1</span><h5>Вопрос</h5><p>«Можно ещё вернуть мой заказ 1042?»</p></div>
+    <div class="arr"></div>
+    <div class="box purple"><span class="mark">2</span><h5>RAG-поиск</h5><p>эмбеддинг вопроса → векторная БД → top-k → реранкинг</p></div>
+    <div class="arr"></div>
+    <div class="box"><span class="mark">3</span><h5>Сборка контекста</h5><p>в бюджет окна (токены!)</p>
+      <div class="ctx">system: «отвечай только по документам, ставь [id]»<br>[1] Регламент п. 2.1 …<br>история + вопрос</div></div>
+    <div class="arr"></div>
+    <div class="box blue"><span class="mark">4</span><h5>LLM</h5><p>правило возврата нашла в [1], а даты доставки в документах нет → просит tool_call</p></div>
+    <div class="arr"></div>
+    <div class="box orange"><span class="mark">5</span><h5>Функция</h5><p>приложение вызывает get_order(1042): доставлен 25 дней назад → результат обратно в LLM</p></div>
+  </div>
+  <div class="turn"><div class="varr"></div></div>
+
+  <div class="row2">
+    <div class="box green"><span class="mark">6</span><h5>Ответ со ссылками</h5><p>«Да: срок возврата — 30 дней с получения [1], заказ получен 25 дней назад, осталось 5 дней.»</p></div>
+    <div class="box yellow"><span class="mark">7</span><h5>Проверка опоры на источник</h5><p>каждое утверждение сверяем с чанками и результатом функции: ссылки [id] реальные, цитаты есть в тексте. Нет опоры → «не нашёл в документах», а не выдумка. Офлайн то же меряет faithfulness на тестовом наборе</p></div>
+  </div>
+</div></body></html>

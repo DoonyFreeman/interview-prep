@@ -1,0 +1,73 @@
+/* Diagrams for the LLM course: the team-processes palette and pieces, with
+   bigger type — a 1200px canvas is shown at ~820px in the lesson column.
+   Layout is normal flow (flex/grid) instead of hand-placed absolute nodes. */
+@import "../team-processes/_base.css";
+
+body { font-size: 16px; line-height: 1.4; }
+.canvas { padding: 30px 40px; }
+.dg-title { font-size: 26px; }
+.dg-sub { font-size: 16px; margin-bottom: 24px; }
+.mark { width: 28px; height: 28px; font-size: 15px; }
+.mono { font-size: 0.92em; }
+.cap { font-size: 14px; color: #626f86; }
+.note { border: 1px solid #dfe1e6; border-radius: 10px; background: #fff; padding: 12px 16px; font-size: 15px; }
+
+/* Boxes in normal flow (the base .node is absolutely positioned) */
+.box { border: 2px solid #c7d1db; background: #fff; border-radius: 12px; padding: 12px 16px; position: relative; }
+.box h5 { font-size: 17px; margin-bottom: 3px; }
+.box p { font-size: 15px; color: #626f86; line-height: 1.35; }
+.box > .mark { position: absolute; top: -13px; left: -13px; }
+.box.dashed { border-style: dashed; }
+.blue { border-color: #0c66e4 !important; background: #e9f2ff; } .blue h5, h5.blue, .t-blue { color: #0055cc; }
+.green { border-color: #22a06b !important; background: #dcfff1; } .green h5, .t-green { color: #216e4e; }
+.purple { border-color: #8270db !important; background: #f3f0ff; } .purple h5, .t-purple { color: #5e4db2; }
+.orange { border-color: #e56910 !important; background: #fff3eb; } .orange h5, .t-orange { color: #a54800; }
+.red { border-color: #c9372c !important; background: #ffeceb; } .red h5, .t-red { color: #ae2e24; }
+.yellow { border-color: #b38600 !important; background: #fff7d6; } .yellow h5, .t-yellow { color: #7f5f01; }
+.grey { border-color: #c7d1db !important; background: #f1f2f4; } .grey h5 { color: #44546f; }
+h5.blue, h5.green, h5.purple, h5.orange, h5.red, h5.yellow { background: none; }
+
+/* Rows of boxes joined by arrows */
+.flow { display: flex; align-items: center; }
+.flow > .box { flex: 1; }
+.arr { flex: none; width: 40px; height: 3px; margin: 0 8px 0 4px; background: #8590a2; position: relative; }
+.arr::after {
+  content: ""; position: absolute; right: -10px; top: -5px;
+  border-left: 11px solid #8590a2; border-top: 6.5px solid transparent; border-bottom: 6.5px solid transparent;
+}
+.arr.back { transform: scaleX(-1); }
+.varr { width: 3px; height: 30px; margin: 4px auto 14px; background: #8590a2; position: relative; }
+.varr::after {
+  content: ""; position: absolute; bottom: -10px; left: -5px;
+  border-top: 11px solid #8590a2; border-left: 6.5px solid transparent; border-right: 6.5px solid transparent;
+}
+.arr.red, .varr.red { background: #c9372c; } .arr.red::after { border-left-color: #c9372c; } .varr.red::after { border-top-color: #c9372c; }
+.arr.green, .varr.green { background: #22a06b; } .arr.green::after { border-left-color: #22a06b; } .varr.green::after { border-top-color: #22a06b; }
+
+/* Dashed group frame with a title chip */
+.frame { border: 2px dashed #8590a2; border-radius: 16px; padding: 30px 20px 20px; position: relative; }
+.frame > .ft {
+  position: absolute; top: -14px; left: 20px; background: #fbfaf8; padding: 0 10px;
+  font-weight: 700; font-size: 17px;
+}
+
+/* Token chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.chip {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 10px; border-radius: 8px; border: 1.5px solid;
+  font: 600 19px/1.2 "SF Mono", Menlo, Consolas, monospace; white-space: pre;
+}
+.chip small { font: 500 12px/1 "SF Mono", Menlo, monospace; color: #626f86; }
+.c1 { background: #e9f2ff; border-color: #85b8ff; } .c2 { background: #dcfff1; border-color: #7ee2b8; }
+.c3 { background: #f3f0ff; border-color: #b8acf6; } .c4 { background: #fff3eb; border-color: #fdb08a; }
+.c5 { background: #fff7d6; border-color: #e2b203; } .c6 { background: #ffeceb; border-color: #fd9891; }
+
+/* Probability bars */
+.bars { display: flex; flex-direction: column; gap: 9px; }
+.bar { display: grid; grid-template-columns: 92px 1fr 52px; align-items: center; gap: 10px; font-size: 16px; }
+.bar i { display: block; height: 20px; border-radius: 4px; background: #0c66e4; min-width: 3px; }
+.bar b { font-weight: 600; }
+.bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: #44546f; }
+.bar.off { color: #a5adba; } .bar.off i { background: #dfe1e6; } .bar.off b { text-decoration: line-through; }
+.bar.pick i { background: #22a06b; }

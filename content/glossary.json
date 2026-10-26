@@ -11,7 +11,8 @@
     "testing",
     "devops",
     "security",
-    "cs"
+    "cs",
+    "llm"
   ],
   "terms": [
     {
@@ -860,6 +861,198 @@
       "term": "Динамическое программирование",
       "category": "cs",
       "short_md": "Решение задачи через кеширование результатов перекрывающихся подзадач (мемоизация сверху-вниз или таблица снизу-вверх). Превращает экспоненциальный перебор в полиномиальный. Классика — числа Фибоначчи, рюкзак, расстояние Левенштейна."
+    },
+    {
+      "slug": "llm",
+      "term": "LLM (большая языковая модель)",
+      "category": "llm",
+      "aliases": ["large language model", "языковая модель"],
+      "short_md": "Нейросеть, обученная продолжать текст: по входу она предсказывает следующий **токен**, дописывает его и повторяет. Отсюда и сила (связный текст, код, перевод), и слабость — она выбирает правдоподобное, а не проверенное, поэтому может **галлюцинировать**.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "предсказание-следующего-токена-и-галлюцинации" }]
+    },
+    {
+      "slug": "llm-token",
+      "term": "Токен (в LLM)",
+      "category": "llm",
+      "aliases": ["token", "токенизация"],
+      "short_md": "Кусочек текста из словаря токенизатора — слово, часть слова или знак. Модель работает с номерами токенов. В токенах считаются **цена**, лимиты и **контекстное окно**; русский текст часто занимает больше токенов, чем английский.\n\n**Подвох:** это не JWT-токен для авторизации.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "токены-и-контекстное-окно" }]
+    },
+    {
+      "slug": "context-window",
+      "term": "Контекстное окно",
+      "category": "llm",
+      "aliases": ["context window", "context length"],
+      "short_md": "Максимум токенов, который модель обрабатывает за один вызов, — **общий бюджет на вход и выход**: system, история, документы, вопрос и ответ. Не влезает — ошибка, обрезка истории или оборванный ответ (`finish_reason = length`).",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "токены-и-контекстное-окно" }]
+    },
+    {
+      "slug": "hallucination",
+      "term": "Галлюцинация LLM",
+      "category": "llm",
+      "aliases": ["hallucination"],
+      "short_md": "Уверенный и гладкий, но неверный ответ модели: выдуманный факт, функция, ссылка. Причина — модель продолжает текст правдоподобно и не проверяет факты. Снижают **RAG** с ответом по источнику, разрешение «не знаю», tool calling для живых данных и низкая temperature.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "предсказание-следующего-токена-и-галлюцинации" }]
+    },
+    {
+      "slug": "temperature",
+      "term": "Temperature",
+      "category": "llm",
+      "aliases": ["температура генерации"],
+      "short_md": "Параметр генерации, который «заостряет» или «сглаживает» распределение вероятностей следующего токена. Низкая (0–0.3) — стабильно и предсказуемо: факты, код, JSON. Высокая — разнообразнее, но больше риск ошибок.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "параметры-генерации-temperature-top-p-top-k" }]
+    },
+    {
+      "slug": "top-p-top-k",
+      "term": "top-p и top-k",
+      "category": "llm",
+      "aliases": ["nucleus sampling", "top_p", "top_k"],
+      "short_md": "Способы отсечь маловероятные токены перед выбором: **top-k** оставляет k самых вероятных, **top-p** — минимальный набор лучших с суммарной вероятностью не меньше p. Обычно настраивают что-то одно — чаще temperature.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "параметры-генерации-temperature-top-p-top-k" }]
+    },
+    {
+      "slug": "system-prompt",
+      "term": "System prompt",
+      "category": "llm",
+      "aliases": ["системный промпт", "system message"],
+      "short_md": "Сообщение с ролью `system`: роль модели, правила, стиль и формат на весь диалог. Пишет разработчик, модель считает его приоритетнее сообщений пользователя (`user`).\n\n**Подвох:** это не защита от prompt injection — права проверяет код.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "llm-api-роли-system-user-assistant" }]
+    },
+    {
+      "slug": "few-shot",
+      "term": "Few-shot промптинг",
+      "category": "llm",
+      "aliases": ["few-shot", "zero-shot"],
+      "short_md": "Несколько примеров «вход → правильный выход» прямо в промпте, чтобы модель подхватила формат и границы категорий. **Zero-shot** — то же без примеров. Примеры стоят токенов в каждом запросе.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "zero-shot-few-shot-и-chain-of-thought" }]
+    },
+    {
+      "slug": "chain-of-thought",
+      "term": "Chain of thought (CoT)",
+      "category": "llm",
+      "aliases": ["цепочка рассуждений"],
+      "short_md": "Просьба к модели сначала рассуждать по шагам, а потом ответить. Повышает точность в многошаговых задачах ценой лишних выходных токенов и задержки. Reasoning-модели рассуждают сами.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "zero-shot-few-shot-и-chain-of-thought" }]
+    },
+    {
+      "slug": "structured-output",
+      "term": "Structured output",
+      "category": "llm",
+      "aliases": ["JSON mode", "структурированный ответ"],
+      "short_md": "Режим, в котором генерация ограничена JSON-схемой и ответ гарантированно соответствует форме. **JSON mode** гарантирует только синтаксис JSON. Смысл всё равно проверяют валидацией (Pydantic) и при ошибке повторяют запрос.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "как-получить-валидный-json" }]
+    },
+    {
+      "slug": "llm-streaming",
+      "term": "Стриминг ответа LLM",
+      "category": "llm",
+      "aliases": ["streaming", "TTFT"],
+      "short_md": "Отдача ответа кусками по мере генерации, обычно через **SSE**. Общее время почти то же, но первые слова видны сразу; ключевая метрика — **TTFT** (time to first token).",
+      "links": [{ "course_slug": "llm", "lesson_slug": "llm-basics", "anchor": "стриминг-ответа" }]
+    },
+    {
+      "slug": "embedding",
+      "term": "Эмбеддинг",
+      "category": "llm",
+      "aliases": ["embedding", "векторное представление"],
+      "short_md": "Вектор фиксированной длины, который модель эмбеддингов строит по тексту так, что **похожие по смыслу тексты дают близкие векторы**. Основа семантического поиска и RAG. Документы и вопросы кодируют одной моделью.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "эмбеддинги" }]
+    },
+    {
+      "slug": "cosine-similarity",
+      "term": "Косинусное сходство",
+      "category": "llm",
+      "aliases": ["cosine similarity"],
+      "short_md": "Мера близости двух векторов — косинус угла между ними: чем ближе к 1, тем ближе смысл. Абсолютные значения зависят от модели, поэтому порог подбирают на своих данных. В векторных БД часто используют расстояние `1 − cos` (в pgvector — оператор `<=>`).",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "эмбеддинги" }]
+    },
+    {
+      "slug": "vector-db",
+      "term": "Векторная база данных",
+      "category": "llm",
+      "aliases": ["vector database", "pgvector", "Qdrant", "Chroma"],
+      "short_md": "Хранит векторы с текстом и метаданными и быстро находит ближайшие к запросу (**top-k**) с помощью ANN-индекса, обычно **HNSW**. Примеры: pgvector (расширение Postgres), Qdrant, Chroma.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "векторные-базы-данных-pgvector-qdrant-chroma" }]
+    },
+    {
+      "slug": "rag",
+      "term": "RAG (Retrieval-Augmented Generation)",
+      "category": "llm",
+      "aliases": ["ретривал", "генерация с поиском"],
+      "short_md": "Сначала **найти** релевантные куски документов, потом **сгенерировать** ответ по ним. Даёт ответы по своим и свежим данным без переобучения, ссылки на источники и меньше галлюцинаций.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "rag-какую-проблему-решает" }]
+    },
+    {
+      "slug": "chunking",
+      "term": "Чанкинг",
+      "category": "llm",
+      "aliases": ["chunking", "чанк"],
+      "short_md": "Нарезка документов на куски для RAG. Слишком крупные чанки размывают поиск и забивают окно, слишком мелкие теряют контекст. Частый старт — 300–800 токенов с **перекрытием** 10–20%.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "чанкинг-размер-и-перекрытие" }]
+    },
+    {
+      "slug": "hybrid-search",
+      "term": "Гибридный поиск",
+      "category": "llm",
+      "aliases": ["hybrid search", "BM25", "RRF"],
+      "short_md": "Поиск по словам (BM25, ловит точные коды и термины) + векторный (понимает смысл и синонимы), результаты объединяют, например методом **RRF**.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "гибридный-поиск-и-реранкинг" }]
+    },
+    {
+      "slug": "reranker",
+      "term": "Реранкер",
+      "category": "llm",
+      "aliases": ["reranker", "cross-encoder", "реранкинг"],
+      "short_md": "Модель (обычно cross-encoder), которая читает вопрос и чанк **вместе** и точно оценивает релевантность. Медленная, поэтому её запускают только на десятках кандидатов после быстрого поиска.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "гибридный-поиск-и-реранкинг" }]
+    },
+    {
+      "slug": "fine-tuning",
+      "term": "Fine-tuning",
+      "category": "llm",
+      "aliases": ["дообучение", "LoRA"],
+      "short_md": "Дообучение модели на своих примерах — меняет её **поведение**: стиль, формат, узкую задачу. Для знаний и часто меняющихся фактов лучше **RAG**: обновил документ — и ответ сразу актуален.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "rag-или-fine-tuning" }]
+    },
+    {
+      "slug": "tool-calling",
+      "term": "Tool calling",
+      "category": "llm",
+      "aliases": ["function calling", "вызов функций"],
+      "short_md": "Модель вместо текста возвращает имя функции и аргументы в JSON; функцию вызывает **приложение** и отдаёт результат модели (роль `tool`).\n\n**Подвох:** модель сама код не выполняет — валидация аргументов и права на приложении.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "tool-calling" }]
+    },
+    {
+      "slug": "ai-agent",
+      "term": "AI-агент",
+      "category": "llm",
+      "aliases": ["агент", "agent"],
+      "short_md": "LLM в цикле с инструментами: получает цель, сама выбирает шаги, вызывает инструменты и смотрит на результаты до решения. Паттерны — **ReAct** и **Plan-and-Execute**. Обязательны лимиты шагов и подтверждение опасных действий.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "агенты-react-и-plan-and-execute" }]
+    },
+    {
+      "slug": "react-agent",
+      "term": "ReAct",
+      "category": "llm",
+      "aliases": ["Reasoning and Acting"],
+      "short_md": "Паттерн агента: модель чередует **мысль → действие (вызов инструмента) → наблюдение** и снова мысль, пока не ответит. Гибко, но много вызовов и риск ходить по кругу. Альтернатива — Plan-and-Execute.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "агенты-react-и-plan-and-execute" }]
+    },
+    {
+      "slug": "langgraph",
+      "term": "LangGraph",
+      "category": "llm",
+      "aliases": ["LangChain"],
+      "short_md": "Библиотека для агентов как **графа**: узлы-шаги, общий state, условные переходы, циклы и сохранение состояния. **LangChain** рядом даёт готовые блоки: модели, промпты, загрузчики, ретриверы, цепочки.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "langchain-и-langgraph" }]
+    },
+    {
+      "slug": "llm-as-a-judge",
+      "term": "LLM-as-a-judge",
+      "category": "llm",
+      "aliases": ["LLM-судья"],
+      "short_md": "Оценка ответов другой моделью по чёткой рубрике — например, есть ли в ответе факты вне контекста (**faithfulness**). Быстро и дёшево, но судья ошибается — выборку проверяет человек.",
+      "links": [{ "course_slug": "llm", "lesson_slug": "rag-agents", "anchor": "оценка-качества-rag" }]
     }
   ]
 }

@@ -1,0 +1,47 @@
+{
+  "slug": "llm",
+  "title": "LLM, RAG и агенты",
+  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества. 2 урока со схемами.",
+  "order": 23,
+  "lessons": [
+    {
+      "slug": "llm-basics",
+      "title": "LLM: как устроены и как с ними работать",
+      "file": "01-llm-basics.md",
+      "order": 1,
+      "duration_minutes": 45,
+      "concepts": [
+        { "slug": "tokens-context", "title": "Токены и контекстное окно", "anchor": "токены-и-контекстное-окно", "order": 1 },
+        { "slug": "next-token-hallucinations", "title": "Предсказание следующего токена и галлюцинации", "anchor": "предсказание-следующего-токена-и-галлюцинации", "order": 2 },
+        { "slug": "sampling", "title": "Параметры генерации: temperature, top-p, top-k", "anchor": "параметры-генерации-temperature-top-p-top-k", "order": 3 },
+        { "slug": "open-vs-closed", "title": "Открытые и закрытые модели", "anchor": "открытые-и-закрытые-модели", "order": 4 },
+        { "slug": "chat-roles", "title": "LLM API: роли system, user, assistant", "anchor": "llm-api-роли-system-user-assistant", "order": 5 },
+        { "slug": "streaming", "title": "Стриминг ответа", "anchor": "стриминг-ответа", "order": 6 },
+        { "slug": "prompting", "title": "Zero-shot, few-shot и chain of thought", "anchor": "zero-shot-few-shot-и-chain-of-thought", "order": 7 },
+        { "slug": "structured-output", "title": "Как получить валидный JSON", "anchor": "как-получить-валидный-json", "order": 8 },
+        { "slug": "cost", "title": "Как снизить стоимость запросов", "anchor": "как-снизить-стоимость-запросов", "order": 9 }
+      ]
+    },
+    {
+      "slug": "rag-agents",
+      "title": "RAG и агенты",
+      "file": "02-rag-agents.md",
+      "order": 2,
+      "duration_minutes": 55,
+      "concepts": [
+        { "slug": "embeddings", "title": "Эмбеддинги", "anchor": "эмбеддинги", "order": 1 },
+        { "slug": "vector-db", "title": "Векторные базы данных: pgvector, Qdrant, Chroma", "anchor": "векторные-базы-данных-pgvector-qdrant-chroma", "order": 2 },
+        { "slug": "rag-problem", "title": "RAG: какую проблему решает", "anchor": "rag-какую-проблему-решает", "order": 3 },
+        { "slug": "rag-pipeline", "title": "RAG-пайплайн по шагам", "anchor": "rag-пайплайн-по-шагам", "order": 4 },
+        { "slug": "chunking", "title": "Чанкинг: размер и перекрытие", "anchor": "чанкинг-размер-и-перекрытие", "order": 5 },
+        { "slug": "hybrid-rerank", "title": "Гибридный поиск и реранкинг", "anchor": "гибридный-поиск-и-реранкинг", "order": 6 },
+        { "slug": "rag-vs-finetuning", "title": "RAG или fine-tuning", "anchor": "rag-или-fine-tuning", "order": 7 },
+        { "slug": "tool-calling", "title": "Tool calling", "anchor": "tool-calling", "order": 8 },
+        { "slug": "agents", "title": "Агенты: ReAct и Plan-and-Execute", "anchor": "агенты-react-и-plan-and-execute", "order": 9 },
+        { "slug": "langchain-langgraph", "title": "LangChain и LangGraph", "anchor": "langchain-и-langgraph", "order": 10 },
+        { "slug": "rag-eval", "title": "Оценка качества RAG", "anchor": "оценка-качества-rag", "order": 11 },
+        { "slug": "docs-assistant", "title": "Ассистент по документам: как всё связано", "anchor": "ассистент-по-документам-как-всё-связано", "order": 12 }
+      ]
+    }
+  ]
+}

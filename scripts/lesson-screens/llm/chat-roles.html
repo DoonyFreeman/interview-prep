@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x540">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 1fr 380px; gap: 40px; }
+  .msgs { display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: start; position: relative; }
+  .msg > .mark { position: absolute; left: -13px; top: -11px; }
+  .role { font: 700 15px/1 "SF Mono", Menlo, monospace; padding: 9px 10px; border-radius: 8px; text-align: center; border: 2px solid; }
+  .bubble { border: 2px solid; border-radius: 12px; padding: 10px 14px; font-size: 16px; }
+  .bubble small { display: block; font-size: 13px; color: #626f86; margin-top: 2px; }
+  .reqs h5 { font-size: 17px; margin-bottom: 10px; }
+  .req { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: center; margin-bottom: 12px; font-size: 15px; }
+  .stack { display: flex; height: 26px; border-radius: 6px; overflow: hidden; }
+  .stack i { display: block; height: 100%; border-right: 2px solid #fff; }
+  .s { background: #c7d1db; } .u { background: #85b8ff; } .a { background: #7ee2b8; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Диалог в LLM API: массив сообщений с ролями</div>
+  <div class="dg-sub">В Chat Completions сервер не помнит прошлые запросы: каждый раз приложение отправляет всю историю целиком</div>
+
+  <div class="wrap">
+    <div class="msgs">
+      <div class="msg"><span class="mark">1</span>
+        <div class="role grey">system</div>
+        <div class="bubble grey">Ты — помощник интернет-магазина. Отвечай кратко, на «вы». Не обещай скидок.<small>правила и роль — пишет разработчик, пользователь их не видит</small></div>
+      </div>
+      <div class="msg"><span class="mark">2</span>
+        <div class="role blue">user</div>
+        <div class="bubble blue">Где мой заказ 1042?<small>сообщение пользователя</small></div>
+      </div>
+      <div class="msg"><span class="mark">3</span>
+        <div class="role green">assistant</div>
+        <div class="bubble green">Заказ 1042 передан в доставку и придёт завтра.<small>прошлый ответ модели — его кладёт в историю само приложение</small></div>
+      </div>
+      <div class="msg">
+        <div class="role blue">user</div>
+        <div class="bubble blue">А можно поменять адрес?<small>новое сообщение — модель ответит, видя всё, что выше</small></div>
+      </div>
+    </div>
+
+    <div class="reqs">
+      <h5><span class="mark" style="margin-right:8px">4</span>Сколько токенов уходит в каждый запрос</h5>
+      <div class="req"><span>запрос 1</span><div class="stack" style="width:34%"><i class="s" style="width:60%"></i><i class="u" style="width:40%"></i></div></div>
+      <div class="req"><span>запрос 2</span><div class="stack" style="width:62%"><i class="s" style="width:33%"></i><i class="u" style="width:22%"></i><i class="a" style="width:25%"></i><i class="u" style="width:20%"></i></div></div>
+      <div class="req"><span>запрос 5</span><div class="stack" style="width:100%"><i class="s" style="width:20%"></i><i class="u" style="width:12%"></i><i class="a" style="width:16%"></i><i class="u" style="width:12%"></i><i class="a" style="width:16%"></i><i class="u" style="width:10%"></i><i class="a" style="width:14%"></i></div></div>
+      <div class="note" style="margin-top:18px">История растёт с каждой репликой → растут цена и задержка, и рано или поздно она упрётся в контекстное окно. Поэтому длинные диалоги обрезают или сжимают в краткий пересказ.</div>
+    </div>
+  </div>
+</div></body></html>

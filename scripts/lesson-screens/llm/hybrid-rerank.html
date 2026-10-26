@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x520">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .grid { display: grid; grid-template-columns: 330px 44px 230px 44px 250px 44px 1fr; align-items: center; }
+  .two { display: flex; flex-direction: column; gap: 26px; }
+  .ex { font: 13px/1.4 "SF Mono", Menlo, monospace; color: #44546f; margin-top: 4px; }
+  .n { font-size: 21px; font-weight: 800; margin-top: 4px; }
+  .grid .box { min-height: 120px; }
+  .two .box { min-height: 0; }
+  .note { margin-top: 26px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Гибридный поиск и реранкинг</div>
+  <div class="dg-sub">Сначала быстро набрать много кандидатов двумя способами, потом медленно, но точно отобрать лучшие</div>
+
+  <div class="grid">
+    <div class="two">
+      <div class="box orange"><span class="mark">1</span><h5>Поиск по словам (BM25)</h5><p>полнотекстовый: точные термины, коды, артикулы</p><div class="ex">«ошибка ERR-4031» → чанк с ERR-4031</div></div>
+      <div class="box purple"><span class="mark">2</span><h5>Векторный поиск</h5><p>по смыслу: синонимы и перефразы</p><div class="ex">«не могу войти» → «ошибка авторизации»</div></div>
+    </div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="box"><span class="mark">3</span><h5>Объединение</h5><p>списки сливают, например методом RRF — по местам в каждом списке</p><div class="n">~50 кандидатов</div></div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="box blue"><span class="mark">4</span><h5>Реранкер (cross-encoder)</h5><p>читает вопрос и каждый чанк вместе и ставит точную оценку релевантности</p></div>
+    <div class="arr green" style="margin:0 auto"></div>
+    <div class="box green"><h5>Топ-5 → в промпт</h5><p>в контекст идут только самые полезные куски</p><div class="n t-green">5 чанков</div></div>
+  </div>
+
+  <div class="note"><b>Почему так:</b> векторный поиск быстрый, но «примерный» и путается в точных кодах; поиск по словам ловит коды, но не понимает синонимы. Реранкер точнее обоих, но медленный — поэтому его запускают только на коротком списке кандидатов.</div>
+</div></body></html>

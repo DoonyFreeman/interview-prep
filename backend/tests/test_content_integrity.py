@@ -8,6 +8,7 @@ reference answer is present server-side, and none of them leak to the client.
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
@@ -247,6 +248,61 @@ def test_exam_bank_answers_are_not_guessable_by_length(content_root):
             f"{path.parent.name}: correct answer averages {mean_ratio:.2f}x the "
             "distractor length"
         )
+
+
+# --------------------------------------------------------------------------- #
+# Lesson images: the file exists and the reserved size matches its source
+# --------------------------------------------------------------------------- #
+# the size must end the URL, exactly like Markdown.tsx's /#(\d+)x(\d+)$/ — "#1200x520px"
+# would not reserve any space there, so it must not pass here either
+_LESSON_IMAGE = re.compile(r"!\[[^\]]*\]\((/lesson-media/[^)\s#]+)(?:#(\d+)x(\d+)(?=[\s)]))?")
+_SCREEN_SIZE = re.compile(r'<meta name="screen-size" content="(\d+)x(\d+)"')
+
+
+def test_lesson_images_exist_and_sizes_match(bundle, content_root):
+    """A missing PNG is answered by the SPA fallback with index.html and 200, so a
+    broken lesson image would ship silently. Every `/lesson-media/...` picture a
+    lesson references must exist in frontend/public, carry a `#WxH` (the space
+    the page reserves), and that size must equal the screen-size its HTML source
+    in scripts/lesson-screens was rendered at. (So every lesson image is expected
+    to be rendered from an HTML source; a hand-made PNG would need its own rule.)"""
+    repo = content_root.resolve().parent
+    public = repo / "frontend" / "public"
+    sources = repo / "scripts" / "lesson-screens"
+    problems: list[str] = []
+    for course in bundle.courses:
+        for lesson in course.lessons:
+            for match in _LESSON_IMAGE.finditer(lesson.markdown):
+                url, width, height = match.groups()
+                where = f"{course.slug}/{lesson.slug}: {url}"
+                rel = Path(url.lstrip("/"))
+                file = public / rel
+                # exact case for every segment: macOS matches "LLM/TOKENS.png" to
+                # llm/tokens.png, the Linux container serving the app does not
+                exact = file.is_file() and all(
+                    part in os.listdir(public.joinpath(*rel.parts[:i]))
+                    for i, part in enumerate(rel.parts)
+                )
+                if not exact:
+                    problems.append(f"{where}: file missing")
+                    continue
+                if width is None:
+                    problems.append(f"{where}: no #WxH size")
+                    continue
+                source = (sources / Path(url).relative_to("/lesson-media")).with_suffix(
+                    ".html"
+                )
+                if not source.is_file():
+                    problems.append(f"{where}: no HTML source")
+                    continue
+                size = _SCREEN_SIZE.search(source.read_text(encoding="utf-8"))
+                if size is None:
+                    problems.append(f"{where}: source has no screen-size meta")
+                elif (width, height) != size.groups():
+                    problems.append(
+                        f"{where}: #{width}x{height} != screen-size {size[1]}x{size[2]}"
+                    )
+    assert not problems, "lesson image problems:\n" + "\n".join(problems)
 
 
 # --------------------------------------------------------------------------- #

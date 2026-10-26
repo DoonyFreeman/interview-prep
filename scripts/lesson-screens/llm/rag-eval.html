@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x620">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .grid { display: grid; grid-template-columns: 430px 44px 150px 44px 1fr; align-items: center; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; }
+  th, td { border: 1px solid #dfe1e6; padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f1f2f4; font-size: 13px; color: #44546f; }
+  .metrics { display: flex; flex-direction: column; gap: 12px; }
+  .metrics li { margin-left: 18px; font-size: 15px; color: #44546f; }
+  .metrics li b { color: #172b4d; }
+  .judge { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Как оценить качество RAG</div>
+  <div class="dg-sub">Не «на глаз», а на фиксированном наборе вопросов: меняем чанкинг, модель или промпт — прогоняем тот же набор и сравниваем цифры</div>
+
+  <div class="grid">
+    <div class="box"><span class="mark">1</span><h5>Тестовый набор</h5><p style="margin-bottom:8px">50–200 реальных вопросов с эталоном</p>
+      <table>
+        <tr><th>вопрос</th><th>эталонный ответ</th><th>нужный источник</th></tr>
+        <tr><td>Сколько дней на возврат?</td><td>30 дней с получения</td><td>Регламент, п. 2.1</td></tr>
+        <tr><td>Можно вернуть б/у товар?</td><td>Нет, кроме брака</td><td>Регламент, п. 4</td></tr>
+        <tr><td>Когда придут деньги?</td><td>До 10 рабочих дней</td><td>Регламент, п. 7</td></tr>
+      </table>
+    </div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="box blue" style="text-align:center"><span class="mark">2</span><h5>Прогон RAG</h5><p>найденные чанки + ответ на каждый вопрос</p></div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="metrics">
+      <div class="box purple"><span class="mark">3</span><h5>Поиск (retrieval)</h5>
+        <ul><li><b>Hit rate / recall@k</b> — нужный чанк попал в top-k?</li><li><b>MRR</b> — на каком месте он оказался</li></ul></div>
+      <div class="box orange"><span class="mark">4</span><h5>Ответ (generation)</h5>
+        <ul><li><b>Faithfulness</b> — каждое утверждение есть в найденных чанках?</li><li><b>Answer relevance</b> — отвечает ли на сам вопрос</li><li><b>Correctness</b> — совпадает ли с эталоном</li></ul></div>
+    </div>
+  </div>
+
+  <div class="judge">
+    <div class="box yellow"><span class="mark">5</span><h5>LLM-as-a-judge</h5><p>другая модель ставит оценки по чёткой рубрике («есть ли в ответе факты, которых нет в контексте? 0 или 1»). Быстро и дёшево, но сама может ошибаться</p></div>
+    <div class="box"><h5>Человек проверяет выборку</h5><p>чтобы убедиться, что судья оценивает правильно, а метрики совпадают с ощущением пользователей</p></div>
+  </div>
+</div></body></html>

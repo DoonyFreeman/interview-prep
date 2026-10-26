@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x560">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 820px 1fr; gap: 30px; }
+  .g { position: relative; height: 390px; }
+  .g svg { position: absolute; inset: 0; }
+  .g .box { position: absolute; width: 170px; text-align: center; padding: 10px; }
+  .g .box p { font-size: 14px; }
+  .pill { position: absolute; padding: 8px 16px; border-radius: 20px; background: #172b4d; color: #fff; font-weight: 700; font-size: 15px; }
+  .dia { position: absolute; width: 110px; height: 110px; transform: rotate(45deg); border: 2px solid #b38600; background: #fff7d6; border-radius: 10px; }
+  .dia-t { position: absolute; width: 160px; text-align: center; font-size: 15px; font-weight: 700; color: #7f5f01; line-height: 1.25; }
+  .el { position: absolute; font-size: 14px; font-weight: 700; background: #fbfaf8; padding: 0 5px; }
+  .st8 pre { font: 14px/1.6 "SF Mono", Menlo, monospace; margin-top: 8px; color: #172b4d; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">LangGraph: агент как граф с состоянием</div>
+  <div class="dg-sub">Узлы — шаги (обычные функции), рёбра — переходы. Условия и циклы задаёт код, а модель работает внутри узлов</div>
+
+  <div class="wrap">
+    <div class="g">
+      <svg viewBox="0 0 820 390" width="820" height="390">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8590a2"/></marker>
+          <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#22a06b"/></marker>
+          <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#c9372c"/></marker>
+        </defs>
+        <g stroke="#8590a2" stroke-width="2.4" fill="none" marker-end="url(#ar)">
+          <path d="M84 100 H116"/>
+          <path d="M292 100 H328"/>
+          <path d="M504 100 H530"/>
+          <path d="M725 262 V326"/>
+        </g>
+        <path d="M688 100 H725 V176" stroke="#22a06b" stroke-width="2.4" fill="none" marker-end="url(#ag)"/>
+        <path d="M610 178 V266" stroke="#c9372c" stroke-width="2.4" fill="none" marker-end="url(#ad)"/>
+        <path d="M523 312 H300 C 240 312 205 270 205 150" stroke="#c9372c" stroke-width="2.4" fill="none" stroke-dasharray="7 5" marker-end="url(#ad)"/>
+      </svg>
+      <span class="pill" style="left:0; top:82px">START</span>
+      <div class="box blue" style="left:120px; top:58px"><span class="mark">1</span><h5>retrieve</h5><p>найти чанки</p></div>
+      <div class="box blue" style="left:332px; top:58px"><h5>grade</h5><p>подходят ли чанки к вопросу</p></div>
+      <div class="dia" style="left:555px; top:45px"></div>
+      <div class="dia-t" style="left:530px; top:78px">чанки<br>релевантны?</div>
+      <span class="mark abs" style="left:596px; top:4px">2</span>
+      <span class="el t-green" style="left:734px; top:122px">да</span>
+      <span class="el t-red" style="left:566px; top:206px">нет</span>
+      <div class="box green" style="left:640px; top:180px"><h5>generate</h5><p>ответ по чанкам</p></div>
+      <div class="box yellow" style="left:525px; top:270px"><span class="mark">3</span><h5>rewrite</h5><p>переписать вопрос</p></div>
+      <span class="el t-red" style="left:282px; top:322px">цикл, пока попыток &lt; 3</span>
+      <span class="el" style="left:0; top:362px; color:#44546f">попытки кончились → тоже generate, и он честно отвечает «не нашёл»</span>
+      <span class="pill" style="left:692px; top:332px">END</span>
+    </div>
+
+    <div class="box st8 grey"><span class="mark">4</span><h5>state — общее состояние</h5><p>объект, который каждый узел получает и дополняет; его можно сохранять между шагами</p>
+<pre>question:  str
+documents: list
+answer:    str | None
+attempts:  int</pre>
+    </div>
+  </div>
+</div></body></html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x660">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 400px 1fr; gap: 36px; align-items: start; }
+  .left { display: flex; flex-direction: column; }
+  .vec { font: 15px/1.5 "SF Mono", Menlo, monospace; color: #0055cc; }
+  .map { position: relative; height: 430px; border: 2px solid #c7d1db; border-radius: 12px; background: #fff; overflow: hidden; }
+  .map svg { position: absolute; inset: 0; }
+  .pt { position: absolute; display: flex; align-items: center; gap: 6px; font-size: 15px; transform: translate(-6px, -50%); white-space: nowrap; }
+  .pt i { width: 12px; height: 12px; border-radius: 50%; display: block; flex: none; }
+  .pt.q { font-weight: 700; color: #ae2e24; } .pt.q i { width: 16px; height: 16px; background: #e5484d; box-shadow: 0 0 0 4px rgba(229,72,77,.2); }
+  .cl { position: absolute; font-size: 13px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+  .map .pt, .map .cl, .map .cap { background: rgba(255,255,255,.88); padding: 1px 5px; border-radius: 5px; }
+  .axisnote { position: absolute; right: 12px; bottom: 8px; font-size: 13px; color: #626f86; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Эмбеддинги: смысл текста → точка в пространстве</div>
+  <div class="dg-sub">Похожие по смыслу тексты дают близкие векторы — даже если в них разные слова</div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="box"><span class="mark">1</span><p>текст</p><h5>«Как вернуть деньги за заказ?»</h5></div>
+      <div class="varr"></div>
+      <div class="box blue"><span class="mark">2</span><h5>Модель эмбеддингов</h5><p>отдельная нейросеть, не та, что пишет ответы; на один текст — один вектор</p></div>
+      <div class="varr"></div>
+      <div class="box"><span class="mark">3</span><p>вектор фиксированной длины — обычно сотни или тысячи чисел</p><div class="vec">[0.12, −0.48, 0.91, 0.03, … ]</div></div>
+    </div>
+
+    <div class="map"><span class="mark abs" style="left:10px; top:10px">4</span>
+      <svg viewBox="0 0 680 430" width="680" height="430">
+        <defs>
+          <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8590a2"/></marker>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e5484d"/></marker>
+        </defs>
+        <path d="M40 400 L498 91" stroke="#e5484d" stroke-width="2.5" marker-end="url(#ar)"/>
+        <path d="M40 400 L364 128" stroke="#22a06b" stroke-width="2" stroke-dasharray="6 4"/>
+        <path d="M40 400 L536 267" stroke="#8590a2" stroke-width="2" stroke-dasharray="6 4"/>
+        <path d="M173 311 A160 160 0 0 0 163 297" stroke="#22a06b" stroke-width="4" fill="none"/>
+        <path d="M137 374 A100 100 0 0 0 123 344" stroke="#8590a2" stroke-width="4" fill="none"/>
+        <circle cx="40" cy="400" r="5" fill="#44546f"/>
+      </svg>
+      <span class="cl t-purple" style="left:70px; top:52px">питомцы</span>
+      <span class="pt" style="left:145px; top:140px"><i style="background:#8270db"></i>кошка</span>
+      <span class="pt" style="left:185px; top:103px"><i style="background:#8270db"></i>котёнок</span>
+      <span class="pt" style="left:123px; top:112px; transform: translate(calc(-100% + 6px), -50%); flex-direction: row-reverse"><i style="background:#8270db"></i>собака</span>
+
+      <span class="cl t-green" style="left:300px; top:205px">возвраты</span>
+      <span class="pt" style="left:369px; top:124px"><i style="background:#22a06b"></i>вернуть оплату</span>
+      <span class="pt" style="left:292px; top:157px"><i style="background:#22a06b"></i>возврат товара</span>
+      <span class="pt" style="left:404px; top:190px"><i style="background:#22a06b"></i>обмен покупки</span>
+
+      <span class="cl t-orange" style="left:420px; top:375px">базы данных</span>
+      <span class="pt" style="left:542px; top:265px"><i style="background:#e56910"></i>SQL-запрос</span>
+      <span class="pt" style="left:412px; top:321px"><i style="background:#e56910"></i>PostgreSQL</span>
+      <span class="pt" style="left:557px; top:346px"><i style="background:#e56910"></i>индекс</span>
+
+      <span class="pt q" style="left:504px; top:87px; transform: translate(calc(-100% + 8px), -50%); flex-direction: row-reverse"><i></i>запрос «Как вернуть деньги?»</span>
+      <span class="cap" style="position:absolute; left:178px; top:290px; color:#216e4e">малый угол — близко по смыслу</span>
+      <span class="cap" style="position:absolute; left:150px; top:368px">большой угол — далеко</span>
+      <span class="axisnote">на картинке 2 измерения, в реальности — сотни</span>
+    </div>
+  </div>
+  <div class="note" style="margin-top:16px"><b>Близость меряют косинусным сходством</b> (cosine similarity): чем меньше угол между векторами, тем ближе смысл. Запрос «Как вернуть деньги?» окажется рядом с «вернуть оплату» и «возврат товара», хотя общих слов почти нет.</div>
+</div></body></html>

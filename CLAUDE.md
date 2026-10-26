@@ -30,8 +30,8 @@ quizzes: client-side generation with smart progress-weighted selection, a
 `/glossary/quiz` page). Phase 5e done (plain-language slang dictionary: 83 RU
 terms in `content/slang.json`, served via a `kind` discriminator on the glossary
 table, a `/slang` page). Frontend now has vitest. **Phase 6 (content authoring)
-in progress** — the curriculum is now authored across **23 courses / 110 lessons /
-392 concepts / 392 questions** (`content/courses/`), each lesson with full theory,
+in progress** — the curriculum is now authored across **24 courses / 112 lessons /
+413 concepts / 413 questions** (`content/courses/`), each lesson with full theory,
 analogies, simple explanations and an authored reference answer per concept. Tests
 updated for the multi-course content (6 stale single-course assertions rewritten to
 derive from the loader) plus a new `tests/test_content_integrity.py` (all courses
@@ -350,8 +350,8 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    `glossary_term_stats` endpoints (`all_slugs` is kind-agnostic by design, and
    the reference category rollup ignores slang slugs).
 6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
-   glossary P1/P2 fill in here too). Done so far: full curriculum across **23
-   courses / 110 lessons / 392 concepts / 392 questions** under `content/courses/`
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **24
+   courses / 112 lessons / 413 concepts / 413 questions** under `content/courses/`
    (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
    python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,
    algorithms, python-typing, postgresql, redis, celery, docker, devops,
@@ -468,7 +468,7 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    3–6 tabs, canonical order enforced) with a picker in Settings.
    `scripts/check_mcq_quality.py` gates the "pick the longest option" tell
    (`--report` surveys an existing bank without failing).
-   **The `exam.json` bank covers all 23 courses — 220 questions**, 2 per lesson,
+   **The `exam.json` bank covers all 24 courses — 224 questions**, 2 per lesson,
    every one a scenario ("given this code / this situation, what happens") rather
    than a definition, and every file passing the length gate (correct-is-longest
    0–40%, mean ratio ~1.0 vs the lesson bank's 1.5).
@@ -506,6 +506,24 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    roadmap resources as the drawer (`resourcesFor` + exported `ResourceList`),
    so every course gets it. Resources may carry an optional `minutes` (video
    length), shown as "· N min" and validated by the integrity test.
+
+11. **LLM course.** Course `llm` «LLM, RAG и агенты» (order 23, roadmap stage `ai`
+   «LLM и ИИ-сервисы» between `infra` and `senior`): 2 lessons / 21 concepts —
+   `llm-basics` (tokens & context window, next token & hallucinations, sampling,
+   open vs closed models, chat roles, streaming, prompting, valid JSON, cost) and
+   `rag-agents` (embeddings, vector DBs, RAG problem & pipeline, chunking, hybrid
+   search & reranking, RAG vs fine-tuning, tool calling, agents, LangChain/LangGraph,
+   RAG evaluation, a docs-assistant capstone). Each lesson ends with «Как ответить на
+   вопросы ментора». Code samples use the OpenAI-compatible SDK with a placeholder
+   `MODEL` (no model names or prices that go stale). 17 diagrams: HTML in
+   `scripts/lesson-screens/llm/` (its `_base.css` `@import`s the team-processes one
+   and bumps the type — a 1200px canvas shrinks to ~820px in the article; flex/grid
+   layout instead of hand-placed nodes; avoid base class names like `.col`, `.state`,
+   `.tl`, `.ring`, `.lbl`), rendered by `scripts/render_lesson_screens.sh llm`.
+   Glossary gained an `llm` category (24 terms, labels `glossary.cat.llm`).
+   `test_content_integrity.test_lesson_images_exist_and_sizes_match` now guards every
+   lesson image: the file exists in `frontend/public`, the `#WxH` is present and equals
+   the source's `screen-size` (a missing PNG used to ship silently as `index.html`).
 
 Deployment intent: the app is meant to run on a small self-hosted server, so
 **containerization is a first-class goal** — do Docker as soon as there's a
