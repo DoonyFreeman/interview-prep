@@ -8,6 +8,7 @@ reference answer is present server-side, and none of them leak to the client.
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
@@ -252,7 +253,9 @@ def test_exam_bank_answers_are_not_guessable_by_length(content_root):
 # --------------------------------------------------------------------------- #
 # Lesson images: the file exists and the reserved size matches its source
 # --------------------------------------------------------------------------- #
-_LESSON_IMAGE = re.compile(r"!\[[^\]]*\]\((/lesson-media/[^)\s#]+)(?:#(\d+)x(\d+))?")
+# the size must end the URL, exactly like Markdown.tsx's /#(\d+)x(\d+)$/ — "#1200x520px"
+# would not reserve any space there, so it must not pass here either
+_LESSON_IMAGE = re.compile(r"!\[[^\]]*\]\((/lesson-media/[^)\s#]+)(?:#(\d+)x(\d+)(?=[\s)]))?")
 _SCREEN_SIZE = re.compile(r'<meta name="screen-size" content="(\d+)x(\d+)"')
 
 
@@ -261,7 +264,8 @@ def test_lesson_images_exist_and_sizes_match(bundle, content_root):
     broken lesson image would ship silently. Every `/lesson-media/...` picture a
     lesson references must exist in frontend/public, carry a `#WxH` (the space
     the page reserves), and that size must equal the screen-size its HTML source
-    in scripts/lesson-screens was rendered at."""
+    in scripts/lesson-screens was rendered at. (So every lesson image is expected
+    to be rendered from an HTML source; a hand-made PNG would need its own rule.)"""
     repo = content_root.resolve().parent
     public = repo / "frontend" / "public"
     sources = repo / "scripts" / "lesson-screens"
@@ -271,7 +275,10 @@ def test_lesson_images_exist_and_sizes_match(bundle, content_root):
             for match in _LESSON_IMAGE.finditer(lesson.markdown):
                 url, width, height = match.groups()
                 where = f"{course.slug}/{lesson.slug}: {url}"
-                if not (public / url.lstrip("/")).is_file():
+                file = public / url.lstrip("/")
+                # exact name: macOS matches "TOKENS.png" to tokens.png, the Linux
+                # container serving the app does not
+                if not file.is_file() or file.name not in os.listdir(file.parent):
                     problems.append(f"{where}: file missing")
                     continue
                 if width is None:

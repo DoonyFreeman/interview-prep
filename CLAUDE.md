@@ -350,7 +350,7 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
    `glossary_term_stats` endpoints (`all_slugs` is kind-agnostic by design, and
    the reference category rollup ignores slang slugs).
 6. **← IN PROGRESS.** Author remaining topics (deep lessons + reference answers;
-   glossary P1/P2 fill in here too). Done so far: full curriculum across **23
+   glossary P1/P2 fill in here too). Done so far: full curriculum across **24
    courses / 112 lessons / 413 concepts / 413 questions** under `content/courses/`
    (python-core, python-data-types, python-oop, python-idioms, python-concurrency,
    python-asyncio, databases-sql, sqlalchemy, fastapi, web-http, testing,

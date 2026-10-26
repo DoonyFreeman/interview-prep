@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8">
-<meta name="screen-size" content="1200x700">
+<meta name="screen-size" content="1200x760">
 <link rel="stylesheet" href="_base.css">
 <style>
   .seq { position: relative; }
@@ -40,8 +40,9 @@
     <div class="msg"><span class="mark" style="left:35.8%; top:0">4</span><span class="t" style="left:39%">приложение проверяет аргументы и права и само вызывает функцию</span><div class="line r" style="left:37.2%; width:51.2%"></div></div>
     <div class="msg"><span class="mark" style="left:42.8%; top:0">5</span><span class="t" style="left:46%">результат: <span class="code">{"status": "в доставке", "eta": "завтра"}</span></span><div class="line l" style="left:37.2%; width:51.2%"></div></div>
     <div class="msg"><span class="mark" style="left:35.8%; top:0">6</span><span class="t" style="left:39%">результат обратно в модель — сообщением с ролью tool</span><div class="line r" style="left:37.2%; width:25.6%"></div></div>
-    <div class="msg"><span class="mark" style="left:10.8%; top:0">7</span><span class="t" style="left:14%">«Заказ 1042 в доставке, привезут завтра.»</span><div class="line l green-l" style="left:11.6%; width:51.2%"></div></div>
+    <div class="msg"><span class="mark" style="left:35.8%; top:0">7</span><span class="t" style="left:39%">финальный ответ текстом — или новый tool_call</span><div class="line l" style="left:37.2%; width:25.6%"></div></div>
+    <div class="msg"><span class="mark" style="left:10.8%; top:0">8</span><span class="t" style="left:14%">«Заказ 1042 в доставке, привезут завтра.»</span><div class="line l green-l" style="left:11.6%; width:25.6%"></div></div>
   </div>
 
-  <div class="note"><b>Главное:</b> модель не выполняет код и не ходит в сеть — она только возвращает JSON с именем функции и аргументами. Вызывает функцию ваш код, поэтому проверка прав и аргументов на нём.</div>
+  <div class="note"><b>Главное:</b> модель не выполняет код и не ходит в сеть — она только возвращает JSON с именем функции и аргументами. Вызывает функцию и общается с пользователем ваш код, поэтому проверка прав и аргументов на нём.</div>
 </div></body></html>

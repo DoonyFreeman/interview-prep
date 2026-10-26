@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8">
-<meta name="screen-size" content="1200x520">
+<meta name="screen-size" content="1200x580">
 <link rel="stylesheet" href="_base.css">
 <style>
   .tline { display: grid; grid-template-columns: 210px 1fr; gap: 18px; align-items: center; margin-bottom: 26px; position: relative; }
@@ -40,9 +40,11 @@
   <div class="axis"><span style="left:0">0 с</span><span style="left:25%">2 с</span><span style="left:50%">4 с</span><span style="left:75%">6 с</span><span style="left:99%">8 с</span></div>
 
   <div class="sse">
-    <div><div class="cap" style="margin-bottom:8px"><span class="mark" style="margin-right:6px">3</span>Что летит по сети (SSE — Server-Sent Events)</div>
+    <div><div class="cap" style="margin-bottom:8px"><span class="mark" style="margin-right:6px">3</span>Что летит по сети (SSE): событие = строка data и пустая строка</div>
 <pre>data: {"choices":[{"delta":{"content":"Заказ"}}]}
+
 data: {"choices":[{"delta":{"content":" 1042"}}]}
+
 …
 data: [DONE]</pre></div>
     <div class="note" style="align-self:end"><b>Метрика TTFT</b> (time to first token) — время до первого куска. Именно её пользователь ощущает как «скорость». Минусы стриминга: JSON нельзя разобрать, пока он не пришёл целиком, а ошибку посреди ответа надо обработать на лету.</div>
