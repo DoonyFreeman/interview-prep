@@ -370,23 +370,19 @@
   },
   "whatsNew": {
     "title": "What's new",
-    "subtitle": "A new course and a couple of lesson upgrades.",
+    "subtitle": "A new course on working with language models from the backend.",
     "items": [
       {
-        "title": "The “Team processes” course",
-        "body": "Agile and Scrum, roles, backlog and grooming, daily, demo and retro, code review, a task's journey and a developer's day. 7 lessons — one a day — with tests and interview answers."
+        "title": "The “LLM, RAG and agents” course",
+        "body": "Tokens and the context window, hallucinations, temperature, API roles, streaming, prompting, valid JSON and cost; embeddings, vector databases, RAG, tool calling, agents, LangChain and LangGraph. 2 lessons with tests and interview answers."
       },
       {
-        "title": "Screenshots in lessons",
-        "body": "What it looks like in Jira and GitHub: the sprint board, backlog, a reviewed pull request, a bug report — with numbered callouts. Tap an image to open it full size."
+        "title": "17 diagrams in the lessons",
+        "body": "How a model writes token by token, what temperature does, how the RAG pipeline, chunking, tool calling and agents work — with numbered callouts. Tap a diagram to open it full size."
       },
       {
-        "title": "Videos at the end of a lesson",
-        "body": "Every lesson now ends with curated videos and articles on the topic; videos show their length."
-      },
-      {
-        "title": "New slang terms",
-        "body": "Story points, LGTM, nit, blocker, velocity and other words you'll hear in a team from day one."
+        "title": "“LLM & AI” in the glossary",
+        "body": "24 new terms — from token and embedding to reranker and LLM-as-a-judge — each linked to its lesson section. Practise them in the term quiz."
       }
     ],
     "cta": "Open the course",
