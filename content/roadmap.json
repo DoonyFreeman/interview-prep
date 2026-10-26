@@ -293,6 +293,35 @@
       "extra_nodes": []
     },
     {
+      "slug": "ai",
+      "title": "LLM и ИИ-сервисы",
+      "summary": "Как бэкенд работает с большими языковыми моделями: токены и промпты, RAG по своим документам, tool calling и агенты.",
+      "courses": [
+        {
+          "slug": "llm",
+          "summary": "Токены, галлюцинации, параметры генерации, LLM API, валидный JSON, эмбеддинги, RAG, агенты и оценка качества.",
+          "resources": [
+            { "type": "docs", "lang": "en", "title": "Hugging Face LLM Course — глава 1: введение в LLM и трансформеры", "url": "https://huggingface.co/learn/llm-course/chapter1/1", "source": "Hugging Face" },
+            { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 1: основы RAG и агентный RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/01-agentic-rag", "source": "DataTalksClub" },
+            { "type": "video", "lang": "en", "title": "Large Language Models explained briefly", "url": "https://www.youtube.com/watch?v=LPZh9BOjkQs", "source": "3Blue1Brown" },
+            { "type": "article", "lang": "ru", "title": "Что такое Retrieval-Augmented Generation (RAG) в языковых моделях и как оно работает?", "url": "https://habr.com/ru/articles/841428/", "source": "Хабр" }
+          ],
+          "lesson_resources": {
+            "llm-basics": [
+              { "type": "video", "lang": "en", "title": "[1hr Talk] Intro to Large Language Models", "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g", "source": "Andrej Karpathy" },
+              { "type": "article", "lang": "ru", "title": "Большой обзор больших языковых моделей", "url": "https://habr.com/ru/articles/884410/", "source": "Хабр" }
+            ],
+            "rag-agents": [
+              { "type": "video", "lang": "en", "title": "What is Retrieval-Augmented Generation (RAG)?", "url": "https://www.youtube.com/watch?v=T-D1OfcDW1M", "source": "IBM Technology" },
+              { "type": "video", "lang": "en", "title": "What are AI Agents?", "url": "https://www.youtube.com/watch?v=F8NKVhkZZWI", "source": "IBM Technology" },
+              { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 4: оценка качества RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/04-evaluation", "source": "DataTalksClub" }
+            ]
+          }
+        }
+      ],
+      "extra_nodes": []
+    },
+    {
       "slug": "senior",
       "title": "Senior-track",
       "summary": "Проектирование систем и безопасность — вопросы «на вырост», которые отличают сильного мидла.",
