@@ -81,6 +81,15 @@ export function Markdown({ markdown }: { markdown: string }) {
             }
             return <code>{children}</code>;
           },
+          // A comparison table with 3–4 columns is wider than a phone: let it
+          // scroll on its own instead of pushing the whole page sideways.
+          table({ children }) {
+            return (
+              <div className="overflow-x-auto">
+                <table>{children}</table>
+              </div>
+            );
+          },
           // The block is rendered fully by ShikiCode/code, so `pre` is a passthrough.
           pre({ children }) {
             return <>{children}</>;
