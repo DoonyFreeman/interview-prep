@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x760">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .cols { display: grid; grid-template-columns: 250px 1fr 1fr; gap: 26px; align-items: start; }
+  .side h4 { font-size: 18px; margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
+  .side > p { font-size: 14px; color: #626f86; margin-bottom: 14px; min-height: 40px; }
+  .cyc { position: relative; height: 330px; outline: none; }
+  .cyc svg { position: absolute; inset: 0; }
+  .cyc .box { position: absolute; width: 200px; text-align: center; padding: 10px; }
+  .cyc .box p { font-size: 14px; }
+  .plan { font-size: 15px; margin: 6px 0 0 20px; }
+  .tail { margin-top: 14px; }
+  .note { margin-top: 20px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Агент: LLM в цикле с инструментами</div>
+  <div class="dg-sub">Задача: «Оформи возврат по заказу 1042». Обычный вызов отвечает один раз, агент сам решает, какие шаги сделать</div>
+
+  <div class="cols">
+    <div class="side">
+      <h4><span class="mark">1</span>Обычный вызов</h4><p>один запрос — один ответ, без действий</p>
+      <div class="box"><h5>запрос</h5></div><div class="varr"></div>
+      <div class="box blue"><h5>LLM</h5></div><div class="varr"></div>
+      <div class="box green"><h5>ответ текстом</h5><p>«Чтобы оформить возврат, зайдите в личный кабинет…»</p></div>
+    </div>
+
+    <div class="side">
+      <h4><span class="mark">2</span>ReAct (Reasoning + Acting)</h4><p>после каждого результата модель заново решает следующий шаг</p>
+      <div class="cyc">
+        <svg viewBox="0 0 400 330" width="100%" height="330">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8590a2"/></marker></defs>
+          <g stroke="#8590a2" stroke-width="2.4" fill="none" marker-end="url(#ar)">
+            <path d="M300 70 C 360 100 370 160 330 205"/>
+            <path d="M210 262 C 160 280 110 250 80 210"/>
+            <path d="M70 130 C 80 80 110 60 145 48"/>
+          </g>
+        </svg>
+        <div class="box purple" style="left:100px; top:0"><h5>Мысль</h5><p>«нужно найти заказ»</p></div>
+        <div class="box orange" style="left:200px; top:200px"><h5>Действие</h5><p>вызвать find_order(1042)</p></div>
+        <div class="box" style="left:0; top:140px"><h5>Наблюдение</h5><p>результат инструмента</p></div>
+      </div>
+      <div class="box green tail"><h5>Ответ</h5><p>когда модель решила, что задача выполнена</p></div>
+    </div>
+
+    <div class="side">
+      <h4><span class="mark">3</span>Plan-and-Execute</h4><p>сначала план целиком, потом выполнение по шагам</p>
+      <div class="box purple"><h5>Планировщик (LLM)</h5>
+        <ol class="plan"><li>найти заказ 1042</li><li>проверить срок и оплату</li><li>создать заявку на возврат</li></ol>
+      </div>
+      <div class="varr"></div>
+      <div class="box orange"><h5>Исполнитель</h5><p>выполняет шаги один за другим, вызывая инструменты</p></div>
+      <div class="varr red"></div>
+      <div class="box red dashed"><h5>Шаг не удался?</h5><p>вернуться к планировщику и перепланировать</p></div>
+      <div class="box green tail"><h5>Ответ</h5></div>
+    </div>
+  </div>
+
+  <div class="note"><span class="mark" style="margin-right:8px">4</span><b>Ограничители обязательны:</b> лимит шагов и токенов, таймауты, только безопасные инструменты, подтверждение человеком перед необратимыми действиями (деньги, удаление).</div>
+</div></body></html>

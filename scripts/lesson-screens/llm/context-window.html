@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x500">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .brace { display: grid; grid-template-columns: 78fr 22fr; gap: 0; margin-bottom: 6px; font-size: 15px; font-weight: 600; color: #44546f; }
+  .brace div { border-bottom: 3px solid #8590a2; padding: 0 8px 6px; text-align: center; margin: 0 3px; }
+  .budget { display: flex; height: 92px; border: 3px solid #172b4d; border-radius: 12px; overflow: hidden; position: relative; }
+  .seg { display: flex; flex-direction: column; justify-content: center; padding: 0 12px; font-size: 15px; border-right: 2px solid #fff; }
+  .seg b { font-size: 16px; }
+  .seg small { color: #44546f; font-size: 13px; }
+  .limit { display: flex; justify-content: space-between; font-size: 14px; color: #626f86; margin-top: 6px; }
+  .over { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; }
+  .over-t { font-weight: 700; font-size: 17px; margin: 26px 0 0; }
+  .m-abs { position: absolute; z-index: 5; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Контекстное окно: общий бюджет на запрос и ответ</div>
+  <div class="dg-sub">Всё, что модель «видит» за один вызов, и всё, что она напишет в ответ, должно поместиться в один лимит токенов</div>
+
+  <div class="brace"><div>вход — input tokens</div><div>выход — output tokens</div></div>
+  <div style="position:relative">
+    <span class="mark m-abs" style="left:-12px; top:-12px">1</span>
+    <div class="budget">
+      <div class="seg grey" style="width:10%"><b>system</b><small>правила</small></div>
+      <div class="seg purple" style="width:24%"><b>история диалога</b><small>прошлые сообщения</small></div>
+      <div class="seg blue" style="width:34%"><b>найденные документы</b><small>куски текста для ответа</small></div>
+      <div class="seg green" style="width:10%"><b>вопрос</b></div>
+      <div class="seg orange" style="width:22%; border-right:0; background-image: repeating-linear-gradient(135deg, transparent 0 10px, rgba(229,105,16,.12) 10px 20px)"><b>ответ модели</b><small>резерв — max_tokens</small></div>
+    </div>
+    <span class="mark m-abs" style="right:-12px; top:-12px">2</span>
+  </div>
+  <div class="limit"><span>0</span><span>лимит модели: от десятков тысяч до миллиона и больше токенов</span></div>
+
+  <div class="over-t">Что бывает, если не влезает</div>
+  <div class="over">
+    <div class="box red"><span class="mark">3</span><h5>Запрос отклонён</h5><p>API вернёт ошибку о превышении длины контекста</p></div>
+    <div class="box yellow"><h5>Историю обрезают или сжимают</h5><p>старые сообщения выкидывают или заменяют кратким пересказом — модель «забывает» начало</p></div>
+    <div class="box orange"><h5>Ответ обрывается</h5><p>модель упёрлась в max_tokens: finish_reason = "length", JSON недописан</p></div>
+  </div>
+</div></body></html>

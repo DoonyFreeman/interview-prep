@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x720">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .flow .box { min-height: 128px; }
+  .retry { display: grid; grid-template-columns: 1fr 1fr; margin-top: 4px; }
+  .retry .lane { grid-column: 2; display: flex; flex-direction: column; align-items: center; }
+  .loopbox { display: flex; align-items: center; gap: 14px; margin-top: 2px; }
+  .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+  .levels .box h5 { font-size: 16px; }
+  .lvl-t { font-weight: 700; font-size: 17px; margin-top: 24px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Как получить от LLM валидный JSON</div>
+  <div class="dg-sub">Надёжная схема: модель ограничена схемой, а код всё равно проверяет результат и умеет повторить запрос</div>
+
+  <div class="flow">
+    <div class="box"><span class="mark">1</span><h5>Промпт + схема</h5><p>JSON Schema из модели Pydantic: какие поля, какие типы, что обязательно</p></div>
+    <div class="arr"></div>
+    <div class="box blue"><span class="mark">2</span><h5>LLM в режиме structured output</h5><p>генерация ограничена схемой: «лишний» токен просто нельзя выбрать</p></div>
+    <div class="arr"></div>
+    <div class="box"><span class="mark">3</span><h5>Валидация в коде</h5><p class="mono">Order.model_validate_json(text)</p><p>типы, диапазоны, бизнес-правила</p></div>
+    <div class="arr green"></div>
+    <div class="box green"><h5>Готовый объект</h5><p>дальше обычный типизированный код</p></div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 2.05fr 1fr 1.05fr; margin-top: 6px;">
+    <div></div>
+    <div style="display:flex; flex-direction:column; align-items:center">
+      <div class="varr red"></div>
+      <div class="box red" style="width:100%"><span class="mark">4</span><h5>Ошибка → снова в LLM</h5><p>отправить модели текст ошибки и попросить исправить; 2–3 попытки, потом ошибка или запасной вариант</p></div>
+    </div>
+    <div></div>
+  </div>
+
+  <div class="lvl-t">Три уровня надёжности</div>
+  <div class="levels">
+    <div class="box red"><h5>«Верни JSON» в промпте</h5><p>часто работает, но может прийти ```json-обёртка, пояснение или недописанная скобка</p></div>
+    <div class="box yellow"><h5>JSON mode</h5><p>гарантирует синтаксически валидный JSON, но не нужные поля и типы</p></div>
+    <div class="box green"><h5>Structured output по схеме</h5><p>гарантирует форму по схеме; смысл значений всё равно проверяем валидацией</p></div>
+  </div>
+</div></body></html>

@@ -250,6 +250,50 @@ def test_exam_bank_answers_are_not_guessable_by_length(content_root):
 
 
 # --------------------------------------------------------------------------- #
+# Lesson images: the file exists and the reserved size matches its source
+# --------------------------------------------------------------------------- #
+_LESSON_IMAGE = re.compile(r"!\[[^\]]*\]\((/lesson-media/[^)\s#]+)(?:#(\d+)x(\d+))?")
+_SCREEN_SIZE = re.compile(r'<meta name="screen-size" content="(\d+)x(\d+)"')
+
+
+def test_lesson_images_exist_and_sizes_match(bundle, content_root):
+    """A missing PNG is answered by the SPA fallback with index.html and 200, so a
+    broken lesson image would ship silently. Every `/lesson-media/...` picture a
+    lesson references must exist in frontend/public, carry a `#WxH` (the space
+    the page reserves), and that size must equal the screen-size its HTML source
+    in scripts/lesson-screens was rendered at."""
+    repo = content_root.resolve().parent
+    public = repo / "frontend" / "public"
+    sources = repo / "scripts" / "lesson-screens"
+    problems: list[str] = []
+    for course in bundle.courses:
+        for lesson in course.lessons:
+            for match in _LESSON_IMAGE.finditer(lesson.markdown):
+                url, width, height = match.groups()
+                where = f"{course.slug}/{lesson.slug}: {url}"
+                if not (public / url.lstrip("/")).is_file():
+                    problems.append(f"{where}: file missing")
+                    continue
+                if width is None:
+                    problems.append(f"{where}: no #WxH size")
+                    continue
+                source = (sources / Path(url).relative_to("/lesson-media")).with_suffix(
+                    ".html"
+                )
+                if not source.is_file():
+                    problems.append(f"{where}: no HTML source")
+                    continue
+                size = _SCREEN_SIZE.search(source.read_text(encoding="utf-8"))
+                if size is None:
+                    problems.append(f"{where}: source has no screen-size meta")
+                elif (width, height) != size.groups():
+                    problems.append(
+                        f"{where}: #{width}x{height} != screen-size {size[1]}x{size[2]}"
+                    )
+    assert not problems, "lesson image problems:\n" + "\n".join(problems)
+
+
+# --------------------------------------------------------------------------- #
 # Reference answers never leak through the lesson endpoint (all courses)
 # --------------------------------------------------------------------------- #
 async def test_reference_answers_never_leak_any_lesson(client):

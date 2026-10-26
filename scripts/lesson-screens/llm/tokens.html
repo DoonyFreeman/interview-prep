@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x520">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .rows { display: flex; flex-direction: column; gap: 22px; }
+  .row-t { display: grid; grid-template-columns: 190px 1fr 130px; align-items: center; gap: 16px; position: relative; }
+  .row-t { padding-left: 38px; } .row-t > .mark { position: absolute; left: 0; top: 8px; }
+  .who h5 { font-size: 17px; } .who p { font-size: 14px; color: #626f86; }
+  .count { font-size: 18px; font-weight: 700; text-align: right; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Как модель видит текст: токены</div>
+  <div class="dg-sub">Токенизатор режет текст на частые кусочки, и у каждого есть номер в словаре модели. Разбиение и номера условные — у каждой модели свой токенизатор</div>
+
+  <div class="rows">
+    <div class="row-t"><span class="mark">1</span>
+      <div class="who"><h5>Английский</h5><p>частые слова — целиком</p></div>
+      <div class="chips">
+        <span class="chip c1">Hello<small>9906</small></span><span class="chip c2">,<small>11</small></span><span class="chip c3"> how<small>1268</small></span><span class="chip c4"> are<small>527</small></span><span class="chip c5"> you<small>499</small></span><span class="chip c6">?<small>30</small></span>
+      </div>
+      <div class="count">6 токенов</div>
+    </div>
+    <div class="row-t"><span class="mark">2</span>
+      <div class="who"><h5>Русский</h5><p>слова дробятся мельче</p></div>
+      <div class="chips">
+        <span class="chip c1">Прив<small>38787</small></span><span class="chip c2">ет<small>9705</small></span><span class="chip c3">,<small>11</small></span><span class="chip c4"> как<small>13506</small></span><span class="chip c5"> д<small>2491</small></span><span class="chip c6">ела<small>17025</small></span><span class="chip c1">?<small>30</small></span>
+      </div>
+      <div class="count">7 токенов</div>
+    </div>
+    <div class="row-t">
+      <div class="who"><h5>Код</h5><p>тоже токены</p></div>
+      <div class="chips">
+        <span class="chip c3">def<small>755</small></span><span class="chip c4"> get<small>636</small></span><span class="chip c5">_user<small>3398</small></span><span class="chip c6">(id<small>3013</small></span><span class="chip c1">):<small>1680</small></span>
+      </div>
+      <div class="count">5 токенов</div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="box"><span class="mark">3</span><h5>Всё считается в токенах</h5><p>цена запроса, лимиты скорости и размер контекстного окна</p></div>
+    <div class="box"><h5>≈ 4 символа на токен</h5><p>грубая оценка для английского текста; для русского токенов на ту же мысль обычно больше</p></div>
+    <div class="box"><h5>Это не JWT-токен</h5><p>токен LLM — кусочек текста, а не строка для авторизации</p></div>
+  </div>
+</div></body></html>

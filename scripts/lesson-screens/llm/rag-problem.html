@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x700">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .side h4 { font-size: 20px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .q { font-size: 16px; font-weight: 600; }
+  .doc { font-size: 15px; border-left: 4px solid #0c66e4; padding: 6px 10px; background: #fff; border-radius: 0 8px 8px 0; margin-top: 6px; }
+  .doc small { display: block; color: #626f86; font-size: 13px; }
+  .ans { font-size: 17px; font-weight: 600; }
+  .why { margin-top: 8px; font-size: 14px; }
+  .why li { margin-left: 18px; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">Какую проблему решает RAG</div>
+  <div class="dg-sub">Модель знает только то, что было в обучающих данных до даты среза. Ваших внутренних документов там нет</div>
+
+  <div class="cols">
+    <div class="side">
+      <h4><span class="mark">1</span>Без RAG</h4>
+      <div class="box"><p>вопрос пользователя</p><div class="q">«Сколько дней на возврат в вашем магазине?»</div></div>
+      <div class="varr"></div>
+      <div class="box blue"><h5>LLM</h5><p>отвечает по памяти: общие знания об интернет-магазинах</p></div>
+      <div class="varr red"></div>
+      <div class="box red"><div class="ans t-red">«Обычно 14 дней.»</div>
+        <ul class="why t-red"><li>в регламенте магазина — 30 дней: уверенная галлюцинация</li><li>источника нет — проверить нельзя</li></ul>
+      </div>
+    </div>
+    <div class="side">
+      <h4><span class="mark">2</span>С RAG</h4>
+      <div class="box"><p>тот же вопрос</p><div class="q">«Сколько дней на возврат в вашем магазине?»</div></div>
+      <div class="varr"></div>
+      <div class="box"><h5>Поиск по базе знаний</h5>
+        <div class="doc">«Товар надлежащего качества можно вернуть в течение 30 дней с момента получения…»<small>Регламент возвратов, п. 2.1</small></div>
+      </div>
+      <div class="varr"></div>
+      <div class="box blue"><h5>LLM: вопрос + найденный фрагмент</h5><p>«отвечай только по приведённым документам»</p></div>
+      <div class="varr green"></div>
+      <div class="box green"><div class="ans t-green">«30 дней с момента получения [Регламент возвратов, п. 2.1].»</div></div>
+    </div>
+  </div>
+</div></body></html>

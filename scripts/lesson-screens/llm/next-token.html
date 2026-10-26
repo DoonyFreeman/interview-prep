@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="screen-size" content="1200x560">
+<link rel="stylesheet" href="_base.css">
+<style>
+  .main { display: grid; grid-template-columns: 300px 50px 170px 50px 1fr; align-items: center; }
+  .prompt { white-space: nowrap; font: 600 19px/1.3 -apple-system, sans-serif; }
+  .llm { text-align: center; padding: 26px 10px; }
+  .llm h5 { font-size: 22px; }
+  .loop { margin: 26px 0 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .step { font-size: 15px; }
+  .step .mono { font-size: 15px; }
+  .back { display: flex; align-items: center; gap: 12px; margin-top: 18px; font-size: 15px; color: #44546f; }
+  .back .line { flex: 1; height: 0; border-top: 3px dashed #22a06b; }
+</style></head>
+<body><div class="canvas">
+  <div class="dg-title">LLM пишет текст по одному токену</div>
+  <div class="dg-sub">На каждом шаге модель считает вероятность для каждого токена словаря, выбирает один, дописывает его к тексту и повторяет</div>
+
+  <div class="main">
+    <div class="box"><span class="mark">1</span><p>текст на входе</p><div class="prompt">«Столица Франции —»</div></div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="box blue llm"><h5>LLM</h5><p>нейросеть-трансформер</p></div>
+    <div class="arr" style="margin:0 auto"></div>
+    <div class="box"><span class="mark">2</span>
+      <p style="margin-bottom:10px">вероятности следующего токена</p>
+      <div class="bars">
+        <div class="bar pick"><b>Париж</b><i style="width:91%"></i><span>0.91</span></div>
+        <div class="bar"><b>город</b><i style="width:4%"></i><span>0.04</span></div>
+        <div class="bar"><b>это</b><i style="width:2%"></i><span>0.02</span></div>
+        <div class="bar"><b>Лион</b><i style="width:1%"></i><span>0.01</span></div>
+        <div class="bar"><b>…</b><i style="width:2%"></i><span>0.02</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="back"><span class="mark">3</span><span>выбранный токен дописываем к тексту и запускаем модель снова</span><span class="line"></span></div>
+  <div class="loop">
+    <div class="note step">шаг 1: «Столица Франции —» → <b class="mono">Париж</b></div>
+    <div class="note step">шаг 2: «Столица Франции — Париж» → <b class="mono">.</b></div>
+    <div class="note step">шаг 3: … → <b class="mono">&lt;конец&gt;</b> — специальный токен остановки</div>
+  </div>
+  <div class="note" style="margin-top:14px; border-color:#fd9891; background:#ffeceb"><b>Отсюда галлюцинации:</b> модель выбирает правдоподобное продолжение, а не проверяет факт. Если о внутреннем регламенте или свежей новости она ничего не знает, самым вероятным всё равно окажется какой-то гладкий текст — и он прозвучит уверенно.</div>
+</div></body></html>
