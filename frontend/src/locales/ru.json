@@ -93,7 +93,8 @@
       "testing": "Тестирование",
       "devops": "DevOps и observability",
       "security": "Сеть и безопасность",
-      "cs": "Алгоритмы и структуры данных"
+      "cs": "Алгоритмы и структуры данных",
+      "llm": "LLM и ИИ"
     }
   },
   "glossaryQuiz": {

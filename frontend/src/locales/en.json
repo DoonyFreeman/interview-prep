@@ -93,7 +93,8 @@
       "testing": "Testing",
       "devops": "DevOps & observability",
       "security": "Networking & security",
-      "cs": "Algorithms & data structures"
+      "cs": "Algorithms & data structures",
+      "llm": "LLM & AI"
     }
   },
   "glossaryQuiz": {
