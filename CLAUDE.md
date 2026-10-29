@@ -509,16 +509,23 @@ font on phones to stop focus-zoom, `theme-color` per scheme.
 
 11. **LLM course.** Course `llm` «LLM, RAG и агенты» (order 1 — second in the catalog, right after
    team-processes; roadmap stage `ai`
-   «LLM и ИИ-сервисы» between `infra` and `senior`): 2 lessons / 21 concepts —
+   «LLM и ИИ-сервисы» between `infra` and `senior`): 4 lessons / 35 concepts —
    `llm-basics` (tokens & context window, next token & hallucinations, sampling,
    open vs closed models, chat roles, streaming, prompting, valid JSON, cost) and
    `rag-agents` (embeddings, vector DBs, RAG problem & pipeline, chunking, hybrid
    search & reranking, RAG vs fine-tuning, tool calling, agents, LangChain/LangGraph,
-   RAG evaluation, a docs-assistant capstone). Each lesson ends with «Как ответить на
+   RAG evaluation, a docs-assistant capstone), `ml-classification-metrics`
+   (classification vs regression, confusion matrix, accuracy/imbalance,
+   precision/recall/F1, decision threshold, micro/macro/weighted averaging) and
+   `ml-curves-regression` (ROC/ROC-AUC, PR/AP vs trapezoidal area,
+   MAE/MSE/RMSE/R², business metric choice and validation). The two ML lessons
+   form a two-day study route: 55/60 minutes reading, with worked calculations,
+   exercises and solutions; active study takes longer. Each lesson ends with «Как ответить на
    вопросы ментора». Code samples use the OpenAI-compatible SDK with a placeholder
-   `MODEL` (no model names or prices that go stale). 17 diagrams: HTML in
+   `MODEL` (no model names or prices that go stale). 24 diagrams: HTML in
    `scripts/lesson-screens/llm/` (its `_base.css` `@import`s the team-processes one
-   and bumps the type — a 1200px canvas shrinks to ~820px in the article; flex/grid
+   and bumps the type; `_ml.css` adds shared styling for seven ML diagrams — a
+   1200px canvas shrinks to ~820px in the article; flex/grid
    layout instead of hand-placed nodes; avoid base class names like `.col`, `.state`,
    `.tl`, `.ring`, `.lbl`), rendered by `scripts/render_lesson_screens.sh llm`.
    Glossary gained an `llm` category (24 terms, labels `glossary.cat.llm`).
