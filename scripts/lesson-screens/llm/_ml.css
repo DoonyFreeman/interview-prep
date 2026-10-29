@@ -1,0 +1,27 @@
+@import "_base.css";
+body { background:#fbfaf8; font-size:20px; line-height:1.38; }
+.canvas { width:1200px; height:720px; padding:30px 40px; display:flex; flex-direction:column; gap:20px; background:#fbfaf8; }
+.dg-title { font-size:30px; line-height:1.18; font-weight:750; letter-spacing:-.5px; }
+.dg-sub { font-size:20px; margin:6px 0 0; color:#626f86; }
+.ml-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; flex:1; min-height:0; }
+.ml-panel { border:1.5px solid #d7dce3; border-radius:14px; padding:22px; background:#fff; }
+.ml-panel h2 { font-size:23px; margin-bottom:14px; }
+.ml-panel h3 { font-size:21px; margin-bottom:8px; }
+.ml-note { border-left:5px solid #8270db; background:#f3f0ff; padding:14px 18px; border-radius:0 10px 10px 0; font-size:20px; }
+.ml-stack { display:flex; flex-direction:column; gap:18px; }
+.ml-kpi { font-size:39px; font-weight:750; line-height:1.2; }
+.ml-formula { font-size:25px; font-weight:700; margin:7px 0; }
+.ml-small { font-size:18px; color:#626f86; }
+table { border-collapse:collapse; width:100%; font-size:20px; }
+th,td { padding:12px 10px; border-bottom:1px solid #dfe1e6; text-align:center; }
+th { font-size:18px; font-weight:650; color:#44546f; background:#f7f8f9; }
+td:first-child,th:first-child { text-align:left; }
+.ml-positive { color:#216e4e; background:#dcfff1; }
+.ml-negative { color:#ae2e24; background:#ffeceb; }
+.ml-blue { color:#0055cc; }
+.ml-purple { color:#5e4db2; }
+.ml-red { color:#ae2e24; }
+.ml-rule { height:2px; background:#dfe1e6; margin:12px 0; }
+svg { width:100%; overflow:visible; }
+svg text { fill:#172b4d; font:20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+.ml-legend { display:flex; gap:24px; font-size:18px; }

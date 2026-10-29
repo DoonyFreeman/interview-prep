@@ -1,7 +1,7 @@
 {
   "slug": "llm",
   "title": "LLM, RAG и агенты",
-  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества. 2 урока со схемами.",
+  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества; метрики ML — матрица ошибок, Precision/Recall/F1, пороги, ROC/PR, усреднение и метрики регрессии. 4 урока со схемами.",
   "order": 1,
   "lessons": [
     {
@@ -41,6 +41,108 @@
         { "slug": "langchain-langgraph", "title": "LangChain и LangGraph", "anchor": "langchain-и-langgraph", "order": 10 },
         { "slug": "rag-eval", "title": "Оценка качества RAG", "anchor": "оценка-качества-rag", "order": 11 },
         { "slug": "docs-assistant", "title": "Ассистент по документам: как всё связано", "anchor": "ассистент-по-документам-как-всё-связано", "order": 12 }
+      ]
+    },
+    {
+      "slug": "ml-classification-metrics",
+      "title": "Метрики классификации: от ошибок к решению",
+      "file": "03-ml-classification-metrics.md",
+      "order": 3,
+      "duration_minutes": 55,
+      "concepts": [
+        {
+          "slug": "task-types",
+          "title": "Что измеряем: классификация и регрессия",
+          "anchor": "что-измеряем-классификация-и-регрессия",
+          "order": 1
+        },
+        {
+          "slug": "confusion-matrix",
+          "title": "Матрица ошибок: TP, FP, TN, FN",
+          "anchor": "матрица-ошибок-tp-fp-tn-fn",
+          "order": 2
+        },
+        {
+          "slug": "accuracy-imbalance",
+          "title": "Accuracy и ловушка дисбаланса",
+          "anchor": "accuracy-и-ловушка-дисбаланса",
+          "order": 3
+        },
+        {
+          "slug": "precision-recall",
+          "title": "Precision и Recall",
+          "anchor": "precision-и-recall",
+          "order": 4
+        },
+        {
+          "slug": "f1-score",
+          "title": "F1-score: баланс Precision и Recall",
+          "anchor": "f1-score-баланс-precision-и-recall",
+          "order": 5
+        },
+        {
+          "slug": "decision-threshold",
+          "title": "Score, вероятность и порог",
+          "anchor": "score-вероятность-и-порог",
+          "order": 6
+        },
+        {
+          "slug": "metric-averaging",
+          "title": "Micro, macro и weighted",
+          "anchor": "micro-macro-и-weighted",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "slug": "ml-curves-regression",
+      "title": "Метрики ML: кривые, регрессия и выбор под задачу",
+      "file": "04-ml-curves-regression.md",
+      "order": 4,
+      "duration_minutes": 60,
+      "concepts": [
+        {
+          "slug": "roc-curve",
+          "title": "TPR, FPR и ROC-кривая",
+          "anchor": "tpr-fpr-и-roc-кривая",
+          "order": 1
+        },
+        {
+          "slug": "roc-auc",
+          "title": "ROC-AUC: качество ранжирования",
+          "anchor": "roc-auc-качество-ранжирования",
+          "order": 2
+        },
+        {
+          "slug": "precision-recall-curve",
+          "title": "Precision-Recall: кривая и редкие события",
+          "anchor": "precision-recall-кривая-и-редкие-события",
+          "order": 3
+        },
+        {
+          "slug": "average-precision",
+          "title": "PR-AUC и Average Precision",
+          "anchor": "pr-auc-и-average-precision",
+          "order": 4
+        },
+        {
+          "slug": "regression-errors",
+          "title": "MAE, MSE и RMSE",
+          "anchor": "mae-mse-и-rmse",
+          "order": 5
+        },
+        {
+          "slug": "r2-score",
+          "title": "R²: сравнение с базовым прогнозом",
+          "anchor": "r²-сравнение-с-базовым-прогнозом",
+          "order": 6
+        },
+        {
+          "slug": "metric-choice",
+          "title": "Как выбрать метрику под задачу",
+          "anchor": "как-выбрать-метрику-под-задачу",
+          "order": 7
+        }
       ]
     }
   ]
