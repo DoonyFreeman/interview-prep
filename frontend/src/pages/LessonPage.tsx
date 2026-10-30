@@ -12,10 +12,11 @@ import {
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
-import { IconMic, IconClipboardCheck } from "../components/icons";
+import { IconMic, IconClipboardCheck, IconArticle, IconDownload } from "../components/icons";
 import { ResourceList } from "../components/RoadmapDrawer";
 import { resourcesFor } from "../lib/roadmap";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
+import { getLessonCheatsheet } from "../lib/cheatsheets";
 
 export function LessonPage() {
   const { t } = useTranslation();
@@ -59,6 +60,7 @@ export function LessonPage() {
     .flatMap((s) => s.courses)
     .find((c) => c.slug === courseSlug);
   const materials = roadmapCourse ? resourcesFor(roadmapCourse, lessonSlug) : null;
+  const cheatsheet = getLessonCheatsheet(courseSlug, lessonSlug);
 
   return (
     <div className="lg:flex lg:gap-10">
@@ -112,6 +114,41 @@ export function LessonPage() {
               resources={materials.resources}
               caption={materials.fromCourse ? t("roadmap.courseMaterials") : undefined}
             />
+          </section>
+        )}
+
+        {cheatsheet && (
+          <section
+            aria-label={t("cheatsheets.lessonTitle")}
+            className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4"
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <IconArticle className="h-5 w-5 shrink-0 text-primary" />
+              <div>
+                <h2 className="font-display font-semibold text-ink">
+                  {t("cheatsheets.lessonTitle")}
+                </h2>
+                <p className="mt-0.5 text-sm text-muted">
+                  {t("cheatsheets.lessonDescription")}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                to={`/cheatsheets/${cheatsheet.slug}`}
+                className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
+              >
+                {t("cheatsheets.open")} →
+              </Link>
+              <a
+                href={cheatsheet.pdfUrl}
+                download
+                className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-surface-2"
+              >
+                <IconDownload className="h-4 w-4" />
+                {t("cheatsheets.downloadPdf")}
+              </a>
+            </div>
           </section>
         )}
       </article>

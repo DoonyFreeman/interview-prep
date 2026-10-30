@@ -330,6 +330,16 @@ export function IconArticle({ className }: IconProps) {
   );
 }
 
+/** Download a printable reference sheet. */
+export function IconDownload({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 3v12m-5-5 5 5 5-5" />
+      <path d="M5 16v4h14v-4" />
+    </Svg>
+  );
+}
+
 /** Docs resource — an open book (official documentation). */
 export function IconDocs({ className }: IconProps) {
   return (

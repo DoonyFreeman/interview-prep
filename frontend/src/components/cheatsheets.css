@@ -1,0 +1,242 @@
+.cheatsheets-library,
+.cheatsheet-reader {
+  min-width: 0;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  overflow-wrap: anywhere;
+}
+
+.cheatsheets-library-header {
+  padding: 0.5rem 0 2.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cheatsheet-emblem {
+  display: inline-flex;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.cheatsheet-groups {
+  display: grid;
+  gap: 2.25rem;
+  margin-top: 2rem;
+}
+
+.cheatsheet-group-title {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.cheatsheet-catalog-grid,
+.cheatsheet-section-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.cheatsheet-catalog-card {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  padding: 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cheatsheet-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cheatsheet-page-count {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.4rem;
+  background: var(--color-surface-2);
+}
+
+.cheatsheet-card-description {
+  margin: 0.6rem 0 1.4rem;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.cheatsheet-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-top: auto;
+}
+
+.cheatsheet-action {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cheatsheet-action-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
+.cheatsheet-action-primary:hover {
+  background: var(--color-primary-strong);
+}
+
+.cheatsheet-action-secondary,
+.cheatsheet-back-link {
+  color: var(--color-muted);
+}
+
+.cheatsheet-action-secondary:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.cheatsheet-reader-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.cheatsheet-back-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.cheatsheet-back-link:hover {
+  color: var(--color-primary);
+}
+
+.cheatsheet-reader-header {
+  margin: 1.8rem 0 1.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cheatsheet-reader-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.8rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cheatsheet-section {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cheatsheet-section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cheatsheet-section-number {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.cheatsheet-section-heading h2 {
+  color: var(--color-ink);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  scroll-margin-top: 6rem;
+}
+
+.cheatsheet-section .prose {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.cheatsheet-section .prose h3 {
+  margin: 1.1rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.cheatsheet-section .prose p,
+.cheatsheet-section .prose ul,
+.cheatsheet-section .prose ol {
+  margin-bottom: 0.8rem;
+}
+
+.cheatsheet-section .prose > :last-child {
+  margin-bottom: 0;
+}
+
+.cheatsheet-section .prose :not(pre) > code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.cheatsheet-section .prose .table-scroll {
+  max-width: 100%;
+  margin: 0.85rem 0;
+  overscroll-behavior-x: contain;
+}
+
+.cheatsheet-section .prose table {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.cheatsheet-section .prose th,
+.cheatsheet-section .prose td {
+  padding: 0.5rem 0.6rem;
+  min-width: 6.5rem;
+}
+
+.cheatsheet-section .prose pre {
+  max-width: 100%;
+  font-size: 0.8rem;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .cheatsheet-catalog-grid,
+  .cheatsheet-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

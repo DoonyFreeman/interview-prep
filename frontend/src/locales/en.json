@@ -55,7 +55,8 @@
     "logout": "Log out",
     "progress": "Progress",
     "roadmap": "Roadmap",
-    "tests": "Tests"
+    "tests": "Tests",
+    "cheatsheets": "Cheatsheets"
   },
   "slang": {
     "title": "Developer slang",
@@ -427,5 +428,22 @@
     "noMaterials": "Resources coming soon",
     "externalTopic": "External topic",
     "min": "min"
+  },
+  "cheatsheets": {
+    "title": "Cheatsheets",
+    "subtitle": "A quick review before your interview. Formulas, diagrams and the essentials for each topic.",
+    "backToLibrary": "All cheatsheets",
+    "downloadPdf": "Download PDF",
+    "open": "Open",
+    "onePage": "1 page",
+    "notFoundTitle": "Cheatsheet not found",
+    "notFoundDescription": "This page does not exist. Choose a reference sheet from the library.",
+    "groups": {
+      "python": "Python",
+      "team": "Team processes",
+      "ai": "LLM & ML"
+    },
+    "lessonTitle": "ML metrics cheatsheet",
+    "lessonDescription": "Formulas, curves and choosing a metric · 1 page"
   }
 }

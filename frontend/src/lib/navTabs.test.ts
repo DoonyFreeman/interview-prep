@@ -6,6 +6,7 @@ import {
   NAV_TABS,
   NAV_TAB_IDS,
   setNavTabs,
+  parseNavTabs,
   type NavTabId,
 } from "./navTabs";
 
@@ -38,24 +39,47 @@ describe("nav tab preference", () => {
   });
 
   it("stores the canonical order, not the click order", () => {
-    setNavTabs(["progress", "courses", "tests"]);
-    expect(read()).toEqual(["courses", "tests", "progress"]);
+    setNavTabs(["cheatsheets", "courses", "tests"]);
+    expect(read()).toEqual(["courses", "tests", "cheatsheets"]);
   });
 
   it("refuses to shrink the bar below the minimum", () => {
-    setNavTabs(["courses", "tests", "progress"]);
+    setNavTabs(["courses", "tests", "cheatsheets"]);
     setNavTabs(["courses"]);
-    expect(read()).toEqual(["courses", "tests", "progress"]);
+    expect(read()).toEqual(["courses", "tests", "cheatsheets"]);
   });
 
   it("refuses to overflow the bar", () => {
-    setNavTabs(["courses", "tests", "progress"]);
+    setNavTabs(["courses", "tests", "cheatsheets"]);
     setNavTabs([...NAV_TAB_IDS]); // 7 — one over the cap
-    expect(read()).toEqual(["courses", "tests", "progress"]);
+    expect(read()).toEqual(["courses", "tests", "cheatsheets"]);
   });
 
   it("drops duplicates", () => {
-    setNavTabs(["courses", "courses", "tests", "progress"]);
-    expect(read()).toEqual(["courses", "tests", "progress"]);
+    setNavTabs(["courses", "courses", "tests", "cheatsheets"]);
+    expect(read()).toEqual(["courses", "tests", "cheatsheets"]);
+  });
+});
+
+
+describe("saved navigation migration", () => {
+  it("replaces the legacy Progress tab while preserving other selected sections", () => {
+    expect(parseNavTabs('["courses","tests","progress","profile"]'))
+      .toEqual(["courses", "tests", "cheatsheets", "profile"]);
+  });
+
+  it("does not add the library when Progress was not selected", () => {
+    expect(parseNavTabs('["courses","tests","review"]'))
+      .toEqual(["courses", "tests", "review"]);
+  });
+
+  it("deduplicates a preference containing both old and new tab IDs", () => {
+    expect(parseNavTabs('["courses","progress","cheatsheets","tests"]'))
+      .toEqual(["courses", "tests", "cheatsheets"]);
+  });
+
+  it("falls back for corrupted preferences", () => {
+    expect(parseNavTabs("not-json")).toEqual(DEFAULT_NAV_TABS);
+    expect(parseNavTabs('["progress"]')).toEqual(DEFAULT_NAV_TABS);
   });
 });

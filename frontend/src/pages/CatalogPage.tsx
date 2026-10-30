@@ -240,13 +240,7 @@ export function CatalogPage() {
         />
       )}
       <p className="mb-8 text-center text-xs text-faint sm:text-left">
-        {t("dashboard.legend")}{" "}
-        <Link
-          to="/progress"
-          className="font-semibold text-primary hover:underline"
-        >
-          {t("dashboard.seeProgress")}
-        </Link>
+        {t("dashboard.legend")}
       </p>
 
       <div className="mb-4">
