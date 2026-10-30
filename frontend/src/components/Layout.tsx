@@ -125,7 +125,7 @@ export function Layout() {
             <NavItem to="/roadmap" label={t("nav.roadmap")} />
             <NavItem to="/glossary" label={t("nav.glossary")} />
             <NavItem to="/tests" label={t("nav.tests")} />
-            <NavItem to="/progress" label={t("nav.progress")} />
+            <NavItem to="/cheatsheets" label={t("nav.cheatsheets")} />
           </nav>
 
           <div className="ml-auto flex items-center gap-2 sm:gap-3">

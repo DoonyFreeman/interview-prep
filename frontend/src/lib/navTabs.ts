@@ -14,7 +14,7 @@ export const NAV_TAB_IDS = [
   "roadmap",
   "glossary",
   "tests",
-  "progress",
+  "cheatsheets",
   "review",
   "profile",
 ] as const;
@@ -29,7 +29,7 @@ export const NAV_TABS: Record<NavTabId, { to: string; end?: boolean; labelKey: s
     roadmap: { to: "/roadmap", labelKey: "nav.roadmap" },
     glossary: { to: "/glossary", labelKey: "nav.glossary" },
     tests: { to: "/tests", labelKey: "nav.tests" },
-    progress: { to: "/progress", labelKey: "nav.progress" },
+    cheatsheets: { to: "/cheatsheets", labelKey: "nav.cheatsheets" },
     review: { to: "/review", labelKey: "nav.review" },
     profile: { to: "/settings", labelKey: "nav.profile" },
   };
@@ -39,7 +39,7 @@ export const DEFAULT_NAV_TABS: NavTabId[] = [
   "roadmap",
   "glossary",
   "tests",
-  "progress",
+  "cheatsheets",
   "profile",
 ];
 
@@ -50,20 +50,23 @@ export const MAX_NAV_TABS = 6;
 
 const KEY = "nav_tabs_v1";
 
-function parse(raw: string | null): NavTabId[] {
+export function parseNavTabs(raw: string | null): NavTabId[] {
   if (!raw) return DEFAULT_NAV_TABS;
   try {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return DEFAULT_NAV_TABS;
-    // Drop anything unknown (an id removed in a later version) and de-duplicate.
-    const clean = NAV_TAB_IDS.filter((id) => parsed.includes(id));
-    return clean.length >= MIN_NAV_TABS ? clean : DEFAULT_NAV_TABS;
+    // Preserve the user's selection when Progress is replaced by the library.
+    const migrated = parsed.map((id) => id === "progress" ? "cheatsheets" : id);
+    const clean = NAV_TAB_IDS.filter((id) => migrated.includes(id));
+    return clean.length >= MIN_NAV_TABS && clean.length <= MAX_NAV_TABS
+      ? clean
+      : DEFAULT_NAV_TABS;
   } catch {
     return DEFAULT_NAV_TABS;
   }
 }
 
-let current: NavTabId[] = parse(
+let current: NavTabId[] = parseNavTabs(
   typeof localStorage === "undefined" ? null : localStorage.getItem(KEY),
 );
 const listeners = new Set<() => void>();

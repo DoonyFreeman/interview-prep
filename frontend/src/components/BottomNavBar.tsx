@@ -5,7 +5,7 @@ import {
   IconClipboardCheck,
   IconCourses,
   IconGlossary,
-  IconProgress,
+  IconArticle,
   IconRefresh,
   IconRoadmap,
   IconUser,
@@ -17,7 +17,7 @@ const ICONS: Record<NavTabId, (props: { className?: string }) => React.ReactElem
   roadmap: IconRoadmap,
   glossary: IconGlossary,
   tests: IconClipboardCheck,
-  progress: IconProgress,
+  cheatsheets: IconArticle,
   review: IconRefresh,
   profile: IconUser,
 };

@@ -306,6 +306,17 @@ items (Courses / Glossary / Progress) + a single "to review" badge; the mobile
 `env(safe-area-inset-*)` padding on the bottom bar/main/toasts, 16px form-control
 font on phones to stop focus-zoom, `theme-color` per scheme.
 
+**Cheatsheets:** `/cheatsheets` replaces the old Progress page (`/progress`
+redirects there); progress APIs, SM-2 and catalog stats remain. Six standalone
+references live in `frontend/src/content/cheatsheets/*.md`, registered in
+`frontend/src/lib/cheatsheets.ts`, with responsive readers and checked-in PDFs
+under `frontend/public/cheatsheets/`. Only `llm/ml-curves-regression` (lesson 4)
+has a compact footer link to the ML sheet. Saved mobile `progress` tab IDs migrate
+to `cheatsheets`. `scripts/build_cheatsheets.py` is optional offline authoring
+(reportlab/pypdf and local fonts); normal builds require no PDF tooling. With no
+source flags it rebuilds ML from its Markdown. Original PDFs are passed explicitly
+with `--concurrency-source` / `--bundle-source` and are not stored in the repo.
+
 ## Roadmap (phases)
 
 0. ✅ Reference lesson end-to-end (Python Core → GIL): theory + 5 questions with
