@@ -56,7 +56,7 @@ describe("published library assets", () => {
     expect(new Set(CHEATSHEETS.map((sheet) => sheet.slug)).size).toBe(6);
     for (const sheet of CHEATSHEETS) {
       expect(sheet.pdfUrl).toBe(`/cheatsheets/${sheet.slug}.pdf`);
-      expect(sheet.pages).toBe(1);
+      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : 1);
       const sections = getCheatsheetSections(sheet.markdown);
       expect(sections.length).toBeGreaterThan(0);
       expect(sections.every((section) => section.markdown.trim().length > 0)).toBe(true);

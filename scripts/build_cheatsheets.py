@@ -196,15 +196,15 @@ def markup(text: str) -> str:
 
 
 def markdown_blocks(body: str, width: float):
-    style = ParagraphStyle('body', fontName='Body', fontSize=7.1, leading=8.65, textColor=INK, spaceAfter=3)
-    cellstyle = ParagraphStyle('cell', parent=style, fontSize=6.85, leading=8.0)
+    style = ParagraphStyle('body', fontName='Body', fontSize=8.5, leading=10.6, textColor=INK, spaceAfter=3)
+    cellstyle = ParagraphStyle('cell', parent=style, fontSize=8.0, leading=9.5)
     chunks = re.split(r'\n\s*\n', body.strip())
     for chunk in chunks:
         if chunk.startswith('|'):
             rows = [[cell.strip() for cell in line.strip().strip('|').split('|')] for line in chunk.splitlines()]
             rows = [row for row in rows if not all(re.fullmatch(r'[:\- ]+', cell) for cell in row)]
             # Compact, semantic table widths avoid narrow formula columns.
-            fractions = {2: [.56, .44], 3: [.22, .39, .39], 4: [.22, .35, .16, .27]}[len(rows[0])]
+            fractions = {2: [.56, .44], 3: [.22, .39, .39], 4: [.22, .35, .16, .27], 5: [.19, .25, .20, .19, .17]}[len(rows[0])]
             table = Table([[Paragraph(markup(cell), cellstyle) for cell in row] for row in rows], colWidths=[width * f for f in fractions], hAlign='LEFT')
             table.setStyle(TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'), ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f0edf9')),
@@ -227,79 +227,44 @@ def ml_pdf(markdown: Path, destination: Path) -> None:
     c.setTitle(TITLES['ml-metrics'])
     c.setAuthor('')
     c.setCreator('InterviewPrep')
-    c.setFillColor(MUTED)
-    c.setFont('Mono', 5.7)
-    c.drawString(44, h - 20, 'ШПАРГАЛКА К СОБЕСЕДОВАНИЮ · ЛИСТ 1 ИЗ 1')
-    c.setFillColor(PURPLE)
-    c.setFont('Times-Roman', 25.5)
-    c.drawString(20, h - 39, '1')
-    c.setFillColor(INK)
-    c.setFont('Heading', 20)
-    c.drawString(44, h - 38, 'Метрики ML: классификация и регрессия')
-    c.setFont('Body', 6.4)
-    c.setFillColor(MUTED)
-    c.drawRightString(w - 20, h - 22, 'Одна матрица · девять опорных блоков')
-    c.setStrokeColor(INK)
-    c.setLineWidth(1)
-    c.line(20, h - 47, w - 20, h - 47)
-    gap, margin, top, bottom = 7, 20, h - 55, 30
+    gap, margin, top, bottom = 10, 20, h - 60, 34
     cw = (w - margin * 2 - gap * 2) / 3
-    ch = (top - bottom - gap * 2) / 3
+    ch = top - bottom
     accents = ['#eee9fb', '#e2f2ec', '#fff2cd']
-    for i, (title, body) in enumerate(sections):
-        col, row = i % 3, i // 3
-        x, y = margin + col * (cw + gap), top - (row + 1) * ch - row * gap
-        c.setStrokeColor(BORDER)
-        c.setLineWidth(.65)
-        c.roundRect(x, y, cw, ch, 5, stroke=1, fill=0)
-        c.setFillColor(colors.HexColor(accents[col]))
-        c.roundRect(x + 1, y + ch - 23, cw - 2, 22, 4, stroke=0, fill=1)
-        c.setFillColor(PURPLE)
+    for page in range(3):
+        c.setFillColor(MUTED)
         c.setFont('Mono', 7)
-        c.drawString(x + 7, y + ch - 14, f'{i + 1:02}')
+        c.drawString(20, h - 20, f'ШПАРГАЛКА К СОБЕСЕДОВАНИЮ · ЛИСТ {page + 1} ИЗ 3')
         c.setFillColor(INK)
-        c.setFont('Heading', 10.4)
-        c.drawString(x + 24, y + ch - 14, title)
-        cursor = y + ch - 29
-        for flowable in markdown_blocks(body, cw - 14):
-            _, height = flowable.wrap(cw - 14, ch)
-            if cursor - height < y + 6:
-                raise ValueError(f'ML section {i + 1} overflows by {y + 6 - cursor + height:.1f}pt; revise layout, not content')
-            flowable.drawOn(c, x + 7, cursor - height)
-            cursor -= height + 3
-        if i == 3:
-            # Schematic ROC curve; the highlighted point is the shared matrix.
-            px, py, pw, ph = x + 16, y + 12, 90, 34
-            if cursor < py + ph + 8:
-                raise ValueError('ROC diagram would overlap text')
+        c.setFont('Heading', 20)
+        c.drawString(20, h - 43, 'Метрики ML: смысл, формулы и расчёт')
+        for col in range(3):
+            i = page * 3 + col
+            title, body = sections[i]
+            x, y = margin + col * (cw + gap), bottom
             c.setStrokeColor(BORDER)
-            c.setLineWidth(.6)
-            c.line(px, py, px + pw, py)
-            c.line(px, py, px, py + ph)
-            c.setDash(2, 2)
-            c.line(px, py, px + pw, py + ph)
-            c.setDash()
-            c.setStrokeColor(PURPLE)
-            path = c.beginPath()
-            path.moveTo(px, py)
-            for fx, fy in [(.044, .8), (.2, .9), (.55, .98), (1, 1)]:
-                path.lineTo(px + pw * fx, py + ph * fy)
-            c.drawPath(path)
+            c.setLineWidth(.65)
+            c.roundRect(x, y, cw, ch, 5, stroke=1, fill=0)
+            c.setFillColor(colors.HexColor(accents[col]))
+            c.roundRect(x + 1, y + ch - 29, cw - 2, 28, 4, stroke=0, fill=1)
             c.setFillColor(PURPLE)
-            c.circle(px + pw * .044, py + ph * .8, 2, fill=1, stroke=0)
-            c.setFillColor(MUTED)
-            c.setFont('Body', 5.8)
-            c.drawString(px + pw + 4, py - 1, 'FPR')
-            c.drawString(px - 3, py + ph + 4, 'TPR')
-            c.drawString(px + pw + 18, py + 32, 'Точка нашей матрицы:')
-            c.drawString(px + pw + 18, py + 22, '(0,044; 0,8)')
-            c.drawString(px + pw + 18, py + 10, 'Кривая схематична')
-    c.setStrokeColor(INK)
-    c.line(20, 23, w - 20, 23)
-    c.setFillColor(MUTED)
-    c.setFont('Body', 6.3)
-    c.drawString(20, 13, 'ОТВЕТ МЕНТОРУ > тип задачи · positive · знаменатель · ограничение · пример')
-    c.drawRightString(w - 20, 13, 'Подбор: validation · Финальная проверка: test')
+            c.setFont('Mono', 7)
+            c.drawString(x + 7, y + ch - 18, f'{i + 1:02}')
+            c.setFillColor(INK)
+            c.setFont('Heading', 10.4)
+            c.drawString(x + 24, y + ch - 18, title)
+            cursor = y + ch - 37
+            for flowable in markdown_blocks(body, cw - 14):
+                _, height = flowable.wrap(cw - 14, ch)
+                if cursor - height < y + 6:
+                    raise ValueError(f'ML section {i + 1} overflows by {y + 6 - cursor + height:.1f}pt; revise layout, not content')
+                flowable.drawOn(c, x + 7, cursor - height)
+                cursor -= height + 5
+        c.setFillColor(MUTED)
+        c.setFont('Body', 7)
+        c.drawString(20, 17, 'Сначала смысл метрики, затем формула, подстановка чисел и вывод.')
+        c.drawRightString(w - 20, 17, 'Подбор: validation · Финальная проверка: test')
+        c.showPage()
     c.save()
 
 

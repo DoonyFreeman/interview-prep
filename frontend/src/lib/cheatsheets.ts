@@ -14,7 +14,7 @@ export interface Cheatsheet {
   description: string;
   category: CheatsheetCategory;
   pdfUrl: string;
-  pages: 1;
+  pages: number;
   markdown: string;
 }
 
@@ -73,10 +73,10 @@ export const CHEATSHEETS: readonly Cheatsheet[] = [
   {
     slug: "ml-metrics",
     title: "Метрики ML, кривые и регрессия",
-    description: "Precision, recall, ROC/PR, пороги и метрики регрессии.",
+    description: "Смысл метрик, формулы и пошаговые расчёты: классификация, ROC/PR и регрессия.",
     category: "ai",
     pdfUrl: "/cheatsheets/ml-metrics.pdf",
-    pages: 1,
+    pages: 3,
     markdown: mlMetrics,
   },
 ];
