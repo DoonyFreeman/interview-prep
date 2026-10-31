@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Как искать соседей: все точки, граф или группы</title><desc id="desc">Точный поиск — эталон близости по выбранной метрике; ANN ускоряет поиск ценой возможных пропусков</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Как искать соседей: все точки, граф или группы</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Точный поиск — эталон близости по выбранной метрике; ANN ускоряет поиск ценой возможных пропусков</text>
+<rect x="40" y="125" width="350" height="482" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="158" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Exact · перебор</text>
+<circle cx="100" cy="238" r="7" fill="#0c66e4"/>
+<path d="M212 465 L100 238" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="168" cy="238" r="7" fill="#0c66e4"/>
+<path d="M212 465 L168 238" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="236" cy="238" r="7" fill="#0c66e4"/>
+<path d="M212 465 L236 238" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="304" cy="238" r="7" fill="#0c66e4"/>
+<path d="M212 465 L304 238" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="100" cy="313" r="7" fill="#0c66e4"/>
+<path d="M212 465 L100 313" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="168" cy="313" r="7" fill="#0c66e4"/>
+<path d="M212 465 L168 313" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="236" cy="313" r="7" fill="#0c66e4"/>
+<path d="M212 465 L236 313" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="304" cy="313" r="7" fill="#0c66e4"/>
+<path d="M212 465 L304 313" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="100" cy="388" r="7" fill="#0c66e4"/>
+<path d="M212 465 L100 388" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="168" cy="388" r="7" fill="#0c66e4"/>
+<path d="M212 465 L168 388" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="236" cy="388" r="7" fill="#0c66e4"/>
+<path d="M212 465 L236 388" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="304" cy="388" r="7" fill="#0c66e4"/>
+<path d="M212 465 L304 388" stroke="#c7d1db" stroke-width="1" fill="none"/>
+<circle cx="212" cy="465" r="10" fill="#172b4d"/>
+<text x="230" y="471" font-family="Arial, sans-serif" font-size="16" fill="#52647d" font-weight="400">запрос</text>
+<text x="58" y="523" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Сравнить запрос со всеми</text>
+<text x="58" y="550" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">векторами допустимого набора.</text>
+<text x="58" y="577" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Ничего не пропустим по метрике.</text>
+<rect x="420" y="125" width="350" height="482" rx="12" fill="#fff" stroke="#16825d" stroke-width="2"/>
+<text x="438" y="158" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="700">HNSW · граф</text>
+<circle cx="480" cy="238" r="7" fill="#16825d"/>
+<path d="M480 238 L548 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="548" cy="238" r="7" fill="#16825d"/>
+<path d="M548 238 L616 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="616" cy="238" r="7" fill="#16825d"/>
+<path d="M616 238 L684 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="684" cy="238" r="7" fill="#16825d"/>
+<circle cx="480" cy="313" r="7" fill="#16825d"/>
+<path d="M480 313 L548 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="548" cy="313" r="7" fill="#16825d"/>
+<path d="M548 313 L616 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="616" cy="313" r="7" fill="#16825d"/>
+<path d="M616 313 L684 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="684" cy="313" r="7" fill="#16825d"/>
+<circle cx="480" cy="388" r="7" fill="#16825d"/>
+<path d="M480 388 L548 388" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="548" cy="388" r="7" fill="#16825d"/>
+<path d="M548 388 L616 388" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="616" cy="388" r="7" fill="#16825d"/>
+<path d="M616 388 L684 388" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="684" cy="388" r="7" fill="#16825d"/>
+<path d="M592 453 L480 388" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<path d="M480 388 L480 313" stroke="#16825d" stroke-width="4" fill="none"/>
+<path d="M480 313 L548 313" stroke="#16825d" stroke-width="4" fill="none"/>
+<path d="M684 238 L684 313" stroke="#94b8a8" stroke-width="2" fill="none"/>
+<circle cx="592" cy="465" r="10" fill="#172b4d"/>
+<text x="610" y="471" font-family="Arial, sans-serif" font-size="16" fill="#52647d" font-weight="400">запрос</text>
+<text x="438" y="523" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Идти по связям между точками.</text>
+<text x="438" y="550" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">efSearch ↑: шире поиск;</text>
+<text x="438" y="577" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">обычно точнее, но медленнее.</text>
+<rect x="800" y="125" width="350" height="482" rx="12" fill="#fff" stroke="#b65b13" stroke-width="2"/>
+<text x="818" y="158" font-family="Arial, sans-serif" font-size="21" fill="#b65b13" font-weight="700">IVF · группы</text>
+<circle cx="860" cy="238" r="7" fill="#b65b13"/>
+<circle cx="928" cy="238" r="7" fill="#b65b13"/>
+<circle cx="996" cy="238" r="7" fill="#b65b13"/>
+<circle cx="1064" cy="238" r="7" fill="#b65b13"/>
+<circle cx="860" cy="313" r="7" fill="#b65b13"/>
+<circle cx="928" cy="313" r="7" fill="#b65b13"/>
+<circle cx="996" cy="313" r="7" fill="#b65b13"/>
+<circle cx="1064" cy="313" r="7" fill="#b65b13"/>
+<circle cx="860" cy="388" r="7" fill="#b65b13"/>
+<circle cx="928" cy="388" r="7" fill="#b65b13"/>
+<circle cx="996" cy="388" r="7" fill="#b65b13"/>
+<circle cx="1064" cy="388" r="7" fill="#b65b13"/>
+<rect x="837" y="208" width="119" height="208" rx="12" fill="none" stroke="#e8bb98" stroke-width="2"/>
+<rect x="975" y="208" width="119" height="208" rx="12" fill="none" stroke="#e8bb98" stroke-width="2"/>
+<path d="M972 465 L895 315" stroke="#b65b13" stroke-width="3" fill="none"/>
+<circle cx="972" cy="465" r="10" fill="#172b4d"/>
+<text x="990" y="471" font-family="Arial, sans-serif" font-size="16" fill="#52647d" font-weight="400">запрос</text>
+<text x="818" y="523" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Сначала выбрать группы.</text>
+<text x="818" y="550" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">nprobe ↑: проверить больше</text>
+<text x="818" y="577" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">из nlist групп индекса.</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">ANN recall: сколько точных соседей сохранили?  ≠  Retrieval Recall: сколько полезных источников нашли?</text>
+<text x="40" y="682" font-family="Arial, sans-serif" font-size="19" fill="#52647d" font-weight="400">Права доступа ограничивают допустимый набор до передачи текста реранкеру, LLM и пользователю.</text>
+</svg>

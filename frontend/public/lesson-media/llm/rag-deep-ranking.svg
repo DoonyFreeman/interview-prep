@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Гибридный поиск: найти → объединить → перечитать</title><desc id="desc">RRF объединяет позиции в списках; реранкер заново оценивает пары «вопрос + фрагмент»</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Гибридный поиск: найти → объединить → перечитать</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">RRF объединяет позиции в списках; реранкер заново оценивает пары «вопрос + фрагмент»</text>
+<rect x="40" y="132" width="320" height="153" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="165" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">BM25 · совпадение слов</text>
+<text x="58" y="198" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">1. A: ERR-4031</text>
+<text x="58" y="225" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">2. B: общие причины отказа</text>
+<text x="58" y="252" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">3. D: похожий код</text>
+<rect x="40" y="322" width="320" height="153" rx="12" fill="#dcfff1" stroke="#16825d" stroke-width="2"/>
+<text x="58" y="355" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="700">Dense · близость смысла</text>
+<text x="58" y="388" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">1. B: общие причины отказа</text>
+<text x="58" y="415" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">2. C: доступ к пространству</text>
+<text x="58" y="442" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">3. A: ERR-4031</text>
+<path d="M370 207 L426 276" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<path d="M370 396 L426 308" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="442" y="174" width="315" height="259" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="460" y="207" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">RRF · c = 60</text>
+<text x="460" y="240" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">A: 1/61 + 1/63 ≈ 0,0323</text>
+<text x="460" y="267" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">B: 1/62 + 1/61 ≈ 0,0325</text>
+<text x="460" y="294" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">C: 1/62; D: 1/63</text>
+<text x="460" y="321" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Порядок: B → A → C → D</text>
+<text x="460" y="348" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Повторы склеиваем по ID.</text>
+<path d="M768 297 L804 297" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="820" y="174" width="340" height="259" rx="12" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="838" y="207" font-family="Arial, sans-serif" font-size="21" fill="#b65b13" font-weight="700">Cross-encoder</text>
+<text x="838" y="240" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Читает вопрос и каждый</text>
+<text x="838" y="267" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">кандидат вместе.</text>
+<text x="838" y="294" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Может изменить порядок.</text>
+<text x="838" y="321" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Не вернёт документ, которого</text>
+<text x="838" y="348" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">нет среди кандидатов.</text>
+<rect x="40" y="528" width="1120" height="151" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="561" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Кандидаты и контекст — разные бюджеты</text>
+<text x="58" y="594" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Например: 20 BM25 + 20 dense → объединение → реранкинг → 5 фрагментов в промпт.</text>
+<text x="58" y="621" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Это пример настройки, а не универсальные числа. Проверяем качество, токены и задержку.</text>
+<text x="58" y="648" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Складывать сырые score BM25 и cosine без обоснованного приведения шкал нельзя.</text>
+</svg>

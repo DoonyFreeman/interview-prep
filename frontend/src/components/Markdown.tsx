@@ -3,6 +3,8 @@ import remarkGfm from "remark-gfm";
 import type { ReactNode } from "react";
 import { slugify } from "../lib/slugify";
 import { ShikiCode } from "./ShikiCode";
+import { ConceptLink } from "./ConceptLink";
+import { isConceptLink } from "../lib/conceptLinks";
 
 /** Flatten a React children tree to plain text (for computing heading ids). */
 function nodeText(node: ReactNode): string {
@@ -31,11 +33,15 @@ export function Markdown({ markdown }: { markdown: string }) {
           h1: heading(1),
           h2: heading(2),
           h3: heading(3),
-          a({ href, children }) {
+          a({ href, title, children }) {
+            if (isConceptLink(href, title)) {
+              return <ConceptLink href={href!} definition={title!}>{children}</ConceptLink>;
+            }
             const external = href?.startsWith("http");
             return (
               <a
                 href={href}
+                title={title}
                 {...(external
                   ? { target: "_blank", rel: "noreferrer" }
                   : {})}

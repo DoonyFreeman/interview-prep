@@ -1,0 +1,56 @@
+.concept-link {
+  display: inline;
+}
+
+.concept-link-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-inline-start: 0.125rem;
+  vertical-align: middle;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  font: 600 0.75rem / 1 var(--font-sans);
+  cursor: pointer;
+}
+
+.concept-link-toggle:hover,
+.concept-link-toggle[aria-expanded="true"] {
+  border-color: var(--color-primary);
+}
+
+.concept-link a:focus-visible,
+.concept-link-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.concept-link-preview {
+  position: fixed;
+  z-index: 100;
+  display: block;
+  width: max-content;
+  max-width: min(22rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-pop);
+  font: 400 0.875rem / 1.6 var(--font-sans);
+  text-align: start;
+}
+
+@media (pointer: coarse) {
+  .concept-link-toggle {
+    width: 2rem;
+    height: 2rem;
+  }
+}

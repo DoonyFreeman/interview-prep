@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Похожесть векторов: направление и длина</title><desc id="desc">Двумерный учебный пример; в настоящем эмбеддинге координат обычно гораздо больше</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Похожесть векторов: направление и длина</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Двумерный учебный пример; в настоящем эмбеддинге координат обычно гораздо больше</text>
+<rect x="40" y="120" width="520" height="425" rx="12" fill="#fff" stroke="#c7d1db" stroke-width="2"/>
+<path d="M105 470 L515 470" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<path d="M105 470 L105 170" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="477" y="506" font-family="Arial, sans-serif" font-size="17" fill="#52647d" font-weight="400">ось 1</text>
+<text x="60" y="158" font-family="Arial, sans-serif" font-size="17" fill="#52647d" font-weight="400">ось 2</text>
+<path d="M105 470 L265 310" stroke="#16825d" stroke-width="3" fill="none"/>
+<path d="M105 470 L425 470" stroke="#b65b13" stroke-width="5" fill="none"/>
+<circle cx="265" cy="470" r="7" fill="#0c66e4"/>
+<circle cx="425" cy="470" r="7" fill="#b65b13"/>
+<circle cx="265" cy="310" r="7" fill="#16825d"/>
+<text x="225" y="505" font-family="Arial, sans-serif" font-size="19" fill="#0c66e4" font-weight="700">q = (1, 0)</text>
+<text x="353" y="445" font-family="Arial, sans-serif" font-size="19" fill="#b65b13" font-weight="700">a = (2, 0)</text>
+<text x="273" y="299" font-family="Arial, sans-serif" font-size="19" fill="#16825d" font-weight="700">b = (1, 1)</text>
+<text x="160" y="400" font-family="Arial, sans-serif" font-size="19" fill="#52647d" font-weight="400">угол 45°</text>
+<rect x="590" y="120" width="570" height="126" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="608" y="153" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Cosine · сравнивает направление</text>
+<text x="608" y="186" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">cos(q, a) = 1; cos(q, b) ≈ 0,707</text>
+<text x="608" y="213" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Больше → ближе по направлению. Длина не влияет.</text>
+<rect x="590" y="268" width="570" height="126" rx="12" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="608" y="301" font-family="Arial, sans-serif" font-size="21" fill="#b65b13" font-weight="700">Dot product · направление и длина</text>
+<text x="608" y="334" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">q · a = 2; q · b = 1</text>
+<text x="608" y="361" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Больше → выше оценка. Шкала зависит от модели.</text>
+<rect x="590" y="416" width="570" height="129" rx="12" fill="#dcfff1" stroke="#16825d" stroke-width="2"/>
+<text x="608" y="449" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="700">L2 · расстояние между точками</text>
+<text x="608" y="482" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">L2(q, a) = 1; L2(q, b) = 1</text>
+<text x="608" y="509" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Меньше → ближе. Здесь расстояния равны.</text>
+<rect x="40" y="574" width="1120" height="110" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="607" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">После нормализации ненулевых векторов до длины 1</text>
+<text x="58" y="640" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">dot = cosine; квадрат L2 = 2 − 2 × cosine → одинаковый порядок соседей.</text>
+<text x="58" y="667" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Одинаковая размерность не делает векторы разных моделей совместимыми. Score ≠ вероятность.</text>
+</svg>

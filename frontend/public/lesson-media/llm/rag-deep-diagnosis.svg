@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Неверный ответ: проверяем первый сломанный этап</title><desc id="desc">Сохраняйте трассу на фиксированных учебных вопросах: версии, ID кандидатов, контекст и ответ</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Неверный ответ: проверяем первый сломанный этап</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Сохраняйте трассу на фиксированных учебных вопросах: версии, ID кандидатов, контекст и ответ</text>
+<rect x="40" y="122" width="1120" height="84" rx="12" fill="#fff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="155" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Источник</text>
+<text x="246" y="152" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">В актуальном документе есть ответ?</text>
+<text x="246" y="182" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Нет → исправить базу знаний; не настраивать поиск.</text>
+<rect x="40" y="222" width="1120" height="84" rx="12" fill="#e9f2ff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="255" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Индекс</text>
+<text x="246" y="252" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">Попали ли туда новые чанки v2?</text>
+<text x="246" y="282" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Нет → загрузка / нарезка / эмбеддинги / обновление.</text>
+<rect x="40" y="322" width="1120" height="84" rx="12" fill="#fff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="355" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Retrieval</text>
+<text x="246" y="352" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">Есть ли нужный чанк в кандидатах?</text>
+<text x="246" y="382" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Нет → фильтры, модель, sparse/dense, ANN, размер списка.</text>
+<rect x="40" y="422" width="1120" height="84" rx="12" fill="#e9f2ff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="455" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Reranking</text>
+<text x="246" y="452" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">Остался ли чанк после отбора?</text>
+<text x="246" y="482" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Нет → реранкер, дубли, лимит контекста и токенов.</text>
+<rect x="40" y="522" width="1120" height="84" rx="12" fill="#fff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="555" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Generation</text>
+<text x="246" y="552" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">LLM передали нужный текст, а ответ неверен?</text>
+<text x="246" y="582" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Проверить инструкцию, цитаты, отказ и противоречия.</text>
+<text x="40" y="657" font-family="Arial, sans-serif" font-size="19" fill="#172b4d" font-weight="700">Faithfulness: ответ подтверждён контекстом?  ·  Relevance: отвечает на вопрос?  ·  Correctness: верен?</text>
+<text x="40" y="690" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Устаревший контекст может дать верный пересказ и неверный по текущим правилам ответ.</text>
+</svg>

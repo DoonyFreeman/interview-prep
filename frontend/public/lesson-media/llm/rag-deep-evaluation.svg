@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Одна выдача — четыре разных вопроса о качестве</title><desc id="desc">В корпусе 4 релевантных фрагмента. Смотрим первые k = 3: [неполезный, полезный, полезный]</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Одна выдача — четыре разных вопроса о качестве</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">В корпусе 4 релевантных фрагмента. Смотрим первые k = 3: [неполезный, полезный, полезный]</text>
+<rect x="40" y="124" width="350" height="88" rx="12" fill="#ffeceb" stroke="#ae2e24" stroke-width="2"/>
+<text x="58" y="157" font-family="Arial, sans-serif" font-size="21" fill="#ae2e24" font-weight="700">1 · нет</text>
+<rect x="420" y="124" width="350" height="88" rx="12" fill="#dcfff1" stroke="#16825d" stroke-width="2"/>
+<text x="438" y="157" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="700">2 · да</text>
+<rect x="800" y="124" width="350" height="88" rx="12" fill="#dcfff1" stroke="#16825d" stroke-width="2"/>
+<text x="818" y="157" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="700">3 · да</text>
+<rect x="40" y="250" width="550" height="143" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="283" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Precision@3 = 2/3</text>
+<text x="58" y="316" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Сколько полезного среди найденного?</text>
+<text x="58" y="343" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">2 полезных / 3 результата ≈ 0,667.</text>
+<rect x="610" y="250" width="550" height="143" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="628" y="283" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Recall@3 = 2/4</text>
+<text x="628" y="316" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Какую долю нужного нашли?</text>
+<text x="628" y="343" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">2 найденных / 4 нужных = 0,5.</text>
+<rect x="40" y="414" width="550" height="143" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="447" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">RR = 1/2; MRR — среднее RR</text>
+<text x="58" y="480" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Где первый полезный результат?</text>
+<text x="58" y="507" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Он второй: обратная позиция = 0,5.</text>
+<rect x="610" y="414" width="550" height="143" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="628" y="447" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">NDCG@3 ≈ 0,531</text>
+<text x="628" y="480" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Насколько хорош порядок?</text>
+<text x="628" y="507" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">DCG = 1/log₂3 + 1/log₂4 ≈ 1,131.</text>
+<text x="628" y="534" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">IDCG = 1 + 1/log₂3 + 1/log₂4 ≈ 2,131.</text>
+<text x="40" y="610" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Для NDCG здесь релевантность 0/1, gain = 2ʳᵉˡ − 1; идеальная первая тройка — [1, 1, 1].</text>
+<text x="40" y="647" font-family="Arial, sans-serif" font-size="20" fill="#172b4d" font-weight="700">Эти числа проверяют поиск. Даже идеальная выдача не гарантирует правильный ответ LLM.</text>
+<text x="40" y="681" font-family="Arial, sans-serif" font-size="19" fill="#52647d" font-weight="400">Пустая разметка / нет релевантных: отдельное правило оценки, а не деление на ноль.</text>
+</svg>

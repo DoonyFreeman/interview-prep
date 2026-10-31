@@ -1,7 +1,7 @@
 {
   "slug": "llm",
   "title": "LLM, RAG и агенты",
-  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества; метрики ML — матрица ошибок, Precision/Recall/F1, пороги, ROC/PR, усреднение и метрики регрессии. 4 урока со схемами.",
+  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества; метрики ML — матрица ошибок, Precision/Recall/F1, пороги, ROC/PR, усреднение и метрики регрессии. 7 уроков со схемами: отдельный трёхдневный практикум RAG от документов и эмбеддингов до поиска, индексов, реранкинга, метрик и диагностики качества.",
   "order": 1,
   "lessons": [
     {
@@ -141,6 +141,159 @@
           "slug": "metric-choice",
           "title": "Как выбрать метрику под задачу",
           "anchor": "как-выбрать-метрику-под-задачу",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "slug": "rag-documents-embeddings",
+      "title": "RAG, день 1: документы и эмбеддинги",
+      "file": "05-rag-documents-embeddings.md",
+      "order": 5,
+      "duration_minutes": 55,
+      "concepts": [
+        {
+          "slug": "rag-finetuning",
+          "title": "RAG и дообучение решают разные задачи",
+          "anchor": "rag-и-дообучение-решают-разные-задачи",
+          "order": 1
+        },
+        {
+          "slug": "rag-lifecycle",
+          "title": "Индексация, поиск и генерация",
+          "anchor": "индексация-поиск-и-генерация",
+          "order": 2
+        },
+        {
+          "slug": "rag-chunk-design",
+          "title": "Чанкинг: границы, размер и перекрытие",
+          "anchor": "чанкинг-границы-размер-и-перекрытие",
+          "order": 3
+        },
+        {
+          "slug": "rag-source-metadata",
+          "title": "Метаданные, версии и свежесть",
+          "anchor": "метаданные-версии-и-свежесть",
+          "order": 4
+        },
+        {
+          "slug": "rag-embedding-space",
+          "title": "Эмбеддинги и совместимость пространства",
+          "anchor": "эмбеддинги-и-совместимость-пространства",
+          "order": 5
+        },
+        {
+          "slug": "rag-vector-metrics",
+          "title": "Косинус, скалярное произведение и L2",
+          "anchor": "косинус-скалярное-произведение-и-l2",
+          "order": 6
+        },
+        {
+          "slug": "rag-day1-diagnosis",
+          "title": "Собираем первый день и ищем причину ошибки",
+          "anchor": "собираем-первый-день-и-ищем-причину-ошибки",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "slug": "rag-search-indexes",
+      "title": "RAG, день 2: поиск, индексы и реранкинг",
+      "file": "06-rag-search-indexes.md",
+      "order": 6,
+      "duration_minutes": 60,
+      "concepts": [
+        {
+          "slug": "rag-lexical",
+          "title": "Лексический поиск: TF-IDF и BM25",
+          "anchor": "лексический-поиск-tf-idf-и-bm25",
+          "order": 1
+        },
+        {
+          "slug": "rag-sparse-dense",
+          "title": "Sparse и dense: два вида представления",
+          "anchor": "sparse-и-dense-два-вида-представления",
+          "order": 2
+        },
+        {
+          "slug": "rag-filters-exact",
+          "title": "Векторное хранилище, фильтры и точный поиск",
+          "anchor": "векторное-хранилище-фильтры-и-точный-поиск",
+          "order": 3
+        },
+        {
+          "slug": "rag-ann-indexes",
+          "title": "ANN, HNSW и IVF",
+          "anchor": "ann-hnsw-и-ivf",
+          "order": 4
+        },
+        {
+          "slug": "rag-rrf",
+          "title": "Гибридный поиск и RRF",
+          "anchor": "гибридный-поиск-и-rrf",
+          "order": 5
+        },
+        {
+          "slug": "rag-rerank-budget",
+          "title": "Bi-encoder, cross-encoder и бюджет контекста",
+          "anchor": "bi-encoder-cross-encoder-и-бюджет-контекста",
+          "order": 6
+        },
+        {
+          "slug": "rag-search-diagnosis",
+          "title": "Диагностика поиска без случайных настроек",
+          "anchor": "диагностика-поиска-без-случайных-настроек",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "slug": "rag-evaluation",
+      "title": "RAG, день 3: оценка качества и диагностика",
+      "file": "07-rag-evaluation.md",
+      "order": 7,
+      "duration_minutes": 60,
+      "concepts": [
+        {
+          "slug": "rag-eval-set",
+          "title": "Набор оценки и единица релевантности",
+          "anchor": "набор-оценки-и-единица-релевантности",
+          "order": 1
+        },
+        {
+          "slug": "rag-ranking-metrics",
+          "title": "Precision@k, Recall@k и MRR",
+          "anchor": "precisionk-recallk-и-mrr",
+          "order": 2
+        },
+        {
+          "slug": "rag-ndcg",
+          "title": "NDCG и соглашения о полезности",
+          "anchor": "ndcg-и-соглашения-о-полезности",
+          "order": 3
+        },
+        {
+          "slug": "rag-empty-relevance",
+          "title": "Что делать, когда релевантных материалов нет",
+          "anchor": "что-делать-когда-релевантных-материалов-нет",
+          "order": 4
+        },
+        {
+          "slug": "rag-answer-quality",
+          "title": "Faithfulness, правильность и релевантность ответа",
+          "anchor": "faithfulness-правильность-и-релевантность-ответа",
+          "order": 5
+        },
+        {
+          "slug": "rag-eval-protocol",
+          "title": "Development, test и ограничения LLM-судьи",
+          "anchor": "development-test-и-ограничения-llm-судьи",
+          "order": 6
+        },
+        {
+          "slug": "rag-stage-diagnosis",
+          "title": "Трасса свежести и улучшение одного этапа",
+          "anchor": "трасса-свежести-и-улучшение-одного-этапа",
           "order": 7
         }
       ]
