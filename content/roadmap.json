@@ -299,7 +299,7 @@
       "courses": [
         {
           "slug": "llm",
-          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества.",
+          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества. Углублённый RAG за три дня: подготовка документов, поиск и индексы, оценка качества.",
           "resources": [
             { "type": "docs", "lang": "en", "title": "Hugging Face LLM Course — глава 1: введение в LLM и трансформеры", "url": "https://huggingface.co/learn/llm-course/chapter1/1", "source": "Hugging Face" },
             { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 1: основы RAG и агентный RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/01-agentic-rag", "source": "DataTalksClub" },
@@ -319,6 +319,19 @@
             "ml-classification-metrics": [
               { "type": "docs", "lang": "en", "title": "Метрики классификации: Precision, Recall, F1 и усреднение", "url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics", "source": "scikit-learn" },
               { "type": "docs", "lang": "en", "title": "Выбор порога классификации", "url": "https://scikit-learn.org/stable/modules/classification_threshold.html", "source": "scikit-learn" }
+            ],
+            "rag-documents-embeddings": [
+              {"type": "docs", "lang": "en", "title": "Метрики близости и нормализация векторов", "url": "https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances", "source": "Faiss"},
+              {"type": "docs", "lang": "en", "title": "Поиск и реранкинг: общая архитектура", "url": "https://www.sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html", "source": "Sentence Transformers"}
+            ],
+            "rag-search-indexes": [
+              {"type": "docs", "lang": "en", "title": "TF-IDF: извлечение текстовых признаков", "url": "https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction", "source": "scikit-learn"},
+              {"type": "docs", "lang": "en", "title": "Выбор векторного индекса: HNSW и IVF", "url": "https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index", "source": "Faiss"},
+              {"type": "docs", "lang": "en", "title": "Reciprocal Rank Fusion: объединение результатов", "url": "https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion", "source": "Elastic"}
+            ],
+            "rag-evaluation": [
+              {"type": "docs", "lang": "en", "title": "Оценка качества RAG: обзор метрик", "url": "https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/", "source": "Ragas"},
+              {"type": "docs", "lang": "en", "title": "NDCG: определение и правила расчёта", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html", "source": "scikit-learn"}
             ],
             "ml-curves-regression": [
               { "type": "docs", "lang": "en", "title": "Precision-Recall: кривые и примеры", "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html", "source": "scikit-learn" },

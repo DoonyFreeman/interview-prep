@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Документ обновился — индекс тоже должен обновиться</title><desc id="desc">Два процесса: подготовка знаний заранее и ответ на конкретный вопрос</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Документ обновился — индекс тоже должен обновиться</text>
+<text x="40" y="86" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Два процесса: подготовка знаний заранее и ответ на конкретный вопрос</text>
+<text x="40" y="134" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="700">1. ИНДЕКСАЦИЯ · при изменении источника</text>
+<rect x="40" y="154" width="250" height="145" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="187" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Документ v2</text>
+<text x="58" y="220" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Возврат: 45 дней</text>
+<text x="58" y="247" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">v1: 30 дней — устарел</text>
+<path d="M293 225 L322 225" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="330" y="154" width="250" height="145" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="348" y="187" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Чанки v2</text>
+<text x="348" y="220" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Текст + заголовок</text>
+<text x="348" y="247" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">doc_id + версия + права</text>
+<path d="M583 225 L612 225" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="620" y="154" width="250" height="145" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="638" y="187" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Векторы v2</text>
+<text x="638" y="220" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Модель A, размер d</text>
+<text x="638" y="247" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Та же схема обработки</text>
+<path d="M873 225 L902 225" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="910" y="154" width="250" height="145" rx="12" fill="#fff" stroke="#0c66e4" stroke-width="2"/>
+<text x="928" y="187" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Новый индекс</text>
+<text x="928" y="220" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Проверить готовность</text>
+<text x="928" y="247" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Убрать старую версию</text>
+<text x="40" y="354" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="700">2. ОТВЕТ · на каждый запрос пользователя</text>
+<rect x="40" y="376" width="250" height="145" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="409" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Вопрос</text>
+<text x="58" y="442" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">«Какой срок возврата?»</text>
+<text x="58" y="469" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">→ вектор моделью A</text>
+<path d="M293 448 L322 448" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="330" y="376" width="250" height="145" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="348" y="409" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Поиск</text>
+<text x="348" y="442" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Только доступные v2</text>
+<text x="348" y="469" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Кандидаты → реранкинг</text>
+<path d="M583 448 L612 448" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="620" y="376" width="250" height="145" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="638" y="409" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Контекст</text>
+<text x="638" y="442" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Нужные чанки + ссылки</text>
+<text x="638" y="469" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">В пределах окна LLM</text>
+<path d="M873 448 L902 448" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="910" y="376" width="250" height="145" rx="12" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="928" y="409" font-family="Arial, sans-serif" font-size="21" fill="#0c66e4" font-weight="700">Ответ</text>
+<text x="928" y="442" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">«45 дней [doc:v2]»</text>
+<text x="928" y="469" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Проверяем опору на текст</text>
+<rect x="40" y="566" width="1120" height="112" rx="12" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="58" y="599" font-family="Arial, sans-serif" font-size="21" fill="#b65b13" font-weight="700">Если ответ всё ещё «30 дней»</text>
+<text x="58" y="632" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Проверьте версию на каждом этапе: источник → чанк → индекс → найденный контекст → ответ.</text>
+<text x="58" y="659" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">Новый промпт сам по себе не перечитает документ и не пересчитает старые векторы.</text>
+</svg>

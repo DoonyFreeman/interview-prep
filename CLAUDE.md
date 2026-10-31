@@ -306,6 +306,14 @@ items (Courses / Glossary / Progress) + a single "to review" badge; the mobile
 `env(safe-area-inset-*)` padding on the bottom bar/main/toasts, 16px form-control
 font on phones to stop focus-zoom, `theme-color` per scheme.
 
+**Deep RAG learning path:** LLM lessons 5–7 (`rag-documents-embeddings`,
+`rag-search-indexes`, `rag-evaluation`) cover the mentor's RAG/vector-search topics
+over three study days, with compressed routes, exercises and six native SVG diagrams.
+`scripts/build_rag_diagrams.py` rebuilds these assets offline without dependencies.
+Internal Markdown lesson-section links with an authored `title` show a plain-text
+concept preview through `ConceptLink` (hover/focus or the adjacent touch button);
+the link itself always navigates. Untitled and external links stay ordinary.
+
 **Cheatsheets:** `/cheatsheets` replaces the old Progress page (`/progress`
 redirects there); progress APIs, SM-2 and catalog stats remain. Six standalone
 references live in `frontend/src/content/cheatsheets/*.md`, registered in

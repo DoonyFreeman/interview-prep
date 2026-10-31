@@ -420,6 +420,14 @@ body,
   border-radius: 6px;
   white-space: nowrap;
 }
+@media (max-width: 640px) {
+  /* Worked formulas and long identifiers must fit the reading column on phones.
+     Fenced code blocks retain their separate horizontal scrolling. */
+  .prose :not(pre) > code {
+    white-space: break-spaces;
+    overflow-wrap: anywhere;
+  }
+}
 .prose table {
   width: 100%;
   border-collapse: collapse;

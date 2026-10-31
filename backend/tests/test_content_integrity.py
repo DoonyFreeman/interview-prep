@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import pytest
@@ -265,7 +266,7 @@ def test_lesson_images_exist_and_sizes_match(bundle, content_root):
     lesson references must exist in frontend/public, carry a `#WxH` (the space
     the page reserves), and that size must equal the screen-size its HTML source
     in scripts/lesson-screens was rendered at. (So every lesson image is expected
-    to be rendered from an HTML source; a hand-made PNG would need its own rule.)"""
+    to be rendered from an HTML source; native SVGs declare their own viewBox.)"""
     repo = content_root.resolve().parent
     public = repo / "frontend" / "public"
     sources = repo / "scripts" / "lesson-screens"
@@ -288,6 +289,12 @@ def test_lesson_images_exist_and_sizes_match(bundle, content_root):
                     continue
                 if width is None:
                     problems.append(f"{where}: no #WxH size")
+                    continue
+                if file.suffix == ".svg":
+                    svg = ET.parse(file).getroot()
+                    expected = f"0 0 {width} {height}"
+                    if svg.attrib.get("viewBox") != expected:
+                        problems.append(f"{where}: size differs from SVG viewBox")
                     continue
                 source = (sources / Path(url).relative_to("/lesson-media")).with_suffix(
                     ".html"
