@@ -435,7 +435,9 @@
     "backToLibrary": "Все шпаргалки",
     "downloadPdf": "Скачать PDF",
     "open": "Открыть",
-    "onePage": "1 лист",
+    "pageCount_one": "{{count}} страница",
+    "pageCount_few": "{{count}} страницы",
+    "pageCount_many": "{{count}} страниц",
     "notFoundTitle": "Шпаргалка не найдена",
     "notFoundDescription": "Такой страницы нет. Выберите материал в библиотеке шпаргалок.",
     "groups": {
@@ -444,6 +446,6 @@
       "ai": "LLM и ML"
     },
     "lessonTitle": "Шпаргалка по метрикам ML",
-    "lessonDescription": "Формулы, кривые и выбор метрики · 1 лист"
+    "lessonDescription": "Смысл метрик, формулы и пошаговые примеры · 3 страницы"
   }
 }

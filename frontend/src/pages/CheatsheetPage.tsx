@@ -49,7 +49,7 @@ export function CheatsheetPage() {
         <div className="cheatsheet-reader-meta">
           <span>{t(`cheatsheets.groups.${sheet.category}`)}</span>
           <span aria-hidden="true">/</span>
-          <span>{t("cheatsheets.onePage")}</span>
+          <span>{t("cheatsheets.pageCount", { count: sheet.pages })}</span>
         </div>
         <h1 className="font-display text-3xl font-bold text-ink sm:text-4xl">{sheet.title}</h1>
         <p className="mt-3 max-w-2xl text-muted">{sheet.description}</p>

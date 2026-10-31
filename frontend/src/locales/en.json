@@ -435,7 +435,8 @@
     "backToLibrary": "All cheatsheets",
     "downloadPdf": "Download PDF",
     "open": "Open",
-    "onePage": "1 page",
+    "pageCount_one": "{{count}} page",
+    "pageCount_other": "{{count}} pages",
     "notFoundTitle": "Cheatsheet not found",
     "notFoundDescription": "This page does not exist. Choose a reference sheet from the library.",
     "groups": {
@@ -444,6 +445,6 @@
       "ai": "LLM & ML"
     },
     "lessonTitle": "ML metrics cheatsheet",
-    "lessonDescription": "Formulas, curves and choosing a metric · 1 page"
+    "lessonDescription": "Metric meanings, formulas and worked examples · 3 pages"
   }
 }

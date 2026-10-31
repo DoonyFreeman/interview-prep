@@ -35,7 +35,7 @@ export function CheatsheetsPage() {
                 <article key={sheet.slug} className="cheatsheet-catalog-card">
                   <div className="cheatsheet-card-topline">
                     <IconArticle className="h-5 w-5 text-primary" />
-                    <span className="cheatsheet-page-count">{t("cheatsheets.onePage")}</span>
+                    <span className="cheatsheet-page-count">{t("cheatsheets.pageCount", { count: sheet.pages })}</span>
                   </div>
                   <h3 className="font-display text-xl font-bold text-ink">{sheet.title}</h3>
                   <p className="cheatsheet-card-description">{sheet.description}</p>
