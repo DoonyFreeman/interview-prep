@@ -12,9 +12,10 @@ def test_every_cheatsheet_has_a_real_pdf():
     downloads = frontend / "public" / "cheatsheets"
     sheets = {path.stem for path in markdown.glob("*.md")}
     pdfs = {path.stem for path in downloads.glob("*.pdf")}
-    assert len(sheets) == 6
-    assert pdfs == sheets
-    for slug in sheets:
+    assert len(sheets) == 9
+    # The complete RAG pack is a download, not a duplicate reader entry.
+    assert pdfs == sheets | {"rag-all"}
+    for slug in pdfs:
         with (downloads / f"{slug}.pdf").open("rb") as stream:
             assert stream.read(5) == b"%PDF-", slug
 
@@ -30,7 +31,11 @@ async def test_pdf_downloads_and_reader_routes_share_the_production_origin(tmp_p
     monkeypatch.setattr(main, "STATIC_DIR", static)
 
     async with AsyncClient(transport=ASGITransport(app=main.create_app()), base_url="http://test") as client:
-        for path in ("/cheatsheets", "/cheatsheets/ml-metrics", "/progress"):
+        for path in (
+            "/cheatsheets", "/cheatsheets/ml-metrics", "/progress",
+            "/cheatsheets/rag-documents-embeddings",
+            "/cheatsheets/rag-search-indexes", "/cheatsheets/rag-evaluation",
+        ):
             response = await client.get(path)
             assert response.status_code == 200
             assert response.headers["content-type"].startswith("text/html")

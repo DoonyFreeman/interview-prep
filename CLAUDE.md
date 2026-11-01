@@ -315,11 +315,15 @@ concept preview through `ConceptLink` (hover/focus or the adjacent touch button)
 the link itself always navigates. Untitled and external links stay ordinary.
 
 **Cheatsheets:** `/cheatsheets` replaces the old Progress page (`/progress`
-redirects there); progress APIs, SM-2 and catalog stats remain. Six standalone
+redirects there); progress APIs, SM-2 and catalog stats remain. Nine standalone
 references live in `frontend/src/content/cheatsheets/*.md`, registered in
 `frontend/src/lib/cheatsheets.ts`, with responsive readers and checked-in PDFs
-under `frontend/public/cheatsheets/`. Only `llm/ml-curves-regression` (lesson 4)
-has a compact footer link to the ML sheet. Saved mobile `progress` tab IDs migrate
+under `frontend/public/cheatsheets/`. `llm/ml-curves-regression` (lesson 4)
+links to the ML sheet; deep RAG lessons 5–7 each link to their own two-page sheet.
+The RAG group and its readers/lesson footers offer `rag-all.pdf`: the original
+overview plus three deep sheets, seven pages with four PDF bookmarks.
+`scripts/build_rag_cheatsheets.py` rebuilds this pack offline with the same local
+fonts and optional PDF tooling. Saved mobile `progress` tab IDs migrate
 to `cheatsheets`. `scripts/build_cheatsheets.py` is optional offline authoring
 (reportlab/pypdf and local fonts); normal builds require no PDF tooling. With no
 source flags it rebuilds ML from its Markdown. Original PDFs are passed explicitly

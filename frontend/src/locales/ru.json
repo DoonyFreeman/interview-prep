@@ -443,9 +443,10 @@
     "groups": {
       "python": "Python",
       "team": "Работа в команде",
-      "ai": "LLM и ML"
+      "ai": "LLM и ML",
+      "rag": "RAG и векторные БД"
     },
-    "lessonTitle": "Шпаргалка по метрикам ML",
-    "lessonDescription": "Смысл метрик, формулы и пошаговые примеры · 3 страницы"
+    "downloadRagBundle": "Скачать все по RAG",
+    "ragBundleDescription": "4 шпаргалки · 7 страниц · один PDF"
   }
 }

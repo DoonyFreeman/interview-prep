@@ -16,7 +16,7 @@ import { IconMic, IconClipboardCheck, IconArticle, IconDownload } from "../compo
 import { ResourceList } from "../components/RoadmapDrawer";
 import { resourcesFor } from "../lib/roadmap";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
-import { getLessonCheatsheet } from "../lib/cheatsheets";
+import { getCheatsheetBundle, getLessonCheatsheet } from "../lib/cheatsheets";
 
 export function LessonPage() {
   const { t } = useTranslation();
@@ -61,6 +61,7 @@ export function LessonPage() {
     .find((c) => c.slug === courseSlug);
   const materials = roadmapCourse ? resourcesFor(roadmapCourse, lessonSlug) : null;
   const cheatsheet = getLessonCheatsheet(courseSlug, lessonSlug);
+  const cheatsheetBundle = getCheatsheetBundle(cheatsheet?.slug);
 
   return (
     <div className="lg:flex lg:gap-10">
@@ -119,17 +120,17 @@ export function LessonPage() {
 
         {cheatsheet && (
           <section
-            aria-label={t("cheatsheets.lessonTitle")}
+            aria-label={cheatsheet.title}
             className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4"
           >
             <div className="flex min-w-0 items-center gap-3">
               <IconArticle className="h-5 w-5 shrink-0 text-primary" />
               <div>
                 <h2 className="font-display font-semibold text-ink">
-                  {t("cheatsheets.lessonTitle")}
+                  {cheatsheet.title}
                 </h2>
                 <p className="mt-0.5 text-sm text-muted">
-                  {t("cheatsheets.lessonDescription")}
+                  {cheatsheet.description} · {t("cheatsheets.pageCount", { count: cheatsheet.pages })}
                 </p>
               </div>
             </div>
@@ -148,6 +149,16 @@ export function LessonPage() {
                 <IconDownload className="h-4 w-4" />
                 {t("cheatsheets.downloadPdf")}
               </a>
+              {cheatsheetBundle && (
+                <a
+                  href={cheatsheetBundle.pdfUrl}
+                  download
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-fg transition-colors hover:bg-primary-strong"
+                >
+                  <IconDownload className="h-4 w-4" />
+                  {t("cheatsheets.downloadRagBundle")}
+                </a>
+              )}
             </div>
           </section>
         )}

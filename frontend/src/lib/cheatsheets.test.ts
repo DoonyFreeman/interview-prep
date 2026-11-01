@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   CHEATSHEETS,
+  RAG_CHEATSHEET_BUNDLE,
+  getCheatsheetBundle,
   getCheatsheet,
   getCheatsheetSections,
   getLessonCheatsheet,
@@ -14,6 +16,36 @@ describe("cheatsheet navigation", () => {
     expect(getLessonCheatsheet("llm", "ml-classification-metrics")).toBeUndefined();
     expect(getLessonCheatsheet("other-course", "ml-curves-regression")).toBeUndefined();
     expect(getLessonCheatsheet("llm", "agents")).toBeUndefined();
+  });
+
+  it("links each deep RAG lesson to its own sheet without attaching the overview", () => {
+    for (const slug of RAG_CHEATSHEET_BUNDLE.slugs.slice(1)) {
+      expect(getLessonCheatsheet("llm", slug)).toBe(getCheatsheet(slug));
+      expect(getLessonCheatsheet("other-course", slug)).toBeUndefined();
+    }
+    expect(getLessonCheatsheet("llm", "rag")).toBeUndefined();
+    expect(getLessonCheatsheet("llm", "rag-agents")).toBeUndefined();
+    expect(getLessonCheatsheet("llm", "llm-basics")).toBeUndefined();
+    expect(getLessonCheatsheet("llm", "toString")).toBeUndefined();
+    expect(getLessonCheatsheet(undefined, undefined)).toBeUndefined();
+  });
+
+  it("offers the ordered RAG bundle only for its four members", () => {
+    expect(RAG_CHEATSHEET_BUNDLE.slugs).toEqual([
+      "rag", "rag-documents-embeddings", "rag-search-indexes", "rag-evaluation",
+    ]);
+    expect(RAG_CHEATSHEET_BUNDLE.pdfUrl).toBe("/cheatsheets/rag-all.pdf");
+    expect(RAG_CHEATSHEET_BUNDLE.pages).toBe(7);
+    const members = RAG_CHEATSHEET_BUNDLE.slugs.map((slug) => getCheatsheet(slug)!);
+    expect(members.reduce((pages, sheet) => pages + sheet.pages, 0)).toBe(RAG_CHEATSHEET_BUNDLE.pages);
+    expect(CHEATSHEETS.filter((sheet) => sheet.category === "rag").map((sheet) => sheet.slug))
+      .toEqual(RAG_CHEATSHEET_BUNDLE.slugs);
+    for (const slug of RAG_CHEATSHEET_BUNDLE.slugs) {
+      expect(getCheatsheetBundle(slug)).toBe(RAG_CHEATSHEET_BUNDLE);
+    }
+    for (const slug of ["ml-metrics", "agents", "llm-basics", "../../private", "toString", undefined]) {
+      expect(getCheatsheetBundle(slug)).toBeUndefined();
+    }
   });
 
   it("does not manufacture sheets or download URLs from an unknown slug", () => {
@@ -51,12 +83,12 @@ describe("reference sheet sections", () => {
 });
 
 describe("published library assets", () => {
-  it("provides six readable sheets with same-origin PDF download paths", () => {
-    expect(CHEATSHEETS).toHaveLength(6);
-    expect(new Set(CHEATSHEETS.map((sheet) => sheet.slug)).size).toBe(6);
+  it("provides nine readable sheets with same-origin PDF download paths", () => {
+    expect(CHEATSHEETS).toHaveLength(9);
+    expect(new Set(CHEATSHEETS.map((sheet) => sheet.slug)).size).toBe(9);
     for (const sheet of CHEATSHEETS) {
       expect(sheet.pdfUrl).toBe(`/cheatsheets/${sheet.slug}.pdf`);
-      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : 1);
+      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : RAG_CHEATSHEET_BUNDLE.slugs.slice(1).some((slug) => slug === sheet.slug) ? 2 : 1);
       const sections = getCheatsheetSections(sheet.markdown);
       expect(sections.length).toBeGreaterThan(0);
       expect(sections.every((section) => section.markdown.trim().length > 0)).toBe(true);

@@ -27,7 +27,7 @@
 }
 
 .cheatsheet-group-title {
-  margin-bottom: 1rem;
+  margin: 0;
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--color-ink);
@@ -239,4 +239,31 @@
   .cheatsheet-section-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.cheatsheet-group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cheatsheet-bundle-download {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+}
+
+.cheatsheet-bundle-download p {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.cheatsheet-action:focus-visible,
+.cheatsheet-back-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }

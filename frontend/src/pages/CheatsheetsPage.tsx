@@ -2,7 +2,7 @@ import { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconArticle } from "../components/icons";
-import { CHEATSHEETS, CHEATSHEET_GROUPS } from "../lib/cheatsheets";
+import { CHEATSHEETS, CHEATSHEET_GROUPS, RAG_CHEATSHEET_BUNDLE } from "../lib/cheatsheets";
 import "../components/cheatsheets.css";
 
 export function CheatsheetsPage() {
@@ -27,9 +27,19 @@ export function CheatsheetsPage() {
       <div className="cheatsheet-groups">
         {CHEATSHEET_GROUPS.map((group) => (
           <section key={group.id} aria-labelledby={`cheatsheet-group-${group.id}`}>
-            <h2 id={`cheatsheet-group-${group.id}`} className="cheatsheet-group-title font-display">
-              {t(group.labelKey)}
-            </h2>
+            <div className="cheatsheet-group-header">
+              <h2 id={`cheatsheet-group-${group.id}`} className="cheatsheet-group-title font-display">
+                {t(group.labelKey)}
+              </h2>
+              {group.id === "rag" && (
+                <div className="cheatsheet-bundle-download">
+                  <a href={RAG_CHEATSHEET_BUNDLE.pdfUrl} download className="cheatsheet-action cheatsheet-action-primary">
+                    {t("cheatsheets.downloadRagBundle")}
+                  </a>
+                  <p>{t("cheatsheets.ragBundleDescription")}</p>
+                </div>
+              )}
+            </div>
             <div className="cheatsheet-catalog-grid">
               {CHEATSHEETS.filter((sheet) => sheet.category === group.id).map((sheet) => (
                 <article key={sheet.slug} className="cheatsheet-catalog-card">
