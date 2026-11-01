@@ -4,9 +4,12 @@ import llmBasics from "../content/cheatsheets/llm-basics.md?raw";
 import rag from "../content/cheatsheets/rag.md?raw";
 import agents from "../content/cheatsheets/agents.md?raw";
 import mlMetrics from "../content/cheatsheets/ml-metrics.md?raw";
+import ragDocuments from "../content/cheatsheets/rag-documents-embeddings.md?raw";
+import ragSearch from "../content/cheatsheets/rag-search-indexes.md?raw";
+import ragEvaluation from "../content/cheatsheets/rag-evaluation.md?raw";
 import { slugify } from "./slugify";
 
-export type CheatsheetCategory = "python" | "team" | "ai";
+export type CheatsheetCategory = "python" | "team" | "ai" | "rag";
 
 export interface Cheatsheet {
   slug: string;
@@ -22,6 +25,7 @@ export const CHEATSHEET_GROUPS = [
   { id: "python", labelKey: "cheatsheets.groups.python" },
   { id: "team", labelKey: "cheatsheets.groups.team" },
   { id: "ai", labelKey: "cheatsheets.groups.ai" },
+  { id: "rag", labelKey: "cheatsheets.groups.rag" },
 ] as const;
 
 export const CHEATSHEETS: readonly Cheatsheet[] = [
@@ -56,7 +60,7 @@ export const CHEATSHEETS: readonly Cheatsheet[] = [
     slug: "rag",
     title: "RAG: поиск и контекст",
     description: "Эмбеддинги, чанкинг, retrieval, reranking и оценка качества.",
-    category: "ai",
+    category: "rag",
     pdfUrl: "/cheatsheets/rag.pdf",
     pages: 1,
     markdown: rag,
@@ -79,7 +83,52 @@ export const CHEATSHEETS: readonly Cheatsheet[] = [
     pages: 3,
     markdown: mlMetrics,
   },
+  {
+    slug: "rag-documents-embeddings",
+    title: "RAG: документы и эмбеддинги",
+    description: "Актуальные документы, чанкинг, совместимость эмбеддингов и пошаговый расчёт dot, cosine и L2.",
+    category: "rag",
+    pdfUrl: "/cheatsheets/rag-documents-embeddings.pdf",
+    pages: 2,
+    markdown: ragDocuments,
+  },
+  {
+    slug: "rag-search-indexes",
+    title: "RAG: поиск и векторные БД",
+    description: "Индексы, ANN, фильтры, гибридный поиск и reranking: как собрать retrieval.",
+    category: "rag",
+    pdfUrl: "/cheatsheets/rag-search-indexes.pdf",
+    pages: 2,
+    markdown: ragSearch,
+  },
+  {
+    slug: "rag-evaluation",
+    title: "RAG: оценка и улучшение",
+    description: "Метрики retrieval и ответа, тестовый набор, диагностика ошибок и оптимизация RAG.",
+    category: "rag",
+    pdfUrl: "/cheatsheets/rag-evaluation.pdf",
+    pages: 2,
+    markdown: ragEvaluation,
+  },
 ];
+
+export interface CheatsheetBundle {
+  readonly slugs: readonly string[];
+  readonly pdfUrl: string;
+  readonly pages: number;
+}
+
+export const RAG_CHEATSHEET_BUNDLE = {
+  slugs: ["rag", "rag-documents-embeddings", "rag-search-indexes", "rag-evaluation"],
+  pdfUrl: "/cheatsheets/rag-all.pdf",
+  pages: 7,
+} as const satisfies CheatsheetBundle;
+
+export function getCheatsheetBundle(slug: string | undefined): CheatsheetBundle | undefined {
+  return RAG_CHEATSHEET_BUNDLE.slugs.some((member) => member === slug)
+    ? RAG_CHEATSHEET_BUNDLE
+    : undefined;
+}
 
 export function getCheatsheet(slug: string | undefined): Cheatsheet | undefined {
   return CHEATSHEETS.find((sheet) => sheet.slug === slug);
@@ -89,8 +138,10 @@ export function getLessonCheatsheet(
   courseSlug: string | undefined,
   lessonSlug: string | undefined,
 ): Cheatsheet | undefined {
-  return courseSlug === "llm" && lessonSlug === "ml-curves-regression"
-    ? getCheatsheet("ml-metrics")
+  if (courseSlug !== "llm") return undefined;
+  if (lessonSlug === "ml-curves-regression") return getCheatsheet("ml-metrics");
+  return RAG_CHEATSHEET_BUNDLE.slugs.slice(1).some((slug) => slug === lessonSlug)
+    ? getCheatsheet(lessonSlug)
     : undefined;
 }
 

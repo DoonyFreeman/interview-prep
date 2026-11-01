@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 import { EmptyState } from "../components/EmptyState";
 import { IconArticle } from "../components/icons";
 import { Markdown } from "../components/Markdown";
-import { getCheatsheet, getCheatsheetSections } from "../lib/cheatsheets";
+import { getCheatsheet, getCheatsheetBundle, getCheatsheetSections } from "../lib/cheatsheets";
 import "../components/cheatsheets.css";
 
 export function CheatsheetPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
   const sheet = getCheatsheet(slug);
+  const bundle = getCheatsheetBundle(slug);
   const sections = useMemo(() => getCheatsheetSections(sheet?.markdown ?? ""), [sheet]);
 
   // A sheet can be opened from the bottom of a catalog or a long lesson.
@@ -41,9 +42,16 @@ export function CheatsheetPage() {
         <Link to="/cheatsheets" className="cheatsheet-back-link">
           <span aria-hidden="true">←</span> {t("cheatsheets.backToLibrary")}
         </Link>
-        <a href={sheet.pdfUrl} download className="cheatsheet-action cheatsheet-action-primary">
-          {t("cheatsheets.downloadPdf")}
-        </a>
+        <div className="cheatsheet-card-actions">
+          <a href={sheet.pdfUrl} download className="cheatsheet-action cheatsheet-action-primary">
+            {t("cheatsheets.downloadPdf")}
+          </a>
+          {bundle && (
+            <a href={bundle.pdfUrl} download className="cheatsheet-action cheatsheet-action-secondary">
+              {t("cheatsheets.downloadRagBundle")}
+            </a>
+          )}
+        </div>
       </div>
       <header className="cheatsheet-reader-header">
         <div className="cheatsheet-reader-meta">

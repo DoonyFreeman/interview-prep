@@ -442,9 +442,10 @@
     "groups": {
       "python": "Python",
       "team": "Team processes",
-      "ai": "LLM & ML"
+      "ai": "LLM & ML",
+      "rag": "RAG & vector databases"
     },
-    "lessonTitle": "ML metrics cheatsheet",
-    "lessonDescription": "Metric meanings, formulas and worked examples · 3 pages"
+    "downloadRagBundle": "Download all RAG sheets",
+    "ragBundleDescription": "4 cheatsheets · 7 pages · one PDF"
   }
 }
