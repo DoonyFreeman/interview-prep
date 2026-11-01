@@ -317,23 +317,36 @@
               { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 4: оценка качества RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/04-evaluation", "source": "DataTalksClub" }
             ],
             "ml-classification-metrics": [
+              {"type": "video", "lang": "ru", "title": "Precision, Recall и F1: матрица ошибок и дисбаланс классов", "url": "https://www.youtube.com/watch?v=-jplpYLrcdM", "source": "selfedu", "minutes": 15},
+              {"type": "video", "lang": "ru", "title": "Micro, Macro, Weighted: как усреднять метрики по классам", "url": "https://www.youtube.com/watch?v=i1G5F2jOspE", "source": "machine learrrning", "minutes": 20},
               { "type": "docs", "lang": "en", "title": "Метрики классификации: Precision, Recall, F1 и усреднение", "url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics", "source": "scikit-learn" },
               { "type": "docs", "lang": "en", "title": "Выбор порога классификации", "url": "https://scikit-learn.org/stable/modules/classification_threshold.html", "source": "scikit-learn" }
             ],
             "rag-documents-embeddings": [
+              {"type": "video", "lang": "ru", "title": "RAG простыми словами: от документов к ответу", "url": "https://www.youtube.com/watch?v=22tkx79icy4", "source": "AI RANEZ", "minutes": 9},
+              {"type": "video", "lang": "ru", "title": "Эмбеддинги: как представить слова векторами", "url": "https://www.youtube.com/watch?v=AoclBY_SwC8", "source": "Matter and Mind", "minutes": 7},
+              {"type": "video", "lang": "ru", "title": "Косинусная близость и расстояние: примеры в Python", "url": "https://www.youtube.com/watch?v=EUmWCp4TnBA", "source": "Алексей Задойный", "minutes": 7},
+              {"type": "video", "lang": "ru", "title": "Дополнительно: чанкинг и контекст фрагмента на примере n8n + Qdrant", "url": "https://www.youtube.com/watch?v=ECEF9inl4BA", "source": "Автоматизируй и властвуй", "minutes": 7},
               {"type": "docs", "lang": "en", "title": "Метрики близости и нормализация векторов", "url": "https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances", "source": "Faiss"},
               {"type": "docs", "lang": "en", "title": "Поиск и реранкинг: общая архитектура", "url": "https://www.sbert.net/examples/sentence_transformer/applications/retrieve_rerank/README.html", "source": "Sentence Transformers"}
             ],
             "rag-search-indexes": [
+              {"type": "video", "lang": "ru", "title": "Векторный поиск: Flat, HNSW, IVF, фильтры и реранкер", "url": "https://www.youtube.com/watch?v=YK2PpXO5hfM", "source": "Comrad404 | Обзор ИИ инструментов и новости", "minutes": 14},
+              {"type": "video", "lang": "ru", "title": "BM25 + векторы + RRF: практический разбор гибридного поиска", "url": "https://www.youtube.com/watch?v=FWsICzKbnK0", "source": "Timur Yessenov", "minutes": 21},
               {"type": "docs", "lang": "en", "title": "TF-IDF: извлечение текстовых признаков", "url": "https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction", "source": "scikit-learn"},
               {"type": "docs", "lang": "en", "title": "Выбор векторного индекса: HNSW и IVF", "url": "https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index", "source": "Faiss"},
               {"type": "docs", "lang": "en", "title": "Reciprocal Rank Fusion: объединение результатов", "url": "https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion", "source": "Elastic"}
             ],
             "rag-evaluation": [
+              {"type": "video", "lang": "ru", "title": "Качество RAG: раздельная оценка поиска и ответа, обзор RAGAS", "url": "https://www.youtube.com/watch?v=2HnpVE8EX84", "source": "OTUS IT Онлайн - образование", "minutes": 21},
+              {"type": "video", "lang": "en", "title": "Дополнительно на английском: Precision@k, Recall@k, MRR и NDCG", "url": "https://www.youtube.com/watch?v=-dIm4EyUrrM", "source": "Praveen Reddy Learnings", "minutes": 12},
               {"type": "docs", "lang": "en", "title": "Оценка качества RAG: обзор метрик", "url": "https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/", "source": "Ragas"},
               {"type": "docs", "lang": "en", "title": "NDCG: определение и правила расчёта", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html", "source": "scikit-learn"}
             ],
             "ml-curves-regression": [
+              {"type": "video", "lang": "ru", "title": "ROC-кривая и ROC-AUC: пороги, TPR и FPR на примере", "url": "https://www.youtube.com/watch?v=v6PPG8J_Egs", "source": "machine learrrning", "minutes": 15},
+              {"type": "video", "lang": "ru", "title": "Precision-Recall: как построить PR-кривую и посчитать PR-AUC", "url": "https://www.youtube.com/watch?v=QW-09jHQH-w", "source": "machine learrrning", "minutes": 15},
+              {"type": "video", "lang": "ru", "title": "MAE, MSE, RMSE и R²: расчёт и смысл метрик регрессии", "url": "https://www.youtube.com/watch?v=vh2smjQyhp8", "source": "machine learrrning", "minutes": 14},
               { "type": "docs", "lang": "en", "title": "Precision-Recall: кривые и примеры", "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html", "source": "scikit-learn" },
               { "type": "docs", "lang": "en", "title": "Average Precision: точный способ расчёта", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html", "source": "scikit-learn" },
               { "type": "docs", "lang": "en", "title": "Метрики регрессии: MAE, MSE, RMSE и R²", "url": "https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics", "source": "scikit-learn" }
