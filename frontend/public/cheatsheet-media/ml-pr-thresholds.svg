@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="500" height="300" preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="500" height="300"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-300)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="500" height="300" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<polyline points="52 64, 52 246" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 64, 462 64" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="48.108" y="46" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,92) scale(1,-1)">0</text>
+			<text x="32.216" y="60" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,120) scale(1,-1)">0</text>
+			<polyline points="257 64, 257 246" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 155, 462 155" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="247.27" y="46" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,92) scale(1,-1)">0.5</text>
+			<text x="20.54" y="151.0" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,302) scale(1,-1)">0.5</text>
+			<polyline points="462 64, 462 246" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 246, 462 246" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="458.108" y="46" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,92) scale(1,-1)">1</text>
+			<text x="32.216" y="242" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,484) scale(1,-1)">1</text>
+			<polyline points="52 64, 462 64" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 64, 52 246" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="423.108" y="26" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,52) scale(1,-1)">Recall</text>
+			<text x="52" y="261" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,522) scale(1,-1)">Precision</text>
+			<polyline points="52 185.3333, 462 185.3333" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd; stroke-dasharray: 4, 4;"/>
+			<text x="64" y="165.33333333333331" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,330) scale(1,-1)">baseline = 6/9</text>
+			<polyline points="52 246, 120.3333 246, 188.6667 246, 257 246, 325.3333 246, 325.3333 209.6, 462 185.3333" style="stroke: rgb(40%,31%,74%); stroke-linecap: butt; stroke-width: 3; fill: None; fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="246.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="120.33333333333333" cy="246.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="188.66666666666666" cy="246.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="257.0" cy="246.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="325.3333333333333" cy="246.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="325.3333333333333" cy="209.6" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="462.0" cy="185.33333333333331" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="57" y="226" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,452) scale(1,-1)">(0, 1)*</text>
+			<text x="107.50233333333333" y="256" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,512) scale(1,-1)">t = 1</text>
+			<text x="303.46733333333333" y="256" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,512) scale(1,-1)">t = 0.84</text>
+			<text x="271.6013333333333" y="189.6" style="font-family: Helvetica; font-size: 13px;fill: rgb(75%,42%,13%); stroke:none;" transform="translate(0,379) scale(1,-1)">t = 0.54</text>
+			<text x="431.338" y="165.33333333333331" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,330) scale(1,-1)">t = 0</text>
+			<circle cx="325.3333333333333" cy="209.6" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+			<text x="52" y="8" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,16) scale(1,-1)">* (Recall=0; Precision=1)</text>
+		</g>
+	</g>
+</svg>

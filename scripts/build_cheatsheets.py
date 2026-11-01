@@ -24,6 +24,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Table, TableStyle
 
+from build_ml_curve_diagrams import pdf_diagram
+
 ROOT = Path(__file__).resolve().parents[1]
 TITLES = {
     'concurrency': 'Конкурентность, потоки и asyncio',
@@ -200,7 +202,10 @@ def markdown_blocks(body: str, width: float):
     cellstyle = ParagraphStyle('cell', parent=style, fontSize=8.0, leading=9.5)
     chunks = re.split(r'\n\s*\n', body.strip())
     for chunk in chunks:
-        if chunk.startswith('|'):
+        image = re.fullmatch(r'!\[[^\]]*\]\((/cheatsheet-media/[^)#]+)(?:#\d+x\d+)?\)', chunk)
+        if image:
+            yield pdf_diagram(image.group(1), width)
+        elif chunk.startswith('|'):
             rows = [[cell.strip() for cell in line.strip().strip('|').split('|')] for line in chunk.splitlines()]
             rows = [row for row in rows if not all(re.fullmatch(r'[:\- ]+', cell) for cell in row)]
             # Compact, semantic table widths avoid narrow formula columns.
