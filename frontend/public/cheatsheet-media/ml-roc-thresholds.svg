@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="500" height="380" preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="500" height="380"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-380)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="500" height="380" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="52" y="358" style="font-family: Helvetica; font-size: 17px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,716) scale(1,-1)">Scores: t = 0.54</text>
+			<text x="310" y="358" style="font-family: Helvetica; font-size: 14px;fill: rgb(40%,31%,74%); stroke:none;" transform="translate(0,716) scale(1,-1)">class 1</text>
+			<text x="401" y="358" style="font-family: Helvetica; font-size: 14px;fill: rgb(75%,42%,13%); stroke:none;" transform="translate(0,716) scale(1,-1)">class 0</text>
+			<polyline points="52 250, 462 250" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="32.216" y="246" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,492) scale(1,-1)">0</text>
+			<polyline points="52 287.5, 462 287.5" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="20.54" y="283.5" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,567) scale(1,-1)">0.5</text>
+			<polyline points="52 325, 462 325" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="32.216" y="321" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,642) scale(1,-1)">1</text>
+			<circle cx="52.0" cy="250" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+			<text x="48.386" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">0</text>
+			<circle cx="103.25" cy="250" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+			<text x="99.636" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">1</text>
+			<circle cx="154.5" cy="250" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="150.886" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">2</text>
+			<circle cx="205.75" cy="250" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="202.136" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">3</text>
+			<circle cx="257.0" cy="290.909125" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+			<text x="253.386" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">4</text>
+			<circle cx="308.25" cy="313.679275" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="304.636" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">5</text>
+			<circle cx="359.5" cy="322.4719" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="355.886" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">6</text>
+			<circle cx="410.75" cy="322.65625" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="407.136" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">7</text>
+			<circle cx="462.0" cy="325" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="458.386" y="231" style="font-family: Helvetica; font-size: 13px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,462) scale(1,-1)">8</text>
+			<polyline points="52 290.5, 462 290.5" style="stroke: rgb(75%,42%,13%); stroke-linecap: butt; stroke-width: 2; fill: None; fill-rule: evenodd; stroke-dasharray: 5, 3;"/>
+			<text x="414.904" y="297.5" style="font-family: Helvetica; font-size: 14px;fill: rgb(75%,42%,13%); stroke:none;" transform="translate(0,595) scale(1,-1)">t = 0.54</text>
+			<polyline points="52 54, 52 202" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 54, 462 54" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="48.108" y="36" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,72) scale(1,-1)">0</text>
+			<text x="32.216" y="50" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,100) scale(1,-1)">0</text>
+			<polyline points="257 54, 257 202" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 128, 462 128" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="247.27" y="36" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,72) scale(1,-1)">0.5</text>
+			<text x="20.54" y="124.0" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,248) scale(1,-1)">0.5</text>
+			<polyline points="462 54, 462 202" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 202, 462 202" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="458.108" y="36" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,72) scale(1,-1)">1</text>
+			<text x="32.216" y="198" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,396) scale(1,-1)">1</text>
+			<polyline points="52 54, 462 54" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="52 54, 52 202" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="434.0" y="16" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,32) scale(1,-1)">FPR</text>
+			<text x="52" y="217" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,434) scale(1,-1)">TPR = Recall</text>
+			<polyline points="52 54, 462 202" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd; stroke-dasharray: 4, 4;"/>
+			<polyline points="52 54, 52 78.66667, 52 103.3333, 52 128, 52 152.6667, 188.6667 152.6667, 462 202" style="stroke: rgb(40%,31%,74%); stroke-linecap: butt; stroke-width: 3; fill: None; fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="54.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="78.66666666666666" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="103.33333333333333" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="128.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="52.0" cy="152.66666666666666" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="188.66666666666666" cy="152.66666666666666" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<circle cx="462.0" cy="202.0" r="3.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(40%,31%,74%); fill-rule: evenodd;"/>
+			<text x="62" y="61" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,122) scale(1,-1)">t &gt; 1</text>
+			<text x="62" y="82.66666666666667" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,165) scale(1,-1)">t = 1</text>
+			<text x="62" y="159.66666666666669" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,319) scale(1,-1)">t = 0.84</text>
+			<text x="198.66666666666666" y="133.66666666666669" style="font-family: Helvetica; font-size: 13px;fill: rgb(75%,42%,13%); stroke:none;" transform="translate(0,267) scale(1,-1)">t = 0.54</text>
+			<text x="431.338" y="211" style="font-family: Helvetica; font-size: 13px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,422) scale(1,-1)">t = 0</text>
+			<circle cx="188.66666666666666" cy="152.66666666666669" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>
