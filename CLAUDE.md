@@ -314,6 +314,16 @@ Internal Markdown lesson-section links with an authored `title` show a plain-tex
 concept preview through `ConceptLink` (hover/focus or the adjacent touch button);
 the link itself always navigates. Untitled and external links stay ordinary.
 
+**LangChain/LangGraph learning path:** LLM lessons 8–12 (`langchain-components`,
+`langchain-contracts`, `agent-decisions`, `langgraph-state`, `langgraph-persistence`)
+form five short study days with a shared synthetic Mayak order example, four concepts
+per lesson, authored interview questions and MCQs. `scripts/build_agent_diagrams.py`
+rebuilds eight native SVGs offline. The Markdown reader supports a fenced `solution`
+block (native closed disclosure containing Markdown) and an `execution` block
+(validated, bounded JSON snapshots rendered by `ExecutionTrace`, no code execution).
+Keep model requests distinct from tool execution, parsed structure from factual
+support, and persisted state from model weights or exactly-once side effects.
+
 **Cheatsheets:** `/cheatsheets` replaces the old Progress page (`/progress`
 redirects there); progress APIs, SM-2 and catalog stats remain. Nine standalone
 references live in `frontend/src/content/cheatsheets/*.md`, registered in
