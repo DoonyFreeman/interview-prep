@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">interrupt: пауза и повторный запуск узла</title><desc id="desc">Маяк подготовил черновик для заказа 42; сохранение требует решения человека. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">interrupt: пауза и повторный запуск узла</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Маяк подготовил черновик для заказа 42; сохранение требует решения человека</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="140" width="330" height="140" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="175" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">1 · draft</text>
+<text x="58" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Подготовить черновик</text>
+<text x="58" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Без сохранения в базу</text>
+<path d="M380 210 L430 210" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="440" y="140" width="320" height="140" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="458" y="175" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">2 · interrupt()</text>
+<text x="458" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Пауза + checkpoint</text>
+<text x="458" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Дождаться человека</text>
+<path d="M770 210 L820 210" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="830" y="140" width="330" height="140" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="848" y="175" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">3 · Решение</text>
+<text x="848" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">approve / reject</text>
+<text x="848" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Command(resume=…)</text>
+<path d="M995 290 L995 320 L610 320 L610 345" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="40" y="350" width="720" height="229" rx="14" fill="#ffffff" stroke="#b65b13" stroke-width="2"/>
+<text x="58" y="386" font-family="Arial, sans-serif" font-size="25" fill="#b65b13" font-weight="700">4 · Узел запускается С НАЧАЛА</text>
+<text x="58" y="430" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">Код до interrupt выполняется снова</text>
+<text x="58" y="466" font-family="Arial, sans-serif" font-size="22" fill="#172b4d" font-weight="400">interrupt получает значение resume → проверка решения</text>
+<text x="58" y="502" font-family="Arial, sans-serif" font-size="22" fill="#172b4d" font-weight="400">approve → действие; reject → завершить без действия</text>
+<text x="58" y="544" font-family="Arial, sans-serif" font-size="22" fill="#52647d" font-weight="400">Локальные переменные не восстанавливаются как стек.</text>
+<path d="M770 460 L820 460" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="830" y="350" width="330" height="229" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="848" y="385" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">5 · Только approve</text>
+<text x="848" y="417" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Сохранить черновик</text>
+<text x="848" y="447" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">после одобрения</text>
+<text x="848" y="477" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400"></text>
+<text x="848" y="507" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Ключ идемпотентности:</text>
+<text x="848" y="537" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">&quot;order-42:draft-v1&quot;</text>
+<text x="40" y="627" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">До паузы — безопасные повторяемые шаги; побочный эффект — после проверки.</text>
+<text x="40" y="665" font-family="Arial, sans-serif" font-size="23" fill="#b65b13" font-weight="400">Повторный запуск возможен: защита от дублей нужна и после одобрения.</text>
+</svg>

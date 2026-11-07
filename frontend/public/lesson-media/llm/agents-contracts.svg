@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Два контракта: данные ответа и запрос действия</title><desc id="desc">Structured output описывает результат; tool call просит приложение вызвать инструмент. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Два контракта: данные ответа и запрос действия</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Structured output описывает результат; tool call просит приложение вызвать инструмент</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="140" width="545" height="390" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="175" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Structured output</text>
+<text x="58" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Схема Decision (Pydantic)</text>
+<text x="58" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">status: allowed / denied / unknown</text>
+<text x="58" y="267" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">reason: str; sources: list[str]</text>
+<text x="58" y="297" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400"></text>
+<text x="58" y="327" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Результат:</text>
+<text x="58" y="357" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">status: &quot;allowed&quot;</text>
+<text x="58" y="387" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">reason: &quot;40 ≤ 45; unused = true&quot;</text>
+<text x="58" y="417" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">sources: [&quot;policy-v2&quot;, &quot;order-42&quot;]</text>
+<text x="58" y="447" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Ответ уже имеет нужную форму.</text>
+<rect x="615" y="140" width="545" height="390" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="633" y="175" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">Tool call</text>
+<text x="633" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Имя инструмента + аргументы</text>
+<text x="633" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">name: &quot;get_order&quot;</text>
+<text x="633" y="267" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">args: {order_id: 42}</text>
+<text x="633" y="297" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400"></text>
+<text x="633" y="327" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Это просьба получить данные.</text>
+<text x="633" y="357" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Приложение проверяет аргументы</text>
+<text x="633" y="387" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">и право доступа, затем вызывает</text>
+<text x="633" y="417" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">свою функцию get_order(42).</text>
+<text x="633" y="447" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Модель сама её не исполняет.</text>
+<rect x="40" y="570" width="1120" height="94" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="58" y="605" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">Валидация формы ≠ проверка истины</text>
+<text x="58" y="637" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">bool / str / схема не доказывают, что заказ существует или правила соблюдены.</text>
+</svg>

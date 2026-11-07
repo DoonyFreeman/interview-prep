@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Chain, workflow, agent: кто выбирает следующий шаг</title><desc id="desc">Выбор зависит от задачи, контроля, задержки и стоимости; дешевле не всегда значит лучше. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Chain, workflow, agent: кто выбирает следующий шаг</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Выбор зависит от задачи, контроля, задержки и стоимости; дешевле не всегда значит лучше</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="140" width="360" height="298" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="175" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Chain · фиксировано</text>
+<text x="58" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Заданный порядок</text>
+<text x="58" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Prompt</text>
+<text x="58" y="267" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">↓</text>
+<text x="58" y="297" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Model</text>
+<text x="58" y="327" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">↓</text>
+<text x="58" y="357" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Parser</text>
+<rect x="420" y="140" width="360" height="298" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="438" y="175" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">Workflow · ветвление</text>
+<text x="438" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Заданные переходы</text>
+<text x="438" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Проверка заказа</text>
+<text x="438" y="267" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">↓</text>
+<text x="438" y="297" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">eligible?</text>
+<text x="438" y="327" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">да → ответ</text>
+<text x="438" y="357" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">нет → отказ</text>
+<rect x="800" y="140" width="360" height="298" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="818" y="175" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">Agent · цикл</text>
+<text x="818" y="207" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Модель выбирает шаг</text>
+<text x="818" y="237" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Model → tool call</text>
+<text x="818" y="267" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">↑                 ↓</text>
+<text x="818" y="297" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">результат ← exec</text>
+<text x="818" y="327" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400"></text>
+<text x="818" y="357" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">до ответа / лимита</text>
+<rect x="40" y="477" width="1120" height="168" rx="14" fill="#ffffff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="512" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Две организации агентного цикла</text>
+<text x="58" y="544" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">ReAct: следующий шаг → действие → наблюдаемый результат → следующий шаг.</text>
+<text x="58" y="574" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Plan-and-execute: план → выполнение шагов → при необходимости перепланирование.</text>
+<text x="58" y="604" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">На схеме только действия и результаты; скрытые рассуждения не отображаются.</text>
+</svg>

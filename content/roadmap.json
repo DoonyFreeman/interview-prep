@@ -299,7 +299,7 @@
       "courses": [
         {
           "slug": "llm",
-          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества. Углублённый RAG за три дня: подготовка документов, поиск и индексы, оценка качества.",
+          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества. Углублённый RAG за три дня: подготовка документов, поиск и индексы, оценка качества. LangChain и LangGraph за пять коротких дней: от компонентов и инструментов до состояния и подтверждения человеком.",
           "resources": [
             { "type": "docs", "lang": "en", "title": "Hugging Face LLM Course — глава 1: введение в LLM и трансформеры", "url": "https://huggingface.co/learn/llm-course/chapter1/1", "source": "Hugging Face" },
             { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 1: основы RAG и агентный RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/01-agentic-rag", "source": "DataTalksClub" },
@@ -307,6 +307,25 @@
             { "type": "article", "lang": "ru", "title": "Что такое Retrieval-Augmented Generation (RAG) в языковых моделях и как оно работает?", "url": "https://habr.com/ru/articles/841428/", "source": "Хабр" }
           ],
           "lesson_resources": {
+            "langchain-components": [
+              {"type": "docs", "lang": "en", "title": "Runnable: invoke, batch, stream и соединение компонентов", "url": "https://reference.langchain.com/python/langchain-core/runnables/base/Runnable", "source": "LangChain"},
+              {"type": "docs", "lang": "en", "title": "Модели и сообщения LangChain", "url": "https://docs.langchain.com/oss/python/langchain/models", "source": "LangChain"}
+            ],
+            "langchain-contracts": [
+              {"type": "docs", "lang": "en", "title": "Структурированный ответ и проверка схемы", "url": "https://docs.langchain.com/oss/python/langchain/structured-output", "source": "LangChain"},
+              {"type": "docs", "lang": "en", "title": "Модели: цикл вызова инструментов", "url": "https://docs.langchain.com/oss/python/langchain/models#tool-calling", "source": "LangChain"}
+            ],
+            "agent-decisions": [
+              {"type": "docs", "lang": "en", "title": "Готовые агенты LangChain и связь с LangGraph", "url": "https://docs.langchain.com/oss/python/langchain/overview", "source": "LangChain"},
+              {"type": "docs", "lang": "en", "title": "Workflows и agents: сравнение паттернов", "url": "https://www.anthropic.com/research/building-effective-agents", "source": "Anthropic"}
+            ],
+            "langgraph-state": [
+              {"type": "docs", "lang": "en", "title": "Graph API: состояние, узлы, reducers и переходы", "url": "https://docs.langchain.com/oss/python/langgraph/graph-api", "source": "LangChain"}
+            ],
+            "langgraph-persistence": [
+              {"type": "docs", "lang": "en", "title": "Checkpointers: снимки и thread_id", "url": "https://docs.langchain.com/oss/python/langgraph/checkpointers", "source": "LangChain"},
+              {"type": "docs", "lang": "en", "title": "Interrupts: пауза, resume и повтор узла", "url": "https://docs.langchain.com/oss/python/langgraph/interrupts", "source": "LangChain"}
+            ],
             "llm-basics": [
               { "type": "video", "lang": "en", "title": "[1hr Talk] Intro to Large Language Models", "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g", "source": "Andrej Karpathy" },
               { "type": "article", "lang": "ru", "title": "Большой обзор больших языковых моделей", "url": "https://habr.com/ru/articles/884410/", "source": "Хабр" }

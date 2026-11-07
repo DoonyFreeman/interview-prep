@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Цепочка: кто что делает и какой тип передаёт</title><desc id="desc">Вопрос: «Можно вернуть заказ 42?» · политика: 45 дней, только неиспользованный товар. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Цепочка: кто что делает и какой тип передаёт</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Вопрос: «Можно вернуть заказ 42?» · политика: 45 дней, только неиспользованный товар</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="148" width="290" height="170" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="183" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">1 · Переменные</text>
+<text x="58" y="215" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">dict</text>
+<text x="58" y="245" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">{question: &quot;Можно</text>
+<text x="58" y="275" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">вернуть заказ 42?&quot;}</text>
+<rect x="450" y="148" width="330" height="170" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="468" y="183" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">2 · Prompt template</text>
+<text x="468" y="215" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Подставляет {question}</text>
+<text x="468" y="245" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Добавляет инструкцию</text>
+<text x="468" y="275" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Не вызывает модель</text>
+<path d="M340 235 L440 235" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="350" y="213" font-family="Arial, sans-serif" font-size="20" fill="#0c66e4" font-weight="400">dict</text>
+<path d="M790 235 L1130 235 L1130 375" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="827" y="207" font-family="Arial, sans-serif" font-size="20" fill="#0c66e4" font-weight="400">PromptValue</text>
+<text x="825" y="268" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">сообщения + факты:</text>
+<text x="825" y="300" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">age_days = 40</text>
+<text x="825" y="330" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">policy_days = 45</text>
+<text x="825" y="360" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">unused = true</text>
+<rect x="650" y="385" width="510" height="170" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="668" y="420" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">3 · ChatModel</text>
+<text x="668" y="452" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Формирует AIMessage · content:</text>
+<text x="668" y="482" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">&quot;Да: 40 ≤ 45,</text>
+<text x="668" y="512" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">товар не использован.&quot;</text>
+<rect x="40" y="385" width="480" height="170" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="58" y="420" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">4 · StrOutputParser</text>
+<text x="58" y="452" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Берёт текст content из AIMessage</text>
+<text x="58" y="482" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">str · &quot;Да: 40 ≤ 45,</text>
+<text x="58" y="512" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">товар не использован.&quot;</text>
+<path d="M640 470 L530 470" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="526" y="440" font-family="Arial, sans-serif" font-size="20" fill="#16825d" font-weight="400">AIMessage</text>
+<text x="40" y="610" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">Контекст модели: age_days = 40; unused = true; policy_days = 45.</text>
+<text x="40" y="650" font-family="Arial, sans-serif" font-size="23" fill="#b65b13" font-weight="400">Parser извлекает текст; правильность решения проверяется отдельно.</text>
+</svg>

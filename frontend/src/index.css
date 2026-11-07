@@ -1,5 +1,66 @@
 @import "tailwindcss";
 
+/* Teaching blocks stay inside the existing reader and follow both themes. */
+.lesson-solution {
+  margin: 1.25rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-2);
+}
+.lesson-solution > summary {
+  cursor: pointer;
+  padding: 0.8rem 1rem;
+  min-height: 44px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.lesson-solution > .prose { padding: 0 1rem 0.75rem; }
+.lesson-solution > summary:focus-visible,
+.execution-trace button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.execution-trace {
+  margin: 1.5rem 0;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow-wrap: anywhere;
+}
+.prose .execution-trace-title { margin: 0; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
+.prose .execution-trace-caption { margin: 0.5rem 0 1rem; color: var(--color-muted); font-size: 0.875rem; }
+.prose .execution-trace-nodes {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none;
+  margin: 1rem 0; padding: 0;
+}
+.prose .execution-trace-nodes li {
+  margin: 0; padding: 0.35rem 0.65rem; border: 1px solid var(--color-border);
+  border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem;
+}
+.execution-trace-nodes [aria-current="step"] {
+  background: var(--color-primary-soft); color: var(--color-primary); font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+.execution-trace-navigation { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.execution-trace button {
+  min-height: 44px; padding: 0.5rem 0.8rem; cursor: pointer;
+  border: 1px solid var(--color-border); border-radius: 8px;
+  background: var(--color-surface-2); color: var(--color-ink); font-size: 0.875rem;
+}
+.execution-trace button:hover:not(:disabled) { background: var(--color-primary-soft); }
+.execution-trace button:disabled { opacity: 0.45; cursor: default; }
+.execution-trace-description { min-height: 5rem; margin-top: 1rem; }
+.prose .execution-trace-counter { color: var(--color-primary); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem; }
+.execution-trace table { table-layout: fixed; width: 100%; }
+.execution-trace th, .execution-trace td { white-space: normal; overflow-wrap: anywhere; }
+.execution-trace th:first-child { width: 38%; }
+.execution-trace tbody th { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; }
+.execution-trace caption { text-align: left; padding: 0.5rem 0; color: var(--color-muted); font-size: 0.875rem; }
+.execution-trace [data-changed] { background: var(--color-primary-soft); }
+.execution-trace-change { color: var(--color-primary); font-family: var(--font-sans); }
+
 /* ------------------------------------------------------------------ */
 /* Design tokens — warm, minimal "2026" learning palette.             */
 /* Neutrals are warm stone; primary is a confident indigo (trust /    */

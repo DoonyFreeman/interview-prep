@@ -1,7 +1,7 @@
 {
   "slug": "llm",
   "title": "LLM, RAG и агенты",
-  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества; метрики ML — матрица ошибок, Precision/Recall/F1, пороги, ROC/PR, усреднение и метрики регрессии. 7 уроков со схемами: отдельный трёхдневный практикум RAG от документов и эмбеддингов до поиска, индексов, реранкинга, метрик и диагностики качества.",
+  "description": "Как устроены большие языковые модели и как с ними работать из бэкенда: токены и контекстное окно, галлюцинации, temperature и top-p, открытые и закрытые модели, роли в API, стриминг, промптинг, валидный JSON и стоимость; эмбеддинги, векторные БД, RAG-пайплайн, чанкинг, гибридный поиск и реранкинг, tool calling, агенты, LangChain и LangGraph, оценка качества; метрики ML — матрица ошибок, Precision/Recall/F1, пороги, ROC/PR, усреднение и метрики регрессии. 12 уроков со схемами: отдельный трёхдневный практикум RAG от документов и эмбеддингов до поиска, индексов, реранкинга, метрик и диагностики качества. Пятидневный маршрут LangChain и LangGraph: компоненты и данные, контракты и инструменты, решения агента, граф и состояние, сохранение и участие человека; короткие задания с раскрываемыми решениями и пошаговой трассой.",
   "order": 1,
   "lessons": [
     {
@@ -295,6 +295,171 @@
           "title": "Трасса свежести и улучшение одного этапа",
           "anchor": "трасса-свежести-и-улучшение-одного-этапа",
           "order": 7
+        }
+      ]
+    },
+    {
+      "slug": "langchain-components",
+      "title": "LangChain, день 1: данные между компонентами",
+      "file": "08-langchain-components.md",
+      "order": 8,
+      "duration_minutes": 30,
+      "concepts": [
+        {
+          "slug": "plain-python",
+          "title": "Сначала обычные шаги Python",
+          "anchor": "сначала-обычные-шаги-python",
+          "order": 1
+        },
+        {
+          "slug": "prompt-model-parser",
+          "title": "Prompt, model и parser",
+          "anchor": "prompt-model-и-parser",
+          "order": 2
+        },
+        {
+          "slug": "runnable-lcel",
+          "title": "Runnable и соединение через LCEL",
+          "anchor": "runnable-и-соединение-через-lcel",
+          "order": 3
+        },
+        {
+          "slug": "invocation-modes",
+          "title": "Invoke, batch и stream",
+          "anchor": "invoke-batch-и-stream",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "langchain-contracts",
+      "title": "LangChain, день 2: контракты и инструменты",
+      "file": "09-langchain-contracts.md",
+      "order": 9,
+      "duration_minutes": 30,
+      "concepts": [
+        {
+          "slug": "structured-contract",
+          "title": "Структура ответа и правильность фактов",
+          "anchor": "структура-ответа-и-правильность-фактов",
+          "order": 1
+        },
+        {
+          "slug": "tool-contract",
+          "title": "Контракт инструмента",
+          "anchor": "контракт-инструмента",
+          "order": 2
+        },
+        {
+          "slug": "tool-roundtrip",
+          "title": "Полный цикл tool calling",
+          "anchor": "полный-цикл-tool-calling",
+          "order": 3
+        },
+        {
+          "slug": "tool-failures",
+          "title": "Ошибки и отсутствие оснований",
+          "anchor": "ошибки-и-отсутствие-оснований",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "agent-decisions",
+      "title": "Агенты, день 3: кто выбирает следующий шаг",
+      "file": "10-agent-decisions.md",
+      "order": 10,
+      "duration_minutes": 30,
+      "concepts": [
+        {
+          "slug": "control-patterns",
+          "title": "Chain, workflow и agent на одной задаче",
+          "anchor": "chain-workflow-и-agent-на-одной-задаче",
+          "order": 1
+        },
+        {
+          "slug": "react-cycle",
+          "title": "ReAct как цикл действия и наблюдения",
+          "anchor": "react-как-цикл-действия-и-наблюдения",
+          "order": 2
+        },
+        {
+          "slug": "plan-execute",
+          "title": "Plan-and-Execute",
+          "anchor": "plan-and-execute",
+          "order": 3
+        },
+        {
+          "slug": "agent-boundaries",
+          "title": "Границы агента и выбор простого решения",
+          "anchor": "границы-агента-и-выбор-простого-решения",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "langgraph-state",
+      "title": "LangGraph, день 4: состояние и маршрут",
+      "file": "11-langgraph-state.md",
+      "order": 11,
+      "duration_minutes": 35,
+      "concepts": [
+        {
+          "slug": "state-nodes",
+          "title": "Состояние и обычные функции",
+          "anchor": "состояние-и-обычные-функции",
+          "order": 1
+        },
+        {
+          "slug": "state-reducers",
+          "title": "Reducer объединяет обновления",
+          "anchor": "reducer-объединяет-обновления",
+          "order": 2
+        },
+        {
+          "slug": "conditional-cycles",
+          "title": "Условный маршрут и конечный цикл",
+          "anchor": "условный-маршрут-и-конечный-цикл",
+          "order": 3
+        },
+        {
+          "slug": "compile-trace",
+          "title": "Сборка и ручная трасса",
+          "anchor": "сборка-и-ручная-трасса",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "slug": "langgraph-persistence",
+      "title": "LangGraph, день 5: память и подтверждение",
+      "file": "12-langgraph-persistence.md",
+      "order": 12,
+      "duration_minutes": 35,
+      "concepts": [
+        {
+          "slug": "checkpoint-storage",
+          "title": "Checkpointer сохраняет снимки",
+          "anchor": "checkpointer-сохраняет-снимки",
+          "order": 1
+        },
+        {
+          "slug": "thread-continuity",
+          "title": "Thread отделяет диалоги",
+          "anchor": "thread-отделяет-диалоги",
+          "order": 2
+        },
+        {
+          "slug": "human-interrupt",
+          "title": "Interrupt ждёт решение человека",
+          "anchor": "interrupt-ждёт-решение-человека",
+          "order": 3
+        },
+        {
+          "slug": "idempotent-write",
+          "title": "Повтор запуска и идемпотентность",
+          "anchor": "повтор-запуска-и-идемпотентность",
+          "order": 4
         }
       ]
     }

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">StateGraph: узлы возвращают обновления состояния</title><desc id="desc">State — общие данные графа; update описывает изменение, а не весь новый снимок. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">StateGraph: узлы возвращают обновления состояния</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">State — общие данные графа; update описывает изменение, а не весь новый снимок</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="135" width="335" height="215" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="58" y="170" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">До · state</text>
+<text x="58" y="202" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">order_id: 42</text>
+<text x="58" y="232" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">age_days: 40</text>
+<text x="58" y="262" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">unused: true</text>
+<text x="58" y="292" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">events: [&quot;loaded&quot;]</text>
+<text x="58" y="322" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">eligible: null</text>
+<path d="M385 230 L425 230" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="440" y="135" width="320" height="190" rx="14" fill="#ffffff" stroke="#0c66e4" stroke-width="2"/>
+<text x="458" y="170" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Узел check_policy</text>
+<text x="458" y="202" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Читает state</text>
+<text x="458" y="232" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Возвращает update:</text>
+<text x="458" y="262" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">eligible: true</text>
+<text x="458" y="292" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">events: [&quot;policy&quot;]</text>
+<path d="M770 230 L810 230" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<rect x="825" y="135" width="335" height="230" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="843" y="170" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">После · state</text>
+<text x="843" y="202" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">order_id: 42</text>
+<text x="843" y="232" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">age_days: 40</text>
+<text x="843" y="262" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">unused: true</text>
+<text x="843" y="292" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">eligible: true</text>
+<text x="843" y="322" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">events: [&quot;loaded&quot;,</text>
+<text x="843" y="352" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">&quot;policy&quot;]</text>
+<rect x="40" y="390" width="545" height="118" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="58" y="425" font-family="Arial, sans-serif" font-size="24" fill="#b65b13" font-weight="700">Поле без reducer → замена</text>
+<text x="58" y="457" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">eligible: null → true</text>
+<text x="58" y="487" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Для events без reducer: [&quot;policy&quot;]</text>
+<rect x="615" y="390" width="545" height="118" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="633" y="425" font-family="Arial, sans-serif" font-size="24" fill="#16825d" font-weight="700">events с reducer → накопление</text>
+<text x="633" y="457" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">[&quot;loaded&quot;] + [&quot;policy&quot;]</text>
+<text x="633" y="487" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">= [&quot;loaded&quot;, &quot;policy&quot;]</text>
+<text x="40" y="543" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Условный переход</text>
+<rect x="360" y="515" width="290" height="106" rx="14" fill="#ffffff" stroke="#0c66e4" stroke-width="2"/>
+<text x="378" y="550" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">Данных хватает?</text>
+<text x="378" y="582" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">Routing по state</text>
+<path d="M660 548 L860 548" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="705" y="530" font-family="Arial, sans-serif" font-size="21" fill="#16825d" font-weight="400">да</text>
+<text x="885" y="556" font-family="Arial, sans-serif" font-size="23" fill="#16825d" font-weight="400">ответ → END</text>
+<path d="M500 631 L500 657 L20 657 L20 350 L180 350 L180 330" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="65" y="617" font-family="Arial, sans-serif" font-size="21" fill="#b65b13" font-weight="400">нет → загрузить ещё</text>
+</svg>
