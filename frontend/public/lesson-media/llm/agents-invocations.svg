@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">invoke, batch и stream: три способа получить выход</title><desc id="desc">Одна Runnable-цепочка; способ вызова меняет форму получения результата. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">invoke, batch и stream: три способа получить выход</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Одна Runnable-цепочка; способ вызова меняет форму получения результата</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="135" width="1120" height="130" rx="14" fill="#e9f2ff" stroke="#0c66e4" stroke-width="2"/>
+<text x="60" y="175" font-family="Arial, sans-serif" font-size="27" fill="#0c66e4" font-weight="700">invoke</text>
+<text x="238" y="183" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">1 вход</text>
+<path d="M575 195 L685 195" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="713" y="183" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">1 полный результат</text>
+<text x="238" y="233" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Например: итоговая строка с ответом о заказе 42.</text>
+<rect x="40" y="290" width="1120" height="130" rx="14" fill="#e6f6ee" stroke="#16825d" stroke-width="2"/>
+<text x="60" y="330" font-family="Arial, sans-serif" font-size="27" fill="#16825d" font-weight="700">batch</text>
+<text x="238" y="338" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">[вход 1, вход 2, вход 3]</text>
+<path d="M575 350 L685 350" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="713" y="338" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">[выход 1, выход 2, выход 3]</text>
+<text x="238" y="388" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Три независимых запроса; batch не обещает один API-вызов.</text>
+<rect x="40" y="445" width="1120" height="130" rx="14" fill="#fff3eb" stroke="#b65b13" stroke-width="2"/>
+<text x="60" y="485" font-family="Arial, sans-serif" font-size="27" fill="#b65b13" font-weight="700">stream</text>
+<text x="238" y="493" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">1 вход</text>
+<path d="M575 505 L685 505" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="713" y="493" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">порция 1 → 2 → 3 → …</text>
+<text x="238" y="543" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Порции одного результата; их тип и границы зависят от реализации.</text>
+<text x="40" y="638" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="700">Stream — не три независимых ответа; batch — не один общий диалог.</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Tool loop: модель предлагает, приложение выполняет</title><desc id="desc">Чтение заказа 42: age_days = 40, unused = true · правило возврата: ≤ 45 дней и unused. Учебный пример «Маяк», без внешних вызовов.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#8590a2"/></marker></defs>
+<rect width="1200" height="720" fill="#fbfaf8"/>
+<text x="40" y="53" font-family="Arial, sans-serif" font-size="29" fill="#172b4d" font-weight="700">Tool loop: модель предлагает, приложение выполняет</text>
+<text x="40" y="89" font-family="Arial, sans-serif" font-size="20" fill="#52647d" font-weight="400">Чтение заказа 42: age_days = 40, unused = true · правило возврата: ≤ 45 дней и unused</text>
+<text x="40" y="697" font-family="Arial, sans-serif" font-size="18" fill="#52647d" font-weight="400">МАЯК · учебный пример · без внешних вызовов</text>
+<rect x="40" y="127" width="350" height="483" rx="14" fill="#e9f2ff" stroke="#c7d1db" stroke-width="2"/>
+<text x="58" y="163" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">ПРИЛОЖЕНИЕ</text>
+<rect x="425" y="127" width="350" height="483" rx="14" fill="#ffffff" stroke="#c7d1db" stroke-width="2"/>
+<text x="443" y="163" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">МОДЕЛЬ</text>
+<rect x="810" y="127" width="350" height="483" rx="14" fill="#e6f6ee" stroke="#c7d1db" stroke-width="2"/>
+<text x="828" y="163" font-family="Arial, sans-serif" font-size="24" fill="#0c66e4" font-weight="700">ИНСТРУМЕНТ</text>
+<text x="58" y="222" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">1 · Вопрос + политика</text>
+<path d="M300 237 L480 237" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="443" y="281" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">2 · get_order(order_id=42)</text>
+<text x="443" y="311" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">tool call · id = call_1</text>
+<path d="M490 327 L310 327" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="58" y="370" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">3 · Права + args → exec</text>
+<path d="M320 385 L840 385" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="828" y="429" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">4 · Данные заказа</text>
+<text x="828" y="459" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">40 дней; unused = true</text>
+<path d="M840 478 L320 478" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="58" y="516" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">5 · ToolMessage</text>
+<text x="58" y="546" font-family="Arial, sans-serif" font-size="21" fill="#52647d" font-weight="400">result + call_1 → модель</text>
+<path d="M320 562 L480 562" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="443" y="594" font-family="Arial, sans-serif" font-size="21" fill="#172b4d" font-weight="400">6 · «Да, условия выполнены»</text>
+<path d="M490 604 L310 604" stroke="#8590a2" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="40" y="648" font-family="Arial, sans-serif" font-size="23" fill="#172b4d" font-weight="400">Приложение передаёт результат с тем же tool_call_id; затем модель отвечает.</text>
+</svg>

@@ -447,5 +447,19 @@
     },
     "downloadRagBundle": "Download all RAG sheets",
     "ragBundleDescription": "4 cheatsheets · 7 pages · one PDF"
+  },
+  "lessonBlocks": {
+    "showSolution": "Show solution",
+    "invalidTrace": "This example could not be displayed. Continue with the lesson table and explanation.",
+    "fixedExample": "A predefined example, without model calls. Step through it and follow the data changes.",
+    "nodes": "Graph nodes",
+    "previous": "Back",
+    "next": "Next step",
+    "reset": "Restart",
+    "step": "Step {{current}} of {{total}}",
+    "stateCaption": "State after the selected step",
+    "field": "Field",
+    "value": "Value",
+    "changed": "changed"
   }
 }
