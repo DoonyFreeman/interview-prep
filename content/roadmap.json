@@ -308,21 +308,28 @@
           ],
           "lesson_resources": {
             "langchain-components": [
+              {"type": "video", "lang": "ru", "title": "Runnable и цепочка prompt → model → parser: invoke, stream, batch", "url": "https://www.youtube.com/watch?v=fbAPSJ1btSY", "source": "Langchain school", "minutes": 6},
               {"type": "docs", "lang": "en", "title": "Runnable: invoke, batch, stream и соединение компонентов", "url": "https://reference.langchain.com/python/langchain-core/runnables/base/Runnable", "source": "LangChain"},
               {"type": "docs", "lang": "en", "title": "Модели и сообщения LangChain", "url": "https://docs.langchain.com/oss/python/langchain/models", "source": "LangChain"}
             ],
             "langchain-contracts": [
+              {"type": "video", "lang": "ru", "title": "Tool calling: модель выбирает инструмент, программа выполняет запрос", "url": "https://www.youtube.com/watch?v=WI4OJlhZyYM", "source": "Souren Stepanyan", "minutes": 6},
+              {"type": "video", "lang": "en", "title": "На английском: structured output, Pydantic и проверка схемы", "url": "https://www.youtube.com/watch?v=W3HODCLsppU", "source": "AI Bytes Learning", "minutes": 11},
               {"type": "docs", "lang": "en", "title": "Структурированный ответ и проверка схемы", "url": "https://docs.langchain.com/oss/python/langchain/structured-output", "source": "LangChain"},
               {"type": "docs", "lang": "en", "title": "Модели: цикл вызова инструментов", "url": "https://docs.langchain.com/oss/python/langchain/models#tool-calling", "source": "LangChain"}
             ],
             "agent-decisions": [
+              {"type": "video", "lang": "ru", "title": "Workflow и AI-агент: кто управляет последовательностью действий", "url": "https://www.youtube.com/watch?v=ouIfF-imQ2Q", "source": "Александр Князев", "minutes": 9},
               {"type": "docs", "lang": "en", "title": "Готовые агенты LangChain и связь с LangGraph", "url": "https://docs.langchain.com/oss/python/langchain/overview", "source": "LangChain"},
               {"type": "docs", "lang": "en", "title": "Workflows и agents: сравнение паттернов", "url": "https://www.anthropic.com/research/building-effective-agents", "source": "Anthropic"}
             ],
             "langgraph-state": [
+              {"type": "video", "lang": "ru", "title": "StateGraph на Python: состояние, узлы и сборка простого графа", "url": "https://www.youtube.com/watch?v=M5XpZUHuDiM", "source": "Сергей Смелков | SMELKOV PRO | AI", "minutes": 15},
               {"type": "docs", "lang": "en", "title": "Graph API: состояние, узлы, reducers и переходы", "url": "https://docs.langchain.com/oss/python/langgraph/graph-api", "source": "LangChain"}
             ],
             "langgraph-persistence": [
+              {"type": "video", "lang": "en", "title": "На английском: память агента, checkpointer и thread_id", "url": "https://www.youtube.com/watch?v=5UQcHi538-c", "source": "AI For Your Work", "minutes": 10},
+              {"type": "video", "lang": "en", "title": "На английском: пауза interrupt и продолжение Command(resume=…)", "url": "https://www.youtube.com/watch?v=6t7YJcEFUIY", "source": "LangChain", "minutes": 8},
               {"type": "docs", "lang": "en", "title": "Checkpointers: снимки и thread_id", "url": "https://docs.langchain.com/oss/python/langgraph/checkpointers", "source": "LangChain"},
               {"type": "docs", "lang": "en", "title": "Interrupts: пауза, resume и повтор узла", "url": "https://docs.langchain.com/oss/python/langgraph/interrupts", "source": "LangChain"}
             ],
