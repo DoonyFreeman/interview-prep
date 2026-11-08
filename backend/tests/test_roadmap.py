@@ -84,3 +84,26 @@ async def test_llm_metrics_and_rag_have_short_russian_videos(client):
         assert len({r["url"] for r in resources}) == len(resources), slug
         assert all(r["url"].startswith("https://") for r in videos), slug
         assert any(r["type"] == "docs" for r in resources), slug
+
+
+async def test_langchain_learning_days_have_videos_under_fifteen_minutes(client):
+    """Each short study day needs its own videos, without long course fallbacks."""
+    stages = (await client.get("/api/roadmap")).json()["stages"]
+    llm = next(c for s in stages for c in s["courses"] if c["slug"] == "llm")
+    expected = {
+        "langchain-components", "langchain-contracts", "agent-decisions",
+        "langgraph-state", "langgraph-persistence",
+    }
+    lessons = {l["slug"]: l for l in llm["lessons"] if l["slug"] in expected}
+    assert lessons.keys() == expected
+    for slug, lesson in lessons.items():
+        resources = lesson["resources"]
+        videos = [r for r in resources if r["type"] == "video"]
+        assert videos, slug
+        assert all(isinstance(r["minutes"], int) and 0 < r["minutes"] <= 15 for r in videos), slug
+        if slug != "langgraph-persistence":
+            assert videos[0]["lang"] == "ru", slug
+        assert all(r["url"].startswith("https://www.youtube.com/watch?v=") for r in videos), slug
+        assert all(r["title"] and r["source"] and r["lang"] in ("ru", "en") for r in videos), slug
+        assert len({r["url"] for r in resources}) == len(resources), slug
+        assert any(r["type"] == "docs" for r in resources), slug
