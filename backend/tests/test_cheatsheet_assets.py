@@ -12,7 +12,7 @@ def test_every_cheatsheet_has_a_real_pdf():
     downloads = frontend / "public" / "cheatsheets"
     sheets = {path.stem for path in markdown.glob("*.md")}
     pdfs = {path.stem for path in downloads.glob("*.pdf")}
-    assert len(sheets) == 9
+    assert len(sheets) == 11
     # The complete RAG pack is a download, not a duplicate reader entry.
     assert pdfs == sheets | {"rag-all"}
     for slug in pdfs:
@@ -35,6 +35,7 @@ async def test_pdf_downloads_and_reader_routes_share_the_production_origin(tmp_p
             "/cheatsheets", "/cheatsheets/ml-metrics", "/progress",
             "/cheatsheets/rag-documents-embeddings",
             "/cheatsheets/rag-search-indexes", "/cheatsheets/rag-evaluation",
+            "/cheatsheets/langchain-tools", "/cheatsheets/langgraph-agents",
         ):
             response = await client.get(path)
             assert response.status_code == 200

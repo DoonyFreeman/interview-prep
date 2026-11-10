@@ -20,7 +20,7 @@ from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph, Table, TableStyle
+from reportlab.platypus import Paragraph, Table, TableStyle, XPreformatted
 
 from build_cheatsheets import BORDER, INK, MUTED, PURPLE, ROOT, register_fonts
 
@@ -59,12 +59,20 @@ def markup(text: str, font: str = 'Body') -> str:
                    else glyph_text(part, font) for part in parts)
 
 
-def markdown_blocks(body: str, width: float):
-    style = ParagraphStyle('rag-body', fontName='Body', fontSize=8.5,
-                           leading=10.6, textColor=INK)
-    cellstyle = ParagraphStyle('rag-cell', parent=style, leading=10.2)
-    for chunk in re.split(r'\n\s*\n', body.strip()):
-        if chunk.startswith('|'):
+def markdown_blocks(body: str, width: float, font_size: float = 8.5):
+    scale = font_size / 8.5
+    style = ParagraphStyle('rag-body', fontName='Body', fontSize=font_size,
+                           leading=10.6 * scale, textColor=INK)
+    cellstyle = ParagraphStyle('rag-cell', parent=style, leading=10.2 * scale)
+    code_style = ParagraphStyle('sheet-code', parent=style, fontName='Mono', fontSize=7.8,
+                                leading=11, backColor=colors.HexColor('#f4f3f8'),
+                                borderPadding=(4, 5, 4, 5))
+    chunks = re.split(r'(^```[^\n]*\n.*?^```[ \t]*$)|\n\s*\n', body.strip(), flags=re.M | re.S)
+    for chunk in filter(None, chunks):
+        if chunk.startswith('```'):
+            code = '\n'.join(glyph_text(line, 'Mono') for line in chunk.splitlines()[1:-1])
+            yield XPreformatted(code, code_style)
+        elif chunk.startswith('|'):
             rows = [[cell.strip() for cell in line.strip().strip('|').split('|')]
                     for line in chunk.splitlines()]
             rows = [row for row in rows if not all(re.fullmatch(r'[:\- ]+', cell) for cell in row)]
@@ -90,7 +98,11 @@ def markdown_blocks(body: str, width: float):
             yield Paragraph(markup(chunk.replace('\n', ' ')), style)
 
 
-def sheet_pdf(source: Path, destination: Path, title: str) -> None:
+def sheet_pdf(
+    source: Path, destination: Path, title: str,
+    *, footer: str = 'RAG: от исходного документа до проверяемого ответа.',
+    font_size: float = 8.5,
+) -> None:
     text = source.read_text(encoding='utf-8')
     sections = re.findall(r'^## ([^\n]+)\n(.*?)(?=^## |\Z)', text, re.M | re.S)
     if len(sections) != 6:
@@ -129,7 +141,7 @@ def sheet_pdf(source: Path, destination: Path, title: str) -> None:
             c.drawString(x + 7, top - 18, f'{i + 1:02}')
             heading_p.drawOn(c, x + 24, top - 7 - heading_h)
             cursor = top - banner_h - 8
-            for flowable in markdown_blocks(body, cw - 14):
+            for flowable in markdown_blocks(body, cw - 14, font_size):
                 _, height = flowable.wrap(cw - 14, ch)
                 if cursor - height < bottom + 6:
                     raise ValueError(f'{source.name} section {i + 1} overflows by '
@@ -138,7 +150,7 @@ def sheet_pdf(source: Path, destination: Path, title: str) -> None:
                 cursor -= height + 5
         c.setFillColor(MUTED)
         c.setFont('Body', 7)
-        c.drawString(margin, 17, 'RAG: от исходного документа до проверяемого ответа.')
+        c.drawString(margin, 17, footer)
         c.drawRightString(w - margin, 17, f'Лист {page + 1} из 2 · InterviewPrep')
         c.showPage()
     c.save()

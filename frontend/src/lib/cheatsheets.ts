@@ -3,6 +3,8 @@ import teamProcesses from "../content/cheatsheets/team-processes.md?raw";
 import llmBasics from "../content/cheatsheets/llm-basics.md?raw";
 import rag from "../content/cheatsheets/rag.md?raw";
 import agents from "../content/cheatsheets/agents.md?raw";
+import langchainTools from "../content/cheatsheets/langchain-tools.md?raw";
+import langgraphAgents from "../content/cheatsheets/langgraph-agents.md?raw";
 import mlMetrics from "../content/cheatsheets/ml-metrics.md?raw";
 import ragDocuments from "../content/cheatsheets/rag-documents-embeddings.md?raw";
 import ragSearch from "../content/cheatsheets/rag-search-indexes.md?raw";
@@ -75,6 +77,24 @@ export const CHEATSHEETS: readonly Cheatsheet[] = [
     markdown: agents,
   },
   {
+    slug: "langchain-tools",
+    title: "LangChain и tool calling",
+    description: "От промпта до AIMessage, вызов инструментов, рост истории и метрики поиска агента.",
+    category: "ai",
+    pdfUrl: "/cheatsheets/langchain-tools.pdf",
+    pages: 2,
+    markdown: langchainTools,
+  },
+  {
+    slug: "langgraph-agents",
+    title: "Агенты и LangGraph",
+    description: "Выбор действий, StateGraph, снимки состояния и возобновление после проверки человеком.",
+    category: "ai",
+    pdfUrl: "/cheatsheets/langgraph-agents.pdf",
+    pages: 2,
+    markdown: langgraphAgents,
+  },
+  {
     slug: "ml-metrics",
     title: "Метрики ML, кривые и регрессия",
     description: "Смысл метрик, формулы и пошаговые расчёты: классификация, ROC/PR и регрессия.",
@@ -140,6 +160,12 @@ export function getLessonCheatsheet(
 ): Cheatsheet | undefined {
   if (courseSlug !== "llm") return undefined;
   if (lessonSlug === "ml-curves-regression") return getCheatsheet("ml-metrics");
+  if (lessonSlug === "langchain-components" || lessonSlug === "langchain-contracts") {
+    return getCheatsheet("langchain-tools");
+  }
+  if (lessonSlug === "agent-decisions" || lessonSlug === "langgraph-state" || lessonSlug === "langgraph-persistence") {
+    return getCheatsheet("langgraph-agents");
+  }
   return RAG_CHEATSHEET_BUNDLE.slugs.slice(1).some((slug) => slug === lessonSlug)
     ? getCheatsheet(lessonSlug)
     : undefined;
