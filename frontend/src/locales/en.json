@@ -445,6 +445,8 @@
       "ai": "LLM & ML",
       "rag": "RAG & vector databases"
     },
+    "downloadAllBundle": "Download all cheatsheets",
+    "allBundleDescription": "One PDF excluding the Python section",
     "downloadRagBundle": "Download all RAG sheets",
     "ragBundleDescription": "4 cheatsheets · 7 pages · one PDF"
   },

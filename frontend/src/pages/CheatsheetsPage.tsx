@@ -22,6 +22,17 @@ export function CheatsheetsPage() {
           {t("cheatsheets.title")}
         </h1>
         <p className="mt-3 max-w-2xl text-muted">{t("cheatsheets.subtitle")}</p>
+        <div className="cheatsheet-bundle-download mt-5">
+          <a
+            href="/cheatsheets/cheatsheets-all.pdf"
+            download
+            aria-describedby="cheatsheets-bundle-description"
+            className="cheatsheet-action cheatsheet-action-primary"
+          >
+            {t("cheatsheets.downloadAllBundle")}
+          </a>
+          <p id="cheatsheets-bundle-description">{t("cheatsheets.allBundleDescription")}</p>
+        </div>
       </header>
 
       <div className="cheatsheet-groups">
