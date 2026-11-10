@@ -446,6 +446,8 @@
       "ai": "LLM и ML",
       "rag": "RAG и векторные БД"
     },
+    "downloadAllBundle": "Скачать все шпаргалки",
+    "allBundleDescription": "Один PDF без раздела Python",
     "downloadRagBundle": "Скачать все по RAG",
     "ragBundleDescription": "4 шпаргалки · 7 страниц · один PDF"
   },

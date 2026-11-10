@@ -156,11 +156,10 @@ def sheet_pdf(
     c.save()
 
 
-def bundle_pdf(paths: list[tuple[Path, str]], destination: Path) -> None:
+def bundle_pdf(paths: list[tuple[Path, str, int]], destination: Path, *, title: str) -> None:
     writer = PdfWriter()
-    for path, title in paths:
+    for path, section_title, expected in paths:
         reader = PdfReader(path)
-        expected = 1 if path.name == 'rag.pdf' else 2
         if len(reader.pages) != expected:
             raise ValueError(f'{path.name}: expected {expected} pages, got {len(reader.pages)}')
         first = len(writer.pages)
@@ -169,8 +168,8 @@ def bundle_pdf(paths: list[tuple[Path, str]], destination: Path) -> None:
             # No source document actions, scripts or URI annotations survive.
             for key in ('/Annots', '/AA', '/A'):
                 added.pop(NameObject(key), None)
-        writer.add_outline_item(title, first)
-    writer.add_metadata({'/Title': 'RAG: полный комплект шпаргалок', '/Author': '',
+        writer.add_outline_item(section_title, first)
+    writer.add_metadata({'/Title': title, '/Author': '',
                          '/Creator': 'InterviewPrep', '/Producer': 'InterviewPrep'})
     with destination.open('wb') as stream:
         writer.write(stream)
@@ -188,9 +187,9 @@ def main() -> None:
             staging = Path(folder)
             for slug, title in SHEETS:
                 sheet_pdf(SOURCE_DIR / f'{slug}.md', staging / f'{slug}.pdf', title)
-            bundle_pdf([(ASSET_DIR / 'rag.pdf', 'RAG: обзор'),
-                        *((staging / f'{slug}.pdf', title) for slug, title in SHEETS)],
-                       staging / 'rag-all.pdf')
+            bundle_pdf([(ASSET_DIR / 'rag.pdf', 'RAG: обзор', 1),
+                        *((staging / f'{slug}.pdf', title, 2) for slug, title in SHEETS)],
+                       staging / 'rag-all.pdf', title='RAG: полный комплект шпаргалок')
             for path in sorted(staging.glob('*.pdf')):
                 (args.output_dir / path.name).write_bytes(path.read_bytes())
                 print(f'{path.name}: {len(PdfReader(path).pages)} pages')

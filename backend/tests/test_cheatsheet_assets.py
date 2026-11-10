@@ -13,8 +13,8 @@ def test_every_cheatsheet_has_a_real_pdf():
     sheets = {path.stem for path in markdown.glob("*.md")}
     pdfs = {path.stem for path in downloads.glob("*.pdf")}
     assert len(sheets) == 11
-    # The complete RAG pack is a download, not a duplicate reader entry.
-    assert pdfs == sheets | {"rag-all"}
+    # Bundles are downloads and have no duplicate reader entry.
+    assert pdfs == sheets | {"rag-all", "cheatsheets-all"}
     for slug in pdfs:
         with (downloads / f"{slug}.pdf").open("rb") as stream:
             assert stream.read(5) == b"%PDF-", slug
