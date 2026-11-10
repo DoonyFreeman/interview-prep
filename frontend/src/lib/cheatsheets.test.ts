@@ -43,9 +43,22 @@ describe("cheatsheet navigation", () => {
     for (const slug of RAG_CHEATSHEET_BUNDLE.slugs) {
       expect(getCheatsheetBundle(slug)).toBe(RAG_CHEATSHEET_BUNDLE);
     }
-    for (const slug of ["ml-metrics", "agents", "llm-basics", "../../private", "toString", undefined]) {
+    for (const slug of ["ml-metrics", "agents", "llm-basics", "langchain-tools", "langgraph-agents", "../../private", "toString", undefined]) {
       expect(getCheatsheetBundle(slug)).toBeUndefined();
     }
+  });
+
+  it.each([
+    ["langchain-components", "langchain-tools"],
+    ["langchain-contracts", "langchain-tools"],
+    ["agent-decisions", "langgraph-agents"],
+    ["langgraph-state", "langgraph-agents"],
+    ["langgraph-persistence", "langgraph-agents"],
+  ])("links %s to its study sheet %s", (lesson, slug) => {
+    const sheet = getCheatsheet(slug);
+    expect(sheet?.pages).toBe(2);
+    expect(getLessonCheatsheet("llm", lesson)).toBe(sheet);
+    expect(getLessonCheatsheet("other-course", lesson)).toBeUndefined();
   });
 
   it("does not manufacture sheets or download URLs from an unknown slug", () => {
@@ -83,12 +96,13 @@ describe("reference sheet sections", () => {
 });
 
 describe("published library assets", () => {
-  it("provides nine readable sheets with same-origin PDF download paths", () => {
-    expect(CHEATSHEETS).toHaveLength(9);
-    expect(new Set(CHEATSHEETS.map((sheet) => sheet.slug)).size).toBe(9);
+  it("provides eleven readable sheets with same-origin PDF download paths", () => {
+    expect(CHEATSHEETS).toHaveLength(11);
+    expect(new Set(CHEATSHEETS.map((sheet) => sheet.slug)).size).toBe(CHEATSHEETS.length);
+    const twoPageSlugs = ["langchain-tools", "langgraph-agents", ...RAG_CHEATSHEET_BUNDLE.slugs.slice(1)];
     for (const sheet of CHEATSHEETS) {
       expect(sheet.pdfUrl).toBe(`/cheatsheets/${sheet.slug}.pdf`);
-      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : RAG_CHEATSHEET_BUNDLE.slugs.slice(1).some((slug) => slug === sheet.slug) ? 2 : 1);
+      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : twoPageSlugs.includes(sheet.slug) ? 2 : 1);
       const sections = getCheatsheetSections(sheet.markdown);
       expect(sections.length).toBeGreaterThan(0);
       expect(sections.every((section) => section.markdown.trim().length > 0)).toBe(true);
