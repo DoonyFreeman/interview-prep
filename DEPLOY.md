@@ -82,6 +82,17 @@ cd /opt/interview-prep
 volume. Content is re-seeded idempotently on startup; user state on the volume
 is untouched.
 
+Private HR rehearsal answers are stored separately under
+`data/private-hr/<user-id>.json` on the app volume, with an owner email and
+account creation timestamp taken from the existing account record. Provision
+through the trusted server shell using a private transfer and atomic replacement.
+Use mode 0700 for the directory and 0600 for the file, owned by the app user.
+Keep the material out of Git, image layers, CI, public content and logs.
+Answers stay on the volume until replaced or removed. To remove access and
+delete the stored material, remove that account's file. The standard SQLite
+backup and restore do not include these files. After first release, existing
+sessions must sign in again to get a token that can read private answers.
+
 ### One-time setup
 
 **On the host** (so it can pull code + the private image):

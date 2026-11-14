@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.tokens import decode_token
+from app.auth.tokens import decode_token, token_matches_account
 from app.config import get_settings
 from app.database import get_session
 from app.models import User
@@ -37,6 +37,14 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
         )
     return user
+
+
+def has_account_bound_token(
+    credentials: HTTPAuthorizationCredentials = Depends(_bearer),
+    user: User = Depends(get_current_user),
+) -> bool:
+    """Older tokens continue working elsewhere; private notes need a fresh login."""
+    return token_matches_account(credentials.credentials, user.created_at)
 
 
 async def get_current_admin(user: User = Depends(get_current_user)) -> User:

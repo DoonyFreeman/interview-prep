@@ -1,13 +1,13 @@
-const KEY = "ip_token";
+export const TOKEN_STORAGE_KEY = "ip_token";
 
 export function getToken(): string | null {
-  return localStorage.getItem(KEY);
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(KEY, token);
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
 }
 
 export function clearToken(): void {
-  localStorage.removeItem(KEY);
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
 }

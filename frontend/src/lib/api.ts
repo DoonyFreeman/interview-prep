@@ -7,7 +7,7 @@ export const api = axios.create({ baseURL });
 
 api.interceptors.request.use((config) => {
   const token = getToken();
-  if (token) {
+  if (token && !config.headers.has("Authorization")) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -17,7 +17,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // On an expired/invalid token, drop it and bounce to login.
-    if (error?.response?.status === 401 && getToken()) {
+    const current = getToken();
+    if (error?.response?.status === 401 && current &&
+        error.config?.headers?.get("Authorization") === `Bearer ${current}`) {
       clearToken();
       if (!window.location.pathname.startsWith("/login")) {
         window.location.href = "/login";

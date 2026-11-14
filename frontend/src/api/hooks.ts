@@ -5,6 +5,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { api } from "../lib/api";
+import type { PrivateHrAnswerGroups } from "../components/PrivateHrAnswers";
 import type {
   AdminUserDetail,
   AdminUsers,
@@ -63,6 +64,20 @@ export function useLesson(courseSlug: string, lessonSlug: string) {
           `/courses/${courseSlug}/lessons/${lessonSlug}`,
         )
       ).data,
+  });
+}
+
+export function usePrivateHrAnswers(token: string | null, lessonSlug: string) {
+  return useQuery({
+    queryKey: ["private-hr-answers", token, lessonSlug],
+    enabled: !!token && !!lessonSlug,
+    gcTime: 0,
+    retry: false,
+    queryFn: async ({ signal }) =>
+      (await api.get<PrivateHrAnswerGroups>(
+        `/hr-screening/answers/${encodeURIComponent(lessonSlug)}`,
+        { signal, headers: { Authorization: `Bearer ${token}` } },
+      )).data,
   });
 }
 
