@@ -8,12 +8,12 @@ async def test_roadmap_is_public_and_complete(client):
     stages = r.json()["stages"]
 
     assert [s["slug"] for s in stages] == [
-        "team", "core", "concurrency", "data", "web", "quality", "infra", "ai",
-        "senior",
+        "interviews", "core", "concurrency", "data", "web", "quality", "infra",
+        "ai", "team", "senior",
     ]
     # every published course appears exactly once across stages
     course_slugs = [c["slug"] for s in stages for c in s["courses"]]
-    assert len(course_slugs) == len(set(course_slugs)) == 24
+    assert len(course_slugs) == len(set(course_slugs)) == 25
 
     for stage in stages:
         assert stage["title"] and stage["summary"]
