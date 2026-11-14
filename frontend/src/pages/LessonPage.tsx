@@ -6,6 +6,7 @@ import {
   useLesson,
   useLessonTestProgress,
   useMarkLesson,
+  usePrivateHrAnswers,
   useProgress,
   useRoadmap,
 } from "../api/hooks";
@@ -17,12 +18,19 @@ import { ResourceList } from "../components/RoadmapDrawer";
 import { resourcesFor } from "../lib/roadmap";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
 import { getCheatsheetBundle, getLessonCheatsheet } from "../lib/cheatsheets";
+import { useAuth } from "../auth/AuthContext";
+import { PrivateHrAnswersContext } from "../components/PrivateHrAnswers";
 
 export function LessonPage() {
   const { t } = useTranslation();
   const { courseSlug = "", lessonSlug = "" } = useParams();
   const location = useLocation();
   const lesson = useLesson(courseSlug, lessonSlug);
+  const { token } = useAuth();
+  const privateAnswers = usePrivateHrAnswers(
+    courseSlug === "hr-screening" ? token : null,
+    lessonSlug,
+  );
   const progress = useProgress();
   const testProgress = useLessonTestProgress(courseSlug, lessonSlug);
   const markLesson = useMarkLesson();
@@ -104,7 +112,9 @@ export function LessonPage() {
           </details>
         )}
 
-        <Markdown markdown={lesson.data.markdown} />
+        <PrivateHrAnswersContext.Provider value={privateAnswers.data}>
+          <Markdown markdown={lesson.data.markdown} />
+        </PrivateHrAnswersContext.Provider>
 
         {materials && materials.resources.length > 0 && (
           <section className="mt-10 rounded-2xl border border-border bg-surface p-4">

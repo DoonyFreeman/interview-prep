@@ -2,13 +2,14 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
-import { clearToken, getToken, setToken } from "../lib/token";
+import { clearToken, getToken, setToken, TOKEN_STORAGE_KEY } from "../lib/token";
 import type { UserOut } from "../api/types";
 
 interface AuthValue {
@@ -28,15 +29,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const meQuery = useQuery({
     queryKey: ["me", token],
     enabled: !!token,
-    queryFn: async () => (await api.get<UserOut>("/auth/me")).data,
+    queryFn: async ({ signal }) => (await api.get<UserOut>("/auth/me", {
+      signal,
+      headers: { Authorization: `Bearer ${token}` },
+    })).data,
     retry: false,
     staleTime: 5 * 60_000,
   });
 
+  useEffect(() => {
+    function sync() {
+      const next = getToken();
+      if (next === token) return;
+      qc.clear();
+      setTokenState(next);
+    }
+    function onStorage(event: StorageEvent) {
+      if (event.storageArea === window.localStorage &&
+          (event.key === TOKEN_STORAGE_KEY || event.key === null)) sync();
+    }
+    window.addEventListener("storage", onStorage);
+    sync();
+    return () => window.removeEventListener("storage", onStorage);
+  }, [qc, token]);
+
   const login = useCallback((newToken: string) => {
+    qc.clear();
     setToken(newToken);
     setTokenState(newToken);
-  }, []);
+  }, [qc]);
 
   const logout = useCallback(() => {
     clearToken();

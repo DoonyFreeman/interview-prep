@@ -450,6 +450,10 @@
     "downloadRagBundle": "Download all RAG sheets",
     "ragBundleDescription": "4 cheatsheets · 7 pages · one PDF"
   },
+  "privateHr": {
+    "title": "What to say in the interview",
+    "subtitle": "Your personal answers · visible only to your account"
+  },
   "lessonBlocks": {
     "showSolution": "Show solution",
     "invalidTrace": "This example could not be displayed. Continue with the lesson table and explanation.",

@@ -7,6 +7,7 @@ import { ConceptLink } from "./ConceptLink";
 import { isConceptLink } from "../lib/conceptLinks";
 import { useTranslation } from "react-i18next";
 import { ExecutionTrace } from "./ExecutionTrace";
+import { PrivateHrAnswers } from "./PrivateHrAnswers";
 
 /** Flatten a React children tree to plain text (for computing heading ids). */
 function nodeText(node: ReactNode): string {
@@ -82,6 +83,7 @@ const markdownComponents: Components = {
     const text = String(children ?? "").replace(/\n$/, "");
     if (match?.[1] === "solution") return <Solution markdown={text} />;
     if (match?.[1] === "execution") return <ExecutionTrace key={text} source={text} />;
+    if (match?.[1] === "hr-answers") return <PrivateHrAnswers slot={text.trim()} />;
     const isBlock = !!match || text.includes("\n");
     if (isBlock) {
       return <ShikiCode code={text} lang={match?.[1] ?? "text"} />;

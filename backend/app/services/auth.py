@@ -35,7 +35,7 @@ async def register(session: AsyncSession, data: RegisterIn) -> TokenOut:
     )
     await session.commit()
     await session.refresh(user)
-    return TokenOut(access_token=create_access_token(str(user.id)))
+    return TokenOut(access_token=create_access_token(str(user.id), account_created_at=user.created_at))
 
 
 async def login(session: AsyncSession, data: LoginIn) -> TokenOut:
@@ -44,7 +44,7 @@ async def login(session: AsyncSession, data: LoginIn) -> TokenOut:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
         )
-    return TokenOut(access_token=create_access_token(str(user.id)))
+    return TokenOut(access_token=create_access_token(str(user.id), account_created_at=user.created_at))
 
 
 async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:

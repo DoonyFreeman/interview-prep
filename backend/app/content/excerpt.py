@@ -106,7 +106,15 @@ def extract_h2_sections(markdown: str) -> list[tuple[str, str, str]]:
         if anchor or text:
             sections.append((anchor, title, text))
 
+    in_private_slot = False
     for line in markdown.splitlines():
+        if line.strip() == "```hr-answers":
+            in_private_slot = True
+            continue
+        if in_private_slot:
+            if line.strip() == "```":
+                in_private_slot = False
+            continue
         if line.startswith("## ") and not line.startswith("### "):
             _flush()
             title = line[3:].strip()
