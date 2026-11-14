@@ -434,7 +434,23 @@
             { "type": "docs", "lang": "ru", "title": "Как успешно пройти интервью — Центр карьеры НИУ ВШЭ", "url": "https://gsb.hse.ru/careercentre/career/interview/", "source": "НИУ ВШЭ" },
             { "type": "article", "lang": "ru", "title": "Подготовка к собеседованию: вопросы и ответы", "url": "https://hh.ru/article/301547", "source": "hh.ru" }
           ],
-          "lesson_resources": {}
+          "lesson_resources": {
+            "self-presentation": [
+              { "type": "video", "lang": "ru", "title": "«Расскажите о себе»: три способа ответить на собеседовании", "url": "https://www.youtube.com/watch?v=-Yiyl2e53zs", "source": "Лена про карьеру", "minutes": 11 },
+              { "type": "docs", "lang": "ru", "title": "Как успешно пройти интервью — Центр карьеры НИУ ВШЭ", "url": "https://gsb.hse.ru/careercentre/career/interview/", "source": "НИУ ВШЭ" },
+              { "type": "article", "lang": "ru", "title": "Подготовка к собеседованию: вопросы и ответы", "url": "https://hh.ru/article/301547", "source": "hh.ru" }
+            ],
+            "behavioral-questions": [
+              { "type": "video", "lang": "ru", "title": "Как отвечать на поведенческие вопросы по методу STAR", "url": "https://www.youtube.com/watch?v=kR6WrMLWaPA", "source": "EP Advisory", "minutes": 11 },
+              { "type": "docs", "lang": "ru", "title": "Как успешно пройти интервью — Центр карьеры НИУ ВШЭ", "url": "https://gsb.hse.ru/careercentre/career/interview/", "source": "НИУ ВШЭ" },
+              { "type": "article", "lang": "ru", "title": "Подготовка к собеседованию: вопросы и ответы", "url": "https://hh.ru/article/301547", "source": "hh.ru" }
+            ],
+            "motivation-and-conditions": [
+              { "type": "video", "lang": "ru", "title": "Зарплатные ожидания: как говорить с рекрутером о деньгах и условиях", "url": "https://www.youtube.com/watch?v=Rj4N-0Zekik", "source": "Илья Корольков", "minutes": 12 },
+              { "type": "docs", "lang": "ru", "title": "Как успешно пройти интервью — Центр карьеры НИУ ВШЭ", "url": "https://gsb.hse.ru/careercentre/career/interview/", "source": "НИУ ВШЭ" },
+              { "type": "article", "lang": "ru", "title": "Подготовка к собеседованию: вопросы и ответы", "url": "https://hh.ru/article/301547", "source": "hh.ru" }
+            ]
+          }
         }
       ],
       "extra_nodes": []
