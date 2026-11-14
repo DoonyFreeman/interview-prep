@@ -1,0 +1,47 @@
+{
+  "slug": "hr-screening",
+  "title": "HR-скрининг: уверенные ответы",
+  "description": "Подготовка к первому HR-скринингу за три коротких занятия (около 54 минут): самопрезентация и проекты; поведенческие вопросы, сроки и команда; мотивация, зарплатные ожидания и вопросы работодателю. В каждом уроке — понятный каркас ответа, короткая практика и самопроверка.",
+  "order": 24,
+  "lessons": [
+    {
+      "slug": "self-presentation",
+      "title": "Самопрезентация и профессиональный опыт",
+      "file": "01-self-presentation.md",
+      "order": 1,
+      "duration_minutes": 18,
+      "concepts": [
+        {"slug": "about-yourself", "title": "Самопрезентация: «Расскажите о себе»", "anchor": "самопрезентация-расскажите-о-себе", "order": 1},
+        {"slug": "experience", "title": "Опыт и зона ответственности", "anchor": "опыт-и-зона-ответственности", "order": 2},
+        {"slug": "project", "title": "Проект: задача, мой вклад, результат", "anchor": "проект-задача-мой-вклад-результат", "order": 3},
+        {"slug": "achievement", "title": "Достижение и сложная проблема", "anchor": "достижение-и-сложная-проблема", "order": 4}
+      ]
+    },
+    {
+      "slug": "behavioral-questions",
+      "title": "Поведенческие вопросы и работа в команде",
+      "file": "02-behavioral.md",
+      "order": 2,
+      "duration_minutes": 18,
+      "concepts": [
+        {"slug": "behavioral-structure", "title": "Поведенческий ответ без зубрёжки", "anchor": "поведенческий-ответ-без-зубрёжки", "order": 1},
+        {"slug": "deadlines-priorities", "title": "Сроки и приоритеты", "anchor": "сроки-и-приоритеты", "order": 2},
+        {"slug": "conflict-feedback", "title": "Конфликт и обратная связь", "anchor": "конфликт-и-обратная-связь", "order": 3},
+        {"slug": "team-growth", "title": "Команда, качества и развитие", "anchor": "команда-качества-и-развитие", "order": 4}
+      ]
+    },
+    {
+      "slug": "motivation-and-conditions",
+      "title": "Мотивация, зарплата и условия работы",
+      "file": "03-motivation-and-conditions.md",
+      "order": 3,
+      "duration_minutes": 18,
+      "concepts": [
+        {"slug": "motivation-fit", "title": "Почему ищете работу и почему эта вакансия", "anchor": "почему-ищете-работу-и-почему-эта-вакансия", "order": 1},
+        {"slug": "salary-logistics", "title": "Зарплата, выход и формат работы", "anchor": "зарплата-выход-и-формат-работы", "order": 2},
+        {"slug": "personal-boundaries", "title": "Личные вопросы и границы", "anchor": "личные-вопросы-и-границы", "order": 3},
+        {"slug": "candidate-questions", "title": "Почему мы и что спросить работодателя", "anchor": "почему-мы-и-что-спросить-работодателя", "order": 4}
+      ]
+    }
+  ]
+}
