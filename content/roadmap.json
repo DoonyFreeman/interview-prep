@@ -421,6 +421,23 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "interviews",
+      "title": "Подготовка к собеседованиям",
+      "summary": "Короткая практика самопрезентации, ответов о работе и обсуждения условий новой роли.",
+      "courses": [
+        {
+          "slug": "hr-screening",
+          "summary": "Три коротких урока: опыт и проекты; поведенческие вопросы и команда; мотивация, зарплата и условия.",
+          "resources": [
+            { "type": "docs", "lang": "ru", "title": "Как успешно пройти интервью — Центр карьеры НИУ ВШЭ", "url": "https://gsb.hse.ru/careercentre/career/interview/", "source": "НИУ ВШЭ" },
+            { "type": "article", "lang": "ru", "title": "Подготовка к собеседованию: вопросы и ответы", "url": "https://hh.ru/article/301547", "source": "hh.ru" }
+          ],
+          "lesson_resources": {}
+        }
+      ],
+      "extra_nodes": []
     }
   ]
 }
