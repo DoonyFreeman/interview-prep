@@ -8,3 +8,9 @@ python-jose[cryptography]==3.3.0
 bcrypt==5.0.0
 python-multipart==0.0.20
 httpx==0.28.1
+langgraph==1.2.20
+langsmith==0.14.17
+markdown-it-py==4.2.0
+numpy==2.4.1
+onnxruntime==1.26.0
+tokenizers==0.23.3

@@ -19,11 +19,13 @@ import { SlangPage } from "./pages/SlangPage";
 import { DictLayout } from "./components/DictLayout";
 import { AdminPage } from "./pages/AdminPage";
 import { RoadmapPage } from "./pages/RoadmapPage";
+import { AssistantPage } from "./pages/AssistantPage";
 
 export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/assistant" element={<RequireAuth><AssistantPage /></RequireAuth>} />
       <Route
         element={
           <RequireAuth>

@@ -26,6 +26,56 @@ function Svg({
   );
 }
 
+export function IconArrowLeft({ className }: IconProps) {
+  return <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 12H5m7-7-7 7 7 7" /></svg>;
+}
+
+export function IconClose({ className }: IconProps) {
+  return <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className={className}><path d="m6 6 12 12M18 6 6 18" /></svg>;
+}
+
+export function IconPencil({ className }: IconProps) {
+  return <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m14 6 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z" /></svg>;
+}
+
+export function IconSidebar({ className }: IconProps) {
+  return <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" /><path d="M9 4.5v15" /></svg>;
+}
+
+export function IconPlus({ className }: IconProps) {
+  return <Svg className={className}><path d="M12 5v14M5 12h14" /></Svg>;
+}
+
+export function IconArrowUp({ className }: IconProps) {
+  return <Svg className={className}><path d="M12 19V5m-7 7 7-7 7 7" /></Svg>;
+}
+
+export function IconHistory({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M3 12a9 9 0 1 1 2.7 6.4M3 5v7h7m2-4v5l3 2" />
+    </Svg>
+  );
+}
+
+export function IconGlobe({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" />
+      <path d="M3 12h18" />
+    </Svg>
+  );
+}
+
+export function IconTrash({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M4 7h16m-14 0 1 13h10l1-13M10 7V4h4v3m-4 4v5m4-5v5" />
+    </Svg>
+  );
+}
+
 /** Courses — graduation cap (academic / learning a topic). */
 export function IconCourses({ className }: IconProps) {
   return (

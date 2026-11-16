@@ -28,6 +28,7 @@ settings = get_settings()
 engine = create_async_engine(
     settings.database_url,
     echo=False,
+    hide_parameters=True,
     future=True,
 )
 
@@ -89,6 +90,7 @@ async def init_db() -> None:
     """Create all tables. Called from the app lifespan on startup."""
     # Import models so they register on Base.metadata before create_all.
     from app import models  # noqa: F401
+    from app.assistant import storage  # noqa: F401
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

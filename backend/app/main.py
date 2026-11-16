@@ -15,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.endpoints import (
     admin,
+    assistant,
     auth,
     cat,
     courses,
@@ -79,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(search.router, prefix="/api", tags=["search"])
     app.include_router(roadmap.router, prefix="/api", tags=["roadmap"])
     app.include_router(admin.router, prefix="/api", tags=["admin"])
+    app.include_router(assistant.router, prefix="/api", tags=["assistant"])
 
     _mount_spa(app)
     return app

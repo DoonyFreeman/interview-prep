@@ -1,0 +1,826 @@
+[
+  {
+    "id": "dev-python-alias",
+    "split": "dev",
+    "query": "В тесте написал backup = values, потом удалил элемент из values. Почему он пропал и из backup, хотя переменные называются по-разному?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-core",
+        "lesson_slug": "mutability-copying",
+        "anchor": "присваивание-не-копирует"
+      }
+    ],
+    "reference_answer": "Присваивание связывает оба имени с одним списком. Удаление элемента меняет этот список, поэтому результат виден через обе переменные. Для независимого внешнего списка нужна копия."
+  },
+  {
+    "id": "dev-dict-original-position",
+    "split": "dev",
+    "query": "Делаю словарь для вывода полей в порядке загрузки. Если второй раз записать уже существующий ключ, он переместится вниз? А если его удалить и добавить заново?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-data-types",
+        "lesson_slug": "dicts",
+        "anchor": "порядок-вставки-37"
+      }
+    ],
+    "reference_answer": "Обновление значения сохраняет исходную позицию ключа. После удаления повторное добавление считается новой вставкой, и ключ оказывается в конце."
+  },
+  {
+    "id": "dev-mro-mixins",
+    "split": "dev",
+    "query": "В ромбе от двух миксинов хочу один раз вызвать общий базовый метод. Почему вызов родителя по имени мешает и кого на самом деле выбирает super()?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-oop",
+        "lesson_slug": "inheritance-mro",
+        "anchor": "ромбовидная-проблема-и-c3-линеаризация"
+      },
+      {
+        "course_slug": "python-oop",
+        "lesson_slug": "inheritance-mro",
+        "anchor": "super-кооперативный-вызов"
+      }
+    ],
+    "reference_answer": "C3 строит общий порядок MRO. super() продолжает поиск со следующего класса в MRO экземпляра, который может оказаться соседним миксином. Цепочка согласованных вызовов super() доходит до общего предка один раз."
+  },
+  {
+    "id": "dev-context-release",
+    "split": "dev",
+    "query": "Пишу обёртку над ресурсом через contextlib.contextmanager. Где разместить очистку, чтобы она сработала и при исключении внутри with?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-idioms",
+        "lesson_slug": "context-managers",
+        "anchor": "contextlibcontextmanager"
+      }
+    ],
+    "reference_answer": "Открыть ресурс до yield, передать его одним yield внутри try, а освобождение поместить в finally. При выходе из with генератор продолжит выполнение и выполнит очистку."
+  },
+  {
+    "id": "dev-task-cancel-cleanup",
+    "split": "dev",
+    "query": "После task.cancel() соединение закрывается через некоторое время. Как дождаться окончания отмены и где держать освобождение ресурса?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-asyncio",
+        "lesson_slug": "tasks-gather",
+        "anchor": "отмена-и-таймауты"
+      }
+    ],
+    "reference_answer": "cancel() запрашивает отмену, а CancelledError приходит в задачу в точке приостановки. Освобождение ресурса выполняют в finally. Чтобы дождаться завершения отмены, нужно await задачи и обработать CancelledError на стороне вызывающего."
+  },
+  {
+    "id": "dev-thread-account",
+    "split": "dev",
+    "query": "Два потока иногда списывают больше, чем есть на счёте. Каждый сначала проверяет остаток и потом меняет его. Какой участок закрыть одним Lock?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-concurrency",
+        "lesson_slug": "threading",
+        "anchor": "гонки-данных-race-conditions"
+      },
+      {
+        "course_slug": "python-concurrency",
+        "lesson_slug": "threading",
+        "anchor": "блокировки-и-примитивы-синхронизации"
+      }
+    ],
+    "reference_answer": "Одна блокировка должна защищать и проверку остатка, и последующее списание. Если запирать только присваивание, между проверкой и обновлением другой поток может изменить общий остаток."
+  },
+  {
+    "id": "dev-typing-preserve-type",
+    "split": "dev",
+    "query": "Пишу функцию, которая возвращает первый элемент списка. Как аннотировать её так, чтобы для списка строк анализатор выводил str, а для списка int — int?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-typing",
+        "lesson_slug": "generics-protocols",
+        "anchor": "typevar-и-обобщённые-функции"
+      }
+    ],
+    "reference_answer": "Связать тип элемента аргумента с возвращаемым типом через один параметр типа: T = TypeVar('T'), затем first(items: list[T]) -> T."
+  },
+  {
+    "id": "dev-window-substring",
+    "split": "dev",
+    "query": "Нужно найти самую длинную часть строки без повторяющихся букв. Как двигать границы, чтобы не перебирать все подстроки?",
+    "relevant_sections": [
+      {
+        "course_slug": "algorithms",
+        "lesson_slug": "arrays-strings",
+        "anchor": "скользящее-окно"
+      }
+    ],
+    "reference_answer": "Расширять окно вправо, поддерживая символы текущего окна. При повторе сдвигать левую границу до восстановления уникальности и обновлять максимальную длину. Каждая граница движется только вперёд."
+  },
+  {
+    "id": "dev-sql-left-group",
+    "split": "dev",
+    "query": "Нужен отчёт по всем клиентам с количеством заказов, включая ноль. Как собрать его одним запросом и оставить только клиентов с количеством до двух?",
+    "relevant_sections": [
+      {
+        "course_slug": "databases-sql",
+        "lesson_slug": "sql-joins",
+        "anchor": "типы-join"
+      },
+      {
+        "course_slug": "databases-sql",
+        "lesson_slug": "sql-joins",
+        "anchor": "group-by-having-агрегаты"
+      }
+    ],
+    "reference_answer": "Начать с clients, сделать LEFT JOIN к orders и сгруппировать по идентификатору клиента. COUNT(orders.id) считает только непустые значения и даёт ноль без заказов. Условие на агрегат задаётся в HAVING COUNT(orders.id) <= 2."
+  },
+  {
+    "id": "dev-postgres-json-lookup",
+    "split": "dev",
+    "query": "В Postgres храню атрибуты товара внутри JSONB и часто ищу документы, в которых есть пара ключ-значение. Какая связка оператора и индекса подходит?",
+    "relevant_sections": [
+      {
+        "course_slug": "postgresql",
+        "lesson_slug": "types-indexes",
+        "anchor": "jsonb"
+      },
+      {
+        "course_slug": "postgresql",
+        "lesson_slug": "types-indexes",
+        "anchor": "типы-индексов-в-postgresql"
+      }
+    ],
+    "reference_answer": "Для поиска по включению подходит оператор @> и GIN-индекс по JSONB-колонке. GIN поддерживает поиск по элементам составных значений."
+  },
+  {
+    "id": "dev-orm-generated-id",
+    "split": "dev",
+    "query": "Нужен ID заготовки до завершения транзакции, чтобы связать с ней вторую строку. Как отправить INSERT, сохранив возможность отката обеих операций?",
+    "relevant_sections": [
+      {
+        "course_slug": "sqlalchemy",
+        "lesson_slug": "session",
+        "anchor": "flush-против-commit"
+      }
+    ],
+    "reference_answer": "Вызвать session.flush(): Session отправит накопленные изменения в БД и получит сгенерированный ID внутри текущей транзакции. Затем можно создать зависимую строку и выполнить общий commit или rollback."
+  },
+  {
+    "id": "dev-fastapi-dependency-cleanup",
+    "split": "dev",
+    "query": "В FastAPI хочу открывать сессию БД на запрос и гарантированно её закрывать, даже когда обработчик выбросил исключение. Как написать dependency?",
+    "relevant_sections": [
+      {
+        "course_slug": "fastapi",
+        "lesson_slug": "dependency-injection",
+        "anchor": "yield-зависимости-для-ресурсов"
+      }
+    ],
+    "reference_answer": "Создать сессию в зависимости, передать её обработчику через yield внутри try и закрыть в finally. FastAPI управляет выполнением входной и завершающей частей зависимости."
+  },
+  {
+    "id": "dev-http-cache-revalidate",
+    "split": "dev",
+    "query": "Клиент сохранил старый JSON и его ETag. Что ему отправить при повторной проверке и какой ответ позволит оставить прежнее тело?",
+    "relevant_sections": [
+      {
+        "course_slug": "web-http",
+        "lesson_slug": "caching-realtime",
+        "anchor": "http-кэширование"
+      }
+    ],
+    "reference_answer": "Передать сохранённый ETag в If-None-Match. Если версия ресурса совпала, сервер ответит 304 Not Modified без нового тела, и клиент сможет использовать сохранённый JSON."
+  },
+  {
+    "id": "dev-ssrf-metadata",
+    "split": "dev",
+    "query": "Сервис делает превью любой ссылки, которую вводит пользователь. Как называется атака, когда так пытаются прочитать адрес метаданных облачной машины, и где ограничивать назначения?",
+    "relevant_sections": [
+      {
+        "course_slug": "security",
+        "lesson_slug": "owasp",
+        "anchor": "csrf-и-ssrf"
+      }
+    ],
+    "reference_answer": "Это SSRF: сервер выполняет запрос по адресу, выбранному атакующим. Ограничить доступные направления, проверять разрешённые адреса и блокировать обращения к внутренним, локальным или metadata-адресам."
+  },
+  {
+    "id": "dev-celery-charge-retry",
+    "split": "dev",
+    "query": "Celery повторяет задачу после сетевой ошибки при списании денег. Как избежать второго списания, если первый запрос реально прошёл, а ответ потерялся?",
+    "relevant_sections": [
+      {
+        "course_slug": "celery",
+        "lesson_slug": "tasks-retries",
+        "anchor": "ретраи"
+      },
+      {
+        "course_slug": "celery",
+        "lesson_slug": "tasks-retries",
+        "anchor": "идемпотентность"
+      }
+    ],
+    "reference_answer": "Передавать один и тот же устойчивый ключ идемпотентности для всех попыток одной операции и хранить факт её выполнения. Повтор после таймаута должен вернуть уже полученный результат или пропустить повторный побочный эффект."
+  },
+  {
+    "id": "dev-kafka-more-consumers",
+    "split": "dev",
+    "query": "Топик Kafka состоит из трёх партиций, а в одной consumer group подняли пять воркеров. Сколько смогут читать одновременно и в каких пределах гарантирован порядок?",
+    "relevant_sections": [
+      {
+        "course_slug": "kafka",
+        "lesson_slug": "architecture",
+        "anchor": "топики-партиции-и-оффсеты"
+      },
+      {
+        "course_slug": "kafka",
+        "lesson_slug": "producers-consumers",
+        "anchor": "consumer-groups-и-ребалансировка"
+      }
+    ],
+    "reference_answer": "В пределах одной группы партицию одновременно читает только один consumer, поэтому активных будет не больше трёх. Kafka сохраняет порядок сообщений внутри отдельной партиции."
+  },
+  {
+    "id": "dev-docker-dependency-cache",
+    "split": "dev",
+    "query": "Однострочное изменение Python-файла снова заставляет Docker скачивать все зависимости. Как переставить COPY и RUN, чтобы меняющийся код не сбрасывал этот слой?",
+    "relevant_sections": [
+      {
+        "course_slug": "docker",
+        "lesson_slug": "containers-images",
+        "anchor": "кэш-сборки-и-порядок-инструкций"
+      }
+    ],
+    "reference_answer": "Сначала скопировать только файл зависимостей и выполнить установку отдельным RUN. Исходники копировать после этого. Если зависимости не менялись, Docker переиспользует предыдущий слой."
+  },
+  {
+    "id": "dev-git-undo-public",
+    "split": "dev",
+    "query": "Неправильный коммит уже в общей ветке, и коллеги успели забрать его. Как откатить его изменения, сохранив общую историю?",
+    "relevant_sections": [
+      {
+        "course_slug": "devops",
+        "lesson_slug": "git",
+        "anchor": "отмена-изменений-reset-и-revert"
+      }
+    ],
+    "reference_answer": "Использовать git revert <commit>. Он создаст новый коммит с обратными изменениями, сохранив уже опубликованные коммиты."
+  },
+  {
+    "id": "dev-test-patch-where",
+    "split": "dev",
+    "query": "В orders.py стоит from payment import charge. В тесте патчу payment.charge, но заказ всё равно вызывает старую функцию. Какой путь указывать в patch?",
+    "relevant_sections": [
+      {
+        "course_slug": "testing",
+        "lesson_slug": "mocking",
+        "anchor": "патчинг-где-а-не-что"
+      }
+    ],
+    "reference_answer": "Подменять orders.charge, потому что код orders разрешает имя charge в своём пространстве имён. Импорт from payment import charge уже сохранил там ссылку на исходный объект."
+  },
+  {
+    "id": "dev-nginx-prefix-slash",
+    "split": "dev",
+    "query": "location /api/ проксирует запрос /api/users. Как изменится URI на бэкенде, если заменить proxy_pass http://app; на proxy_pass http://app/;?",
+    "relevant_sections": [
+      {
+        "course_slug": "nginx",
+        "lesson_slug": "reverse-proxy-basics",
+        "anchor": "proxypass-и-заголовки"
+      }
+    ],
+    "reference_answer": "Без URI в proxy_pass сохраняется /api/users. Завершающий / задаёт URI, который заменяет совпавший префикс /api/, поэтому бэкенд получает /users."
+  },
+  {
+    "id": "dev-redis-expiry-spike",
+    "split": "dev",
+    "query": "Популярная карточка выпадает из Redis, и сотня запросов в один момент идёт её пересчитывать. Как сделать, чтобы к базе пробился один запрос?",
+    "relevant_sections": [
+      {
+        "course_slug": "redis",
+        "lesson_slug": "caching",
+        "anchor": "cache-stampede"
+      }
+    ],
+    "reference_answer": "Координировать пересчёт по одному ключу через блокировку или singleflight. Один запрос обновляет запись, остальные ждут результат или получают допустимое устаревшее значение."
+  },
+  {
+    "id": "dev-slo-budget",
+    "split": "dev",
+    "query": "Хотим, чтобы за месяц минимум 99,9% запросов были успешными. Что здесь является SLI и SLO и какую долю ошибок допускает цель?",
+    "relevant_sections": [
+      {
+        "course_slug": "system-design",
+        "lesson_slug": "estimation-systems",
+        "anchor": "sla-slo-sli-и-девятки"
+      }
+    ],
+    "reference_answer": "SLI — измеряемая доля успешных запросов. SLO — цель не меньше 99,9% за месяц. Бюджет ошибок равен оставшимся 0,1% запросов."
+  },
+  {
+    "id": "dev-rag-literal-vs-meaning",
+    "split": "dev",
+    "query": "Поиск по урокам должен находить и дословный метод session.flush, и бытовое описание той же операции. Какие два вида поиска полезно совместить?",
+    "relevant_sections": [
+      {
+        "course_slug": "llm",
+        "lesson_slug": "rag-search-indexes",
+        "anchor": "лексический-поиск-tf-idf-и-bm25"
+      },
+      {
+        "course_slug": "llm",
+        "lesson_slug": "rag-search-indexes",
+        "anchor": "sparse-и-dense-два-вида-представления"
+      }
+    ],
+    "reference_answer": "Лексический или разреженный поиск помогает при точных совпадениях слов и идентификаторов. Плотный поиск по эмбеддингам находит семантически близкие формулировки. Гибрид использует оба списка кандидатов."
+  },
+  {
+    "id": "dev-daily-blocker",
+    "split": "dev",
+    "query": "На ежедневной встрече один разработчик подробно перечисляет всё сделанное начальнику, а остальные ждут. Что встреча должна давать команде и что делать с длинным разбором блокера?",
+    "relevant_sections": [
+      {
+        "course_slug": "team-processes",
+        "lesson_slug": "sprint-events",
+        "anchor": "дейли-daily-scrum"
+      }
+    ],
+    "reference_answer": "Daily нужен команде для синхронизации и корректировки плана работы на ближайший день. Блокеры полезно назвать сразу, а подробный разбор вынести после встречи с заинтересованными участниками."
+  },
+  {
+    "id": "dev-mutable-default",
+    "split": "dev",
+    "query": "У функции append_item(item, items=[]) второй вызов без items внезапно видит элемент из первого вызова. Как дать каждому вызову отдельный список?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-core",
+        "lesson_slug": "mutability-copying",
+        "anchor": "ловушка-изменяемого-аргумента-по-умолчанию"
+      }
+    ],
+    "reference_answer": "Аргументы по умолчанию вычисляются при определении функции. Использовать items=None и при items is None создавать новый список внутри функции."
+  },
+  {
+    "id": "dev-graph-prerequisites",
+    "split": "dev",
+    "query": "Надо упорядочить миграции, часть из которых зависит от других. Как построить порядок и понять, что схема зависимостей невозможна?",
+    "relevant_sections": [
+      {
+        "course_slug": "algorithms",
+        "lesson_slug": "graphs",
+        "anchor": "топологическая-сортировка"
+      }
+    ],
+    "reference_answer": "Представить зависимости ориентированным графом и сделать топологическую сортировку. В алгоритме Кана выбирать вершины с нулевой входной степенью. Если до конца удалось обработать меньше вершин, в графе есть цикл."
+  },
+  {
+    "id": "dev-ml-high-accuracy",
+    "split": "dev",
+    "query": "В 10 000 платежей только 100 мошеннических. Модель называет все честными и получает 99% accuracy. Что покажет, что она пропускает цель?",
+    "relevant_sections": [
+      {
+        "course_slug": "llm",
+        "lesson_slug": "ml-classification-metrics",
+        "anchor": "accuracy-и-ловушка-дисбаланса"
+      },
+      {
+        "course_slug": "llm",
+        "lesson_slug": "ml-classification-metrics",
+        "anchor": "precision-и-recall"
+      }
+    ],
+    "reference_answer": "Высокая accuracy получена за счёт большинства. У положительного класса 0 истинно положительных и 100 ложноотрицательных результатов, поэтому recall мошеннических платежей равна нулю."
+  },
+  {
+    "id": "dev-unanswerable-prod-traffic",
+    "split": "dev",
+    "query": "Сколько запросов в секунду обработал production этого учебного приложения ровно в 20:30 UTC вчера?",
+    "relevant_sections": [],
+    "reference_answer": "Учебные материалы не содержат оперативной статистики конкретного приложения. Ответ требует доступа к его мониторингу за указанное время."
+  },
+  {
+    "id": "dev-unanswerable-docker-pricing",
+    "split": "dev",
+    "query": "Сколько в рублях стоит дополнительное место для приватного репозитория Docker Hub в конкретном тарифе сегодня?",
+    "relevant_sections": [],
+    "reference_answer": "Материалы не содержат действующего прайса Docker Hub в рублях. Цена зависит от тарифа и актуальных условий."
+  },
+  {
+    "id": "dev-unanswerable-python-platform",
+    "split": "dev",
+    "query": "Какой номер CVE у исправленной сегодня уязвимости в конкретной сборке CPython для Alpine и в какой пакет её уже включили?",
+    "relevant_sections": [],
+    "reference_answer": "Материалы не содержат сегодняшней информации об инциденте или сборках Alpine. Для ответа нужны свежий бюллетень и сведения о пакетах."
+  },
+  {
+    "id": "test-python-reference-cycle",
+    "split": "test",
+    "query": "Два объекта держат ссылки друг на друга. После выхода из функции к ним больше нет доступа. Почему подсчёта ссылок недостаточно и что позже их освободит?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-core",
+        "lesson_slug": "memory-management",
+        "anchor": "подсчёт-ссылок-основной-механизм"
+      },
+      {
+        "course_slug": "python-core",
+        "lesson_slug": "memory-management",
+        "anchor": "проблема-циклических-ссылок"
+      }
+    ],
+    "reference_answer": "Внутренние ссылки оставляют ненулевые счётчики у обоих объектов. Сборщик циклического мусора находит группу объектов, недостижимую извне, и освобождает её."
+  },
+  {
+    "id": "test-queue-front-removal",
+    "split": "test",
+    "query": "В очереди заявок постоянно удаляю первый элемент через list.pop(0), и с ростом нагрузки всё замедляется. Какую структуру стандартной библиотеки использовать?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-data-types",
+        "lesson_slug": "collections-itertools",
+        "anchor": "deque-очередь-с-двух-концов"
+      },
+      {
+        "course_slug": "python-data-types",
+        "lesson_slug": "complexity",
+        "anchor": "списки-и-кортежи"
+      }
+    ],
+    "reference_answer": "collections.deque поддерживает popleft() и добавление с краёв за O(1). list.pop(0) сдвигает оставшиеся элементы и занимает O(n)."
+  },
+  {
+    "id": "test-python-descriptor-precedence",
+    "split": "test",
+    "query": "В __dict__ экземпляра есть status, но obj.status возвращает значение из класса. Что в дескрипторе определяет, перекроет ли его запись экземпляра?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-oop",
+        "lesson_slug": "descriptors",
+        "anchor": "data-vs-non-data-дескрипторы"
+      }
+    ],
+    "reference_answer": "Дескриптор с __set__ или __delete__ относится к data descriptors и имеет приоритет перед __dict__ экземпляра. Обычный non-data descriptor с __get__ может быть перекрыт записью экземпляра."
+  },
+  {
+    "id": "test-decorator-introspection",
+    "split": "test",
+    "query": "После добавления декоратора тесты видят __name__ как wrapper, а inspect.signature показывает только *args и **kwargs. Что поставить на обёртку?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-idioms",
+        "lesson_slug": "decorators",
+        "anchor": "functoolswraps"
+      }
+    ],
+    "reference_answer": "Использовать @functools.wraps(original) на wrapper. Он переносит метаданные исходной функции и устанавливает __wrapped__, через который инструменты интроспекции видят оригинал."
+  },
+  {
+    "id": "test-async-blocking-client",
+    "split": "test",
+    "query": "В async-обработчике приходится вызывать старый синхронный сетевой SDK. Во время его запроса остальные корутины зависают. Как подключить его без замены библиотеки?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-asyncio",
+        "lesson_slug": "blocking-pitfalls",
+        "anchor": "никогда-не-блокируй-событийный-цикл"
+      },
+      {
+        "course_slug": "python-asyncio",
+        "lesson_slug": "blocking-pitfalls",
+        "anchor": "runinexecutor-для-блокирующего-кода"
+      }
+    ],
+    "reference_answer": "Выполнить блокирующий вызов в рабочем потоке, например await asyncio.to_thread(client.fetch, key). Пока поток ждёт сеть, event loop может выполнять другие корутины."
+  },
+  {
+    "id": "test-spawn-main-guard",
+    "split": "test",
+    "query": "С multiprocessing на платформе со spawn каждый дочерний процесс опять стартует такие же процессы. Где поставить защиту и почему она работает?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-concurrency",
+        "lesson_slug": "multiprocessing",
+        "anchor": "main-и-способы-запуска"
+      }
+    ],
+    "reference_answer": "Запуск процессов поместить под if __name__ == '__main__':. При spawn дочерний процесс импортирует главный модуль, поэтому код запуска не должен выполняться при импорте."
+  },
+  {
+    "id": "test-hints-vs-validation",
+    "split": "test",
+    "query": "В JSON пришло age='двадцать', хотя в функции написано age: int. Почему Python не остановил вызов и в каком месте проверять внешний ввод?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-typing",
+        "lesson_slug": "mypy-pydantic",
+        "anchor": "типы-в-рантайме"
+      },
+      {
+        "course_slug": "python-typing",
+        "lesson_slug": "mypy-pydantic",
+        "anchor": "типы-против-валидации-pydantic"
+      }
+    ],
+    "reference_answer": "Аннотации сами по себе не обеспечивают проверку во время исполнения. Проверку надо выполнить на границе ввода, например пропустить JSON через модель Pydantic и обработать ошибку валидации."
+  },
+  {
+    "id": "test-heap-top-stream",
+    "split": "test",
+    "query": "Из большого потока значений мне нужны только пять наибольших. Можно ли не хранить и не сортировать весь поток?",
+    "relevant_sections": [
+      {
+        "course_slug": "algorithms",
+        "lesson_slug": "trees-heaps",
+        "anchor": "куча-heap-и-trie"
+      }
+    ],
+    "reference_answer": "Держать min-heap размера пять. Когда новое значение больше минимума в куче, заменить минимум. Память O(k), время обработки n значений O(n log k)."
+  },
+  {
+    "id": "test-sql-window-rows",
+    "split": "test",
+    "query": "Хочу видеть каждую строку продажи и рядом сумму продаж этого менеджера. Почему GROUP BY здесь мешает и как сохранить детализацию?",
+    "relevant_sections": [
+      {
+        "course_slug": "databases-sql",
+        "lesson_slug": "sql-joins",
+        "anchor": "оконные-функции"
+      }
+    ],
+    "reference_answer": "Использовать SUM(amount) OVER (PARTITION BY manager_id). Оконная функция рассчитывает сумму внутри группы, сохраняя каждую исходную строку."
+  },
+  {
+    "id": "test-pg-workers-skip-locked",
+    "split": "test",
+    "query": "Несколько процессов берут задачи из одной таблицы Postgres. Как выбрать свободные строки вместо ожидания строк, уже взятых другим процессом?",
+    "relevant_sections": [
+      {
+        "course_slug": "postgresql",
+        "lesson_slug": "concurrency-locks",
+        "anchor": "явные-блокировки-строк"
+      },
+      {
+        "course_slug": "postgresql",
+        "lesson_slug": "concurrency-locks",
+        "anchor": "skip-locked-и-очереди"
+      }
+    ],
+    "reference_answer": "Выбирать задачи в транзакции с FOR UPDATE SKIP LOCKED. Выбранные строки блокируются до завершения транзакции, а уже заблокированные другим воркером пропускаются."
+  },
+  {
+    "id": "test-orm-collection-loading",
+    "split": "test",
+    "query": "Эндпоинт загружает список авторов и проходит по author.books. SQL-лог показывает один запрос по авторам плюс запрос на каждого. Чем загрузить коллекции пачкой?",
+    "relevant_sections": [
+      {
+        "course_slug": "sqlalchemy",
+        "lesson_slug": "relationships-loading",
+        "anchor": "lazy-против-eager-загрузки"
+      },
+      {
+        "course_slug": "sqlalchemy",
+        "lesson_slug": "relationships-loading",
+        "anchor": "стратегии-eager-selectin-joined-subquery"
+      }
+    ],
+    "reference_answer": "Это N+1 из-за отложенной загрузки. selectinload(Author.books) загружает авторов, затем получает книги для набора авторов через отдельный запрос с IN."
+  },
+  {
+    "id": "test-fastapi-hide-secret",
+    "split": "test",
+    "query": "Из обработчика FastAPI возвращается объект пользователя с password_hash. Как оставить в JSON только id и публичное имя, описав это в схеме ответа?",
+    "relevant_sections": [
+      {
+        "course_slug": "fastapi",
+        "lesson_slug": "pydantic",
+        "anchor": "responsemodel-и-сериализация"
+      }
+    ],
+    "reference_answer": "Указать response_model, в котором есть id и публичное имя. FastAPI проверяет и сериализует результат по этой модели и отбрасывает поля, которых в ней нет."
+  },
+  {
+    "id": "test-http-retry-delete",
+    "split": "test",
+    "query": "DELETE на первом вызове вернул 204, а на повторном — 404. Перестал ли метод быть идемпотентным из-за разных HTTP-статусов?",
+    "relevant_sections": [
+      {
+        "course_slug": "web-http",
+        "lesson_slug": "http-basics",
+        "anchor": "идемпотентность-и-безопасность"
+      }
+    ],
+    "reference_answer": "Нет. Идемпотентность описывает итоговый эффект повторного запроса. После обоих вызовов ресурс отсутствует, а статус ответа может отличаться."
+  },
+  {
+    "id": "test-password-identical-inputs",
+    "split": "test",
+    "query": "Два пользователя придумали один пароль. Как сделать так, чтобы их записи хэшей отличались, и чем при этом отличается pepper?",
+    "relevant_sections": [
+      {
+        "course_slug": "security",
+        "lesson_slug": "auth-secrets",
+        "anchor": "хэширование-паролей"
+      },
+      {
+        "course_slug": "security",
+        "lesson_slug": "auth-secrets",
+        "anchor": "соль-и-перец"
+      }
+    ],
+    "reference_answer": "Для каждого пароля используют индивидуальную случайную соль и медленный алгоритм хеширования паролей. Соль может храниться вместе с хэшем. Pepper — дополнительный секрет приложения, который хранят отдельно от БД."
+  },
+  {
+    "id": "test-celery-ack-and-lease",
+    "split": "test",
+    "query": "При длинной задаче Celery с Redis другой воркер начал её, пока первый ещё считал. Что связать с visibility_timeout и на что влияет acks_late?",
+    "relevant_sections": [
+      {
+        "course_slug": "celery",
+        "lesson_slug": "routing-reliability",
+        "anchor": "ackslate-и-visibility-timeout"
+      }
+    ],
+    "reference_answer": "С acks_late задача подтверждается после выполнения. Если время ожидания подтверждения у Redis истечёт раньше завершения длинной задачи, сообщение может стать видимым другому воркеру. Нужно согласовать visibility_timeout с длительностью задачи и обеспечить идемпотентность."
+  },
+  {
+    "id": "test-kafka-commit-and-event",
+    "split": "test",
+    "query": "Заказ уже появился в базе, но процесс умер до публикации события Kafka. Как связать сохранение заказа и запись будущего сообщения одной транзакцией?",
+    "relevant_sections": [
+      {
+        "course_slug": "kafka",
+        "lesson_slug": "kafka-in-python",
+        "anchor": "transactional-outbox"
+      }
+    ],
+    "reference_answer": "Записать заказ и событие в таблицу outbox в одной транзакции. Отдельный процесс читает outbox и публикует события в Kafka с возможностью безопасного повтора."
+  },
+  {
+    "id": "test-docker-db-keep-data",
+    "split": "test",
+    "query": "Удаляю контейнер Postgres, запускаю новый из того же образа и теряю таблицы. Где настроить постоянное хранение, чтобы пережить пересоздание?",
+    "relevant_sections": [
+      {
+        "course_slug": "docker",
+        "lesson_slug": "networking-volumes",
+        "anchor": "тома-персистентность-данных"
+      }
+    ],
+    "reference_answer": "Подключить Docker volume к каталогу данных Postgres и использовать тот же volume при пересоздании контейнера. Volume живёт отдельно от записываемого слоя контейнера."
+  },
+  {
+    "id": "test-observability-slow-hop",
+    "split": "test",
+    "query": "Общий график показывает рост задержки, но в цепочке из пяти сервисов непонятно, какой вызов тормозит. Чего не хватает поверх метрик и логов?",
+    "relevant_sections": [
+      {
+        "course_slug": "devops",
+        "lesson_slug": "cicd-observability",
+        "anchor": "наблюдаемость-логи-метрики-трейсинг"
+      }
+    ],
+    "reference_answer": "Нужна распределённая трассировка. Один trace связывает участки обработки запроса в разных сервисах, а длительность его spans помогает найти медленный участок."
+  },
+  {
+    "id": "test-pytest-many-inputs",
+    "split": "test",
+    "query": "Есть пять наборов входов и ожидаемых результатов для одной функции. Как pytest сделать из них пять отдельно видимых прогонов без повторения кода?",
+    "relevant_sections": [
+      {
+        "course_slug": "testing",
+        "lesson_slug": "pytest",
+        "anchor": "parametrize"
+      }
+    ],
+    "reference_answer": "Описать пары входа и ожидаемого значения в @pytest.mark.parametrize и объявить соответствующие параметры функции. Pytest запустит тест отдельно для каждого набора."
+  },
+  {
+    "id": "test-nginx-realtime-proxy",
+    "split": "test",
+    "query": "WebSocket через nginx перестал переключать протокол, а события SSE доходят пачкой. Какие настройки у прокси проверить для каждого случая?",
+    "relevant_sections": [
+      {
+        "course_slug": "nginx",
+        "lesson_slug": "balancing-production",
+        "anchor": "websocket-и-sse-через-nginx"
+      }
+    ],
+    "reference_answer": "Для WebSocket проверить HTTP/1.1 и передачу Upgrade и Connection к upstream. Для SSE отключить буферизацию ответа (proxy_buffering off) и проверить таймаут чтения для долгого соединения."
+  },
+  {
+    "id": "test-redis-crash-data",
+    "split": "test",
+    "query": "После аварии Redis потерял записи после последнего снимка. Какой режим записывает изменения между снимками и от чего зависит окно потери?",
+    "relevant_sections": [
+      {
+        "course_slug": "redis",
+        "lesson_slug": "persistence-scaling",
+        "anchor": "персистентность-rdb-и-aof"
+      }
+    ],
+    "reference_answer": "AOF записывает команды изменения данных в журнал. Окно потери при сбое зависит от частоты fsync, например при everysec возможна потеря последних изменений примерно за секунду."
+  },
+  {
+    "id": "test-cap-network-split",
+    "split": "test",
+    "query": "Два узла потеряли связь, но оба продолжают принимать записи от клиентов. Каким свойством из CAP рискуем во время разрыва?",
+    "relevant_sections": [
+      {
+        "course_slug": "system-design",
+        "lesson_slug": "data-at-scale",
+        "anchor": "cap-теорема"
+      }
+    ],
+    "reference_answer": "Рискуем согласованностью: разъединённые узлы могут вернуть разные значения. Во время сетевого разделения CAP требует выбирать между строгой согласованностью и доступностью."
+  },
+  {
+    "id": "test-langgraph-thread-isolation",
+    "split": "test",
+    "query": "У одного пользователя открыты два диалога с сохранением LangGraph. Как настроить вызовы, чтобы чекпойнт первого не подтягивался ко второму?",
+    "relevant_sections": [
+      {
+        "course_slug": "llm",
+        "lesson_slug": "langgraph-persistence",
+        "anchor": "checkpointer-сохраняет-снимки"
+      },
+      {
+        "course_slug": "llm",
+        "lesson_slug": "langgraph-persistence",
+        "anchor": "thread-отделяет-диалоги"
+      }
+    ],
+    "reference_answer": "Подключить сохраняющий состояние checkpointer и передавать уникальный configurable.thread_id для каждого диалога. Последующие сообщения одного диалога выполняются с его исходным thread_id."
+  },
+  {
+    "id": "test-review-explain-impact",
+    "split": "test",
+    "query": "В PR нашёл потенциально сломанный сценарий удаления. Как оставить замечание, чтобы автор понял, что воспроизвести и обязательно ли исправлять?",
+    "relevant_sections": [
+      {
+        "course_slug": "team-processes",
+        "lesson_slug": "code-review",
+        "anchor": "как-ревьюить-что-смотреть-и-как-писать-комментарии"
+      }
+    ],
+    "reference_answer": "Назвать конкретный сценарий и последствия для поведения, объяснить причину замечания и обозначить его как блокирующее, если это дефект. По возможности предложить изменение или проверку и обсуждать код, сохраняя уважение к автору."
+  },
+  {
+    "id": "test-python-loop-lambda",
+    "split": "test",
+    "query": "Создал callbacks = [lambda: i for i in range(3)], а вызовы дают 2, 2, 2. Как зафиксировать значение каждого i в момент создания функции?",
+    "relevant_sections": [
+      {
+        "course_slug": "python-core",
+        "lesson_slug": "scopes",
+        "anchor": "late-binding-в-циклах"
+      }
+    ],
+    "reference_answer": "Замыкания читают общую переменную при вызове, когда цикл уже завершён. Зафиксировать значение можно аргументом по умолчанию: [lambda i=i: i for i in range(3)]."
+  },
+  {
+    "id": "test-binary-leftmost",
+    "split": "test",
+    "query": "В отсортированном массиве повторяются значения. Как бинарным поиском вернуть самое левое вхождение, а не первое попавшееся?",
+    "relevant_sections": [
+      {
+        "course_slug": "algorithms",
+        "lesson_slug": "sorting-searching",
+        "anchor": "бинарный-поиск"
+      }
+    ],
+    "reference_answer": "Искать левую границу: если средний элемент не меньше цели, сдвигать правую границу к нему; иначе двигать левую за середину. В конце проверить, что найденный индекс в диапазоне и значение равно цели."
+  },
+  {
+    "id": "test-tool-result-protocol",
+    "split": "test",
+    "query": "Модель запросила инструмент и выдала аргументы. Почему агент должен отправить ей результат вторым вызовом модели и зачем сохранять ID вызова?",
+    "relevant_sections": [
+      {
+        "course_slug": "llm",
+        "lesson_slug": "langchain-contracts",
+        "anchor": "полный-цикл-tool-calling"
+      }
+    ],
+    "reference_answer": "Запрос инструмента описывает желаемый вызов. Приложение исполняет его, возвращает ToolMessage с результатом и соответствующим tool_call_id, а новый вызов модели использует результат для ответа."
+  },
+  {
+    "id": "test-unanswerable-certificate-expiry",
+    "split": "test",
+    "query": "До какого числа действителен TLS-сертификат нашего production-домена прямо сейчас и когда началось его последнее продление?",
+    "relevant_sections": [],
+    "reference_answer": "Уроки объясняют TLS и продление, но не содержат текущего сертификата или журнала конкретного домена."
+  },
+  {
+    "id": "test-unanswerable-rabbitmq-limit",
+    "split": "test",
+    "query": "Какое точное числовое значение delivery-limit по умолчанию у quorum queues в RabbitMQ 4.2 и каким конфигом оно переопределено на нашем кластере?",
+    "relevant_sections": [],
+    "reference_answer": "В уроках не указаны значения для точной версии и конфигурация конкретного кластера. Потребуются документация RabbitMQ 4.2 и настройки брокера."
+  },
+  {
+    "id": "test-unanswerable-kubernetes-scheduling",
+    "split": "test",
+    "query": "В каком порядке kube-scheduler применяет PodTopologySpread и VolumeBinding на стадиях PreFilter и Filter в Kubernetes 1.34?",
+    "relevant_sections": [],
+    "reference_answer": "Публичные уроки не описывают порядок этих плагинов планировщика для указанной версии Kubernetes."
+  }
+]

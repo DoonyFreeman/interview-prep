@@ -9,6 +9,7 @@ DB and caching markdown is done elsewhere (``seed.py`` / ``registry.py``).
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -105,45 +106,73 @@ def load_content(content_dir: str | Path) -> ContentBundle:
     Also loads the optional flat ``content_dir/glossary.json`` reference section.
     """
     root = Path(content_dir)
-    courses_dir = root / "courses"
     bundle = ContentBundle()
-    if courses_dir.is_dir():
-        for course_path in sorted(p for p in courses_dir.iterdir() if p.is_dir()):
-            meta_file = course_path / "metadata.json"
-            if not meta_file.is_file():
-                continue
-            meta = json.loads(meta_file.read_text(encoding="utf-8"))
+    for meta_file in _course_metadata_files(root):
+        course_path = meta_file.parent
+        meta = json.loads(meta_file.read_text(encoding="utf-8"))
 
-            questions_file = course_path / "questions.json"
-            questions_map: dict = (
-                json.loads(questions_file.read_text(encoding="utf-8"))
-                if questions_file.is_file()
-                else {}
-            )
+        questions_file = course_path / "questions.json"
+        questions_map: dict = (
+            json.loads(questions_file.read_text(encoding="utf-8"))
+            if questions_file.is_file()
+            else {}
+        )
 
-            tests_file = course_path / "tests.json"
-            tests_map: dict = (
-                json.loads(tests_file.read_text(encoding="utf-8"))
-                if tests_file.is_file()
-                else {}
-            )
+        tests_file = course_path / "tests.json"
+        tests_map: dict = (
+            json.loads(tests_file.read_text(encoding="utf-8"))
+            if tests_file.is_file()
+            else {}
+        )
 
-            # Optional extra pool for the mixed /tests section only.
-            exam_file = course_path / "exam.json"
-            exam_map: dict = (
-                json.loads(exam_file.read_text(encoding="utf-8"))
-                if exam_file.is_file()
-                else {}
-            )
+        # Optional extra pool for the mixed /tests section only.
+        exam_file = course_path / "exam.json"
+        exam_map: dict = (
+            json.loads(exam_file.read_text(encoding="utf-8"))
+            if exam_file.is_file()
+            else {}
+        )
 
-            bundle.courses.append(
-                _parse_course(course_path, meta, questions_map, tests_map, exam_map)
-            )
+        bundle.courses.append(
+            _parse_course(course_path, meta, questions_map, tests_map, exam_map)
+        )
 
     _load_glossary(root, bundle)
     _load_slang(root, bundle)
     _load_roadmap(root, bundle)
     return bundle
+
+
+def _course_metadata_files(root: Path) -> Iterator[Path]:
+    yield from sorted(path for path in (root / "courses").glob("*/metadata.json") if path.is_file())
+
+
+def load_lesson_markdown(content_dir: str | Path) -> Iterator[tuple[str, str, LessonData]]:
+    """Yield course slug, course title and each declared lesson without opening answer banks."""
+    root = Path(content_dir)
+    courses_dir = (root / "courses").resolve()
+    for meta_file in _course_metadata_files(root):
+        course_dir = meta_file.parent.resolve()
+        if course_dir.parent != courses_dir or meta_file.resolve().parent != course_dir:
+            raise ValueError(f"Course metadata must be inside its course directory: {meta_file}")
+        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+        for lesson_meta in meta.get("lessons", []):
+            md_path = meta_file.parent / lesson_meta["file"]
+            resolved = md_path.resolve(strict=True)
+            if resolved.suffix.lower() != ".md" or not resolved.is_relative_to(course_dir):
+                raise ValueError(f"Lesson source must be Markdown in its course directory: {md_path}")
+            yield meta["slug"], meta["title"], _lesson_data(lesson_meta, md_path, resolved.read_text(encoding="utf-8"))
+
+
+def _lesson_data(meta: dict, path: Path, markdown: str) -> LessonData:
+    return LessonData(
+        slug=meta["slug"],
+        title=meta["title"],
+        content_path=str(path),
+        markdown=markdown,
+        order_index=meta.get("order", 0),
+        duration_minutes=meta.get("duration_minutes", 0),
+    )
 
 
 def _load_roadmap(root: Path, bundle: ContentBundle) -> None:
@@ -217,14 +246,7 @@ def _parse_course(
         md_path = course_path / lesson_meta["file"]
         markdown = md_path.read_text(encoding="utf-8") if md_path.is_file() else ""
 
-        lesson = LessonData(
-            slug=lesson_slug,
-            title=lesson_meta["title"],
-            content_path=str(md_path),
-            markdown=markdown,
-            order_index=lesson_meta.get("order", 0),
-            duration_minutes=lesson_meta.get("duration_minutes", 0),
-        )
+        lesson = _lesson_data(lesson_meta, md_path, markdown)
 
         lesson_questions = questions_map.get(lesson_slug, {})
         lesson_tests = tests_map.get(lesson_slug, {})

@@ -25,7 +25,10 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     CONTENT_DIR=/app/content \
     API_DOCS=false \
-    DATABASE_URL=sqlite+aiosqlite:///./data/app.db
+    DATABASE_URL=sqlite+aiosqlite:///./data/app.db \
+    ASSISTANT_INDEX_PATH=/app/assistant-assets/lessons.sqlite3 \
+    ASSISTANT_MODEL_DIR=/app/assistant-assets/e5 \
+    ASSISTANT_PERSISTENCE_PATH=/app/backend/data/assistant/langgraph.sqlite3
 
 WORKDIR /app/backend
 
@@ -33,16 +36,23 @@ WORKDIR /app/backend
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Application code, content (source of truth, re-seeded on startup), built SPA.
+# Application code and content are also inputs to the assistant index.
 COPY backend/app ./app
 COPY content /app/content
-COPY --from=frontend /frontend/dist ./app/static
+COPY scripts/assistant_prepare_index.py /app/scripts/assistant_prepare_index.py
 
 # Non-root user owns the writable data dir (SQLite + WAL).
 RUN useradd --create-home --uid 1000 appuser \
-    && mkdir -p /app/backend/data \
+    && mkdir -p /app/backend/data /app/assistant-assets \
     && chown -R appuser:appuser /app
 USER appuser
+
+RUN PYTHONPATH=/app/backend python /app/scripts/assistant_prepare_index.py \
+    --content-dir "$CONTENT_DIR" \
+    --model-dir "$ASSISTANT_MODEL_DIR" \
+    --index "$ASSISTANT_INDEX_PATH"
+
+COPY --from=frontend --chown=appuser:appuser /frontend/dist ./app/static
 
 EXPOSE 8000
 
