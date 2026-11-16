@@ -206,9 +206,7 @@ export function Layout() {
       </main>
 
       <BottomNavBar />
-      <div className={path === "/assistant" ? "hidden sm:contents" : "contents"}>
-        <CatWidget />
-      </div>
+      <CatWidget />
       <WhatsNew />
     </div>
   );

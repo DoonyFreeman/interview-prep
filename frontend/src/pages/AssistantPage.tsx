@@ -8,11 +8,11 @@ import {
   assistantThreadKey,
   assistantThreadsKey,
   createAssistantThread,
-  deleteAssistantThread,
   sendAssistantTurn,
   useAssistantConfig,
   useAssistantThread,
   useAssistantThreads,
+  type AssistantThreadSummary,
   type AssistantLesson,
   type AssistantPhase,
   type AssistantTurn,
@@ -20,13 +20,17 @@ import {
 import { useProgress } from "../api/hooks";
 import { useAuth } from "../auth/AuthContext";
 import { AssistantAnswer } from "../components/AssistantAnswer";
+import { AssistantHistory, assistantThreadLocation, type AssistantThreadAction } from "../components/AssistantHistory";
+import { AssistantThreadDialog } from "../components/AssistantThreadDialog";
+import { LanguageToggle } from "../components/LanguageToggle";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { Button } from "../components/Button";
 import {
   IconArrowUp,
   IconArticle,
   IconGlobe,
-  IconHistory,
-  IconPlus,
+  IconPencil,
+  IconSidebar,
   IconSparkles,
   IconTarget,
   IconTrash,
@@ -37,7 +41,6 @@ import "./assistant.css";
 
 const slugPattern = /^[a-z0-9_-]+$/;
 const MAX_MESSAGE_LENGTH = 3000;
-const threadLocation = (id: string) => `/assistant?${new URLSearchParams({ thread: id })}`;
 const turnErrors: Record<string, string> = {
   assistant_busy: "assistant.busy",
   assistant_rate_limit: "assistant.rateLimit",
@@ -89,7 +92,8 @@ function AssistantPageSession() {
           webAvailable={config.data.web_search_available}
         />
       ) : (
-        <>
+        <main className="mx-auto max-w-xl p-6 sm:p-12">
+          <Link to="/" className="mb-6 inline-block text-sm font-semibold text-primary hover:underline">{t("assistant.back")}</Link>
           <h1 className="font-display text-3xl font-bold tracking-tight">{t("assistant.title")}</h1>
           <div className="mt-5 rounded-2xl border border-border bg-surface p-6">
             {config.isPending ? (
@@ -100,106 +104,136 @@ function AssistantPageSession() {
               <p className="text-sm text-muted">{t("assistant.unavailable")}</p>
             )}
           </div>
-        </>
+        </main>
       )}
     </div>
   );
 }
+
+type ConversationView = { key: string; threadId: string | null; lesson?: AssistantLesson };
+type ChatDraft = { text: string; web: boolean; request: AssistantTurn | null };
+type Answering = { view: ConversationView; id: string | null };
 
 function AssistantWorkspace({ threadId, lesson, webAvailable }: {
   threadId: string | null;
   lesson?: AssistantLesson;
   webAvailable: boolean;
 }) {
-  const { t } = useTranslation();
-  const [historyOpen, setHistoryOpen] = useState(false);
+  const navigate = useNavigate();
   const [draftRevision, setDraftRevision] = useState(0);
+  const [answering, setAnswering] = useState<Answering | null>(null);
+  const [action, setAction] = useState<AssistantThreadAction | null>(null);
+  const drafts = useRef(new Map<string, ChatDraft>());
+  const threadKeys = useRef(new Map<string, string>());
+  const scrollPositions = useRef(new Map<string, number>());
+  const drawer = useRef<HTMLDialogElement>(null);
   const threads = useAssistantThreads();
-  const conversationKey = threadId ? `thread:${threadId}` : `draft:${lesson?.course_slug}/${lesson?.lesson_slug}/${draftRevision}`;
-  const newChat = (
-    <Link
-      to="/assistant"
-      onClick={() => {
-        setHistoryOpen(false);
-        if (!threadId && !lesson) setDraftRevision((revision) => revision + 1);
-      }}
-      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
-    >
-      <IconPlus className="size-4 shrink-0" /> {t("assistant.newChat")}
-    </Link>
-  );
+  const view: ConversationView = {
+    key: threadId
+      ? threadKeys.current.get(threadId) ?? `thread:${threadId}`
+      : `draft:${lesson?.course_slug}/${lesson?.lesson_slug}/${draftRevision}`,
+    threadId, lesson,
+  };
+  const current = useRef(view);
+  useLayoutEffect(() => { current.current = view; });
+  const views = answering && answering.view.key !== view.key ? [view, answering.view] : [view];
+
+  function openAction(nextAction: AssistantThreadAction) {
+    if (nextAction.thread.id !== answering?.id) setAction(nextAction);
+  }
 
   return (
-    <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 md:mb-5">
-        <h1 className="font-display text-3xl font-bold tracking-tight">{t("assistant.title")}</h1>
-        <div className="flex flex-wrap gap-2 md:hidden">
-          <button
-            type="button"
-            className="inline-flex min-h-10 items-center gap-2 rounded-xl px-2 text-sm font-semibold text-muted hover:bg-surface hover:text-ink"
-            aria-expanded={historyOpen}
-            aria-controls="assistant-history"
-            onClick={() => setHistoryOpen((open) => !open)}
-          >
-            <IconHistory className="size-4" /> {t("assistant.history")}
-          </button>
-          {newChat}
-        </div>
-      </div>
-      <div className="assistant-workspace grid gap-3 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] md:gap-4 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
-        <aside
-          aria-label={t("assistant.history")}
-          id="assistant-history"
-          className={`${historyOpen ? "flex" : "hidden"} min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface-2 p-3 md:flex`}
-        >
-          <div className="hidden flex-col md:flex">{newChat}</div>
-          <p className="px-2 pt-1 pb-2 text-xs font-semibold text-muted md:pt-5">{t("assistant.history")}</p>
-          <div className="min-h-0 overflow-y-auto max-md:max-h-48">
-            {threads.isPending && <p role="status" className="px-2 py-2 text-sm text-muted">{t("common.loading")}</p>}
-            {threads.isError && <QueryError text={t("assistant.historyError")} retry={() => void threads.refetch()} />}
-            {threads.data?.length === 0 && <p className="px-2 py-2 text-sm text-muted">{t("assistant.noChats")}</p>}
-            <ul className="space-y-0.5 px-1 py-1">
-              {threads.data?.map((thread) => (
-                <li key={thread.id} className="min-w-0">
-                  <Link
-                    to={threadLocation(thread.id)}
-                    title={thread.title || t("assistant.newChat")}
-                    aria-current={thread.id === threadId ? "page" : undefined}
-                    onClick={() => setHistoryOpen(false)}
-                    className="block truncate rounded-lg px-2.5 py-2.5 text-sm text-muted transition-colors hover:bg-surface hover:text-ink aria-[current=page]:bg-primary-soft aria-[current=page]:font-semibold aria-[current=page]:text-primary"
-                  >
-                    {thread.title || t("assistant.newChat")}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-        <Conversation key={conversationKey} threadId={threadId} initialLesson={lesson} webAvailable={webAvailable} />
-      </div>
-    </>
+    <div className="assistant-workspace">
+      <AssistantHistory
+        threadId={threadId}
+        answeringId={answering?.id ?? null}
+        drawer={drawer}
+        onAction={openAction}
+        onNew={() => {
+          drawer.current?.close();
+          if (!threadId && !lesson && answering?.view.key !== view.key) drafts.current.delete(view.key);
+          setDraftRevision((revision) => revision + 1);
+        }}
+      />
+      <main className="assistant-main">
+        {views.map((item) => {
+          const id = item.threadId ?? (answering?.view.key === item.key ? answering.id : null);
+          const summary = threads.data?.find((thread) => thread.id === id);
+          return (
+            <div className="assistant-view" key={item.key} hidden={item.key !== view.key}>
+              <Conversation
+                view={item}
+                summary={summary}
+                active={item.key === view.key}
+                webAvailable={webAvailable}
+                busyElsewhere={!!answering && answering.view.key !== item.key}
+                drafts={drafts.current}
+                scrollPositions={scrollPositions.current}
+                onHistory={() => drawer.current?.showModal()}
+                onAction={openAction}
+                onAnswering={(id) => setAnswering({ view: item, id })}
+                onCreated={(id) => {
+                  threadKeys.current.set(id, item.key);
+                  setAnswering({ view: { ...item, threadId: id }, id });
+                  if (current.current.key === item.key) {
+                    navigate(assistantThreadLocation(id), { replace: true });
+                  }
+                  if (current.current.threadId || current.current.key === item.key) {
+                    setDraftRevision((revision) => revision + 1);
+                  }
+                }}
+                onSettled={() => setAnswering((pending) => pending?.view.key === item.key ? null : pending)}
+              />
+            </div>
+          );
+        })}
+      </main>
+      {action && (
+        <AssistantThreadDialog
+          action={action}
+          onDismiss={() => setAction(null)}
+          onDeleted={(id) => {
+            const key = threadKeys.current.get(id) ?? `thread:${id}`;
+            threadKeys.current.delete(id);
+            drafts.current.delete(key);
+            scrollPositions.current.delete(key);
+            if (current.current.threadId === id) navigate("/assistant", { replace: true });
+          }}
+        />
+      )}
+    </div>
   );
 }
 
-function Conversation({ threadId, initialLesson, webAvailable }: {
-  threadId: string | null;
-  initialLesson?: AssistantLesson;
+function Conversation({
+  view, summary, active, webAvailable, busyElsewhere, drafts, scrollPositions,
+  onHistory, onAction, onAnswering, onCreated, onSettled,
+}: {
+  view: ConversationView;
+  summary?: AssistantThreadSummary;
+  active: boolean;
   webAvailable: boolean;
+  busyElsewhere: boolean;
+  drafts: Map<string, ChatDraft>;
+  scrollPositions: Map<string, number>;
+  onHistory: () => void;
+  onAction: (action: AssistantThreadAction) => void;
+  onAnswering: (id: string | null) => void;
+  onCreated: (id: string) => void;
+  onSettled: () => void;
 }) {
+  const { key, threadId, lesson: initialLesson } = view;
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const thread = useAssistantThread(threadId);
   const progress = useProgress();
-  const [draft, setDraft] = useState("");
-  const [useWeb, setUseWeb] = useState(false);
+  const [draft, setDraft] = useState(() => drafts.get(key)?.text ?? "");
+  const [useWeb, setUseWeb] = useState(() => drafts.get(key)?.web ?? false);
   const [liveAnswer, setLiveAnswer] = useState<{ question: string; phase: AssistantPhase | null; text: string } | null>(null);
-  const createdThread = useRef<string | null>(null);
-  const lastTurn = useRef<AssistantTurn | null>(null);
+  const lastTurn = useRef(drafts.get(key)?.request ?? null);
   const activeStream = useRef<AbortController | null>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
   const timeline = useRef<HTMLDivElement>(null);
-  const recentQuestion = useRef<HTMLDivElement>(null);
   const previousMessageCount = useRef<number | undefined>(undefined);
   const followStream = useRef(true);
   const wasStreaming = useRef(false);
@@ -210,6 +244,10 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
     ?.lessons.find((lesson) => lesson.slug === selectedLesson?.lesson_slug)?.title;
 
   useLayoutEffect(() => () => activeStream.current?.abort(), []);
+  useLayoutEffect(() => {
+    if (draft.trim()) drafts.set(key, { text: draft, web: useWeb, request: lastTurn.current });
+    else drafts.delete(key);
+  }, [draft, useWeb, key, drafts]);
 
   const send = useMutation({
     mutationFn: async ({ turn, token, controller }: { turn: AssistantTurn; token: string; controller: AbortController }) => {
@@ -218,14 +256,16 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
         signal.throwIfAborted();
         if (getToken() !== token) throw new Error("Authentication changed");
       }
-      let id = threadId ?? createdThread.current;
+      let id = threadId;
       try {
         checkSession();
         if (!id) {
           const created = await createAssistantThread(token, initialLesson, signal);
           checkSession();
           id = created.id;
-          createdThread.current = id;
+          queryClient.setQueryData(assistantThreadKey(id), created);
+          onCreated(id);
+          void queryClient.invalidateQueries({ queryKey: assistantThreadsKey, exact: true });
         }
         const updated = await sendAssistantTurn(token, id, turn, signal, (update) => {
           if (getToken() !== token || signal.aborted) return;
@@ -251,42 +291,42 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
         if (getToken() === token) void queryClient.invalidateQueries({ queryKey: assistantThreadsKey, exact: true });
       }
     },
+    onSuccess(_, { token }) {
+      if (getToken() !== token) return;
+      lastTurn.current = null;
+      setDraft("");
+      setUseWeb(false);
+      drafts.delete(key);
+    },
     onSettled(_, error, { controller, token }) {
       if (activeStream.current === controller) activeStream.current = null;
-      if (error && !controller.signal.aborted && getToken() === token) setLiveAnswer(null);
-    },
-  });
-
-  const remove = useMutation({
-    mutationFn: ({ id, token }: { id: string; token: string }) => {
-      if (getToken() !== token) throw new Error("Authentication changed");
-      return deleteAssistantThread(token, id);
-    },
-    onSuccess(_, { id, token }) {
       if (getToken() !== token) return;
-      queryClient.removeQueries({ queryKey: assistantThreadKey(id), exact: true });
-      void queryClient.invalidateQueries({ queryKey: assistantThreadsKey, exact: true });
+      if (error) setLiveAnswer(null);
+      onSettled();
     },
   });
 
   const messages = thread.data?.messages ?? [];
   const pendingText = liveAnswer?.question;
-  const disabled = send.isPending || remove.isPending || (!!threadId && !thread.data);
+  const loadingThread = !!threadId && !thread.data;
+  const disabled = send.isPending || busyElsewhere || loadingThread;
+  const failed = send.isError && !send.variables?.controller.signal.aborted;
+  const displayThread = thread.data ?? summary;
   const errorCode = assistantErrorCode(send.error);
   const errorMessage = errorCode && Object.hasOwn(turnErrors, errorCode) ? turnErrors[errorCode] : "assistant.sendError";
 
   useLayoutEffect(() => {
     const viewport = timeline.current;
-    const recent = recentQuestion.current;
-    if (!viewport) return;
+    if (!active || !viewport) return;
     if (pendingText || (wasStreaming.current && previousMessageCount.current !== messages.length)) {
       if (followStream.current) viewport.scrollTop = viewport.scrollHeight;
-    } else if (recent && previousMessageCount.current === undefined) {
-      viewport.scrollTop = Math.max(0, recent.offsetTop - 20);
+    } else if (thread.data && previousMessageCount.current === undefined) {
+      const saved = scrollPositions.get(key);
+      viewport.scrollTop = saved === undefined || saved === Infinity ? viewport.scrollHeight : saved;
     }
-    if (recent || thread.data) previousMessageCount.current = messages.length;
+    if (thread.data || pendingText) previousMessageCount.current = messages.length;
     wasStreaming.current = !!pendingText;
-  }, [messages.length, pendingText, liveAnswer?.phase, liveAnswer?.text, thread.data]);
+  }, [active, key, messages.length, pendingText, liveAnswer?.phase, liveAnswer?.text, thread.data, scrollPositions]);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -303,15 +343,9 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
     activeStream.current = controller;
     followStream.current = true;
     setLiveAnswer({ question: turn.text, phase: null, text: "" });
-    send.mutate({ turn, token, controller }, {
-      onSuccess(updated) {
-        if (controller.signal.aborted || getToken() !== token) return;
-        lastTurn.current = null;
-        setDraft("");
-        setUseWeb(false);
-        if (!threadId) navigate(threadLocation(updated.id), { replace: true });
-      },
-    });
+    drafts.set(key, { text: turn.text, web: turn.use_web, request: turn });
+    onAnswering(threadId);
+    send.mutate({ turn, token, controller });
   }
 
   function handleComposerKey(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -321,85 +355,79 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
     }
   }
 
-  function removeThread() {
-    const token = getToken();
-    if (!threadId || !token || !window.confirm(t("assistant.deleteConfirm"))) return;
-    remove.mutate({ id: threadId, token }, {
-      onSuccess() {
-        if (getToken() === token) navigate("/assistant", { replace: true });
-      },
-    });
-  }
-
   function prefill(text: string) {
     setDraft(text);
     textarea.current?.focus();
   }
 
   return (
-    <section
-      aria-label={t("assistant.conversation")}
-      className="assistant-conversation flex min-h-0 min-w-0 flex-col rounded-2xl border border-border bg-surface shadow-card"
-    >
-      {(thread.data || selectedLesson) && (
-        <div className="flex min-h-14 items-center justify-between gap-3 border-b border-border px-4 py-2 sm:px-6">
-          <div className="min-w-0">
-            {thread.data && <h2 className="truncate text-sm font-semibold" title={thread.data.title}>{thread.data.title || t("assistant.newChat")}</h2>}
-            {selectedLesson && (
-              <Link
-                to={`/courses/${encodeURIComponent(selectedLesson.course_slug)}/lessons/${encodeURIComponent(selectedLesson.lesson_slug)}`}
-                className="inline-flex max-w-full items-center gap-1.5 rounded text-xs font-semibold text-primary hover:underline"
-              >
-                <IconArticle className="size-4 shrink-0" />
-                <span className="truncate">{lessonTitle || t("assistant.lessonContext", { lesson: selectedLesson.lesson_slug })}</span>
-              </Link>
-            )}
-          </div>
-          {thread.data && (
-            <button
-              type="button"
-              aria-label={t("assistant.delete")}
-              title={t("assistant.delete")}
-              onClick={removeThread}
-              disabled={disabled}
-              className="flex size-10 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-danger-soft hover:text-danger disabled:opacity-45"
+    <section aria-label={t("assistant.conversation")} className="assistant-conversation">
+      <header className="assistant-chat-header">
+        <button className="assistant-icon-button assistant-open-history" type="button" aria-label={t("assistant.history")} aria-haspopup="dialog" aria-controls="assistant-mobile-history" onClick={onHistory}>
+          <IconSidebar className="size-5" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate font-display text-lg font-bold tracking-tight" title={displayThread?.title}>{displayThread?.title || t("assistant.title")}</h1>
+          {selectedLesson && (
+            <Link
+              to={`/courses/${encodeURIComponent(selectedLesson.course_slug)}/lessons/${encodeURIComponent(selectedLesson.lesson_slug)}`}
+              className="inline-flex max-w-full items-center gap-1.5 rounded text-xs font-semibold text-primary hover:underline"
             >
-              <IconTrash className="size-4" />
-            </button>
+              <IconArticle className="size-3.5 shrink-0" />
+              <span className="truncate">{lessonTitle || t("assistant.lessonContext", { lesson: selectedLesson.lesson_slug })}</span>
+            </Link>
           )}
         </div>
-      )}
+        {displayThread && (
+          <div className="flex shrink-0 items-center gap-0.5">
+            <button type="button" className="assistant-icon-button" aria-label={t("assistant.rename")} title={t("assistant.rename")} disabled={send.isPending} onClick={() => onAction({ kind: "rename", thread: displayThread })}>
+              <IconPencil className="size-4" />
+            </button>
+            <button type="button" className="assistant-icon-button assistant-delete-action" aria-label={t("assistant.delete")} title={t("assistant.delete")} disabled={send.isPending} onClick={() => onAction({ kind: "delete", thread: displayThread })}>
+              <IconTrash className="size-4" />
+            </button>
+          </div>
+        )}
+        <div className="assistant-chat-preferences">
+          <ThemeToggle />
+          <span className="hidden sm:inline-flex"><LanguageToggle /></span>
+        </div>
+      </header>
 
       <div
         ref={timeline}
         onScroll={(event) => {
-          if (!liveAnswer) return;
+          if (!active) return;
           const viewport = event.currentTarget;
           followStream.current = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 32;
+          scrollPositions.set(key, followStream.current ? Infinity : viewport.scrollTop);
         }}
         tabIndex={0}
         role="log"
         aria-label={t("assistant.messages")}
         aria-relevant="additions"
-        className="relative min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 sm:px-6"
+        className="assistant-timeline"
       >
-        <div className="mx-auto flex min-h-full max-w-2xl flex-col py-5 sm:py-6">
+        <div className="assistant-reading-column">
           {threadId && thread.isPending ? (
-            <p role="status" className="m-auto flex items-center gap-2 text-sm text-muted"><Spinner /> {t("common.loading")}</p>
+            <div role="status" className="assistant-thread-loading">
+              <span className="sr-only">{t("common.loading")}</span>
+              <div /><div /><div />
+            </div>
           ) : threadId && thread.isError && !thread.data ? (
             <div className="m-auto"><QueryError text={t("assistant.threadError")} retry={() => void thread.refetch()} /></div>
           ) : messages.length === 0 && !pendingText ? (
-            <div className="my-auto py-3 sm:py-6">
-              <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+            <div className="assistant-welcome">
+              <span className="assistant-welcome-icon">
                 <IconSparkles className="size-6" />
               </span>
-              <h2 className="mt-4 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              <h2 className="assistant-welcome-title">
                 {t(selectedLesson ? "assistant.lessonHeading" : "assistant.startHeading")}
               </h2>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
+              <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-muted sm:text-base">
                 {t(selectedLesson ? "assistant.lessonHint" : "assistant.startHint")}
               </p>
-              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              <div className="assistant-prompts">
                 {[IconArticle, IconTarget].map((Icon, index) => {
                   const prompt = t(selectedLesson
                     ? (index === 0 ? "assistant.lessonPrompt" : "assistant.interviewPrompt")
@@ -409,7 +437,7 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
                       key={prompt}
                       type="button"
                       onClick={() => prefill(prompt)}
-                      className="flex min-h-12 items-center gap-3 rounded-xl border border-border bg-surface-2 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-primary-soft hover:text-primary"
+                      className="assistant-prompt"
                     >
                       <Icon className="size-4 shrink-0 text-primary" /> {prompt}
                     </button>
@@ -418,12 +446,11 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
               </div>
             </div>
           ) : (
-            <div className="space-y-6">
-              {messages.map((message, index) => (
+            <div className="assistant-transcript space-y-6">
+              {messages.map((message) => (
                 message.role === "assistant" ? <AssistantAnswer key={message.id} message={message} /> : (
                   <div
                     key={message.id}
-                    ref={!pendingText && index >= messages.length - 2 ? recentQuestion : undefined}
                     className="flex justify-end"
                   >
                     <UserMessage text={message.text} />
@@ -432,7 +459,7 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
               ))}
               {liveAnswer && (
                 <>
-                  <div ref={recentQuestion} className="flex justify-end"><UserMessage text={liveAnswer.question} /></div>
+                  <div className="flex justify-end"><UserMessage text={liveAnswer.question} /></div>
                   <div className="flex min-w-0 gap-3">
                     <span aria-hidden className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
                       <IconSparkles className="size-4" />
@@ -455,28 +482,27 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
         </div>
       </div>
 
-      <form onSubmit={submit} className="border-t border-border px-4 pt-3 pb-4 sm:px-6">
-        <div className="mx-auto max-w-2xl">
-          {send.isError && (
+      <form onSubmit={submit} className="assistant-compose-area">
+        <div className="assistant-compose-width">
+          {failed && (
             <p role="alert" className="mb-2 rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
               {t(errorMessage)}
             </p>
           )}
-          {remove.isError && <p role="alert" className="mb-2 text-sm text-danger">{t("assistant.deleteError")}</p>}
-          <div className="rounded-xl border border-border bg-surface-2 focus-within:border-primary/50">
-            <label className="sr-only" htmlFor="assistant-composer">{t("assistant.composer")}</label>
+          <div className="assistant-compose-box">
+            <label className="sr-only" htmlFor={`assistant-composer-${key}`}>{t("assistant.composer")}</label>
             <textarea
-              id="assistant-composer"
+              id={`assistant-composer-${key}`}
               ref={textarea}
               value={send.isPending ? "" : draft}
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={handleComposerKey}
-              disabled={remove.isPending || (!!threadId && !thread.data)}
+              disabled={loadingThread}
               readOnly={send.isPending}
               placeholder={t(messages.length ? "assistant.followup" : "assistant.placeholder")}
-              rows={2}
+              rows={1}
               maxLength={MAX_MESSAGE_LENGTH}
-              className="block max-h-44 min-h-14 w-full resize-y bg-transparent px-3 pt-2.5 text-base leading-relaxed placeholder:text-muted focus-visible:outline-none"
+              className="assistant-compose-input block w-full bg-transparent px-3 pt-2.5 text-base leading-relaxed placeholder:text-muted focus-visible:outline-none"
             />
             <div className="flex min-h-12 flex-wrap items-center justify-end gap-2 px-2 pb-2">
               {webAvailable && (
@@ -489,18 +515,25 @@ function Conversation({ threadId, initialLesson, webAvailable }: {
                     onChange={(event) => setUseWeb(event.target.checked)}
                     disabled={disabled}
                     className="size-4 accent-primary"
-                    aria-describedby="assistant-web-hint"
+                    aria-describedby={`assistant-web-hint-${key}`}
                   />
                   <IconGlobe className="size-3.5" /> {t("assistant.web")}
                 </label>
               )}
-              <Button type="submit" disabled={disabled || !draft.trim()} aria-keyshortcuts="Control+Enter Meta+Enter" className="min-h-10">
-                {t(send.isError ? "assistant.retry" : "assistant.send")} <IconArrowUp className="size-4" />
-              </Button>
+              {busyElsewhere && <span role="status" className="text-xs text-muted">{t("assistant.answering")}</span>}
+              {send.isPending ? (
+                <Button type="button" variant="secondary" onClick={() => activeStream.current?.abort()}>
+                  <span aria-hidden className="size-2.5 rounded-xs bg-current" /> {t("assistant.stop")}
+                </Button>
+              ) : (
+                <Button type="submit" disabled={disabled || !draft.trim()} aria-keyshortcuts="Control+Enter Meta+Enter" className="min-h-10">
+                  {t(failed ? "assistant.retry" : "assistant.send")} <IconArrowUp className="size-4" />
+                </Button>
+              )}
             </div>
           </div>
           {webAvailable && (
-            <p id="assistant-web-hint" className={`${useWeb ? "mt-2" : "sr-only"} text-xs leading-relaxed text-muted`}>
+            <p id={`assistant-web-hint-${key}`} className={`${useWeb ? "mt-2" : "sr-only"} text-xs leading-relaxed text-muted`}>
               {t("assistant.webHint")}
             </p>
           )}

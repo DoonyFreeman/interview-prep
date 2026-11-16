@@ -23,7 +23,7 @@ from starlette.types import Send
 
 from app.assistant.runtime import AssistantRuntime, AssistantUnavailable, get_assistant_runtime
 from app.assistant.storage import (
-    MAX_TURNS, ChatRepository, ChatThread, CreateThread, SendMessage, ThreadList, ThreadOut,
+    MAX_TURNS, ChatRepository, ChatThread, CreateThread, RenameThread, SendMessage, ThreadList, ThreadOut,
 )
 from app.auth.dependencies import get_current_user, has_account_bound_token
 from app.database import SessionLocal, get_session
@@ -140,6 +140,20 @@ async def create_thread(
 @router.get("/threads/{thread_id}", response_model=ThreadOut)
 async def thread_detail(thread_id: UUID, repo: ChatRepository = Depends(_repository)) -> ThreadOut:
     return await repo.detail(await _owned_thread(repo, str(thread_id)))
+
+
+@router.patch("/threads/{thread_id}", response_model=ThreadOut)
+async def rename_thread(
+    thread_id: UUID, data: RenameThread, repo: ChatRepository = Depends(_repository),
+) -> ThreadOut:
+    try:
+        renamed = await repo.rename_thread(str(thread_id), data.title)
+    except SQLAlchemyError:
+        await repo.session.rollback()
+        raise HTTPException(503, "Не удалось переименовать диалог. Попробуй ещё раз.") from None
+    if renamed is None:
+        raise HTTPException(404, "Диалог не найден")
+    return renamed
 
 
 @router.delete("/threads/{thread_id}", status_code=204, response_class=Response)

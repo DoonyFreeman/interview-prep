@@ -8,6 +8,7 @@ const thread = {
   course_slug: null,
   lesson_slug: null,
   updated_at: "2026-11-15T00:00:00Z",
+  preview: turn.text,
   messages: [{
     id: "saved-answer",
     role: "assistant",

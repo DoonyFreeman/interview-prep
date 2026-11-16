@@ -25,6 +25,7 @@ export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/assistant" element={<RequireAuth><AssistantPage /></RequireAuth>} />
       <Route
         element={
           <RequireAuth>
@@ -34,7 +35,6 @@ export function App() {
       >
         <Route path="/" element={<CatalogPage />} />
         <Route path="/roadmap" element={<RoadmapPage />} />
-        <Route path="/assistant" element={<AssistantPage />} />
         {/* Glossary + Slang share a persistent tab shell (DictLayout). */}
         <Route element={<DictLayout />}>
           <Route path="/glossary" element={<GlossaryPage />} />

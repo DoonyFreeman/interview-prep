@@ -6,7 +6,9 @@ from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
-from sqlalchemy import ForeignKey, Index, String, Text, UniqueConstraint, delete, func, insert, literal, select, update
+from sqlalchemy import (
+    ForeignKey, Index, String, Text, UniqueConstraint, case, delete, func, insert, literal, select, update,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -18,7 +20,11 @@ MAX_THREADS = 50
 MAX_TURNS = 100
 _HISTORY_MESSAGES = 12
 _HISTORY_CHARACTERS = 12_000
+_PREVIEW_CHARACTERS = 120
 _DEFAULT_TITLE = "Новый диалог"
+# Leading whitespace distinguishes an explicit rename to the default title.
+# User-entered and generated titles are trimmed before storage.
+_RENAMED_DEFAULT_TITLE = f" {_DEFAULT_TITLE}"
 
 
 class ChatThread(Base):
@@ -74,6 +80,7 @@ class ThreadSummary(BaseModel):
     id: str
     title: str
     updated_at: datetime
+    preview: str | None
 
 
 class ThreadOut(ThreadSummary):
@@ -101,6 +108,11 @@ class CreateThread(BaseModel):
         return self
 
 
+class RenameThread(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
+
+
 class SendMessage(BaseModel):
     model_config = ConfigDict(extra="forbid")
     text: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=3000)]
@@ -108,9 +120,12 @@ class SendMessage(BaseModel):
     request_id: UUID = Field(default_factory=uuid4)
 
 
-def summary(thread: ChatThread) -> ThreadSummary:
+def summary(thread: ChatThread, latest_user_text: str | None) -> ThreadSummary:
+    preview = " ".join((latest_user_text or "").split())[:_PREVIEW_CHARACTERS].rstrip()
+    title = _DEFAULT_TITLE if thread.title == _RENAMED_DEFAULT_TITLE else thread.title
     return ThreadSummary(
-        id=thread.id, title=thread.title, updated_at=thread.updated_at.replace(tzinfo=timezone.utc)
+        id=thread.id, title=title, updated_at=thread.updated_at.replace(tzinfo=timezone.utc),
+        preview=preview or None,
     )
 
 
@@ -124,11 +139,16 @@ class ChatRepository:
         return (ChatThread.id == thread_id, ChatThread.owner_id == self.owner_id)
 
     async def list_threads(self) -> list[ThreadSummary]:
-        result = await self.session.scalars(
-            select(ChatThread).where(ChatThread.owner_id == self.owner_id)
+        latest_user_text = (
+            select(ChatMessage.text)
+            .where(ChatMessage.thread_id == ChatThread.id, ChatMessage.role == "user")
+            .order_by(ChatMessage.position.desc()).limit(1).scalar_subquery()
+        )
+        result = await self.session.execute(
+            select(ChatThread, latest_user_text).where(ChatThread.owner_id == self.owner_id)
             .order_by(ChatThread.updated_at.desc(), ChatThread.id).limit(MAX_THREADS)
         )
-        return [summary(thread) for thread in result]
+        return [summary(thread, text) for thread, text in result]
 
     async def create_thread(self, data: CreateThread) -> ChatThread | None:
         # A single INSERT-SELECT checks the limit under SQLite's writer lock.
@@ -155,6 +175,16 @@ class ChatRepository:
             select(ChatThread).where(*self._owned(thread_id)).execution_options(populate_existing=True)
         )
 
+    async def rename_thread(self, thread_id: str, title: str) -> ThreadOut | None:
+        stored_title = _RENAMED_DEFAULT_TITLE if title == _DEFAULT_TITLE else title
+        thread = await self.session.scalar(
+            update(ChatThread).where(*self._owned(thread_id)).values(title=stored_title)
+            .returning(ChatThread).execution_options(populate_existing=True)
+        )
+        result = await self.detail(thread) if thread is not None else None
+        await self.session.commit()
+        return result
+
     async def delete_thread(self, thread_id: str) -> bool:
         # Keep the explicit delete so cleanup also works on test connections
         # that do not install the production SQLite foreign-key pragma.
@@ -180,16 +210,18 @@ class ChatRepository:
         return list(result)
 
     async def detail(self, thread: ChatThread) -> ThreadOut:
+        rows = await self._messages(thread.id)
+        latest_user_text = next((row.text for row in reversed(rows) if row.role == "user"), None)
         messages = [
             MessageOut(
                 id=row.id, role=row.role, text=row.text,
                 created_at=row.created_at.replace(tzinfo=timezone.utc),
                 **ReplyMetadata.model_validate_json(row.metadata_json).model_dump(),
             )
-            for row in await self._messages(thread.id)
+            for row in rows
         ]
         return ThreadOut(
-            **summary(thread).model_dump(), course_slug=thread.course_slug,
+            **summary(thread, latest_user_text).model_dump(), course_slug=thread.course_slug,
             lesson_slug=thread.lesson_slug, messages=messages,
         )
 
@@ -219,10 +251,13 @@ class ChatRepository:
         now = _utcnow()
         changes: dict = {"revision": revision + 1, "updated_at": now}
         if revision == 0:
-            changes["title"] = " ".join(request.text.split())[:90]
+            generated_title = " ".join(request.text.split())[:90]
+            changes["title"] = case(
+                (ChatThread.title == _DEFAULT_TITLE, generated_title), else_=ChatThread.title,
+            )
         thread = await self.session.scalar(
             update(ChatThread).where(*self._owned(thread_id), ChatThread.revision == revision)
-            .values(**changes).returning(ChatThread)
+            .values(**changes).returning(ChatThread).execution_options(populate_existing=True)
         )
         if thread is None:
             await self.session.rollback()

@@ -89,6 +89,7 @@ async def thread_path(client, headers, **context):
     created = await client.post("/api/assistant/threads", json=context, headers=headers)
     assert created.status_code == 201, created.text
     assert created.headers["cache-control"] == "private, no-store"
+    assert created.json()["preview"] is None
     return f"/api/assistant/threads/{created.json()['id']}"
 
 
@@ -151,6 +152,8 @@ async def test_stream_delivers_partial_text_before_commit_and_releases_lock(assi
 
     retry = await client.post(f"{path}/messages/stream", json=payload, headers=headers)
     assert retry.status_code == 200 and "event: done\n" in retry.text
+    done = json.loads(retry.text.split("event: done\ndata: ", 1)[1].split("\n\n", 1)[0])
+    assert done["preview"] == payload["text"]
     assert retry.headers["content-type"].startswith("text/event-stream")
     assert retry.headers["cache-control"] == "private, no-store"
     assert len(fake.calls) == (2 if disconnect else 1)
@@ -182,6 +185,7 @@ async def test_grounded_turn_history_and_idempotent_retry(assistant_client):
     assert result.status_code == 200, result.text
     thread = result.json()
     assert thread["title"] == "Что такое Recall?"
+    assert thread["preview"] == "Что такое Recall?"
     assert [m["role"] for m in thread["messages"]] == ["user", "assistant"]
     assert thread["messages"][1]["sources"][0]["url"].endswith("#precision-и-recall")
     assert thread["messages"][1]["tool_activity"] == ["search_lessons"]
@@ -207,6 +211,7 @@ async def test_threads_are_owned_and_deleting_removes_messages(assistant_client,
     await client.post(f"{path}/messages", json={"text": "Вопрос"}, headers=owner)
     assert (await client.get(path)).status_code in (401, 403)
     assert (await client.get(path, headers=other)).status_code == 404
+    assert (await client.patch(path, json={"title": "Чужое"}, headers=other)).status_code == 404
     assert (await client.delete(path, headers=other)).status_code == 404
     assert (await client.post(f"{path}/messages", json={"text": "Чужое"}, headers=other)).status_code == 404
     assert (await client.get("/api/assistant/threads", headers=other)).json() == {"threads": []}
@@ -215,6 +220,55 @@ async def test_threads_are_owned_and_deleting_removes_messages(assistant_client,
     assert deleted.status_code == 204 and not deleted.content
     async with Session() as session:
         assert await session.scalar(select(func.count()).select_from(ChatMessage)) == 0
+
+
+async def test_history_previews_and_renames_preserve_activity_order(assistant_client):
+    client, _ = assistant_client
+    headers = await register(client, "owner")
+    older = await thread_path(client, headers)
+    await client.post(f"{older}/messages", json={"text": "Первый вопрос"}, headers=headers)
+    sent = await client.post(f"{older}/messages", json={"text": "  Новый\n\tвопрос " + "я" * 150}, headers=headers)
+    assert sent.status_code == 200
+    before = sent.json()
+    newer = await thread_path(client, headers)
+    expected_preview = ("Новый вопрос " + "я" * 150)[:120]
+    assert before["preview"] == expected_preview
+
+    renamed = await client.patch(older, json={"title": "  " + "я" * 100 + "  "}, headers=headers)
+    assert renamed.status_code == 200 and renamed.headers["cache-control"] == "private, no-store"
+    assert renamed.json() == {**before, "title": "я" * 100}
+    assert (await client.get(older, headers=headers)).json() == renamed.json()
+
+    history = await client.get("/api/assistant/threads", headers=headers)
+    assert history.headers["cache-control"] == "private, no-store"
+    newer_summary, older_summary = history.json()["threads"]
+    assert newer_summary["id"] == newer.rsplit("/", 1)[-1]
+    assert newer_summary["preview"] is None
+    assert older_summary == {key: renamed.json()[key] for key in ("id", "title", "preview", "updated_at")}
+
+    for invalid in ({"title": " \n "}, {"title": "я" * 101}, {"title": 3}, {"title": "Название", "extra": True}):
+        rejected = await client.patch(older, json=invalid, headers=headers)
+        assert rejected.status_code == 422 and rejected.headers["cache-control"] == "private, no-store"
+
+
+@pytest.mark.parametrize("title", ("Метрики", "Новый диалог"))
+async def test_renaming_during_first_turn_keeps_title_and_reply(assistant_client, title):
+    client, fake = assistant_client
+    headers = await register(client, "owner")
+    path = await thread_path(client, headers)
+    fake.release.clear()
+    turn = asyncio.create_task(client.post(f"{path}/messages", json={"text": "Вопрос"}, headers=headers))
+    try:
+        await asyncio.wait_for(fake.started.wait(), timeout=2)
+        renamed = await client.patch(path, json={"title": title}, headers=headers)
+        assert renamed.status_code == 200 and renamed.json()["title"] == title
+        assert renamed.json()["preview"] is None and renamed.json()["messages"] == []
+    finally:
+        fake.release.set()
+        finished = await asyncio.wait_for(turn, timeout=2)
+    assert finished.status_code == 200 and finished.json()["title"] == title
+    assert finished.json()["preview"] == "Вопрос" and len(finished.json()["messages"]) == 2
+    assert (await client.get(path, headers=headers)).json() == finished.json()
 
 
 async def test_reissued_user_id_rejects_an_older_accounts_token(assistant_client, Session):

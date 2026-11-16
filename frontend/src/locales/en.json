@@ -59,6 +59,18 @@
     "cheatsheets": "Cheatsheets"
   },
   "assistant": {
+    "back": "Back to courses",
+    "searchChats": "Find a chat",
+    "noMatches": "No matching chats",
+    "rename": "Rename chat",
+    "chatName": "Chat title",
+    "renameError": "Couldn't rename this chat. Try again.",
+    "saveTitle": "Save",
+    "cancel": "Cancel",
+    "closeHistory": "Close chat history",
+    "noPreview": "No messages yet",
+    "answering": "Assistant is replying",
+    "stop": "Stop reply",
     "title": "Assistant",
     "newChat": "New chat",
     "history": "Chat history",

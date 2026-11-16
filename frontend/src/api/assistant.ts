@@ -31,6 +31,7 @@ export interface AssistantThreadSummary {
   id: string;
   title: string;
   updated_at: string;
+  preview: string | null;
 }
 
 export interface AssistantThread extends AssistantThreadSummary {
@@ -83,12 +84,17 @@ export function useAssistantThreads() {
   });
 }
 
-export function useAssistantThread(id: string | null) {
-  return useQuery({
+export function assistantThreadOptions(id: string | null) {
+  return {
     queryKey: assistantThreadKey(id),
     enabled: !!id,
-    queryFn: async ({ signal }) => (await api.get<AssistantThread>(threadUrl(id!), { signal })).data,
-  });
+    staleTime: 15_000,
+    queryFn: async ({ signal }: { signal: AbortSignal }) => (await api.get<AssistantThread>(threadUrl(id!), { signal })).data,
+  };
+}
+
+export function useAssistantThread(id: string | null) {
+  return useQuery(assistantThreadOptions(id));
 }
 
 export async function createAssistantThread(token: string, lesson?: AssistantLesson, signal?: AbortSignal) {
@@ -201,4 +207,10 @@ export async function sendAssistantTurn(
 
 export async function deleteAssistantThread(token: string, id: string) {
   await api.delete(threadUrl(id), { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export async function renameAssistantThread(token: string, id: string, title: string) {
+  return (await api.patch<AssistantThread>(threadUrl(id), { title }, {
+    headers: { Authorization: `Bearer ${token}` },
+  })).data;
 }
