@@ -26,6 +26,40 @@ function Svg({
   );
 }
 
+export function IconPlus({ className }: IconProps) {
+  return <Svg className={className}><path d="M12 5v14M5 12h14" /></Svg>;
+}
+
+export function IconArrowUp({ className }: IconProps) {
+  return <Svg className={className}><path d="M12 19V5m-7 7 7-7 7 7" /></Svg>;
+}
+
+export function IconHistory({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M3 12a9 9 0 1 1 2.7 6.4M3 5v7h7m2-4v5l3 2" />
+    </Svg>
+  );
+}
+
+export function IconGlobe({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" />
+      <path d="M3 12h18" />
+    </Svg>
+  );
+}
+
+export function IconTrash({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M4 7h16m-14 0 1 13h10l1-13M10 7V4h4v3m-4 4v5m4-5v5" />
+    </Svg>
+  );
+}
+
 /** Courses — graduation cap (academic / learning a topic). */
 export function IconCourses({ className }: IconProps) {
   return (

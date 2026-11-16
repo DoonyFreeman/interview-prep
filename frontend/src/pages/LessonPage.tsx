@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll } from "motion/react";
+import { useAssistantConfig } from "../api/assistant";
 import {
   useLesson,
   useLessonTestProgress,
@@ -13,7 +14,7 @@ import {
 import { PageLoader } from "../components/Spinner";
 import { Markdown } from "../components/Markdown";
 import { Button } from "../components/Button";
-import { IconMic, IconClipboardCheck, IconArticle, IconDownload } from "../components/icons";
+import { IconMic, IconClipboardCheck, IconArticle, IconDownload, IconSparkles } from "../components/icons";
 import { ResourceList } from "../components/RoadmapDrawer";
 import { resourcesFor } from "../lib/roadmap";
 import { useActiveAnchor } from "../lib/useActiveAnchor";
@@ -26,6 +27,7 @@ export function LessonPage() {
   const { courseSlug = "", lessonSlug = "" } = useParams();
   const location = useLocation();
   const lesson = useLesson(courseSlug, lessonSlug);
+  const assistant = useAssistantConfig();
   const { token } = useAuth();
   const privateAnswers = usePrivateHrAnswers(
     courseSlug === "hr-screening" ? token : null,
@@ -48,9 +50,15 @@ export function LessonPage() {
   // Once the markdown is rendered, jump to the #anchor from "Back to theory".
   useEffect(() => {
     if (!lesson.data || !location.hash) return;
-    const id = decodeURIComponent(location.hash.slice(1));
+    let id: string;
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      return;
+    }
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }, [lesson.data, location.hash]);
 
   if (lesson.isLoading) return <PageLoader label={t("common.loading")} />;
@@ -87,8 +95,18 @@ export function LessonPage() {
         >
           ← {t("lesson.backToCourse")}
         </Link>
-        <div className="mt-2 mb-1 text-xs font-semibold uppercase tracking-wide text-faint">
-          {t("common.minutes", { count: lesson.data.duration_minutes })}
+        <div className="mt-2 mb-1 flex flex-wrap items-center justify-between gap-2">
+          <span className="text-xs font-semibold uppercase tracking-wide text-faint">
+            {t("common.minutes", { count: lesson.data.duration_minutes })}
+          </span>
+          {assistant.data?.enabled && (
+            <Link
+              to={`/assistant?${new URLSearchParams({ course_slug: courseSlug, lesson_slug: lessonSlug })}`}
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft"
+            >
+              <IconSparkles className="size-4 shrink-0" /> {t("assistant.askLesson")}
+            </Link>
+          )}
         </div>
 
         {/* Mobile ToC — collapsed by default; the desktop sidebar handles lg+. */}

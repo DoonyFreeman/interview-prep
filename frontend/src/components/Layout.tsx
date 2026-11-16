@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
+import { useAssistantConfig } from "../api/assistant";
 import { useCat } from "../cat/useCat";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
@@ -11,13 +12,13 @@ import { SearchModal } from "./SearchModal";
 import { BottomNavBar } from "./BottomNavBar";
 import { WhatsNew } from "./WhatsNew";
 import { CatWidget } from "../cat/CatWidget";
-import { BrandMark, BrandWord, IconFlame, IconSettings } from "./icons";
+import { BrandMark, BrandWord, IconFlame, IconSettings, IconSparkles } from "./icons";
 import { routeTransition } from "../lib/motion";
 
 /** A desktop nav link with an animated "pill" that glides to the active item. */
 function NavItem({ to, end, label }: { to: string; end?: boolean; label: string }) {
   return (
-    <NavLink to={to} end={end} className="relative px-3 py-1.5 text-sm font-semibold">
+    <NavLink to={to} end={end} className="relative shrink-0 whitespace-nowrap px-2 py-1.5 text-sm font-semibold xl:px-3">
       {({ isActive }) => (
         <>
           {isActive && (
@@ -101,6 +102,7 @@ export function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const outlet = useOutlet();
+  const assistant = useAssistantConfig();
 
   // Glossary and Slang live in one shared shell (DictLayout); collapse them to
   // a single transition key so switching tabs doesn't replay the page fade —
@@ -112,15 +114,13 @@ export function Layout() {
   return (
     <div className="min-h-screen">
       <header className="glass sticky top-0 z-20 border-b border-border">
-        <div className="mx-auto flex h-15 max-w-6xl items-center gap-4 px-4">
-          {/* Logo lockup: glyph always, wordmark from sm up (the phone header is
-              already tight). Both are transparent SVGs — no wrapper chip. */}
-          <Link to="/" className="flex items-center gap-2" aria-label={t("app.name")}>
+        <div className="mx-auto flex h-15 max-w-7xl items-center gap-2 px-4 lg:gap-4">
+          <Link to="/" className="flex shrink-0 items-center gap-2" aria-label={t("app.name")}>
             <BrandMark className="h-9 w-9 shrink-0" />
-            <BrandWord className="hidden h-5 w-auto sm:block" />
+            <BrandWord className="hidden h-5 w-auto lg:block" />
           </Link>
 
-          <nav className="ml-2 hidden items-center gap-1 sm:flex">
+          <nav className="hidden min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] sm:flex lg:ml-2">
             <NavItem to="/" end label={t("nav.courses")} />
             <NavItem to="/roadmap" label={t("nav.roadmap")} />
             <NavItem to="/glossary" label={t("nav.glossary")} />
@@ -128,17 +128,33 @@ export function Layout() {
             <NavItem to="/cheatsheets" label={t("nav.cheatsheets")} />
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex shrink-0 items-center gap-2 lg:gap-3">
             <StreakBadge />
             <div className="hidden sm:block">
               <DueBadge />
             </div>
+            {assistant.data?.enabled && (
+              <NavLink
+                to="/assistant"
+                aria-label={t("assistant.title")}
+                title={t("assistant.title")}
+                className={({ isActive }) =>
+                  `inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-semibold transition-colors ${
+                    isActive ? "bg-primary-soft text-primary" : "text-muted hover:bg-surface-2 hover:text-ink"
+                  }`
+                }
+              >
+                <IconSparkles className="size-[18px]" />
+                <span className="hidden xl:inline">{t("assistant.title")}</span>
+              </NavLink>
+            )}
             <SearchModal />
             <ShortcutsHelp />
             <ThemeToggle />
             <LanguageToggle />
             <NavLink
               to="/settings"
+              aria-label={t("nav.settings")}
               title={t("nav.settings")}
               className={({ isActive }) =>
                 `group flex items-center gap-2 rounded-[10px] px-2.5 py-1.5 text-sm font-semibold transition-colors ${
@@ -159,7 +175,7 @@ export function Layout() {
               >
                 <IconSettings className="h-4 w-4" />
               </span>
-              <span className="hidden max-w-[150px] truncate md:inline">
+              <span className="hidden max-w-[150px] truncate 2xl:inline">
                 {user?.display_name || user?.email}
               </span>
             </NavLink>
@@ -190,7 +206,9 @@ export function Layout() {
       </main>
 
       <BottomNavBar />
-      <CatWidget />
+      <div className={path === "/assistant" ? "hidden sm:contents" : "contents"}>
+        <CatWidget />
+      </div>
       <WhatsNew />
     </div>
   );

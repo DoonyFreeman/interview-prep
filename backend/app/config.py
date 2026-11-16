@@ -37,6 +37,17 @@ class Settings(BaseSettings):
     )
     gemini_base_url: str = "https://generativelanguage.googleapis.com"
 
+    # --- Study assistant ---
+    assistant_enabled: bool = False
+    assistant_index_path: str = "./data/assistant/lessons.sqlite3"
+    assistant_model_dir: str = "./data/assistant/e5"
+    assistant_persistence_path: str = ""
+    gigachat_credentials: str = ""
+    gigachat_scope: str = "GIGACHAT_API_PERS"
+    gigachat_model: str = "GigaChat-2-Pro"
+    gigachat_ca_file: str = ""
+    brave_search_api_key: str = ""
+
     # --- Admin ---
     # Comma-separated emails allowed on /api/admin/* (empty = nobody is admin).
     admin_emails: str = ""
