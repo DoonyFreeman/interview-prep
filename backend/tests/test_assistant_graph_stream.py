@@ -247,3 +247,88 @@ async def test_checkpointed_turns_reopen_with_fresh_context_and_evidence(tmp_pat
     assert any(snapshot.values.get("reply", {}).get("text") == first.text
                for snapshot in snapshots if snapshot.values.get("reply"))
     assert snapshots[0].values.keys().isdisjoint({"model", "tools", "on_event", "memory_context"})
+
+
+@pytest.mark.asyncio
+async def test_follow_up_fallback_uses_previous_topic_without_reusing_citations():
+    history = [
+        {"role": "user", "content": "Что такое GIL в CPython?"},
+        {"role": "assistant", "content": "GIL ограничивает исполнение Python-кода потоками."},
+        {"role": "user", "content": "Понял, спасибо!"},
+        {"role": "assistant", "content": "Пожалуйста."},
+        {"role": "user", "content": "Приведи пример."},
+    ]
+    queries = []
+    source = "python-core/gil:what"
+    answer = "Два CPU-bound потока не выполняют Python-байткод параллельно в обычном CPython с GIL."
+
+    async def search(args):
+        query = args["query"]
+        queries.append(query)
+        if "GIL" in query and "Приведи пример" in query and args["scope"] == "all_lessons":
+            return ToolResult({"sections": [{"source_id": source, "text": answer}]}, (source,))
+        return ToolResult({"sections": []})
+
+    model = _Model([_READY], [_one_chunk(_answer_json(answer, source_ids=(source,)))])
+    reply = await run_assistant(
+        model, history, [_tool("search_lessons", search)], fallback_lesson_search=True, on_event=_collect([]),
+    )
+
+    assert len(queries) == 1
+    assert reply.source_ids == (source,)
+    assert reply.text == answer
+    assert model.requests[-1][2][1:] == history
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("repair_first", (False, True))
+async def test_additional_search_and_citation_repair_have_independent_budgets(repair_first):
+    history = [{"role": "user", "content": "Объясни GIL"}]
+    calls = []
+    source = "python-core/gil:what"
+    answer = "GIL ограничивает одновременное исполнение Python-кода потоками."
+
+    async def search(args):
+        query = args["query"]
+        calls.append(query)
+        if query == "inner join":
+            return ToolResult({"sections": [{"source_id": "unrelated", "text": "Unrelated"}]}, ("unrelated",))
+        return ToolResult({"sections": [{"source_id": source, "text": answer}]}, (source,))
+
+    malformed = _one_chunk("invalid JSON")
+    uncited = _one_chunk(_answer_json("Не хватает материалов.", source_ids=()))
+    corrected = _one_chunk(_answer_json(answer, source_ids=(source,)))
+    model = _Model(
+        [_call("search_lessons"), _READY],
+        [malformed, uncited, corrected] if repair_first else [uncited, malformed, corrected],
+    )
+    reply = await run_assistant(
+        model, history, [_tool("search_lessons", search)], fallback_lesson_search=True, on_event=_collect([]),
+    )
+
+    assert calls == ["inner join", "Объясни GIL"]
+    assert reply.source_ids == (source,)
+    assert reply.text == answer
+    assert FALLBACK_EVIDENCE_PREFIX in model.requests[-1][2][0]["content"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("question", ("асинхронность", "А как тогда устроена асинхронность Python?"))
+async def test_fallback_search_uses_new_explicit_topic_in_same_thread(question):
+    history = [
+        {"role": "user", "content": "Что такое LangChain?"},
+        {"role": "assistant", "content": "LangChain даёт компоненты для LLM-приложений."},
+        {"role": "user", "content": question},
+    ]
+
+    async def search(args):
+        assert args == {"query": question, "scope": "all_lessons"}
+        return ToolResult({"sections": [{"source_id": "async", "text": "await отдаёт управление."}]}, ("async",))
+
+    model = _Model([_READY], [_one_chunk(_answer_json("await отдаёт управление.", source_ids=("async",)))])
+    reply = await run_assistant(
+        model, history, [_tool("search_lessons", search)], fallback_lesson_search=True, on_event=_collect([]),
+    )
+
+    assert reply.text == "await отдаёт управление."
+    assert reply.source_ids == ("async",)

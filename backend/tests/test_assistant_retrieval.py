@@ -253,3 +253,19 @@ def test_missing_runtime_artifacts_fail_closed(tmp_path):
     with pytest.raises(RetrievalUnavailable):
         retriever.search("a query")
     assert not index.exists()
+
+
+def test_search_reads_langchain_and_langgraph_spoken_spellings(tmp_path):
+    _write_course(tmp_path, "llm", {
+        "langchain": "## LangChain\n\nИнтерфейс к моделям и готовые агенты.",
+        "langgraph": "## LangGraph\n\nГраф исполнения со своим состоянием.",
+    })
+    embedder = FakeEmbedder()
+    index = tmp_path / "index.sqlite3"
+    model_dir = tmp_path / "model"
+    build_index(tmp_path, model_dir, index, embedder=embedder)
+    retriever = LessonRetriever(index, model_dir, content_dir=tmp_path, embedder=embedder)
+
+    for query, slug in (("Lang chain", "langchain"), ("lang Graph", "langgraph")):
+        result = retriever.rank(query, dense_limit=0)
+        assert result.lexical[0].lesson_slug == slug

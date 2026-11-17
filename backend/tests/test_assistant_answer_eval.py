@@ -34,9 +34,8 @@ def answer_eval(monkeypatch):
 
 class _Retriever:
     def search(self, query, *, limit, course_slug, lesson_slug):
-        assert query == "inner join"
         assert (limit, course_slug, lesson_slug) == (5, None, None)
-        return [_SECTION, _UNUSED]
+        return [_SECTION, _UNUSED] if query == "inner join" else []
 
     def read_section(self, chunk_id):
         assert chunk_id == _SECTION.chunk_id
@@ -140,8 +139,8 @@ async def test_abstention_and_invalid_generation_are_distinct(answer_eval):
         for i, answerable in enumerate(case_types)
     ]
     runtime = _runtime(
-        _search(), _READY, _final(), _final(),
-        _search(), _READY, _final(), _final(),
+        _search(), _READY, _final(), _final(), _final(),
+        _search(), _READY, _final(), _final(), _final(),
         _search(), _READY, ModelReply(text="malformed model response"), ModelReply(text="still malformed"),
         AssistantModelError("provider body with private details"),
     )
@@ -166,7 +165,7 @@ async def test_abstention_and_invalid_generation_are_distinct(answer_eval):
 async def test_invalid_judgment_withholds_scores_and_blocks_gate(answer_eval):
     cases = [answer_eval.Case("labeled", "Вопрос", _REFERENCE, True),
              answer_eval.Case("no-source", "Что актуально?", _REFERENCE, False)]
-    runtime = _runtime(_search(), _READY, _final("S1"), _search(), _READY, _final(), _final())
+    runtime = _runtime(_search(), _READY, _final("S1"), _search(), _READY, _final(), _final(), _final())
     judge = _Judge(_correctness(), {"claims": [{"claim": "факт", "supported": "true"}]})
 
     report = await answer_eval.evaluate(runtime, judge, cases, split="test")
