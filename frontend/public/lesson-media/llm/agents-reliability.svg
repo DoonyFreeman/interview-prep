@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Пять маршрутов агента при обработке заказа</title>
+  <desc id="desc">Таймаут ведёт к ограниченным повторам, неверный аргумент возвращается модели, пропущенный номер заказа запрашивается у человека, баг доходит до обработчика, успешная пустая выдача завершает поиск.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#66778a"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#fbfaf8"/>
+  <g font-family="Arial, sans-serif" fill="#172b4d">
+    <text x="48" y="64" font-size="38" font-weight="700">Что случилось с заказом №42?</text>
+    <text x="48" y="106" font-size="24" fill="#4d5f73">Результат вызова определяет следующую ветку</text>
+
+    <rect x="48" y="313" width="264" height="90" rx="16" fill="#172b4d"/>
+    <text x="180" y="353" text-anchor="middle" font-size="27" font-weight="700" fill="#fff">Агент «Маяка»</text>
+    <text x="180" y="382" text-anchor="middle" font-size="20" fill="#e9f2ff">Проверяет возврат</text>
+
+    <g fill="none" stroke="#66778a" stroke-width="3">
+      <path d="M312 358H367M367 184V532"/>
+      <path d="M367 184H423" marker-end="url(#arrow)"/>
+      <path d="M367 271H423" marker-end="url(#arrow)"/>
+      <path d="M367 358H423" marker-end="url(#arrow)"/>
+      <path d="M367 445H423" marker-end="url(#arrow)"/>
+      <path d="M367 532H423" marker-end="url(#arrow)"/>
+    </g>
+
+    <rect x="434" y="150" width="718" height="68" rx="12" fill="#fff3e8" stroke="#ad591d"/>
+    <text x="456" y="193" font-size="24" font-weight="700">Таймаут</text>
+    <text x="765" y="193" font-size="23">Повторить узел</text>
+
+    <rect x="434" y="237" width="718" height="68" rx="12" fill="#e9f2ff" stroke="#2d69b3"/>
+    <text x="456" y="280" font-size="24" font-weight="700">Неверный аргумент</text>
+    <text x="765" y="280" font-size="23">Объяснить модели ошибку</text>
+
+    <rect x="434" y="324" width="718" height="68" rx="12" fill="#eeeafa" stroke="#6c54a1"/>
+    <text x="456" y="367" font-size="24" font-weight="700">Не хватает номера</text>
+    <text x="765" y="367" font-size="23">Уточнить у человека</text>
+
+    <rect x="434" y="411" width="718" height="68" rx="12" fill="#fdeeed" stroke="#ac4c48"/>
+    <text x="456" y="454" font-size="24" font-weight="700">Баг в коде</text>
+    <text x="765" y="454" font-size="23">Передать ошибку обработчику</text>
+
+    <rect x="434" y="498" width="718" height="68" rx="12" fill="#e6f6ee" stroke="#368568"/>
+    <text x="456" y="541" font-size="24" font-weight="700">Успешный поиск дал []</text>
+    <text x="765" y="541" font-size="23">Сообщить, что совпадений нет</text>
+
+    <rect x="48" y="610" width="1104" height="66" rx="12" fill="#fff" stroke="#c5cbd4"/>
+    <text x="72" y="651" font-size="23" font-weight="700">Три таймаута → поиск недоступен.</text>
+    <text x="561" y="651" font-size="23" font-weight="700">Успешный пустой поиск → совпадений нет.</text>
+  </g>
+</svg>

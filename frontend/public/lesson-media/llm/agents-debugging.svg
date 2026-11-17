@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Четыре уровня проверки одного графа</title>
+  <desc id="desc">Проверка узла охватывает поиск. Участок охватывает выбор регламента и ответ. Тест полного графа выполняет все узлы с заглушками. Оценка проходит по всему маршруту с настоящей моделью.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#66778a"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#fbfaf8"/>
+  <g font-family="Arial, sans-serif" fill="#172b4d">
+    <text x="48" y="64" font-size="38" font-weight="700">Что именно мы проверяем?</text>
+    <text x="48" y="106" font-size="24" fill="#4d5f73">Граф «Маяка» и область каждой проверки</text>
+
+    <g fill="#fff" stroke="#a7b5c7">
+      <rect x="350" y="150" width="176" height="68" rx="12"/>
+      <rect x="558" y="150" width="176" height="68" rx="12"/>
+      <rect x="766" y="150" width="176" height="68" rx="12"/>
+      <rect x="974" y="150" width="176" height="68" rx="12"/>
+    </g>
+    <g font-size="21" font-weight="700" text-anchor="middle">
+      <text x="438" y="192">Вопрос</text>
+      <text x="646" y="192">Поиск</text>
+      <text x="854" y="192">Выбор правила</text>
+      <text x="1062" y="192">Ответ</text>
+    </g>
+    <g stroke="#66778a" stroke-width="2.5">
+      <path d="M529 184H553" marker-end="url(#arrow)"/>
+      <path d="M737 184H761" marker-end="url(#arrow)"/>
+      <path d="M945 184H969" marker-end="url(#arrow)"/>
+    </g>
+    <path d="M438 230V606M646 230V606M854 230V606M1062 230V606" stroke="#c7d0db" stroke-width="2" stroke-dasharray="5 7"/>
+
+    <text x="48" y="294" font-size="25" font-weight="700">Узел</text>
+    <text x="48" y="325" font-size="20" fill="#4d5f73">Таймаут сохраняется?</text>
+    <rect x="558" y="273" width="176" height="56" rx="12" fill="#e9f2ff" stroke="#2d69b3" stroke-width="2"/>
+    <text x="646" y="308" font-size="20" text-anchor="middle">Подставной API</text>
+
+    <text x="48" y="384" font-size="25" font-weight="700">Участок графа</text>
+    <text x="48" y="415" font-size="20" fill="#4d5f73">Выбрано верное правило?</text>
+    <rect x="766" y="363" width="384" height="56" rx="12" fill="#eeeafa" stroke="#6c54a1" stroke-width="2"/>
+    <text x="958" y="398" font-size="20" text-anchor="middle">Подготовленное состояние</text>
+
+    <text x="48" y="474" font-size="25" font-weight="700">Полный граф</text>
+    <text x="48" y="505" font-size="20" fill="#4d5f73">Граф вышел в нужную ветку?</text>
+    <rect x="350" y="453" width="800" height="56" rx="12" fill="#e6f6ee" stroke="#368568" stroke-width="2"/>
+    <text x="750" y="488" font-size="20" text-anchor="middle">Заданные ответы модели и сервиса</text>
+
+    <text x="48" y="564" font-size="25" font-weight="700">Оценка качества</text>
+    <text x="48" y="595" font-size="20" fill="#4d5f73">Ответ следует из источника?</text>
+    <rect x="350" y="543" width="800" height="56" rx="12" fill="#fff3e8" stroke="#ad591d" stroke-width="2"/>
+    <text x="750" y="578" font-size="20" text-anchor="middle">Вопросы из golden set и настоящая модель</text>
+
+    <text x="48" y="664" font-size="23" fill="#4d5f73">Начни с ближайшей к сбою функции, затем проверь маршрут целиком.</text>
+  </g>
+</svg>
