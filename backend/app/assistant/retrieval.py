@@ -39,6 +39,7 @@ _RENDERED_FENCE_LANGUAGE = re.compile(r"language-([\w-]+)", re.ASCII)
 _INLINE_LINK = re.compile(r"!?\[([^\]]+)\]\([^)]*\)")
 _TERM = re.compile(r"[^\W_]+(?:[._:-][^\W_]+)*(?:\+\+|#)?", re.UNICODE)
 _WORD = re.compile(r"[^\W_]+", re.UNICODE)
+_LANG_NAME = re.compile(r"\blang[\s-]+(chain|graph)\b", re.IGNORECASE)
 _EXCLUDED_FENCES = frozenset({
     "hr-answers", "private-hr", "solution", "answer-key", "answer-keys", "answers",
 })
@@ -513,7 +514,7 @@ class LessonRetriever:
         """Return the lexical, dense, and fused ranks for one query and optional lesson scope."""
         if min(limit, lexical_limit, dense_limit, rrf_constant) < 0:
             raise ValueError("Ranking limits and the RRF constant must be nonnegative")
-        query = query.strip()
+        query = _LANG_NAME.sub(lambda match: "Lang" + match[1].capitalize(), query.strip())
         expression = _fts_expression(query)
         if not expression or not limit:
             return RetrievalRun()

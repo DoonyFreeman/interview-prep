@@ -1,4 +1,4 @@
-"""Keep the five-day agent path connected, compact and runnable in the reader."""
+"""Keep the agent path connected, compact and runnable in the reader."""
 from __future__ import annotations
 
 import json
@@ -13,7 +13,9 @@ from app.content.loader import load_content
 SLUGS = (
     "langchain-components", "langchain-contracts", "agent-decisions",
     "langgraph-state", "langgraph-persistence",
+    "langgraph-reliability", "langgraph-debugging",
 )
+TRACE_LESSONS = ("langgraph-state", "langgraph-reliability", "langgraph-debugging")
 
 
 def _lessons():
@@ -26,7 +28,7 @@ def _anchor(text):
     return re.sub(r"-+", "-", re.sub(r"\s+", "-", text.strip()))
 
 
-def test_agent_path_has_five_short_registered_lessons():
+def test_agent_path_has_short_registered_lessons_in_order():
     lessons = _lessons()
     for order, slug in enumerate(SLUGS, 8):
         assert ("llm", slug) in lessons, f"Missing study day: {slug}"
@@ -62,18 +64,19 @@ def test_agent_links_and_diagrams_reach_real_targets():
             assert root.find("{http://www.w3.org/2000/svg}desc") is not None
             assert not root.findall(".//{http://www.w3.org/2000/svg}script")
             seen.add(name)
-    assert len(seen) == 8
+    assert len(seen) == 10
 
 
 def test_graph_walkthrough_has_concrete_states_and_finite_steps():
-    text = _lessons()["llm", "langgraph-state"].markdown
-    blocks = re.findall(r"```execution\n(.*?)\n```", text, re.S)
-    assert blocks
-    for block in blocks:
-        trace = json.loads(block)
-        assert trace["title"] and 3 <= len(trace["nodes"]) <= 12
-        assert 4 <= len(trace["steps"]) <= 40
-        for step in trace["steps"]:
-            assert step["node"] in trace["nodes"]
-            assert step["explanation"] and isinstance(step["state"], dict)
-        assert trace["steps"][0]["state"] != trace["steps"][-1]["state"]
+    lessons = _lessons()
+    for slug in TRACE_LESSONS:
+        blocks = re.findall(r"```execution\n(.*?)\n```", lessons["llm", slug].markdown, re.S)
+        assert blocks, f"{slug}: missing an interactive walkthrough"
+        for block in blocks:
+            trace = json.loads(block)
+            assert trace["title"] and 3 <= len(trace["nodes"]) <= 12
+            assert 4 <= len(trace["steps"]) <= 40
+            for step in trace["steps"]:
+                assert step["node"] in trace["nodes"]
+                assert step["explanation"] and isinstance(step["state"], dict)
+            assert trace["steps"][0]["state"] != trace["steps"][-1]["state"]

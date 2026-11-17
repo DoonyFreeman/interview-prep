@@ -278,7 +278,7 @@
       "courses": [
         {
           "slug": "llm",
-          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества. Углублённый RAG за три дня: подготовка документов, поиск и индексы, оценка качества. LangChain и LangGraph за пять коротких дней: от компонентов и инструментов до состояния и подтверждения человеком.",
+          "summary": "Токены, галлюцинации, LLM API, RAG и агенты; метрики классификации, ROC/PR, регрессия и выбор показателей качества. Углублённый RAG за три дня: подготовка документов, поиск и индексы, оценка качества. LangChain и LangGraph за семь коротких дней: от компонентов и состояния до обработки сбоев, отладки и тестирования.",
           "resources": [
             { "type": "docs", "lang": "en", "title": "Hugging Face LLM Course — глава 1: введение в LLM и трансформеры", "url": "https://huggingface.co/learn/llm-course/chapter1/1", "source": "Hugging Face" },
             { "type": "docs", "lang": "en", "title": "LLM Zoomcamp — модуль 1: основы RAG и агентный RAG", "url": "https://github.com/DataTalksClub/llm-zoomcamp/tree/main/01-agentic-rag", "source": "DataTalksClub" },
@@ -311,6 +311,12 @@
               {"type": "video", "lang": "en", "title": "На английском: пауза interrupt и продолжение Command(resume=…)", "url": "https://www.youtube.com/watch?v=6t7YJcEFUIY", "source": "LangChain", "minutes": 8},
               {"type": "docs", "lang": "en", "title": "Checkpointers: снимки и thread_id", "url": "https://docs.langchain.com/oss/python/langgraph/checkpointers", "source": "LangChain"},
               {"type": "docs", "lang": "en", "title": "Interrupts: пауза, resume и повтор узла", "url": "https://docs.langchain.com/oss/python/langgraph/interrupts", "source": "LangChain"}
+            ],
+            "langgraph-reliability": [
+              {"type": "video", "lang": "en", "title": "AI Agent Errors and Retries Explained — виды ошибок, backoff и идемпотентность (11:06)", "url": "https://www.youtube.com/watch?v=Sib2mlqKxlE", "source": "Agent Engineering", "minutes": 11}
+            ],
+            "langgraph-debugging": [
+              {"type": "video", "lang": "en", "title": "Trace and Debug LangChain Agents with LangSmith — смотрим вызовы модели и инструментов (8:27)", "url": "https://www.youtube.com/watch?v=hwdwh9Pjq7A", "source": "Mohamed Naji Aboo", "minutes": 8}
             ],
             "llm-basics": [
               { "type": "video", "lang": "en", "title": "[1hr Talk] Intro to Large Language Models", "url": "https://www.youtube.com/watch?v=zjkBMFhNj_g", "source": "Andrej Karpathy" },
