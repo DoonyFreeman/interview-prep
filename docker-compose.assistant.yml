@@ -1,0 +1,12 @@
+# Production assistant settings installed by scripts/deploy.sh.
+services:
+  app:
+    env_file:
+      - ./.assistant/current/app.env
+    volumes:
+      - type: bind
+        source: ./.assistant/current/ca.pem
+        target: /app/gigachat-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false

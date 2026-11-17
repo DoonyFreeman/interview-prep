@@ -20,6 +20,7 @@ backend/tests/
 
 # Secrets / local env
 **/.env
+.assistant/
 
 # Docs / meta not needed in the image
 .git/
