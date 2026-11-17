@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAuth } from "../auth/AuthContext";
 import { useProgress } from "../api/hooks";
-import { useAssistantConfig } from "../api/assistant";
 import { useCat } from "../cat/useCat";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
@@ -102,7 +101,6 @@ export function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const outlet = useOutlet();
-  const assistant = useAssistantConfig();
 
   // Glossary and Slang live in one shared shell (DictLayout); collapse them to
   // a single transition key so switching tabs doesn't replay the page fade —
@@ -133,21 +131,15 @@ export function Layout() {
             <div className="hidden sm:block">
               <DueBadge />
             </div>
-            {assistant.data?.enabled && (
-              <NavLink
-                to="/assistant"
-                aria-label={t("assistant.title")}
-                title={t("assistant.title")}
-                className={({ isActive }) =>
-                  `inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-semibold transition-colors ${
-                    isActive ? "bg-primary-soft text-primary" : "text-muted hover:bg-surface-2 hover:text-ink"
-                  }`
-                }
-              >
-                <IconSparkles className="size-[18px]" />
-                <span className="hidden xl:inline">{t("assistant.title")}</span>
-              </NavLink>
-            )}
+            <NavLink
+              to="/assistant"
+              aria-label={t("assistant.title")}
+              title={t("assistant.title")}
+              className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary-soft px-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-fg"
+            >
+              <IconSparkles className="size-[18px]" aria-hidden="true" />
+              <span className="hidden md:inline">{t("assistant.title")}</span>
+            </NavLink>
             <SearchModal />
             <ShortcutsHelp />
             <ThemeToggle />

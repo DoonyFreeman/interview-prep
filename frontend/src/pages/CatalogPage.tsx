@@ -11,7 +11,7 @@ import { Skeleton, SkeletonGrid } from "../components/Skeleton";
 import { ProgressBar } from "../components/ProgressBar";
 import { ScoreGauge } from "../components/ScoreGauge";
 import { Button } from "../components/Button";
-import { IconClipboardCheck } from "../components/icons";
+import { IconClipboardCheck, IconSparkles } from "../components/icons";
 import { useAuth } from "../auth/AuthContext";
 import { courseAccent, courseInitials } from "../lib/accent";
 import { courseProgressPct, overallProgressPct } from "../lib/progress";
@@ -243,11 +243,20 @@ export function CatalogPage() {
         {t("dashboard.legend")}
       </p>
 
-      <div className="mb-4">
-        <h2 className="font-display text-lg font-bold text-ink">
-          {t("catalog.title")}
-        </h2>
-        <p className="text-sm text-muted">{t("catalog.subtitle")}</p>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="font-display text-lg font-bold text-ink">
+            {t("catalog.title")}
+          </h2>
+          <p className="text-sm text-muted">{t("catalog.subtitle")}</p>
+        </div>
+        <Link
+          to="/assistant"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary-soft px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-fg"
+        >
+          <IconSparkles className="size-4" aria-hidden="true" />
+          {t("assistant.title")}
+        </Link>
       </div>
 
       <motion.div

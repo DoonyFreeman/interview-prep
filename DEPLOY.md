@@ -136,8 +136,30 @@ The `deploy` job in the workflow is **skipped** until you enable it:
      for your approval in the Actions tab.
 
 With that set, `git push` → CI builds the image → SSHes the host → `deploy.sh`.
-The forced-command key means a leaked secret can at most trigger a deploy of the
-current `master`, not get a shell.
+The forced-command key can trigger a deploy of the current `master` and provision
+assistant settings through the deploy script.
+
+### Production study assistant
+
+On a host with Python 3, `deploy.sh` accepts assistant settings on standard input
+through the existing forced SSH command. Set the production environment variable
+`DEPLOY_KNOWN_HOSTS` to the host's verified SSH host key entry before creating the
+production environment secret `ASSISTANT_PROVISION`. The secret is a single
+base64-encoded JSON object with string fields `credentials`, `scope`, `model`,
+and `ca_pem`. The latter holds the contents of the public GigaChat CA certificate
+bundle. CI appends the line terminator and sends the payload over SSH with the
+build revision and image digest. The server checks both before accepting the
+payload.
+
+The deployment writes a private configuration under `.assistant/`, attaches it
+only to the app service, and runs a synthetic assistant question against a public
+lesson. The success log confirms that the live app answered and cited the lesson.
+If this deployment fails, the script restores the previous assistant settings.
+Remove the temporary `ASSISTANT_PROVISION` secret after that check passes. Later
+CI deployments reuse the saved settings and verify the build pin before attaching
+them. Provision a fresh payload to rotate the key or CA. CI runs the host deploy
+with empty stdin before provisioning so the server has the updated script. After
+a database restore, run the pinned CI deployment to reattach assistant settings.
 
 ## Backups
 

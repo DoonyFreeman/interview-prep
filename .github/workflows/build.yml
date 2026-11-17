@@ -25,6 +25,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image_digest: ${{ steps.image.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,10 +45,11 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
             type=sha,format=short
 
       - name: Build and push (linux/amd64)
+        id: image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -60,16 +63,51 @@ jobs:
   deploy:
     needs: build
     # Opt-in: stays skipped until you set the CD_ENABLED repo variable to "true".
-    if: ${{ vars.CD_ENABLED == 'true' }}
+    if: ${{ github.ref == 'refs/heads/master' && vars.CD_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Deploy over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ vars.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+          DEPLOY_REVISION: ${{ github.sha }}
+          DEPLOY_IMAGE_DIGEST: ${{ needs.build.outputs.image_digest }}
+          ASSISTANT_PROVISION: ${{ secrets.ASSISTANT_PROVISION }}
         run: |
+          set -euo pipefail
+          if [[ ! "$DEPLOY_REVISION" =~ ^[0-9a-f]{40}$ || ! "$DEPLOY_IMAGE_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::Missing verified build revision or image digest"
+            exit 1
+          fi
+          umask 077
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
-          ssh-keyscan -H "${{ vars.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
-          ssh -i ~/.ssh/id_deploy -o BatchMode=yes \
-            "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" \
-            'cd /opt/interview-prep && ./scripts/deploy.sh'
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          if [[ -n "$DEPLOY_KNOWN_HOSTS" ]]; then
+            printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          elif [[ -n "$ASSISTANT_PROVISION" ]]; then
+            echo "::error::Configure the trusted SSH host key before sending assistant credentials"
+            exit 1
+          else
+            ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+          deploy() {
+            ssh -T -i ~/.ssh/id_deploy \
+              -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 \
+              -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+              "$DEPLOY_USER@$DEPLOY_HOST" \
+              "cd /opt/interview-prep && ./scripts/deploy.sh $DEPLOY_REVISION $DEPLOY_IMAGE_DIGEST"
+          }
+          # Bring the server's forced-command script up to date before sending any credentials.
+          deploy </dev/null
+          if [[ -n "$ASSISTANT_PROVISION" ]]; then
+            deploy_log=$(mktemp)
+            trap 'rm -f "$deploy_log"' EXIT
+            printf '%s\n' "$ASSISTANT_PROVISION" | deploy | tee "$deploy_log"
+            if ! grep -Fxq '[deploy] assistant smoke: enabled, answered, cited lesson' "$deploy_log"; then
+              echo "::error::The server did not verify an assistant reply"
+              exit 1
+            fi
+          fi
