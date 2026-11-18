@@ -11,6 +11,8 @@ import { LessonTestPage } from "./pages/LessonTestPage";
 import { TestsPage } from "./pages/TestsPage";
 import { CheatsheetsPage } from "./pages/CheatsheetsPage";
 import { CheatsheetPage } from "./pages/CheatsheetPage";
+import { PythonAiInterviewPage } from "./pages/PythonAiInterviewPage";
+import { pythonAiInterviewPath } from "./lib/pythonAiInterview";
 import { SettingsPage } from "./pages/SettingsPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
@@ -45,6 +47,7 @@ export function App() {
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/cheatsheets" element={<CheatsheetsPage />} />
+        <Route path={pythonAiInterviewPath} element={<PythonAiInterviewPage />} />
         <Route path="/cheatsheets/:slug" element={<CheatsheetPage />} />
         <Route path="/progress" element={<Navigate to="/cheatsheets" replace />} />
         <Route path="/settings" element={<SettingsPage />} />
