@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { IconArticle } from "../components/icons";
 import { CHEATSHEETS, CHEATSHEET_GROUPS, RAG_CHEATSHEET_BUNDLE } from "../lib/cheatsheets";
+import { interviewQuestions, pythonAiInterviewPath } from "../lib/pythonAiInterview";
 import "../components/cheatsheets.css";
 
 export function CheatsheetsPage() {
@@ -36,6 +37,21 @@ export function CheatsheetsPage() {
       </header>
 
       <div className="cheatsheet-groups">
+        <article className="cheatsheet-catalog-card">
+          <div className="cheatsheet-card-topline">
+            <IconArticle className="h-5 w-5 text-primary" aria-hidden="true" />
+            <span className="cheatsheet-page-count">
+              {t("pythonAiInterview.questionCount", { count: interviewQuestions.length })}
+            </span>
+          </div>
+          <h2 className="font-display text-xl font-bold text-ink">{t("pythonAiInterview.title")}</h2>
+          <p className="cheatsheet-card-description">{t("pythonAiInterview.catalogDescription")}</p>
+          <div className="cheatsheet-card-actions">
+            <Link to={pythonAiInterviewPath} className="cheatsheet-action cheatsheet-action-primary">
+              {t("pythonAiInterview.open")} <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </article>
         {CHEATSHEET_GROUPS.map((group) => (
           <section key={group.id} aria-labelledby={`cheatsheet-group-${group.id}`}>
             <div className="cheatsheet-group-header">

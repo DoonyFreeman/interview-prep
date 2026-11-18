@@ -6,7 +6,8 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   const { token } = useAuth();
   const location = useLocation();
   if (!token) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    const from = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to="/login" replace state={{ from }} />;
   }
   return <>{children}</>;
 }

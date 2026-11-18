@@ -518,6 +518,58 @@
     "downloadRagBundle": "Download all RAG sheets",
     "ragBundleDescription": "4 cheatsheets · 7 pages · one PDF"
   },
+  "pythonAiInterview": {
+    "title": "Python AI Engineer Interview",
+    "market": "Russia · Sber focus",
+    "catalogDescription": "Middle / Middle+ · Python, backend, RAG and LLMs. Read short answers and follow-ups in preparation order, informed by public sources from Sber and the Russian market.",
+    "description": "Interview questions, short answers and follow-ups in Russian. Read in order or pick a topic to review.",
+    "open": "Read the questions and answers",
+    "questionCount_one": "{{count}} question",
+    "questionCount_other": "{{count}} questions",
+    "evidenceTitle": "Topic ranking and sources",
+    "method": "The table counts sources that mention each topic. Topics were labeled manually and counted once per source. Interview sources include official formats and public breakdowns. Role sources include job postings and past hiring events, including Senior and Lead roles. This is a small sample from November 2026. Question numbers show the recommended preparation order for Middle / Middle+.",
+    "topic": "Topic",
+    "sources": {
+      "interview": "Interviews",
+      "role": "Roles",
+      "officialFormat": "Official interview format",
+      "publicBreakdown": "Public interview breakdown",
+      "pastHiringEvent": "Past hiring event",
+      "jobPosting": "Job posting"
+    },
+    "filters": "Question filters",
+    "allTopics": "All topics",
+    "search": "Search questions",
+    "searchPlaceholder": "Recall, LangGraph, GIL",
+    "results": "Showing {{count}} of {{total}}",
+    "empty": "No questions match these filters.",
+    "reset": "Clear filters",
+    "followUp": "Possible follow-up",
+    "priorities": {
+      "first": {
+        "title": "01 · Start here",
+        "description": "Python and SQL, live coding, RAG and evaluation."
+      },
+      "next": {
+        "title": "02 · Next round",
+        "description": "Implementation details, agents and operations."
+      },
+      "deep": {
+        "title": "03 · Deep dive",
+        "description": "Complex scenarios, failures and system design tradeoffs."
+      }
+    },
+    "topics": {
+      "python": "Python and async",
+      "backend": "Backend and SQL",
+      "rag": "RAG and retrieval",
+      "eval": "RAG evaluation",
+      "agents": "Agents and LangGraph",
+      "llm": "LLMs and inference",
+      "ml": "ML and metrics",
+      "coding": "Live coding"
+    }
+  },
   "privateHr": {
     "title": "What to say in the interview",
     "subtitle": "Your personal answers · visible only to your account"
