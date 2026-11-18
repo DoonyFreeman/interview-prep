@@ -1,6 +1,10 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
+import { usePrivateInterviewAnswers } from "../api/hooks";
+import { useAuth } from "../auth/AuthContext";
+import { getToken } from "../lib/token";
 import {
   filterQuestions,
   interviewPriorities,
@@ -62,6 +66,10 @@ function SourceCoverage() {
 
 export function PythonAiInterviewPage() {
   const { t } = useTranslation();
+  const { token } = useAuth();
+  const { data, isSuccess } = usePrivateInterviewAnswers(token);
+  const [privateSuspended, setPrivateSuspended] = useState(false);
+  const privateAnswers = isSuccess && !privateSuspended ? data : undefined;
   const [params, setParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -72,6 +80,23 @@ export function PythonAiInterviewPage() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useLayoutEffect(() => {
+    if (!token || (data && Object.keys(data).length === 0)) return;
+    // A back/forward cache entry can outlive both the session and the notes.
+    function removePrivateContent(event: PageTransitionEvent) {
+      if (event.persisted) flushSync(() => setPrivateSuspended(true));
+    }
+    function reloadOnRestore(event: PageTransitionEvent) {
+      if (event.persisted && getToken()) window.location.reload();
+    }
+    window.addEventListener("pagehide", removePrivateContent);
+    window.addEventListener("pageshow", reloadOnRestore);
+    return () => {
+      window.removeEventListener("pagehide", removePrivateContent);
+      window.removeEventListener("pageshow", reloadOnRestore);
+    };
+  }, [data, token]);
 
   function showResultsStart() {
     const results = resultsRef.current;
@@ -163,14 +188,20 @@ export function PythonAiInterviewPage() {
                 <h2 className="font-display" id={`interview-${priority}`}>
                   {t(`pythonAiInterview.priorities.${priority}.title`)}
                 </h2>
-                {questions.map(({ rank, topic: questionTopic, question, answer, followUp }) => (
-                  <article key={rank} className="interview-question">
+                {questions.map(({ id, rank, topic: questionTopic, question, answer, followUp }) => (
+                  <article key={id} className="interview-question">
                     <div className="interview-question-meta">
                       <span className="interview-rank">#{String(rank).padStart(2, "0")}</span>
                       <span>{t(`pythonAiInterview.topics.${questionTopic}`)}</span>
                     </div>
                     <h3 lang="ru">{question}</h3>
                     <p lang="ru">{answer}</p>
+                    {privateAnswers && Object.hasOwn(privateAnswers, id) && (
+                      <details className="interview-personal">
+                        <summary>{t("pythonAiInterview.personalAnswer")}</summary>
+                        <p lang="ru">{privateAnswers[id]}</p>
+                      </details>
+                    )}
                     <p className="interview-followup">
                       <strong>{t("pythonAiInterview.followUp")}</strong>{" "}
                       <span lang="ru">{followUp}</span>

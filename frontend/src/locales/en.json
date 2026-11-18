@@ -545,6 +545,7 @@
     "empty": "No questions match these filters.",
     "reset": "Clear filters",
     "followUp": "Possible follow-up",
+    "personalAnswer": "How I would answer",
     "priorities": {
       "first": {
         "title": "01 · Start here",

@@ -88,3 +88,56 @@ async def test_wrong_owner_and_invalid_file_fail_closed(client, tmp_path, monkey
         response = await client.get(PRIVATE_URL, headers=owner)
         assert response.status_code == 200
         assert response.json() == {}
+
+
+TECHNICAL_URL = "/api/cheatsheets/python-ai-interview/answers"
+
+
+async def test_technical_answers_are_account_bound_and_uncacheable(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(private_hr, "TECHNICAL_INTERVIEW_DIR", tmp_path)
+    owner, profile = await register(client, "owner@example.com")
+    other, _ = await register(client, "other@example.com")
+    answers = {f"synthetic-question-{i}": ANSWER["answer"] + "я" * 500 for i in range(72)}
+    record = {
+        "owner_email": "owner@example.com",
+        "owner_created_at": profile["created_at"],
+        "answers": answers,
+    }
+    path = tmp_path / f"{profile['id']}.json"
+    data = json.dumps(record, ensure_ascii=False).encode("utf-8")
+    assert len(data) > private_hr.MAX_FILE_BYTES
+    path.write_bytes(data)
+
+    response = await client.get(TECHNICAL_URL, headers=owner)
+    assert response.status_code == 200
+    assert response.json() == answers
+    assert response.headers["Cache-Control"] == "private, no-store"
+    assert response.headers["Vary"] == "Authorization"
+
+    response = await client.get(f"{TECHNICAL_URL}?user_id={profile['id']}", headers=other)
+    assert response.json() == {}
+    assert response.headers["Cache-Control"] == "private, no-store"
+    response = await client.get(TECHNICAL_URL)
+    assert response.status_code in (401, 403)
+    assert ANSWER["answer"] not in response.text
+
+    settings = get_settings()
+    for claims in ({}, {"account_created_at": "2000-01-01T00:00:00"}):
+        legacy_token = jwt.encode(
+            {"sub": str(profile["id"]), **claims}, settings.jwt_secret,
+            algorithm=settings.jwt_algorithm,
+        )
+        assert (await client.get(TECHNICAL_URL, headers={"Authorization": f"Bearer {legacy_token}"})).json() == {}
+
+    for invalid in (
+        {**record, "owner_email": "other@example.com"},
+        {**record, "owner_created_at": "2000-01-01T00:00:00"},
+        {**record, "answers": {"../../unsafe": ANSWER["answer"]}},
+    ):
+        path.write_text(json.dumps(invalid))
+        assert (await client.get(TECHNICAL_URL, headers=owner)).json() == {}
+
+    path.write_bytes(b"x" * (private_hr.MAX_TECHNICAL_FILE_BYTES + 1))
+    assert (await client.get(TECHNICAL_URL, headers=owner)).json() == {}
+    path.unlink()
+    assert (await client.get(TECHNICAL_URL, headers=owner)).json() == {}

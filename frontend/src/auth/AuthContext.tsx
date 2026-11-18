@@ -49,8 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           (event.key === TOKEN_STORAGE_KEY || event.key === null)) sync();
     }
     window.addEventListener("storage", onStorage);
+    window.addEventListener("pageshow", sync);
     sync();
-    return () => window.removeEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("pageshow", sync);
+    };
   }, [qc, token]);
 
   const login = useCallback((newToken: string) => {

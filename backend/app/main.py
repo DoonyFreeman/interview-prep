@@ -18,6 +18,7 @@ from app.api.endpoints import (
     assistant,
     auth,
     cat,
+    cheatsheets,
     courses,
     glossary,
     lessons,
@@ -73,6 +74,7 @@ def create_app() -> FastAPI:
     app.include_router(courses.router, prefix="/api", tags=["courses"])
     app.include_router(glossary.router, prefix="/api", tags=["glossary"])
     app.include_router(lessons.router, prefix="/api", tags=["lessons"])
+    app.include_router(cheatsheets.router, prefix="/api", tags=["cheatsheets"])
     app.include_router(quizzes.router, prefix="/api", tags=["quiz"])
     app.include_router(progress.router, prefix="/api", tags=["progress"])
     app.include_router(pet.router, prefix="/api", tags=["pet"])
