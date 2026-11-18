@@ -93,6 +93,13 @@ delete the stored material, remove that account's file. The standard SQLite
 backup and restore do not include these files. After first release, existing
 sessions must sign in again to get a token that can read private answers.
 
+Private technical interview rehearsal notes use the same owner binding and
+file permissions under `data/private-interview/<user-id>.json`. The file
+contains `owner_email`, `owner_created_at`, and an `answers` map keyed by the
+stable IDs in the Python AI interview question bank. The authenticated answers
+endpoint serves it to the bound account with `Cache-Control: private, no-store`.
+The same private transfer, retention and deletion rules apply.
+
 ### One-time setup
 
 **On the host** (so it can pull code + the private image):

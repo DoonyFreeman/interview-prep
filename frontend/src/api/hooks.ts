@@ -81,6 +81,20 @@ export function usePrivateHrAnswers(token: string | null, lessonSlug: string) {
   });
 }
 
+export function usePrivateInterviewAnswers(token: string | null) {
+  return useQuery({
+    queryKey: ["private-interview-answers", token],
+    enabled: !!token,
+    gcTime: 0,
+    retry: false,
+    queryFn: async ({ signal }) =>
+      (await api.get<Record<string, string>>(
+        "/cheatsheets/python-ai-interview/answers",
+        { signal, headers: { Authorization: `Bearer ${token}` } },
+      )).data,
+  });
+}
+
 // --- Progress --------------------------------------------------------------
 export function useProgress() {
   return useQuery({

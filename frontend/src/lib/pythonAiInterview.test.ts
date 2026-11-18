@@ -14,6 +14,8 @@ describe("Python AI interview cheatsheet", () => {
       interviewQuestions.map((_, index) => index + 1),
     );
     expect(new Set(interviewQuestions.map(({ question }) => question)).size).toBe(interviewQuestions.length);
+    expect(new Set(interviewQuestions.map(({ id }) => id)).size).toBe(interviewQuestions.length);
+    expect(interviewQuestions.every(({ id }) => /^[a-z][a-z0-9-]{0,59}$/.test(id))).toBe(true);
     expect(interviewQuestions.every((question) => interviewTopics.includes(question.topic))).toBe(true);
     for (const topic of interviewTopics) {
       const matches = filterQuestions(topic, "");

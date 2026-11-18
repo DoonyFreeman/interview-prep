@@ -10,6 +10,7 @@ export type InterviewTopic = (typeof interviewTopics)[number];
 export const interviewPriorities = ["first", "next", "deep"] as const;
 
 type InterviewQuestion = {
+  id: string;
   topic: InterviewTopic;
   question: string;
   answer: string;
