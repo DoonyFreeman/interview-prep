@@ -548,6 +548,7 @@
     "reset": "Сбросить фильтры",
     "followUp": "Что могут уточнить",
     "personalAnswer": "Как я отвечу",
+    "agentGuide": "Агенты на собеседовании",
     "priorities": {
       "first": {
         "title": "01 · Сначала",

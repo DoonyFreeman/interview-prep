@@ -100,6 +100,11 @@ stable IDs in the Python AI interview question bank. The authenticated answers
 endpoint serves it to the bound account with `Cache-Control: private, no-store`.
 The same private transfer, retention and deletion rules apply.
 
+The account-only agent interview guide uses `data/private-agent-guide/<user-id>.json`
+with the same owner fields and a `sections` list. Each section has a heading and
+question-answer items. Both the questions and answers are read from this
+server-only file.
+
 ### One-time setup
 
 **On the host** (so it can pull code + the private image):

@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, StringConstraints, ValidationError
 
 PRIVATE_HR_DIR = Path("data/private-hr")
 TECHNICAL_INTERVIEW_DIR = Path("data/private-interview")
+AGENT_GUIDE_DIR = Path("data/private-agent-guide")
 MAX_FILE_BYTES = 64 * 1024
 MAX_TECHNICAL_FILE_BYTES = 1024 * 1024
 HR_LESSONS = frozenset({
@@ -42,6 +43,18 @@ class TechnicalInterviewFile(AccountBoundNotes):
     answers: TechnicalAnswers
 
 
+class AgentGuideSection(BaseModel):
+    heading: Question
+    items: Annotated[list[RehearsalAnswer], Field(min_length=1, max_length=24)]
+
+
+AgentGuideSections = Annotated[list[AgentGuideSection], Field(max_length=8)]
+
+
+class AgentGuideFile(AccountBoundNotes):
+    sections: AgentGuideSections
+
+
 Notes = TypeVar("Notes", bound=AccountBoundNotes)
 
 
@@ -61,6 +74,14 @@ def get_technical_answers(user_id: int, email: str, created_at: datetime) -> Tec
         max_bytes=MAX_TECHNICAL_FILE_BYTES,
     )
     return record.answers if record else {}
+
+
+def get_agent_guide(user_id: int, email: str, created_at: datetime) -> AgentGuideSections:
+    record = _load_owned_notes(
+        AGENT_GUIDE_DIR, AgentGuideFile, user_id, email, created_at,
+        max_bytes=MAX_TECHNICAL_FILE_BYTES,
+    )
+    return record.sections if record else []
 
 
 def _load_owned_notes(

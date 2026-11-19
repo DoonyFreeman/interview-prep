@@ -23,6 +23,7 @@ import type {
   MixResult,
   PetState,
   ProgressOverviewOut,
+  PrivateAgentGuideSection,
   QuestionAttempts,
   QuestionOut,
   QuestionsProgress,
@@ -90,6 +91,20 @@ export function usePrivateInterviewAnswers(token: string | null) {
     queryFn: async ({ signal }) =>
       (await api.get<Record<string, string>>(
         "/cheatsheets/python-ai-interview/answers",
+        { signal, headers: { Authorization: `Bearer ${token}` } },
+      )).data,
+  });
+}
+
+export function usePrivateAgentGuide(token: string | null) {
+  return useQuery({
+    queryKey: ["private-agent-guide", token],
+    enabled: !!token,
+    gcTime: 0,
+    retry: false,
+    queryFn: async ({ signal }) =>
+      (await api.get<PrivateAgentGuideSection[]>(
+        "/cheatsheets/python-ai-interview/agent-guide",
         { signal, headers: { Authorization: `Bearer ${token}` } },
       )).data,
   });

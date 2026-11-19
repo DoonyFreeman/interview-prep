@@ -2,7 +2,8 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
-import { usePrivateInterviewAnswers } from "../api/hooks";
+import { usePrivateAgentGuide, usePrivateInterviewAnswers } from "../api/hooks";
+import type { PrivateAgentGuideSection } from "../api/types";
 import { useAuth } from "../auth/AuthContext";
 import { getToken } from "../lib/token";
 import {
@@ -64,10 +65,39 @@ function SourceCoverage() {
   );
 }
 
+function AgentGuide({ sections }: { sections: PrivateAgentGuideSection[] }) {
+  const { t } = useTranslation();
+  const count = sections.reduce((total, { items }) => total + items.length, 0);
+  return (
+    <details className="interview-evidence interview-agent-guide">
+      <summary>
+        {t("pythonAiInterview.agentGuide")}{" "}
+        <span className="cheatsheet-page-count">
+          {t("pythonAiInterview.questionCount", { count })}
+        </span>
+      </summary>
+      <div className="interview-agent-guide-content" lang="ru">
+        {sections.map(({ heading, items }) => (
+          <section key={heading} className="interview-group">
+            <h2 className="font-display">{heading}</h2>
+            {items.map(({ question, answer }) => (
+              <article key={question} className="interview-question">
+                <h3>{question}</h3>
+                <p>{answer}</p>
+              </article>
+            ))}
+          </section>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 export function PythonAiInterviewPage() {
   const { t } = useTranslation();
   const { token } = useAuth();
   const { data, isSuccess } = usePrivateInterviewAnswers(token);
+  const { data: guide, isSuccess: guideReady } = usePrivateAgentGuide(token);
   const [privateSuspended, setPrivateSuspended] = useState(false);
   const privateAnswers = isSuccess && !privateSuspended ? data : undefined;
   const [params, setParams] = useSearchParams();
@@ -82,7 +112,7 @@ export function PythonAiInterviewPage() {
   }, []);
 
   useLayoutEffect(() => {
-    if (!token || (data && Object.keys(data).length === 0)) return;
+    if (!token || (data && Object.keys(data).length === 0 && guide?.length === 0)) return;
     // A back/forward cache entry can outlive both the session and the notes.
     function removePrivateContent(event: PageTransitionEvent) {
       if (event.persisted) flushSync(() => setPrivateSuspended(true));
@@ -96,7 +126,7 @@ export function PythonAiInterviewPage() {
       window.removeEventListener("pagehide", removePrivateContent);
       window.removeEventListener("pageshow", reloadOnRestore);
     };
-  }, [data, token]);
+  }, [data, guide, token]);
 
   function showResultsStart() {
     const results = resultsRef.current;
@@ -125,6 +155,7 @@ export function PythonAiInterviewPage() {
         </div>
       </header>
 
+      {!privateSuspended && guideReady && !!guide?.length && <AgentGuide sections={guide} />}
       <SourceCoverage />
 
       <div className="interview-layout">

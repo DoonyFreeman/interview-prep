@@ -61,6 +61,20 @@
   background: var(--color-surface);
 }
 
+.interview-agent-guide {
+  margin-bottom: 0.75rem;
+  border-color: var(--color-primary);
+}
+
+.interview-agent-guide-content {
+  padding: 0.4rem 1.15rem 1.15rem;
+}
+
+.interview-agent-guide-content .interview-question p {
+  color: var(--color-ink);
+  white-space: pre-wrap;
+}
+
 .interview-evidence summary {
   padding: 0.85rem 1.15rem;
   color: var(--color-ink);
