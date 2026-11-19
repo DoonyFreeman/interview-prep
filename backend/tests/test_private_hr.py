@@ -141,3 +141,48 @@ async def test_technical_answers_are_account_bound_and_uncacheable(client, tmp_p
     assert (await client.get(TECHNICAL_URL, headers=owner)).json() == {}
     path.unlink()
     assert (await client.get(TECHNICAL_URL, headers=owner)).json() == {}
+
+
+AGENT_GUIDE_URL = "/api/cheatsheets/python-ai-interview/agent-guide"
+
+
+async def test_agent_guide_shows_only_bound_account_its_structured_sections(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(private_hr, "AGENT_GUIDE_DIR", tmp_path)
+    owner, profile = await register(client, "owner@example.com")
+    other, _ = await register(client, "other@example.com")
+    sections = [{"heading": "Synthetic heading", "items": [ANSWER]}]
+    record = {
+        "owner_email": "owner@example.com",
+        "owner_created_at": profile["created_at"],
+        "sections": sections,
+    }
+    path = tmp_path / f"{profile['id']}.json"
+    path.write_text(json.dumps(record))
+
+    response = await client.get(AGENT_GUIDE_URL, headers=owner)
+    assert response.status_code == 200
+    assert response.json() == sections
+    assert response.headers["Cache-Control"] == "private, no-store"
+    assert response.headers["Vary"] == "Authorization"
+    response = await client.get(f"{AGENT_GUIDE_URL}?user_id={profile['id']}", headers=other)
+    assert response.json() == []
+    assert response.headers["Cache-Control"] == "private, no-store"
+    response = await client.get(AGENT_GUIDE_URL)
+    assert response.status_code in (401, 403)
+    assert ANSWER["answer"] not in response.text
+
+    settings = get_settings()
+    token = jwt.encode(
+        {"sub": str(profile["id"])}, settings.jwt_secret, algorithm=settings.jwt_algorithm,
+    )
+    assert (await client.get(AGENT_GUIDE_URL, headers={"Authorization": f"Bearer {token}"})).json() == []
+
+    for bad_record in (
+        {**record, "owner_email": "other@example.com"},
+        {**record, "owner_created_at": "2000-01-01T00:00:00"},
+        {**record, "sections": [{"heading": "Synthetic heading", "items": []}]},
+    ):
+        path.write_text(json.dumps(bad_record))
+        assert (await client.get(AGENT_GUIDE_URL, headers=owner)).json() == []
+    path.unlink()
+    assert (await client.get(AGENT_GUIDE_URL, headers=owner)).json() == []

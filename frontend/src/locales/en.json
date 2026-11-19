@@ -546,6 +546,7 @@
     "reset": "Clear filters",
     "followUp": "Possible follow-up",
     "personalAnswer": "How I would answer",
+    "agentGuide": "Agent interview practice",
     "priorities": {
       "first": {
         "title": "01 · Start here",

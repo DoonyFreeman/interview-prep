@@ -480,3 +480,7 @@ export interface RoadmapStage {
 export interface RoadmapOut {
   stages: RoadmapStage[];
 }
+export type PrivateAgentGuideSection = {
+  heading: string;
+  items: { question: string; answer: string }[];
+};
