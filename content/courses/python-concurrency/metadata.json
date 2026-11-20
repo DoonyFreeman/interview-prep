@@ -52,6 +52,18 @@
         { "slug": "future-exceptions", "title": "Future, исключения и отмена", "anchor": "future-исключения-и-отмена", "order": 2 },
         { "slug": "choosing-tool", "title": "Итоговое правило выбора", "anchor": "итоговое-правило-выбора", "order": 3 }
       ]
+    },
+    {
+      "slug": "concurrency-refresh",
+      "title": "Потоки и процессы: быстрый практикум",
+      "file": "05-concurrency-refresh.md",
+      "order": 5,
+      "duration_minutes": 12,
+      "concepts": [
+        { "slug": "choose-by-workload", "title": "Выбери инструмент по нагрузке", "anchor": "выбери-инструмент-по-нагрузке", "order": 1 },
+        { "slug": "lost-update", "title": "Найди потерянное обновление", "anchor": "найди-потерянное-обновление", "order": 2 },
+        { "slug": "share-less", "title": "Передавай работу через очередь", "anchor": "передавай-работу-через-очередь", "order": 3 }
+      ]
     }
   ]
 }
