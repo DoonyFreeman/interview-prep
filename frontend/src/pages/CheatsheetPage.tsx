@@ -13,6 +13,7 @@ export function CheatsheetPage() {
   const sheet = getCheatsheet(slug);
   const bundle = getCheatsheetBundle(slug);
   const sections = useMemo(() => getCheatsheetSections(sheet?.markdown ?? ""), [sheet]);
+  const firstSectionNumber = sections[0]?.title ? 1 : 0;
 
   // A sheet can be opened from the bottom of a catalog or a long lesson.
   useLayoutEffect(() => {
@@ -64,10 +65,14 @@ export function CheatsheetPage() {
       </header>
       <div className="cheatsheet-section-grid">
         {sections.map((section, index) => (
-          <section key={section.anchor} className="cheatsheet-section" aria-labelledby={section.title ? section.anchor : undefined}>
+          <section
+            key={section.anchor}
+            className={section.title ? "cheatsheet-section" : "cheatsheet-section cheatsheet-section-intro"}
+            aria-labelledby={section.title ? section.anchor : undefined}
+          >
             {section.title ? (
               <div className="cheatsheet-section-heading">
-                <span className="cheatsheet-section-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <span className="cheatsheet-section-number" aria-hidden="true">{String(index + firstSectionNumber).padStart(2, "0")}</span>
                 <h2 id={section.anchor} className="font-display">{section.title}</h2>
               </div>
             ) : null}

@@ -190,7 +190,7 @@ def markup(text: str) -> str:
     text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
     # PT Sans lacks Greek sigma and combining/subscript Latin math glyphs.
     # Embed a Unicode fallback for these individual glyphs, retaining real text.
-    for char in 'Σᵢŷȳ→↓':
+    for char in 'Σβᵢŷȳ→↓':
         text = text.replace(char, f'<font name="Math">{char}</font>')
     for char in '₋₁':
         text = text.replace(char, f'<font name="MathExtra">{char}</font>')
@@ -225,8 +225,15 @@ def markdown_blocks(body: str, width: float):
 def ml_pdf(markdown: Path, destination: Path) -> None:
     text = markdown.read_text(encoding='utf-8')
     sections = re.findall(r'^## ([^\n]+)\n(.*?)(?=^## |\Z)', text, re.M | re.S)
-    if len(sections) != 9:
-        raise ValueError(f'{markdown}: expected exactly nine H2 sections, got {len(sections)}')
+    page_titles = (
+        'Классификация и цена ошибок',
+        'Кривые и усреднение по классам',
+        'От ошибки прогноза к выбору метрики',
+        'Редкие классы и честная оценка',
+        'Калибровка и сложные ошибки прогноза',
+    )
+    if len(sections) != 3 * len(page_titles):
+        raise ValueError(f'{markdown}: expected three H2 sections per page, got {len(sections)}')
     w, h = landscape(A4)
     c = canvas.Canvas(str(destination), pagesize=(w, h), invariant=1)
     c.setTitle(TITLES['ml-metrics'])
@@ -236,13 +243,16 @@ def ml_pdf(markdown: Path, destination: Path) -> None:
     cw = (w - margin * 2 - gap * 2) / 3
     ch = top - bottom
     accents = ['#eee9fb', '#e2f2ec', '#fff2cd']
-    for page in range(3):
+    section_heading = ParagraphStyle(
+        'section-heading', fontName='Heading', fontSize=10.4, leading=12, textColor=INK,
+    )
+    for page, page_title in enumerate(page_titles):
         c.setFillColor(MUTED)
         c.setFont('Mono', 7)
-        c.drawString(20, h - 20, f'ШПАРГАЛКА К СОБЕСЕДОВАНИЮ · ЛИСТ {page + 1} ИЗ 3')
+        c.drawString(20, h - 20, f'МЕТРИКИ ML · ЛИСТ {page + 1} ИЗ {len(page_titles)}')
         c.setFillColor(INK)
         c.setFont('Heading', 20)
-        c.drawString(20, h - 43, 'Метрики ML: смысл, формулы и расчёт')
+        c.drawString(20, h - 43, page_title)
         for col in range(3):
             i = page * 3 + col
             title, body = sections[i]
@@ -255,9 +265,11 @@ def ml_pdf(markdown: Path, destination: Path) -> None:
             c.setFillColor(PURPLE)
             c.setFont('Mono', 7)
             c.drawString(x + 7, y + ch - 18, f'{i + 1:02}')
-            c.setFillColor(INK)
-            c.setFont('Heading', 10.4)
-            c.drawString(x + 24, y + ch - 18, title)
+            title_line = Paragraph(markup(title), section_heading)
+            _, title_height = title_line.wrap(cw - 31, 12)
+            if title_height > 12:
+                raise ValueError(f'ML section {i + 1} title does not fit')
+            title_line.drawOn(c, x + 24, y + ch - 21)
             cursor = y + ch - 37
             for flowable in markdown_blocks(body, cw - 14):
                 _, height = flowable.wrap(cw - 14, ch)

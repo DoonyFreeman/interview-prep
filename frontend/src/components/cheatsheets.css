@@ -162,6 +162,10 @@
   box-shadow: var(--shadow-card);
 }
 
+.cheatsheet-section-intro {
+  grid-column: 1 / -1;
+}
+
 .cheatsheet-section-heading {
   display: flex;
   align-items: baseline;

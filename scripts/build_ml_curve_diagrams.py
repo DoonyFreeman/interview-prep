@@ -137,9 +137,26 @@ def pr_diagram():
     return d
 
 
+def calibration_diagram():
+    d = Drawing(500, 220)
+    d.add(Rect(0, 0, 500, 220, fillColor=colors.white, strokeColor=None))
+    x, y, size = 50, 45, 144
+    axes(d, x, y, size, size, 'Predicted', 'Observed')
+    segment(d, x, y, x + size, y + size, MUTED, 1, [4, 4])
+    px, py = x + size * .8, y + size * .5
+    segment(d, px, y, px, py, ORANGE, 1, [3, 3])
+    segment(d, x, py, px, py, ORANGE, 1, [3, 3])
+    d.add(Circle(px, py, 5, fillColor=colors.HexColor(ORANGE), strokeColor=None))
+    label(d, 235, 151, 'Prediction: 80%', size=19, color=PURPLE)
+    label(d, 235, 116, 'Observed: 50% (5/10)', size=19)
+    label(d, 235, 80, '30 pp overestimate', size=17, color=ORANGE)
+    return d
+
+
 DIAGRAMS = {
     '/cheatsheet-media/ml-roc-thresholds.svg': roc_diagram,
     '/cheatsheet-media/ml-pr-thresholds.svg': pr_diagram,
+    '/cheatsheet-media/ml-calibration.svg': calibration_diagram,
 }
 
 

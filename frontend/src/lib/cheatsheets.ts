@@ -97,10 +97,10 @@ export const CHEATSHEETS: readonly Cheatsheet[] = [
   {
     slug: "ml-metrics",
     title: "Метрики ML, кривые и регрессия",
-    description: "Смысл метрик, формулы и пошаговые расчёты: классификация, ROC/PR и регрессия.",
+    description: "Формулы, графики и примеры расчётов. MCC, каппа, support, ROC/PR, калибровка и ошибки прогноза.",
     category: "ai",
     pdfUrl: "/cheatsheets/ml-metrics.pdf",
-    pages: 3,
+    pages: 5,
     markdown: mlMetrics,
   },
   {
@@ -159,7 +159,13 @@ export function getLessonCheatsheet(
   lessonSlug: string | undefined,
 ): Cheatsheet | undefined {
   if (courseSlug !== "llm") return undefined;
-  if (lessonSlug === "ml-curves-regression") return getCheatsheet("ml-metrics");
+  if (
+    lessonSlug === "ml-classification-metrics" ||
+    lessonSlug === "ml-curves-regression" ||
+    lessonSlug === "ml-reliable-evaluation" ||
+    lessonSlug === "ml-threshold-calibration" ||
+    lessonSlug === "ml-regression-decisions"
+  ) return getCheatsheet("ml-metrics");
   if (lessonSlug === "langchain-components" || lessonSlug === "langchain-contracts") {
     return getCheatsheet("langchain-tools");
   }

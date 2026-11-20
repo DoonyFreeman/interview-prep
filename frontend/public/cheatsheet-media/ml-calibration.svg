@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="500" height="220" preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="500" height="220"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-220)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="0" width="500" height="220" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<polyline points="50 45, 50 189" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="50 45, 194 45" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="46.108" y="27" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,54) scale(1,-1)">0</text>
+			<text x="30.216" y="41" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,82) scale(1,-1)">0</text>
+			<polyline points="122 45, 122 189" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="50 117, 194 117" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="112.27" y="27" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,54) scale(1,-1)">0.5</text>
+			<text x="18.54" y="113.0" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,226) scale(1,-1)">0.5</text>
+			<polyline points="194 45, 194 189" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="50 189, 194 189" style="stroke: rgb(85%,87%,90%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="190.108" y="27" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,54) scale(1,-1)">1</text>
+			<text x="30.216" y="185" style="font-family: Helvetica; font-size: 14px;fill: rgb(39%,45%,54%); stroke:none;" transform="translate(0,370) scale(1,-1)">1</text>
+			<polyline points="50 45, 194 45" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<polyline points="50 45, 50 189" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd;"/>
+			<text x="134.864" y="7" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,14) scale(1,-1)">Predicted</text>
+			<text x="50" y="204" style="font-family: Helvetica; font-size: 14px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,408) scale(1,-1)">Observed</text>
+			<polyline points="50 45, 194 189" style="stroke: rgb(39%,45%,54%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd; stroke-dasharray: 4, 4;"/>
+			<polyline points="165.2 45, 165.2 117" style="stroke: rgb(75%,42%,13%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd; stroke-dasharray: 3, 3;"/>
+			<polyline points="50 117, 165.2 117" style="stroke: rgb(75%,42%,13%); stroke-linecap: butt; stroke-width: 1; fill: None; fill-rule: evenodd; stroke-dasharray: 3, 3;"/>
+			<circle cx="165.2" cy="117.0" r="5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(75%,42%,13%); fill-rule: evenodd;"/>
+			<text x="235" y="151" style="font-family: Helvetica; font-size: 19px;fill: rgb(40%,31%,74%); stroke:none;" transform="translate(0,302) scale(1,-1)">Prediction: 80%</text>
+			<text x="235" y="116" style="font-family: Helvetica; font-size: 19px;fill: rgb(14%,19%,27%); stroke:none;" transform="translate(0,232) scale(1,-1)">Observed: 50% (5/10)</text>
+			<text x="235" y="80" style="font-family: Helvetica; font-size: 17px;fill: rgb(75%,42%,13%); stroke:none;" transform="translate(0,160) scale(1,-1)">30 pp overestimate</text>
+		</g>
+	</g>
+</svg>
