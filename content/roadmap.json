@@ -362,6 +362,18 @@
               {"type": "docs", "lang": "en", "title": "Оценка качества RAG: обзор метрик", "url": "https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/", "source": "Ragas"},
               {"type": "docs", "lang": "en", "title": "NDCG: определение и правила расчёта", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html", "source": "scikit-learn"}
             ],
+            "ml-reliable-evaluation": [
+              {"type": "docs", "lang": "en", "title": "Разбиение и кросс-валидация", "url": "https://scikit-learn.org/stable/modules/cross_validation.html", "source": "scikit-learn"},
+              {"type": "docs", "lang": "en", "title": "Базовый классификатор DummyClassifier", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html", "source": "scikit-learn"}
+            ],
+            "ml-threshold-calibration": [
+              {"type": "docs", "lang": "en", "title": "Выбор порога классификации", "url": "https://scikit-learn.org/stable/modules/classification_threshold.html", "source": "scikit-learn"},
+              {"type": "docs", "lang": "en", "title": "Калибровка вероятностей", "url": "https://scikit-learn.org/stable/modules/calibration.html", "source": "scikit-learn"}
+            ],
+            "ml-regression-decisions": [
+              {"type": "docs", "lang": "en", "title": "Как оценивать прогноз и считать MASE", "url": "https://otexts.com/fpp3/toolbox.html#evaluating-point-forecast-accuracy", "source": "Hyndman и Athanasopoulos"},
+              {"type": "docs", "lang": "en", "title": "Pinball loss", "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_pinball_loss.html", "source": "scikit-learn"}
+            ],
             "ml-curves-regression": [
               {"type": "video", "lang": "ru", "title": "ROC-кривая и ROC-AUC: пороги, TPR и FPR на примере", "url": "https://www.youtube.com/watch?v=v6PPG8J_Egs", "source": "machine learrrning", "minutes": 15},
               {"type": "video", "lang": "ru", "title": "Precision-Recall: как построить PR-кривую и посчитать PR-AUC", "url": "https://www.youtube.com/watch?v=QW-09jHQH-w", "source": "machine learrrning", "minutes": 15},

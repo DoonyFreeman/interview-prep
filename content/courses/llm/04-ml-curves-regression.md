@@ -489,3 +489,5 @@ AP сравнивается при разной prevalence и, возможно,
 - [scikit-learn: average_precision_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) — определение AP и отличие от трапеций.
 - [scikit-learn: r2_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html) — отрицательные значения и `force_finite`.
 - [scikit-learn: Precision-Recall](https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html) — построение и чтение кривой.
+
+Для быстрого повторения — [порог и калибровка](/courses/llm/lessons/ml-threshold-calibration) и [ошибки прогноза](/courses/llm/lessons/ml-regression-decisions).
