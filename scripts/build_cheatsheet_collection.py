@@ -14,7 +14,7 @@ SHEETS = (
     ('agents', 'LLM-агенты', 1),
     ('langchain-tools', 'LangChain и tool calling', 2),
     ('langgraph-agents', 'Агенты и LangGraph', 2),
-    ('ml-metrics', 'Метрики ML, кривые и регрессия', 3),
+    ('ml-metrics', 'Метрики ML, кривые и регрессия', 5),
     ('rag', 'RAG: поиск и контекст', 1),
     *((slug, title, 2) for slug, title in RAG_SHEETS),
 )

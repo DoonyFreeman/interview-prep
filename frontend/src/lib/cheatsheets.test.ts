@@ -9,11 +9,14 @@ import {
 } from "./cheatsheets";
 
 describe("cheatsheet navigation", () => {
-  it("links only the fourth LLM lesson to the ML sheet", () => {
+  it("links the basic lessons and three ML practice lessons to the ML sheet", () => {
     const sheet = getCheatsheet("ml-metrics");
     expect(sheet).toBeDefined();
     expect(getLessonCheatsheet("llm", "ml-curves-regression")).toBe(sheet);
-    expect(getLessonCheatsheet("llm", "ml-classification-metrics")).toBeUndefined();
+    expect(getLessonCheatsheet("llm", "ml-classification-metrics")).toBe(sheet);
+    expect(getLessonCheatsheet("llm", "ml-reliable-evaluation")).toBe(sheet);
+    expect(getLessonCheatsheet("llm", "ml-threshold-calibration")).toBe(sheet);
+    expect(getLessonCheatsheet("llm", "ml-regression-decisions")).toBe(sheet);
     expect(getLessonCheatsheet("other-course", "ml-curves-regression")).toBeUndefined();
     expect(getLessonCheatsheet("llm", "agents")).toBeUndefined();
   });
@@ -102,7 +105,7 @@ describe("published library assets", () => {
     const twoPageSlugs = ["langchain-tools", "langgraph-agents", ...RAG_CHEATSHEET_BUNDLE.slugs.slice(1)];
     for (const sheet of CHEATSHEETS) {
       expect(sheet.pdfUrl).toBe(`/cheatsheets/${sheet.slug}.pdf`);
-      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 3 : twoPageSlugs.includes(sheet.slug) ? 2 : 1);
+      expect(sheet.pages).toBe(sheet.slug === "ml-metrics" ? 5 : twoPageSlugs.includes(sheet.slug) ? 2 : 1);
       const sections = getCheatsheetSections(sheet.markdown);
       expect(sections.length).toBeGreaterThan(0);
       expect(sections.every((section) => section.markdown.trim().length > 0)).toBe(true);
