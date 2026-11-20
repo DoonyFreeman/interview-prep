@@ -102,7 +102,11 @@
             { "type": "video", "lang": "ru", "title": "Многопроцессность, многопоточность, асинхронность в Python — что это и как работает", "url": "https://www.youtube.com/watch?v=JIp14T9bvvc", "source": "Диджитализируй" },
             { "type": "docs", "lang": "en", "title": "threading — потоковый параллелизм", "url": "https://docs.python.org/3/library/threading.html", "source": "docs.python.org" }
           ],
-          "lesson_resources": {}
+          "lesson_resources": {
+            "concurrency-refresh": [
+              { "type": "docs", "lang": "en", "title": "Python 3.14 — методы запуска процессов", "url": "https://docs.python.org/3.14/library/multiprocessing.html#contexts-and-start-methods", "source": "docs.python.org" }
+            ]
+          }
         },
         {
           "slug": "python-asyncio",
@@ -111,7 +115,11 @@
             { "type": "video", "lang": "ru", "title": "Асинхронность, многопоточность, многопроцессность в Python — библиотека asyncio", "url": "https://www.youtube.com/watch?v=_4QY1nGFRY8", "source": "YouTube" },
             { "type": "docs", "lang": "en", "title": "asyncio — асинхронный ввод-вывод", "url": "https://docs.python.org/3/library/asyncio.html", "source": "docs.python.org" }
           ],
-          "lesson_resources": {}
+          "lesson_resources": {
+            "asyncio-refresh": [
+              { "type": "docs", "lang": "en", "title": "Python — группы задач, отмена и таймауты", "url": "https://docs.python.org/3/library/asyncio-task.html", "source": "docs.python.org" }
+            ]
+          }
         }
       ],
       "extra_nodes": []

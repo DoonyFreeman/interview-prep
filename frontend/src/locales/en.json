@@ -579,8 +579,8 @@
   "lessonBlocks": {
     "showSolution": "Show solution",
     "invalidTrace": "This example could not be displayed. Continue with the lesson table and explanation.",
-    "fixedExample": "A predefined example, without model calls. Step through it and follow the data changes.",
-    "nodes": "Graph nodes",
+    "fixedExample": "A predefined example. Step through it and see how the data changes.",
+    "nodes": "Participants in the example",
     "previous": "Back",
     "next": "Next step",
     "reset": "Restart",

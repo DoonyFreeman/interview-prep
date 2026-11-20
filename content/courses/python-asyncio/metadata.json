@@ -65,6 +65,18 @@
         { "slug": "asyncio-queue", "title": "asyncio.Queue", "anchor": "asyncioqueue", "order": 3 },
         { "slug": "async-sync-primitives", "title": "Синхронизация: Lock и Semaphore", "anchor": "синхронизация-lock-и-semaphore", "order": 4 }
       ]
+    },
+    {
+      "slug": "asyncio-refresh",
+      "title": "Asyncio под нагрузкой: быстрый практикум",
+      "file": "06-asyncio-refresh.md",
+      "order": 6,
+      "duration_minutes": 13,
+      "concepts": [
+        { "slug": "async-request-timeline", "title": "Прочитай шкалу двух запросов", "anchor": "прочитай-шкалу-двух-запросов", "order": 1 },
+        { "slug": "async-group-errors", "title": "Реши, что делать при сбое", "anchor": "реши-что-делать-при-сбое", "order": 2 },
+        { "slug": "async-overload", "title": "Ограничи очередь и нагрузку", "anchor": "ограничи-очередь-и-нагрузку", "order": 3 }
+      ]
     }
   ]
 }
