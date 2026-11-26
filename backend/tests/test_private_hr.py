@@ -224,3 +224,32 @@ async def test_resume_cheatsheet_stays_inside_its_account(client, tmp_path, monk
     assert (await client.get(url, headers={"Authorization": f"Bearer {token}"})).json() == []
     path.write_text(json.dumps({**record, "owner_email": "different@example.com"}))
     assert (await client.get(url, headers=owner)).json() == []
+
+
+async def test_resume_pdf_requires_owner_and_matching_release(client, tmp_path, monkeypatch):
+    from hashlib import sha256
+
+    monkeypatch.setattr(private_hr, "RESUME_DIR", tmp_path)
+    owner, profile = await register(client, "pdf-owner@example.com")
+    other, _ = await register(client, "pdf-other@example.com")
+    payload = b"%PDF-1.7\nsynthetic document"
+    account = tmp_path / str(profile["id"])
+    account.with_suffix(".pdf").write_bytes(payload)
+    record = {
+        "owner_email": "pdf-owner@example.com",
+        "owner_created_at": profile["created_at"],
+        "sections": [],
+        "pdf_sha256": sha256(payload).hexdigest(),
+    }
+    account.with_suffix(".json").write_text(json.dumps(record))
+    url = "/api/cheatsheets/my-resume/pdf"
+    result = await client.get(url, headers=owner)
+    assert result.status_code == 200
+    assert result.content == payload
+    assert result.headers["Content-Type"] == "application/pdf"
+    assert result.headers["Content-Disposition"].startswith("attachment;")
+    assert result.headers["Cache-Control"] == "private, no-store"
+    assert (await client.get(url, headers=other)).status_code == 404
+    assert (await client.get(url)).status_code in (401, 403)
+    account.with_suffix(".pdf").write_bytes(payload + b"modified")
+    assert (await client.get(url, headers=owner)).status_code == 404

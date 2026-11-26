@@ -1,6 +1,7 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { api } from "../lib/api";
 import { usePrivateResume, type ResumeSection } from "../lib/privateResume";
 import "../components/cheatsheets.css";
 import "../components/private-resume.css";
@@ -62,65 +63,174 @@ function Simulation({ scenarios }: Pick<ResumeSection, "scenarios">) {
   );
 }
 
+function Architecture({ section }: { section: ResumeSection }) {
+  // Older documents still expose their real edges through the scenario steps.
+  const flows = section.flows?.length ? section.flows : section.scenarios.flatMap((scenario) =>
+    scenario.steps.map((step) => ({
+      title: `${scenario.title} · ${step.title}`,
+      nodes: [{ title: step.from_node, detail: step.why }, { title: step.to_node, detail: step.state }],
+      links: [step.title],
+    })),
+  );
+  if (!flows.length) return null;
+
+  return (
+    <section className="resume-architecture" aria-labelledby={`architecture-${section.id}`}>
+      <div className="resume-section-heading">
+        <span className="resume-eyebrow">Система в действии</span>
+        <h3 id={`architecture-${section.id}`}>Архитектура и потоки</h3>
+      </div>
+      {flows.map((flow, index) => (
+        <figure className="resume-flow" key={`${flow.title}-${index}`}>
+          <figcaption>{flow.title}</figcaption>
+          <ol className="resume-flow-track">
+            {flow.nodes.map((node, nodeIndex) => (
+              <li className="resume-flow-part" key={`${node.title}-${nodeIndex}`}>
+                {nodeIndex > 0 && (
+                  <div className="resume-flow-edge">
+                    <span>{flow.links[nodeIndex - 1]}</span>
+                    <span className="resume-flow-arrow" aria-label="затем">→</span>
+                  </div>
+                )}
+                <div className="resume-flow-node">
+                  <span className="resume-flow-number" aria-hidden="true">{String(nodeIndex + 1).padStart(2, "0")}</span>
+                  <strong>{node.title}</strong>
+                  <p>{node.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </figure>
+      ))}
+    </section>
+  );
+}
+
 export function PrivateResumePage() {
   const { token } = useAuth();
   const { data, isPending, isError, refetch } = usePrivateResume(token);
-  const [selected, setSelected] = useState<string>();
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+  const downloadRequest = useRef<AbortController | null>(null);
+  const downloadUrl = useRef<string | null>(null);
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const section = data?.find(({ id }) => id === selected) ?? data?.[0];
+  useEffect(() => {
+    setDownloading(false);
+    setDownloadError("");
+    return () => {
+      downloadRequest.current?.abort();
+      downloadRequest.current = null;
+      if (downloadUrl.current) URL.revokeObjectURL(downloadUrl.current);
+      downloadUrl.current = null;
+    };
+  }, [token]);
+
+  async function downloadPdf() {
+    if (!token || downloadRequest.current) return;
+    const controller = new AbortController();
+    downloadRequest.current = controller;
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      const response = await api.get<Blob>("/cheatsheets/my-resume/pdf", {
+        responseType: "blob",
+        signal: controller.signal,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (controller.signal.aborted) return;
+      const url = URL.createObjectURL(response.data);
+      downloadUrl.current = url;
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "my-resume-cheatsheet.pdf";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+        if (downloadUrl.current === url) downloadUrl.current = null;
+      }, 1000);
+    } catch {
+      if (!controller.signal.aborted) setDownloadError("Не удалось скачать PDF. Попробуйте ещё раз.");
+    } finally {
+      if (downloadRequest.current === controller) downloadRequest.current = null;
+      if (!controller.signal.aborted) setDownloading(false);
+    }
+  }
 
   return (
     <div className="cheatsheets-library resume-sheet">
-      <Link className="cheatsheet-action" to="/cheatsheets">← Шпаргалки</Link>
-      {isPending && <p role="status">Загружаем шпаргалку…</p>}
+      <div className="resume-toolbar">
+        <Link className="cheatsheet-action cheatsheet-back-link" to="/cheatsheets">← Все шпаргалки</Link>
+        <span className="resume-access-label">Личный материал</span>
+      </div>
+      {isPending && <p className="resume-status" role="status">Загружаем шпаргалку…</p>}
       {isError && (
-        <p role="alert">Не удалось загрузить шпаргалку.{" "}
-          <button className="cheatsheet-action" onClick={() => void refetch()}>Повторить</button>
-        </p>
+        <div className="resume-status" role="alert">Не удалось загрузить шпаргалку.{" "}
+          <button type="button" className="cheatsheet-action" onClick={() => void refetch()}>Повторить</button>
+        </div>
       )}
-      {!section && !isPending && !isError && <p>Шпаргалка недоступна для этого аккаунта.</p>}
-      {section && (
+      {!data?.length && !isPending && !isError && <p className="resume-status">Шпаргалка недоступна для этого аккаунта.</p>}
+      {!!data?.length && (
         <>
-          <header className="cheatsheets-library-header">
-            <h1 className="font-display text-4xl font-bold text-ink">Моё резюме</h1>
-            <p>Разбор опыта для технического собеседования</p>
+          <header className="resume-cover">
+            <div>
+              <p className="resume-eyebrow">Подготовка к техническому собеседованию</p>
+              <h1>Моё резюме</h1>
+            </div>
+            <div className="resume-cover-actions">
+              <button type="button" className="cheatsheet-action cheatsheet-action-primary"
+                disabled={downloading || !token} onClick={() => void downloadPdf()}>
+                {downloading ? "Готовим PDF…" : "Скачать PDF ↓"}
+              </button>
+              {downloadError && <p className="resume-download-error" role="alert">{downloadError}</p>}
+            </div>
           </header>
-          <nav aria-label="Темы шпаргалки" className="resume-controls">
-            {data?.map(({ id, title }) => (
-              <button key={id} type="button" aria-pressed={section.id === id}
-                className={`cheatsheet-action ${section.id === id ? "cheatsheet-action-primary" : ""}`}
-                onClick={() => setSelected(id)}>{title}</button>
-            ))}
-          </nav>
-          <article key={section.id} className="resume-topic">
-            <h2 className="font-display text-3xl font-bold">{section.title}</h2>
-            <blockquote>{section.quote}</blockquote>
-            {section.panels.slice(0, 1).map(({ title, text }) => (
-              <section key={title}><h3>{title}</h3><p>{text}</p></section>
-            ))}
-            <Simulation scenarios={section.scenarios} />
-            {section.panels.slice(1).map(({ title, text }) => (
-              <section key={title}><h3>{title}</h3><p>{text}</p></section>
-            ))}
-            <section>
-              <h3>Проверь себя перед собеседованием</h3>
-              <p>Ответь вслух, затем раскрой пример.</p>
-              {section.questions.map(({ question, answer }) => (
-                <details key={question} className="resume-details">
-                  <summary>{question}</summary>
-                  <p>{answer}</p>
-                </details>
+          <div className="resume-document-layout">
+            <nav aria-label="Оглавление шпаргалки" className="resume-toc" id="resume-contents">
+              <p className="resume-eyebrow">Содержание</p>
+              <ol>{data.map(({ id, title }, index) => (
+                <li key={id}><a href={`#resume-${id}`}><span>{String(index + 1).padStart(2, "0")}</span>{title}</a></li>
+              ))}</ol>
+            </nav>
+            <div className="resume-document">
+              {data.map((section, index) => (
+                <article key={section.id} id={`resume-${section.id}`} className="resume-topic" aria-labelledby={`title-${section.id}`}>
+                  <header className="resume-topic-header">
+                    <span className="resume-topic-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    <div><p className="resume-eyebrow">Тема из резюме</p><h2 id={`title-${section.id}`}>{section.title}</h2></div>
+                  </header>
+                  <blockquote><span className="resume-eyebrow">Как это звучит в резюме</span><p>{section.quote}</p></blockquote>
+                  {section.takeaway && <div className="resume-takeaway"><span className="resume-eyebrow">Главная мысль</span><p>{section.takeaway}</p></div>}
+                  <Architecture section={section} />
+                  <div className="resume-panels">
+                    {section.panels.map(({ title, text }, panelIndex) => (
+                      <section key={title} className="resume-panel"><span className="resume-panel-number" aria-hidden="true">{String(panelIndex + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{text}</p></div></section>
+                    ))}
+                  </div>
+                  {!!section.questions.length && <section className="resume-questions">
+                    <div className="resume-section-heading"><span className="resume-eyebrow">Подготовь ответ</span><h3>Что могут спросить</h3></div>
+                    <dl>{section.questions.map(({ question, answer }) => (
+                      <div key={question}><dt>{question}</dt><dd>{answer}</dd></div>
+                    ))}</dl>
+                  </section>}
+                  {!!section.terms.length && <section className="resume-glossary">
+                    <h3>Термины, которые нужно объяснить</h3>
+                    <dl className="resume-terms">{section.terms.map(({ question, answer }) => (
+                      <div key={question}><dt>{question}</dt><dd>{answer}</dd></div>
+                    ))}</dl>
+                  </section>}
+                  {!!section.scenarios.length && <details className="resume-practice">
+                    <summary><span>Практика · пошаговый тренажёр</span><span className="resume-practice-hint">Разобрать сценарий</span></summary>
+                    <Simulation scenarios={section.scenarios} />
+                  </details>}
+                  <a className="resume-back-top" href="#resume-contents">К содержанию ↑</a>
+                </article>
               ))}
-            </section>
-            <section>
-              <h3>Термины</h3>
-              <dl className="resume-terms">{section.terms.map(({ question, answer }) => (
-                <div key={question}><dt>{question}</dt><dd>{answer}</dd></div>
-              ))}</dl>
-            </section>
-          </article>
+            </div>
+          </div>
         </>
       )}
     </div>

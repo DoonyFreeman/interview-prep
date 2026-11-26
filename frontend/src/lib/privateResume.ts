@@ -16,6 +16,12 @@ export type ResumeSection = {
   id: string;
   title: string;
   quote: string;
+  takeaway?: string | null;
+  flows?: {
+    title: string;
+    nodes: { title: string; detail: string }[];
+    links: string[];
+  }[] | null;
   panels: { title: string; text: string }[];
   scenarios: { title: string; steps: ResumeStep[] }[];
   questions: Answer[];

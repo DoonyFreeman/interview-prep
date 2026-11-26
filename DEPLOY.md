@@ -105,6 +105,15 @@ with the same owner fields and a `sections` list. Each section has a heading and
 question-answer items. Both the questions and answers are read from this
 server-only file.
 
+The personal resume sheet reads `data/private-resume/<user-id>.json` with the
+same owner fields and its private sections. For a PDF export, place
+`<user-id>.pdf` beside it and set `pdf_sha256` in the owner-bound JSON to the
+SHA-256 digest of that PDF. Publish the PDF first and then atomically replace
+the JSON. A mismatched pair is unavailable for download. Keep both files off
+Git, CI, public assets and logs, with the same permissions and retention
+rules as the private interview notes. Generate the PDF offline with
+`scripts/build_private_resume_pdf.py` and a private input and output path.
+
 ### One-time setup
 
 **On the host** (so it can pull code + the private image):

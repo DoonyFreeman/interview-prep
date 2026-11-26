@@ -1,9 +1,10 @@
 """Read a user's private rehearsal notes from the persistent server volume."""
 from datetime import datetime
+from hashlib import sha256
 from pathlib import Path
 from typing import Annotated, TypeVar
 
-from pydantic import BaseModel, Field, StringConstraints, ValidationError
+from pydantic import BaseModel, Field, StringConstraints, ValidationError, model_validator
 
 PRIVATE_HR_DIR = Path("data/private-hr")
 TECHNICAL_INTERVIEW_DIR = Path("data/private-interview")
@@ -75,10 +76,29 @@ class ResumeScenario(BaseModel):
     steps: Annotated[list[ResumeStep], Field(min_length=1, max_length=32)]
 
 
+class ResumeNode(BaseModel):
+    title: Question
+    detail: AnswerText
+
+
+class ResumeFlow(BaseModel):
+    title: Question
+    nodes: Annotated[list[ResumeNode], Field(min_length=2, max_length=12)]
+    links: Annotated[list[Question], Field(max_length=11)]
+
+    @model_validator(mode="after")
+    def validate_links(self):
+        if len(self.links) != len(self.nodes) - 1:
+            raise ValueError("A flow requires one link between each pair of nodes")
+        return self
+
+
 class ResumeSection(BaseModel):
     id: Slot
     title: Question
     quote: AnswerText
+    takeaway: AnswerText | None = None
+    flows: Annotated[list[ResumeFlow], Field(max_length=12)] | None = None
     panels: Annotated[list[ResumePanel], Field(min_length=1, max_length=24)]
     scenarios: Annotated[list[ResumeScenario], Field(max_length=12)]
     questions: Annotated[list[RehearsalAnswer], Field(max_length=24)]
@@ -90,6 +110,7 @@ ResumeSections = Annotated[list[ResumeSection], Field(max_length=96)]
 
 class ResumeFile(AccountBoundNotes):
     sections: ResumeSections
+    pdf_sha256: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")] | None = None
 
 
 Notes = TypeVar("Notes", bound=AccountBoundNotes)
@@ -126,6 +147,23 @@ def get_resume(user_id: int, email: str, created_at: datetime) -> ResumeSections
         RESUME_DIR, ResumeFile, user_id, email, created_at, max_bytes=MAX_TECHNICAL_FILE_BYTES,
     )
     return record.sections if record else []
+
+
+def get_resume_pdf(user_id: int, email: str, created_at: datetime) -> bytes | None:
+    record = _load_owned_notes(
+        RESUME_DIR, ResumeFile, user_id, email, created_at, max_bytes=MAX_TECHNICAL_FILE_BYTES,
+    )
+    if not record or not record.pdf_sha256:
+        return None
+    max_pdf_bytes = 4 * 1024 * 1024
+    try:
+        with (RESUME_DIR / f"{user_id}.pdf").open("rb") as file:
+            content = file.read(max_pdf_bytes + 1)
+    except OSError:
+        return None
+    if len(content) > max_pdf_bytes or not content.startswith(b"%PDF-"):
+        return None
+    return content if sha256(content).hexdigest() == record.pdf_sha256 else None
 
 
 def _load_owned_notes(
