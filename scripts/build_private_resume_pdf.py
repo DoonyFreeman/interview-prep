@@ -63,7 +63,7 @@ def flow_row(page, flow, top, *, branch):
         bottom = paragraph(page, node["detail"], x + 5, bottom - 4, node_width - 10,
                            size=9.2, align=1)
         if bottom < top - height + 3:
-            raise ValueError(f"Flow node overflows: {node['title']}")
+            raise ValueError(f"Flow node {index + 1} overflows its box")
         if index < len(nodes) - 1:
             start = x + node_width
             arrow(page, start + 4, start + gap - 4, top - 37, color)
@@ -118,7 +118,7 @@ def render_sheet(page, section, index, total):
         y = text_block(page, pair["question"], pair["answer"], x, y, column_width, TEAL)
     bottoms.append(y)
     if min(bottoms) < 34:
-        raise ValueError(f"Page overflow: {section['title']} ({bottoms})")
+        raise ValueError(f"Page {index} overflows its columns")
 
     page.setStrokeColor(BORDER)
     page.line(MARGIN, 33, WIDTH - MARGIN, 33)
