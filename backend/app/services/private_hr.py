@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, StringConstraints, ValidationError
 PRIVATE_HR_DIR = Path("data/private-hr")
 TECHNICAL_INTERVIEW_DIR = Path("data/private-interview")
 AGENT_GUIDE_DIR = Path("data/private-agent-guide")
+RESUME_DIR = Path("data/private-resume")
 MAX_FILE_BYTES = 64 * 1024
 MAX_TECHNICAL_FILE_BYTES = 1024 * 1024
 HR_LESSONS = frozenset({
@@ -55,6 +56,42 @@ class AgentGuideFile(AccountBoundNotes):
     sections: AgentGuideSections
 
 
+class ResumePanel(BaseModel):
+    title: Question
+    text: AnswerText
+
+
+class ResumeStep(BaseModel):
+    from_node: Question
+    to_node: Question
+    title: Question
+    payload: AnswerText
+    state: Question
+    why: AnswerText
+
+
+class ResumeScenario(BaseModel):
+    title: Question
+    steps: Annotated[list[ResumeStep], Field(min_length=1, max_length=32)]
+
+
+class ResumeSection(BaseModel):
+    id: Slot
+    title: Question
+    quote: AnswerText
+    panels: Annotated[list[ResumePanel], Field(min_length=1, max_length=24)]
+    scenarios: Annotated[list[ResumeScenario], Field(max_length=12)]
+    questions: Annotated[list[RehearsalAnswer], Field(max_length=24)]
+    terms: Annotated[list[RehearsalAnswer], Field(max_length=32)]
+
+
+ResumeSections = Annotated[list[ResumeSection], Field(max_length=96)]
+
+
+class ResumeFile(AccountBoundNotes):
+    sections: ResumeSections
+
+
 Notes = TypeVar("Notes", bound=AccountBoundNotes)
 
 
@@ -80,6 +117,13 @@ def get_agent_guide(user_id: int, email: str, created_at: datetime) -> AgentGuid
     record = _load_owned_notes(
         AGENT_GUIDE_DIR, AgentGuideFile, user_id, email, created_at,
         max_bytes=MAX_TECHNICAL_FILE_BYTES,
+    )
+    return record.sections if record else []
+
+
+def get_resume(user_id: int, email: str, created_at: datetime) -> ResumeSections:
+    record = _load_owned_notes(
+        RESUME_DIR, ResumeFile, user_id, email, created_at, max_bytes=MAX_TECHNICAL_FILE_BYTES,
     )
     return record.sections if record else []
 

@@ -32,3 +32,16 @@ def get_private_agent_guide(
     if not account_bound:
         return []
     return private_hr.get_agent_guide(user.id, user.email, user.created_at)
+
+
+@router.get("/cheatsheets/my-resume", response_model=private_hr.ResumeSections)
+def get_private_resume(
+    response: Response,
+    user: User = Depends(get_current_user),
+    account_bound: bool = Depends(has_account_bound_token),
+):
+    response.headers["Cache-Control"] = "private, no-store"
+    response.headers["Vary"] = "Authorization"
+    if not account_bound:
+        return []
+    return private_hr.get_resume(user.id, user.email, user.created_at)

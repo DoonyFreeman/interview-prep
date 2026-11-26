@@ -1,3 +1,5 @@
+import { PrivateResumePage } from "./pages/PrivateResumePage";
+import { privateResumePath } from "./lib/privateResume";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { RequireAuth } from "./auth/RequireAuth";
@@ -48,6 +50,7 @@ export function App() {
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/cheatsheets" element={<CheatsheetsPage />} />
         <Route path={pythonAiInterviewPath} element={<PythonAiInterviewPage />} />
+        <Route path={privateResumePath} element={<PrivateResumePage />} />
         <Route path="/cheatsheets/:slug" element={<CheatsheetPage />} />
         <Route path="/progress" element={<Navigate to="/cheatsheets" replace />} />
         <Route path="/settings" element={<SettingsPage />} />

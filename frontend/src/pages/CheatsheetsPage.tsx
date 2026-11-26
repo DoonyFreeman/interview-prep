@@ -1,3 +1,5 @@
+import { useAuth } from "../auth/AuthContext";
+import { privateResumePath, usePrivateResume } from "../lib/privateResume";
 import { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,6 +10,8 @@ import "../components/cheatsheets.css";
 
 export function CheatsheetsPage() {
   const { t } = useTranslation();
+  const { token } = useAuth();
+  const { data: resume } = usePrivateResume(token);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -37,6 +41,19 @@ export function CheatsheetsPage() {
       </header>
 
       <div className="cheatsheet-groups">
+        {Boolean(resume?.length) && (
+          <article className="cheatsheet-catalog-card">
+            <h2 className="font-display text-xl font-bold text-ink">Моё резюме</h2>
+            <p className="cheatsheet-card-description">
+              Разбор опыта, схемы работы сервисов и вопросы для собеседования.
+            </p>
+            <div className="cheatsheet-card-actions">
+              <Link to={privateResumePath} className="cheatsheet-action cheatsheet-action-primary">
+                Открыть <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </article>
+        )}
         <article className="cheatsheet-catalog-card">
           <div className="cheatsheet-card-topline">
             <IconArticle className="h-5 w-5 text-primary" aria-hidden="true" />

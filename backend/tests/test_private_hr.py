@@ -186,3 +186,41 @@ async def test_agent_guide_shows_only_bound_account_its_structured_sections(clie
         assert (await client.get(AGENT_GUIDE_URL, headers=owner)).json() == []
     path.unlink()
     assert (await client.get(AGENT_GUIDE_URL, headers=owner)).json() == []
+
+
+async def test_resume_cheatsheet_stays_inside_its_account(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(private_hr, "RESUME_DIR", tmp_path, raising=False)
+    owner, profile = await register(client, "resume-owner@example.com")
+    other, _ = await register(client, "resume-other@example.com")
+    sections = [{
+        "id": "first-topic", "title": "Synthetic topic", "quote": "Synthetic quote",
+        "panels": [{"title": "Explanation", "text": "Private synthetic explanation"}],
+        "scenarios": [{"title": "Success", "steps": [{
+            "from_node": "Client", "to_node": "API", "title": "Read",
+            "payload": "GET /tasks/42", "state": "Pending", "why": "Fetch a task",
+        }]}],
+        "questions": [ANSWER],
+        "terms": [ANSWER],
+    }]
+    record = {
+        "owner_email": "resume-owner@example.com",
+        "owner_created_at": profile["created_at"],
+        "sections": sections,
+    }
+    path = tmp_path / f"{profile['id']}.json"
+    path.write_text(json.dumps(record))
+    url = "/api/cheatsheets/my-resume"
+    response = await client.get(url, headers=owner)
+    assert response.status_code == 200
+    assert response.json() == sections
+    assert response.headers["Cache-Control"] == "private, no-store"
+    assert response.headers["Vary"] == "Authorization"
+    assert (await client.get(f"{url}?user_id={profile['id']}", headers=other)).json() == []
+    assert (await client.get(url)).status_code in (401, 403)
+
+    token = jwt.encode(
+        {"sub": str(profile["id"])}, get_settings().jwt_secret, algorithm=get_settings().jwt_algorithm,
+    )
+    assert (await client.get(url, headers={"Authorization": f"Bearer {token}"})).json() == []
+    path.write_text(json.dumps({**record, "owner_email": "different@example.com"}))
+    assert (await client.get(url, headers=owner)).json() == []
