@@ -1,3 +1,4 @@
+import { PrivateOpenspecDownloads } from "../components/PrivateOpenspecDownloads";
 import { useAuth } from "../auth/AuthContext";
 import { privateResumePath, usePrivateResume } from "../lib/privateResume";
 import { useLayoutEffect } from "react";
@@ -38,6 +39,7 @@ export function CheatsheetsPage() {
           </a>
           <p id="cheatsheets-bundle-description">{t("cheatsheets.allBundleDescription")}</p>
         </div>
+        <PrivateOpenspecDownloads token={token} />
       </header>
 
       <div className="cheatsheet-groups">

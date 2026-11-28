@@ -2,14 +2,17 @@
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
-from typing import Annotated, TypeVar
+from typing import Annotated, Literal, TypeVar
 
-from pydantic import BaseModel, Field, StringConstraints, ValidationError, model_validator
+from pydantic import BaseModel, Field, StringConstraints, TypeAdapter, ValidationError, field_validator, model_validator
 
 PRIVATE_HR_DIR = Path("data/private-hr")
 TECHNICAL_INTERVIEW_DIR = Path("data/private-interview")
 AGENT_GUIDE_DIR = Path("data/private-agent-guide")
 RESUME_DIR = Path("data/private-resume")
+OPENSPEC_DIR = Path("data/private-openspec")
+COMMON_CHEATSHEETS_PDF = Path(__file__).resolve().parents[1] / "static/cheatsheets/cheatsheets-all.pdf"
+MAX_OPENSPEC_PDF_BYTES = 16 * 1024 * 1024
 MAX_FILE_BYTES = 64 * 1024
 MAX_TECHNICAL_FILE_BYTES = 1024 * 1024
 HR_LESSONS = frozenset({
@@ -113,6 +116,31 @@ class ResumeFile(AccountBoundNotes):
     pdf_sha256: Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")] | None = None
 
 
+OpenspecKind = Literal["original", "bundle"]
+PdfDigest = Annotated[str, StringConstraints(pattern=r"^[a-f0-9]{64}$")]
+_pdf_digest = TypeAdapter(PdfDigest)
+
+
+class OpenspecFile(AccountBoundNotes):
+    original_sha256: PdfDigest | None = None
+    bundle_sha256: PdfDigest | None = None
+    common_sha256: PdfDigest | None = None
+
+    @field_validator("original_sha256", "bundle_sha256", "common_sha256", mode="before")
+    @classmethod
+    def _optional_digest(cls, value: object) -> str | None:
+        # Do not discard an otherwise valid owner binding or the other download.
+        try:
+            return _pdf_digest.validate_python(value, strict=True)
+        except ValidationError:
+            return None
+
+
+class OpenspecAvailability(BaseModel):
+    original: bool = False
+    bundle: bool = False
+
+
 Notes = TypeVar("Notes", bound=AccountBoundNotes)
 
 
@@ -187,3 +215,39 @@ def _load_owned_notes(
     if record.owner_email != email or record.owner_created_at != created_at:
         return None
     return record
+
+
+def _read_pdf(path: Path, digest: str | None) -> bytes | None:
+    if digest is None:
+        return None
+    try:
+        with path.open("rb") as file:
+            content = file.read(MAX_OPENSPEC_PDF_BYTES + 1)
+    except OSError:
+        return None
+    if len(content) > MAX_OPENSPEC_PDF_BYTES or not content.startswith(b"%PDF-"):
+        return None
+    return content if sha256(content).hexdigest() == digest else None
+
+
+def _openspec_pdf(user_id: int, record: OpenspecFile, kind: OpenspecKind) -> bytes | None:
+    if kind == "original":
+        return _read_pdf(OPENSPEC_DIR / f"{user_id}.pdf", record.original_sha256)
+    if record.bundle_sha256 is None or _read_pdf(COMMON_CHEATSHEETS_PDF, record.common_sha256) is None:
+        return None
+    return _read_pdf(OPENSPEC_DIR / f"{user_id}.bundle.pdf", record.bundle_sha256)
+
+
+def get_openspec_availability(user_id: int, email: str, created_at: datetime) -> OpenspecAvailability:
+    record = _load_owned_notes(OPENSPEC_DIR, OpenspecFile, user_id, email, created_at)
+    if record is None:
+        return OpenspecAvailability()
+    return OpenspecAvailability(
+        original=_openspec_pdf(user_id, record, "original") is not None,
+        bundle=_openspec_pdf(user_id, record, "bundle") is not None,
+    )
+
+
+def get_openspec_pdf(user_id: int, email: str, created_at: datetime, kind: OpenspecKind) -> bytes | None:
+    record = _load_owned_notes(OPENSPEC_DIR, OpenspecFile, user_id, email, created_at)
+    return _openspec_pdf(user_id, record, kind) if record else None

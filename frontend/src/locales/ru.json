@@ -514,6 +514,9 @@
       "ai": "LLM и ML",
       "rag": "RAG и векторные БД"
     },
+    "downloadOpenspec": "Скачать OpenSpec PDF",
+    "downloadMyBundle": "Скачать мой полный набор",
+    "privateDownloadError": "Не удалось скачать PDF. Попробуйте ещё раз.",
     "downloadAllBundle": "Скачать все шпаргалки",
     "allBundleDescription": "Один PDF без раздела Python",
     "downloadRagBundle": "Скачать все по RAG",

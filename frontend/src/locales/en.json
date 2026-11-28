@@ -513,6 +513,9 @@
       "ai": "LLM & ML",
       "rag": "RAG & vector databases"
     },
+    "downloadOpenspec": "Download OpenSpec PDF",
+    "downloadMyBundle": "Download my full collection",
+    "privateDownloadError": "Could not download the PDF. Try again.",
     "downloadAllBundle": "Download all cheatsheets",
     "allBundleDescription": "One PDF excluding the Python section",
     "downloadRagBundle": "Download all RAG sheets",
