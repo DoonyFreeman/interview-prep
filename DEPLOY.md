@@ -114,6 +114,52 @@ Git, CI, public assets and logs, with the same permissions and retention
 rules as the private interview notes. Generate the PDF offline with
 `scripts/build_private_resume_pdf.py` and a private input and output path.
 
+### Private OpenSpec downloads
+
+After deploying the API, confirm the intended account in the app and obtain its
+ID, email and creation timestamp through a trusted admin session. Do not use
+an editable display name or a GitHub handle to identify the record. An existing
+session without an account-bound token must sign in again.
+
+Prepare both PDFs offline in a private directory (0700), using the exact common
+PDF from the deployed revision. Preserve the original byte-for-byte. Use a local
+virtual environment with `pypdf` for the personal bundle:
+
+```bash
+python -I scripts/build_private_openspec_bundle.py \
+  --public frontend/public/cheatsheets/cheatsheets-all.pdf \
+  --original "$PRIVATE_DIR/original.pdf" --output "$PRIVATE_DIR/personal.pdf"
+```
+
+A successful offline build is required before provisioning either file. The
+script checks the six original pages and reachable PDF objects, including
+nested bookmarks, without opening any links. If validation fails, stop and
+leave the currently provisioned files untouched. Hash the exact original
+and personal bytes you just checked, before transferring them, and verify
+that the staged bytes match those digests before replacing the manifest. The personal PDF must have six more pages than the common PDF and
+its OpenSpec bookmark must point to the first added page. Transfer privately to
+`data/private-openspec/` on the existing app volume. Both the directory (0700)
+and its files (0600) must be owned by the app user. Do not put the files or
+manifest into Git, CI, the image, public assets, or logs.
+
+- `<user-id>.pdf`: original PDF; record its SHA-256 as `original_sha256`.
+- `<user-id>.bundle.pdf`: personal PDF; record its SHA-256 as `bundle_sha256`.
+- `<user-id>.json`: the digest fields above, `common_sha256` from the exact
+  deployed common PDF, and the verified `owner_email` and `owner_created_at`
+  from the app. Set a digest to null to leave its download unprovisioned.
+
+Stage on the same filesystem, set permissions, atomically rename the prepared
+PDFs, then atomically replace the manifest last. The app denies a file with a
+missing, malformed or mismatched digest without disabling the other file. When the common PDF changes, the bundle is hidden
+until rebuilt and reprovisioned; the original still works. To revoke both
+links, move the manifest out of the active path. Already-downloaded copies
+cannot be revoked. The SQLite backup does not include these files.
+
+After provisioning, verify both downloads with the owner session, then confirm
+that another account sees neither button and cannot download by direct URL.
+Verify that the regular common and RAG downloads are unchanged. Do not record
+private contents or credentials in smoke-test output.
+
 ### One-time setup
 
 **On the host** (so it can pull code + the private image):
